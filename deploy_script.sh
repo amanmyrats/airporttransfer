@@ -41,7 +41,7 @@ sudo systemctl daemon-reload
 echo "Restarting the server..."
 # Skip actual restart in dry run
 # [ "$DRY_RUN" != "true" ] && 
-sudo systemctl restart airporttransferbackend
+sudo systemctl restart airporttransfer.gunicorn
 
 # echo "Restarting the celery..."
 # sudo systemctl restart celery
