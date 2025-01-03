@@ -1,0 +1,11 @@
+[Unit]
+Description=Gunicorn service for Airport Transfer Backend API
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/airporttransfer/backend
+ExecStart=/home/ubuntu/airporttransfer/backend/venv/bin/gunicorn core.wsgi:application -b 127.0.0.1:8010 --workers 3 --timeout=60
+[Install]
+WantedBy=multi-user.target
