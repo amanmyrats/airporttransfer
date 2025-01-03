@@ -43,6 +43,7 @@ echo "Restarting the server..."
 # [ "$DRY_RUN" != "true" ] && 
 sudo systemctl restart airporttransfer.gunicorn
 
+
 # echo "Restarting the celery..."
 # sudo systemctl restart celery
 
