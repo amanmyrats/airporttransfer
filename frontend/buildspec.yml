@@ -18,10 +18,11 @@ phases:
       # - aws cloudfront create-invalidation --distribution-id E1MJNHUS0SC6E9 --paths "/*"
       
       # Sync HTML with short cache duration
-      - aws s3 cp ./dist/airporttransfer/browser/home/index.html s3://airporttransfer.com/home/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
+      - aws s3 cp ./dist/airporttransfer/browser/index.html s3://724supertransfers.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
+      # - aws s3 cp ./dist/airporttransfer/browser/index.html s3://724supertransfers.com/index.html --cache-control "max-age=86400, public"
 
       # Sync other files with longer cache duration
-      - aws s3 sync ./dist/airporttransfer/browser s3://airporttransfer.com --exclude "home/index.html" --delete --cache-control "max-age=31536000,immutable"
+      - aws s3 sync ./dist/airporttransfer/browser s3://724supertransfers.com --exclude "index.html" --delete --cache-control "max-age=31536000,immutable"
 
       # Invalidate CloudFront
-      - aws cloudfront create-invalidation --distribution-id E1MJNHUS0SC6E9 --paths "/*"
+      - aws cloudfront create-invalidation --distribution-id ERWTRAHG56HIT --paths "/*"
