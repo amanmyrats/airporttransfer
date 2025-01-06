@@ -37,7 +37,9 @@
             ],
             "scripts": [],
             "server": "src/main.server.ts",
-            "prerender": true,
+            "prerender": {
+              "routesFile": "routes.txt"
+            },
             "ssr": {
               "entry": "src/server.ts"
             }
@@ -92,35 +94,7 @@
             "browserTarget": "airporttransfer:build:production",
             "serverTarget": "airporttransfer:server:production",
             "routes": [
-              "/",
-              "/en",
-              "/en/home",
-              "/en/aboutus",
-              "/en/contactus",
-              "/en/services",
-              "/en/prices",
-              "/en/blog",
-              "/tr",
-              "/tr/home",
-              "/tr/aboutus",
-              "/tr/contactus",
-              "/tr/services",
-              "/tr/prices",
-              "/tr/blog",
-              "/fr",
-              "/fr/home",
-              "/fr/aboutus",
-              "/fr/contactus",
-              "/fr/services",
-              "/fr/prices",
-              "/fr/blog",
-              "/ru",
-              "/ru/home",
-              "/ru/aboutus",
-              "/ru/contactus",
-              "/ru/services",
-              "/ru/prices",
-              "/ru/blog"
+              "/"
             ]
           }
         }, 
