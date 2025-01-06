@@ -8,6 +8,7 @@ import { PricesComponent } from './pages/prices/prices.component';
 import { AppComponent } from './app.component';
 
 export const routes: Routes = [
+    { path: '', component: HomeComponent }, // Set HomeComponent for root
     { path: ':lang', component: HomeComponent }, // Set HomeComponent for root
 
     { path: ':lang/home', component: HomeComponent },
