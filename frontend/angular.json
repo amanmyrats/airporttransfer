@@ -41,7 +41,6 @@
             "ssr": {
               "entry": "src/server.ts"
             }
-            // "ssr": false
           },
           "configurations": {
             "production": {
@@ -127,7 +126,16 @@
             "scripts": []
           }
         }
-      }
+      },
+      "i18n": {
+        "sourceLocale": "en",
+        "locales": {
+          "tr": "src/locale/messages.tr.xlf",
+          "de": "src/locale/messages.de.xlf",
+          "nl": "src/locale/messages.nl.xlf",
+          "ru": "src/locale/messages.ru.xlf"
+        }
+      },
     }
   }
 }

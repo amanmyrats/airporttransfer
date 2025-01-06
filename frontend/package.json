@@ -7,10 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:airporttransfer": "node dist/airporttransfer/server/server.mjs", 
-
+    "serve:ssr:airporttransfer": "node dist/airporttransfer/server/server.mjs",
     "build:ssr": "ng build && ng run airporttransfer:server",
-    "prerender": "ng run airporttransfer:prerender"
+    "prerender": "ng run airporttransfer:prerender",
+    "i18n-merge": "xliffmerge --profile xliffmerge.json --verbose"
   },
   "private": true,
   "dependencies": {
@@ -24,7 +24,9 @@
     "@angular/platform-server": "^19.0.0",
     "@angular/router": "^19.0.0",
     "@angular/ssr": "^19.0.6",
+    "@primeng/themes": "^19.0.2",
     "express": "^4.18.2",
+    "primeng": "^19.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -43,6 +45,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "ngx-i18nsupport": "^0.17.1",
     "typescript": "~5.6.2"
   }
 }

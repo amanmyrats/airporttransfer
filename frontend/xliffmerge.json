@@ -1,0 +1,19 @@
+{
+    "xliffmergeOptions": {
+        "defaultLanguage": "en",
+        "languages": [
+            "tr",
+            "fr",
+            "de",
+            "nl",
+            "ru"
+        ],
+        "srcDir": "src/locale",
+        "genDir": "src/locale",
+        "useSourceAsTarget": false,
+        "targetPraefix": "",
+        "targetSuffix": "",
+        "beautifyOutput": true,
+        "removeUnusedIds": false
+    }
+}

@@ -1,0 +1,21 @@
+<div class="dropdown" (mouseleave)="closeDropdown()">
+    <!-- Dropdown Button -->
+    <button class="dropdown-button" (click)="toggleDropdown()">
+      <img [src]="selectedLanguage.flag" [alt]="selectedLanguage.name + ' flag'" class="flag-icon" />
+      <span>{{ selectedLanguage.name }}</span>
+      <i class="dropdown-arrow pi pi-chevron-down"></i>
+    </button>
+  
+    <!-- Dropdown Menu -->
+    <ul class="dropdown-menu" [class.show]="isDropdownVisible">
+      <li
+        *ngFor="let lang of supportedLanguages"
+        (click)="onLanguageSelect(lang)"
+        class="dropdown-item"
+      >
+        <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" />
+        <span>{{ lang.name }}</span>
+      </li>
+    </ul>
+  </div>
+  

@@ -8,23 +8,23 @@ import { PricesComponent } from './pages/prices/prices.component';
 import { AppComponent } from './app.component';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent }, // Set HomeComponent for root
+    { path: ':lang', component: HomeComponent }, // Set HomeComponent for root
 
-    { path: 'home', component: HomeComponent },
+    { path: ':lang/home', component: HomeComponent },
     {
-        path: 'aboutus',component: AboutUsComponent,
+        path: ':lang/aboutus',component: AboutUsComponent,
     },
     {
-        path: 'contactus',component: ContactUsComponent,
+        path: ':lang/contactus',component: ContactUsComponent,
     },
     {
-        path: 'services',component: ServicesComponent,
+        path: ':lang/services',component: ServicesComponent,
     },
     {
-        path: 'blog', component: BlogComponent,
+        path: ':lang/blog', component: BlogComponent,
     },
     {
-          path: 'prices',component: PricesComponent,
+        path: ':lang/prices',component: PricesComponent,
     },
-    { path: '**', redirectTo: 'home' }, // Redirect unknown paths
+    { path: '**', redirectTo: 'en/home' }, // Redirect unknown paths
 ];

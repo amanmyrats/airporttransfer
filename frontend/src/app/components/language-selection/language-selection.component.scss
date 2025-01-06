@@ -1,0 +1,80 @@
+/* General Dropdown Styles */
+.dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-button {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 8px 5px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    gap: 10px;
+    transition: all 0.3s ease;
+  }
+  
+  .dropdown-button:hover {
+    background-color: #f9f9f9;
+    border-color: #ccc;
+  }
+  
+  .flag-icon {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+  }
+  
+  .dropdown-arrow {
+    margin-left: auto;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 80%;
+    left: 0;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    z-index: 1000;
+    display: none; /* Hidden by default */
+    padding-left: 5px;
+  }
+  
+  .dropdown-menu.show {
+    display: block; /* Show the menu when .show is added */
+  }
+  
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    gap: 10px;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .dropdown-item img {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+  }
+  
+  .dropdown-item span {
+    font-size: 14px;
+    color: #333;
+  }
+  
