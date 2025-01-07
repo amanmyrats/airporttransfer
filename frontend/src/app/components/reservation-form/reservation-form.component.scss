@@ -1,0 +1,82 @@
+/* Booking Page Styles */
+.booking {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  /* Hero Section */
+  .booking-hero {
+    text-align: center;
+    background: linear-gradient(to bottom, #007bff, #0056b3);
+    color: #fff;
+    padding: 50px 20px;
+    margin-bottom: 40px;
+  }
+  
+  .booking-title {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+  }
+  
+  .booking-subtitle {
+    font-size: 1.2em;
+  }
+  
+  /* Booking Form */
+  .booking-form {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .form-group {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  .btn-submit {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .btn-submit:hover {
+    background-color: #0056b3;
+  }
+  
