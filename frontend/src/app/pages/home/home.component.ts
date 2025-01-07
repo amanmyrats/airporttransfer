@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { SuperHeaderComponent } from '../../components/super-header/super-header.component';
 import { BannerComponent } from '../../components/banner/banner.component';
+import { PriceListComponent } from '../../components/price-list/price-list.component';
+import { BlogListComponent } from '../../components/blog-list/blog-list.component';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +16,8 @@ import { BannerComponent } from '../../components/banner/banner.component';
     SuperHeaderComponent, 
     NavbarComponent, 
     BannerComponent, 
+    PriceListComponent, 
+    BlogListComponent, 
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'

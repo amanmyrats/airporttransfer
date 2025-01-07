@@ -1,0 +1,80 @@
+.price-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .car-section {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+  }
+  
+  .car-image {
+    width: 100%;
+    height: auto;
+  }
+  
+  .car-title {
+    font-size: 1.8em;
+    margin: 10px 0;
+    color: #333;
+  }
+  
+  .route-header {
+    font-size: 1.2em;
+    margin: 10px 0;
+    color: #007bff;
+  }
+  
+  .destination-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .destination-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .destination-list li:last-child {
+    border-bottom: none;
+  }
+  
+  .destination-name {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .price {
+    font-size: 1.2em;
+    color: #28a745;
+    margin-left: auto;
+  }
+  
+  .btn-book {
+    padding: 6px 12px;
+    font-size: 0.9em;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 5px;
+  }
+  
+  .btn-book:hover {
+    background-color: #0056b3;
+  }
+  
