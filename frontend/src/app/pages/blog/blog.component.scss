@@ -4,3 +4,145 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+/* Blog Page */
+.blogs {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  .blogs-hero {
+    text-align: center;
+    background: linear-gradient(to bottom, #007bff, #0056b3);
+    color: #fff;
+    padding: 50px 20px;
+    margin-bottom: 40px;
+  }
+  
+  .blogs-title {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+  }
+  
+  .blogs-subtitle {
+    font-size: 1.2em;
+  }
+  
+  /* Blog Categories */
+  .blog-categories {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .categories-title {
+    font-size: 1.8em;
+    color: #007bff;
+    margin-bottom: 10px;
+  }
+  
+  .categories-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .categories-list li {
+    margin: 0;
+  }
+  
+  .categories-list a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  
+  .categories-list a:hover {
+    color: #007bff;
+  }
+  
+  /* Blog List */
+  .blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .blog-item {
+    display: flex;
+    gap: 20px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .blog-image {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .blog-content {
+    flex: 1;
+  }
+  
+  .blog-title a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 1.5em;
+    transition: color 0.3s;
+  }
+  
+  .blog-title a:hover {
+    color: #0056b3;
+  }
+  
+  .blog-excerpt {
+    margin: 10px 0;
+    color: #555;
+  }
+  
+  .read-more {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  
+  .read-more:hover {
+    color: #0056b3;
+  }
+  
+  /* Pagination */
+  .pagination {
+    text-align: center;
+    margin-top: 40px;
+  }
+  
+  .pagination-link {
+    display: inline-block;
+    margin: 0 10px;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #007bff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .pagination-link.active {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .pagination-link:hover {
+    background-color: #0056b3;
+    color: #fff;
+  }
+  

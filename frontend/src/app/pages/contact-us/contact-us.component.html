@@ -1,5 +1,70 @@
 <div class="home-wrapper">
     <app-super-header></app-super-header>
     <app-navbar></app-navbar>
+
+    <section class="contact-us">
+        <!-- Hero Section -->
+        <div class="contact-hero">
+          <h1 class="contact-title">Contact Us</h1>
+          <p class="contact-subtitle">
+            We’re here to help! Reach out to us for bookings, inquiries, or any assistance with your airport transfer needs.
+          </p>
+        </div>
+      
+        <!-- Contact Information -->
+        <div class="contact-info">
+          <div class="contact-card">
+            <i class="pi pi-map-marker"></i>
+            <h3>Our Address</h3>
+            <p>123 Airport Blvd, Antalya, Turkey</p>
+          </div>
+          <div class="contact-card">
+            <i class="pi pi-phone"></i>
+            <h3>Call Us</h3>
+            <p>+90 123 456 7890</p>
+          </div>
+          <div class="contact-card">
+            <i class="pi pi-envelope"></i>
+            <h3>Email Us</h3>
+            <p>info&#64;airporttransfer.com</p>
+          </div>
+        </div>
+      
+        <!-- Contact Form -->
+        <div class="contact-form-wrapper">
+          <h2 class="form-title">Get in Touch</h2>
+          <form class="contact-form">
+            <div class="form-group">
+              <label for="name">Your Name</label>
+              <input type="text" id="name" name="name" placeholder="Enter your name" required />
+            </div>
+            <div class="form-group">
+              <label for="email">Your Email</label>
+              <input type="email" id="email" name="email" placeholder="Enter your email" required />
+            </div>
+            <div class="form-group">
+              <label for="message">Your Message</label>
+              <textarea id="message" name="message" rows="5" placeholder="Write your message" required></textarea>
+            </div>
+            <button type="submit" class="btn-submit">Send Message</button>
+          </form>
+        </div>
+      
+        <!-- Map Section -->
+        <div class="map-section">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3233.854546116825!2d30.715781615498443!3d36.89689087993374!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14c39bbd77bfa2fb%3A0x8ff21fcedb1efb65!2sAntalya%20Airport!5e0!3m2!1sen!2str!4v1701151025172!5m2!1sen!2str"
+            width="100%"
+            height="400"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </section>
+
+      
+
     <app-footer></app-footer>
 </div>

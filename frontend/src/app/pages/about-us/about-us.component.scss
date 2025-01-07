@@ -4,3 +4,74 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+.about-us {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    padding: 20px;
+  }
+  
+  .about-hero {
+    text-align: center;
+    background: linear-gradient(to bottom, #007bff, #0056b3);
+    color: #fff;
+    padding: 50px 20px;
+  }
+  
+  .about-title {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+  }
+  
+  .about-subtitle {
+    font-size: 1.2em;
+    margin-bottom: 0;
+  }
+  
+  .about-section {
+    margin: 40px 0;
+  }
+  
+  .section-title {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+  
+  .usp-list,
+  .fleet-list,
+  .area-list {
+    list-style: disc;
+    margin: 10px 0 10px 20px;
+  }
+  
+  .about-cta {
+    text-align: center;
+    background: #f9f9f9;
+    padding: 40px 20px;
+    margin-top: 40px;
+    border-radius: 10px;
+  }
+  
+  .about-cta h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  
+  .about-cta .btn-book-now {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .about-cta .btn-book-now:hover {
+    background-color: #0056b3;
+  }
+  
