@@ -1,0 +1,16 @@
+<p-carousel
+  [value]="testimonials"
+  [numVisible]="1"
+  [numScroll]="1"
+  [circular]="true"
+  [autoplayInterval]="5000"
+  [responsiveOptions]="responsiveOptions"
+  styleClass="testimonial-carousel"
+>
+  <ng-template pTemplate="item" let-testimonial>
+    <div class="testimonial-card">
+      <p class="testimonial-text">{{ testimonial.text }}</p>
+      <h4 class="testimonial-author">— {{ testimonial.author }}</h4>
+    </div>
+  </ng-template>
+</p-carousel>

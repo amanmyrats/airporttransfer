@@ -8,16 +8,21 @@ import { SuperHeaderComponent } from '../../components/super-header/super-header
 import { BannerComponent } from '../../components/banner/banner.component';
 import { PriceListComponent } from '../../components/price-list/price-list.component';
 import { BlogListComponent } from '../../components/blog-list/blog-list.component';
+import { CtaComponent } from "../../components/cta/cta.component";
+import { TestimonialListComponent } from '../../components/testimonial-list/testimonial-list.component';
+import { FooterComponent } from '../../components/footer/footer.component';
 
 @Component({
   selector: 'app-home',
-  imports: [FormsModule, SelectModule, ButtonModule, 
-    CommonModule, 
-    SuperHeaderComponent, 
-    NavbarComponent, 
-    BannerComponent, 
-    PriceListComponent, 
-    BlogListComponent, 
+  imports: [FormsModule, SelectModule, ButtonModule,
+    CommonModule,
+    SuperHeaderComponent,
+    NavbarComponent,
+    BannerComponent,
+    PriceListComponent,
+    BlogListComponent, CtaComponent, 
+    TestimonialListComponent, 
+    FooterComponent, 
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'

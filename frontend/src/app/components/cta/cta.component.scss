@@ -1,0 +1,81 @@
+/* CTA Section */
+.cta-section {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .cta-title {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+  }
+  
+  .cta-description {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+  }
+  
+  .cta-button {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 1.1em;
+    color: #007bff;
+    background-color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .cta-button:hover {
+    background-color: #0056b3;
+    color: #fff;
+  }
+  
+  /* USP Section */
+  .usp-section {
+    padding: 50px 20px;
+    background-color: #f9f9f9;
+    text-align: center;
+  }
+  
+  .usp-header {
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  
+  .usp-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .usp-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 250px;
+  }
+  
+  .usp-icon {
+    height: 100px;
+    margin-bottom: 15px;
+  }
+  
+  .usp-title {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #007bff;
+  }
+  
+  .usp-description {
+    font-size: 0.95em;
+    color: #555;
+  }
+  
