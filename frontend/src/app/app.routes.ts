@@ -6,6 +6,8 @@ import { ServicesComponent } from './pages/services/services.component';
 import { BlogComponent } from './pages/blog/blog.component';
 import { PricesComponent } from './pages/prices/prices.component';
 import { AppComponent } from './app.component';
+import { GalleryComponent } from './pages/gallery/gallery.component';
+import { ReservationComponent } from './pages/reservation/reservation.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent }, // Set HomeComponent for root
@@ -13,19 +15,25 @@ export const routes: Routes = [
 
     { path: ':lang/home', component: HomeComponent },
     {
-        path: ':lang/aboutus',component: AboutUsComponent,
+        path: ':lang/prices',component: PricesComponent,
     },
     {
-        path: ':lang/contactus',component: ContactUsComponent,
+        path: ':lang/reservation',component: ReservationComponent,
+    },
+    {
+        path: ':lang/aboutus',component: AboutUsComponent,
     },
     {
         path: ':lang/services',component: ServicesComponent,
     },
     {
-        path: ':lang/blog', component: BlogComponent,
+        path: ':lang/gallery',component: GalleryComponent,
     },
     {
-        path: ':lang/prices',component: PricesComponent,
+        path: ':lang/contact',component: ContactUsComponent,
+    },
+    {
+        path: ':lang/blog', component: BlogComponent,
     },
     { path: '**', redirectTo: 'en/home' }, // Redirect unknown paths
 ];
