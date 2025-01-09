@@ -1,0 +1,103 @@
+.reservation-form {
+  width: 100%;
+}
+
+.p-panel {
+  margin-bottom: 20px;
+  width: fit-content;
+}
+
+.horizontal-row {
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 100%;
+
+  &-child, &-child-full {
+    margin-left: 10px;
+    width: 100%;
+  }
+}
+
+
+.currency-row {
+  display: flex;
+  margin-left: 10px;
+  width: 100%;
+
+  .money-amount {
+    width: 100%;
+    min-width: 250px;
+  }
+
+  .money-currency {
+    width: 110px;
+  }
+}
+
+.p-floatlabel {
+  margin-top: 10px;
+}
+
+.submit-button-wrapper {
+  display: flex;
+  justify-content: center;
+
+  .submit-button {
+    width: 200px;
+    margin-top: 10px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .p-select,
+  .p-inputtext {
+    width: 100%;
+    max-width: none;
+  }
+
+  .horizontal-row {
+    margin-top: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &-child {
+      margin: 5px 0;
+    }
+
+    &-child-short {
+      width: 100%;
+    }
+
+
+    .currency-row {
+    
+      .money-amount {
+        min-width: none;
+      }
+    
+      .money-currency {
+      }
+    }
+  }
+
+
+
+    .submit-button-wrapper {
+      display: flex;
+      justify-content: center;
+
+      .submit-button {
+        width: 200px;
+        margin-top: 10px;
+        text-align: center;
+      }
+    }
+
+}

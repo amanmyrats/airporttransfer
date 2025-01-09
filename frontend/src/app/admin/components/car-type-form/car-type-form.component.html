@@ -1,0 +1,20 @@
+<p-panel>
+    <form [formGroup]="carTypeForm" class="generic-form" (ngSubmit)="submitForm()">
+      <div class="p-grid p-fluid">
+          <input id="id" type="text" formControlName="id" hidden>
+          <div class="p-col-12">
+            <p-floatlabel>
+              <input id="name" type="text" formControlName="name" pInputText>
+              <label for="name">Name*</label>
+            </p-floatlabel>
+        </div>
+        <div class="p-col-6">
+          <button type="submit" pButton label="Save Changes" class="p-button-success"></button>
+        </div>
+        <div class="p-col-6" style="font-size: small;">
+          <span class="required-fields">Yıldızlı alanlar zorunludur.</span>
+        </div>
+      </div>
+    </form>
+    <p-messages></p-messages>
+  </p-panel>

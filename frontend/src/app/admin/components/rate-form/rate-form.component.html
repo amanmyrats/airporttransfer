@@ -1,0 +1,49 @@
+<p-panel>
+    <form [formGroup]="rateForm" class="generic-form" (ngSubmit)="submitForm()">
+        <div class="p-grid p-fluid">
+            <input id="id" type="text" formControlName="id" hidden>
+                <div class="p-col-12 p-float-label">
+                    <p-floatlabel variant="on">
+                        <p-select [fluid]="true" [options]="currencies" formControlName="currency" optionLabel="code"
+                            optionValue="id" appendTo="body" id="currency">
+                            <ng-template let-currency pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <div>{{ currency.code }}</div>
+                                </div>
+                            </ng-template>
+                        </p-select>
+                        <label for="currency">Para Birimi*</label>
+                    </p-floatlabel>
+                </div>
+
+            <div class="p-col-12 p-float-label" >
+                <p-floatlabel variant="on">
+                    <p-datepicker [fluid]="true" formControlName="rate_date" [showIcon]="true" inputId="icondisplay"
+                        dateFormat="yy-mm-dd" dataType="string" appendTo="body" />
+                    <label for="rateDate">Kur Tarihi*</label>
+                </p-floatlabel>
+            </div>
+            <div class="p-col-12 p-float-label">
+                <p-floatlabel variant="on">
+                    <p-inputnumber [fluid]="true" formControlName="buying_rate" inputId="minmaxfraction" mode="decimal"
+                        [minFractionDigits]="4" [maxFractionDigits]="4" />
+                    <label for="number-input">Alış Kuru</label>
+                </p-floatlabel>
+            </div>
+            <div class="p-col-12 p-float-label">
+                <p-floatlabel variant="on">
+                    <p-inputnumber [fluid]="true" formControlName="selling_rate" inputId="minmaxfraction" mode="decimal"
+                        [minFractionDigits]="4" [maxFractionDigits]="4" />
+                    <label for="number-input">Satış Kuru</label>
+                </p-floatlabel>
+            </div>
+            <div class="p-col-6 p-float-label">
+                <button type="submit" pButton label="Save Changes" class="p-button-success"></button>
+            </div>
+            <div class="p-col-6" style="font-size: small;">
+              <span class="required-fields">Yıldızlı alanlar zorunludur.</span>
+            </div>
+        </div>
+    </form>
+    <p-messages></p-messages>
+</p-panel>

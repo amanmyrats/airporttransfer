@@ -1,0 +1,291 @@
+<p-panel>
+    <form [formGroup]="reservationForm" class="reservation-form" (ngSubmit)="onSubmit()">
+        <div class="p-grid p-fluid">
+
+
+            <div class="horizontal-row">
+                <div class="reservation-number horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <input  [fluid]="true"  pSize="large"
+                            pInputText
+                            id="number" 
+                            formControlName="number" 
+                            />
+                        <label for="number">Rezervasyon Numarası</label>
+                    </p-floatlabel>
+                </div>
+
+                <div class="date-select horizontal-row-child">
+                    <p-floatlabel variant="on" >
+                        <p-datepicker  [fluid]="true" size="large" formControlName="reservation_date" [showIcon]="true" inputId="icondisplay"
+                            dateFormat="yy-mm-dd" dataType="string" />
+                        <label for="reservationDate">Rezervasyon Tarihi</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+            
+            <div class="horizontal-row">
+                <div class="horizontal-row-child-full currency-row">
+                    <div class="money-amount">
+
+                        <p-floatlabel variant="on">
+                            <p-inputnumber [fluid]="true" size="large"
+                                formControlName="amount" 
+                                inputId="minmaxfraction" 
+                                mode="decimal"
+                                [minFractionDigits]="0" [maxFractionDigits]="2" />
+                            <label for="number-input">Tutar</label>
+                        </p-floatlabel>
+                    </div>
+                    <div class="money-currency">
+                        <p-floatlabel variant="on">
+                            <p-select [fluid]="true" size="large" class="currency-select" [options]="currencies" formControlName="currency"
+                                optionLabel="code" optionValue="id" appendTo="body" id="currency">
+                                <ng-template let-currency pTemplate="item">
+                                    <div class="flex align-items-center gap-2">
+                                        <div>{{ currency.code }}</div>
+                                    </div>
+                                </ng-template>
+                            </p-select>
+                            <label for="currency">Birim</label>
+                        </p-floatlabel>
+                    </div>
+
+                </div>
+            </div>
+
+            
+
+            <div class="horizontal-row">
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <p-datepicker [fluid]="true"  size="large" formControlName="transfer_date" [showIcon]="true" inputId="icondisplay"
+                            dateFormat="yy-mm-dd" dataType="string" />
+                        <label for="TransferDate">Transfer Tarihi</label>
+                    </p-floatlabel>
+                </div>
+
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <p-datepicker [fluid]="true"  size="large" inputId="calendar-timeonly" formControlName="transfer_time" dataType="string"
+                            [timeOnly]="true" id="transfer_time" />
+                        <label for="transfer_time">Transfer Saati</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+
+            <div class="horizontal-row">
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <input  [fluid]="true" pSize="large"
+                            pInputText 
+                            id="flightNumber" 
+                            formControlName="flight_number" />
+                        <label for="flightNumber">Uçuş Numarası</label>
+                    </p-floatlabel>
+                </div>
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <p-datepicker [fluid]="true"  size="large"
+                            formControlName="flight_date" [showIcon]="true" 
+                            inputId="icondisplay"
+                            dateFormat="yy-mm-dd" dataType="string" 
+                            id="flight_date" />
+                        <label for="flight_date">Uçuş Tarihi</label>
+                    </p-floatlabel>
+                </div>
+    
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <p-datepicker [fluid]="true"  size="large"
+                            inputId="calendar-timeonly" 
+                            formControlName="flight_time" dataType="string"
+                            [timeOnly]="true" id="flight_time" />
+                        <label for="flight_time">Uçuş Saati</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+            
+            <div class="horizontal-row">
+
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <input  [fluid]="true" pSize="large" pInputText 
+                            id="passengerName" 
+                            formControlName="passenger_name" />
+                        <label for="passengerName">Müşteri İsmi</label>
+                    </p-floatlabel>
+                </div>
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                            <p-inputmask 
+                                mask="+999999999?99999" 
+                                formControlName="passenger_phone" 
+                                size="large"
+                                />
+
+                        <label for="passengerPhone">Telefonu (+)</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+            <div class="horizontal-row">
+
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <p-inputnumber  size="large"
+                            formControlName="passenger_count" 
+                            [showButtons]="true" 
+                            buttonLayout="horizontal"
+                            spinnerMode="horizontal" 
+                            inputId="horizontal" 
+                            decrementButtonClass="p-button-secondary"
+                            incrementButtonClass="p-button-secondary" 
+                            incrementButtonIcon="pi pi-plus"
+                            decrementButtonIcon="pi pi-minus" 
+                            min="1" max="20" />
+                        <label for="passenger_count">Yetişkin sayısı</label>
+                    </p-floatlabel>
+                </div>
+
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <p-inputnumber  size="large"
+                            formControlName="passenger_count_child" 
+                            [showButtons]="true"
+                            buttonLayout="horizontal" 
+                            spinnerMode="horizontal" 
+                            inputId="horizontal"
+                            decrementButtonClass="p-button-secondary" 
+                            incrementButtonClass="p-button-secondary"
+                            incrementButtonIcon="pi pi-plus" 
+                            decrementButtonIcon="pi pi-minus" 
+                            min="0" max="20" />
+                        <label for="passenger_count_child">Çocuk sayısı</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+
+            <div class="horizontal-row">
+
+                <div class="horizontal-row-child-short">
+                    <p-floatlabel variant="on">
+                        <input pInputText  pSize="large"
+                            id="pickUpShort" 
+                            formControlName="pickup_short" />
+                        <label for="pickUpShort">Alınacak Kısa</label>
+                    </p-floatlabel>
+                </div>
+
+                <div class="horizontal-row-child-full">
+                    <p-floatlabel variant="on">
+                        <input [fluid]="true" pSize="large" pInputText 
+                            id="pickUpFull" 
+                            formControlName="pickup_full" />
+                        <label for="pickUpFull">Alınacak Yer Full</label>
+                    </p-floatlabel>
+                </div>
+
+            </div>
+
+            <div class="horizontal-row">
+                <div class="horizontal-row-child-short">
+                    <p-floatlabel variant="on">
+                        <input pInputText  pSize="large"
+                            id="destinationShort" 
+                            formControlName="dest_short" />
+                        <label for="destinationShort">Varılacak Kısa</label>
+                    </p-floatlabel>
+                </div>
+
+                <div class="horizontal-row-child-full">
+                    <p-floatlabel variant="on">
+                        <input [fluid]="true" pSize="large" pInputText 
+                            id="destinationFull" 
+                            formControlName="dest_full" />
+                        <label for="destinationFull">Varılacak Yer Full</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+
+            <div class="horizontal-row">
+
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <p-select [fluid]="true" size="large" [options]="carTypes" 
+                        formControlName="car_type" optionLabel="name" optionValue="id"
+                        [filter]="true" filterBy="name" [showClear]="true" 
+                        placeholder="Araba Tipi Seçiniz"
+                        appendTo="body">
+                        <ng-template let-carType pTemplate="item">
+                            <div class="flex align-items-center gap-2">
+                                <div>{{ carType.name }}</div>
+                            </div>
+                        </ng-template>
+                    </p-select><label for="carType">Arapa Tipi</label>
+                </p-floatlabel>
+                </div>
+            </div>
+
+            <div class="horizontal-row">
+                <div class="horizontal-row-child-short">
+                    <p-floatlabel variant="on">
+                        <p-selectButton 
+                            [options]="needChildSeatOptions" 
+                            formControlName="need_child_seat"
+                            optionLabel="label" 
+                            optionValue="value" 
+                            (onChange)="needChildSeatToggle($event)" >
+                            <ng-template #item let-item>
+                                <span 
+                                    style="max-width: 100px;min-width: 100px;font-weight:bold; min-height: 60px; display: flex;justify-content: center; align-items: center;">
+                                    {{ item.label }}
+                                </span>
+                            </ng-template>
+                            </p-selectButton>
+                    </p-floatlabel>
+                </div>
+
+                <div *ngIf="showChildSeatCount" 
+                    class="horizontal-row-child-full">
+                        <p-floatlabel variant="on">
+                            <p-inputnumber  size="large"
+                                formControlName="child_seat_count" 
+                                [showButtons]="true" 
+                                buttonLayout="horizontal"
+                                spinnerMode="horizontal" 
+                                inputId="horizontal" 
+                                decrementButtonClass="p-button-secondary"
+                                incrementButtonClass="p-button-secondary" 
+                                incrementButtonIcon="pi pi-plus"
+                                decrementButtonIcon="pi pi-minus" 
+                                min="0" 
+                                max="10" />
+                            <label for="passenger_count">
+                                Çocuk Koltuğu Sayısı
+                            </label>
+                        </p-floatlabel>
+                </div>
+            </div>
+
+            <div class="horizontal-row">
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <textarea [fluid]="true"
+                            rows="5" cols="54" 
+                            pTextarea 
+                            formControlName="note" id="note">
+                        </textarea>
+                        <label for="note">Not</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+
+            <div class="submit-button-wrapper">
+                <div class="submit-button">
+                    <button pButton type="submit" class="p-button-success">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p-messages></p-messages>
+</p-panel>

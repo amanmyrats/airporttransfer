@@ -1,0 +1,56 @@
+<app-filter-search 
+    [first]="first"
+    [rows]="rows"
+    (searchEmitter)="search($event)"
+    >
+</app-filter-search>
+
+<app-shared-toolbar 
+    [wantCreate]="true"
+    (createEmitter)="createObj()" 
+    (searchEmitter)="search()">
+</app-shared-toolbar>
+<p-table [value]="popularRoutes" styleClass="p-datatable-striped p-datatable-gridlines"
+    [rowHover]="true" [loading]="loading" [resizableColumns]="true" columnResizeMode="expand"
+    [tableStyle]="{'min-width': '70rem'}">
+
+    <ng-template pTemplate="caption">
+        <div style="display: flex; justify-content: center">
+            <div style="font-size: xx-large;">Meşhur Güzergahlar</div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Nereden</th>
+            <th>Nereye</th>
+            <th>Fiyatı (Euro)</th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-popularRoute>
+        <tr>
+            <td>{{popularRoute.main_location_obj?.name}}</td>
+            <td>{{popularRoute.destination }}</td>
+            <td>{{popularRoute.euro_price }}</td>
+            <td class="action-column">
+                <app-action-buttons 
+                    [obj]="popularRoute" 
+                    [wantEdit]="true"
+                    [wantDelete]="true"
+                    (updateEmitter)="updateObj($event)" 
+                    (deleteEmitter)="deleteObj($event)">
+                </app-action-buttons>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+    
+<app-shared-paginator 
+    [first]="first" 
+    [rows]="rows" 
+    [totalRecords]="totalRecords" 
+    (onPageChangeEmitter)="onPageChange($event)">
+</app-shared-paginator>
+
+<p-toast position="bottom-right" [life]="10000"/>
+<p-confirmDialog />

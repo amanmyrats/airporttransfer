@@ -8,10 +8,11 @@ import { PricesComponent } from './pages/prices/prices.component';
 import { AppComponent } from './app.component';
 import { GalleryComponent } from './pages/gallery/gallery.component';
 import { ReservationComponent } from './pages/reservation/reservation.component';
+import { AuthGuard } from './guards/auth.guard';
+import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent }, // Set HomeComponent for root
-    { path: ':lang', component: HomeComponent }, // Set HomeComponent for root
 
     { path: ':lang/home', component: HomeComponent },
     {
@@ -35,5 +36,14 @@ export const routes: Routes = [
     {
         path: ':lang/blog', component: BlogComponent,
     },
+    {
+        path: 'admin',
+        canActivate: [AuthGuard],
+        canActivateChild: [AuthGuard],
+        component: AdminHomeComponent, 
+        loadChildren: () => import('./admin/admin.routes').then(x => x.adminRoutes)
+    },
+
+
     { path: '**', redirectTo: 'en/home' }, // Redirect unknown paths
 ];

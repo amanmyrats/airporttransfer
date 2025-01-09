@@ -1,0 +1,32 @@
+<!-- <div class="profile-form-wrapper"> -->
+
+<p-panel>
+    <form [formGroup]="profileForm" class="user-form" (ngSubmit)="submitForm()">
+      <div class="p-grid p-fluid">
+        <div class="p-col-12">
+          <p-floatlabel variant="on">
+            <input id="firstName" type="text" formControlName="first_name" pInputText>
+            <label for="firstName">First Name</label>
+          </p-floatlabel>
+        </div>
+        <div class="p-col-12">
+          <p-floatlabel variant="on">
+            <input id="lastName" type="text" formControlName="last_name" pInputText>
+            <label for="lastName">Last Name</label>
+          </p-floatlabel>
+        </div>
+        <!-- show form validation errors here -->
+        <div class="p-col-12" style="margin-top: 10px;">
+          <span *ngIf="profileForm.get('first_name')?.errors?.['required'] && profileForm.get('first_name')?.touched" class="p-error">
+            First Name is required.
+          </span>
+        </div>
+        <div class="p-col-6">
+          <button type="submit" pButton label="Save Changes" class="p-button-success"></button>
+        </div>
+      </div>
+    </form>
+    <!-- <p-messages></p-messages> -->
+  </p-panel>
+<!-- </div> -->
+  

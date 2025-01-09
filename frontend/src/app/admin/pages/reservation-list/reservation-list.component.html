@@ -1,0 +1,189 @@
+<app-filter-search 
+    [statuses]="statuses" 
+    [wantDateFilter]="true"
+    [wantStatusFilter]="true"
+    [first]="first"
+    [rows]="rows"
+    (searchEmitter)="search($event)"
+    (getStatusesEmitter)="getStatuses()"
+    >
+</app-filter-search>
+<app-shared-toolbar 
+    [wantExport]="true"
+    [isExporting]="isExporting"
+    (exportEmitter)="export()"
+    (searchEmitter)="search()">
+</app-shared-toolbar>
+
+<p-table 
+    [columns]="selectedColumns" 
+    [value]="reservations" 
+    styleClass="p-datatable-gridlines"
+    [rowHover]="true" 
+    [loading]="loading" 
+    [resizableColumns]="true" 
+    columnResizeMode="expand"
+    [reorderableColumns]="true" 
+    (onColResize)="onColResize($event)" 
+    (onColReorder)="onColReorder($event)"
+    [tableStyle]="{'min-width': '70rem'}"
+    >
+    <ng-template pTemplate="caption">
+        <div style="display: flex; justify-content: space-between;">
+            <div style="font-size: xx-large;">REZERVASYONLAR</div>
+            <p-multiSelect 
+                [options]="cols" 
+                [(ngModel)]="selectedColumns" 
+                optionLabel="header" 
+                (onChange)="onColumnSelect($event)"
+                selectedItemsLabel="{0} kolon seçildi" placeholder="Kolon seçiniz" />
+        </div>
+    </ng-template>
+
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" 
+                    pResizableColumn 
+                    pReorderableColumn 
+                    [style.width.px]="col.width" 
+                    style="white-space: normal; word-break: normal; overflow-wrap: break-word;"
+                    >
+                    {{col.header}}
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-reservation let-columns="columns">
+            <tr *ngIf="loading" >
+                <td><p-skeleton /></td>
+                <td><p-skeleton /></td>
+                <td><p-skeleton /></td>
+                <td><p-skeleton /></td>
+            </tr>
+            <tr 
+            class="{{reservation.status}}"
+            >
+            <td *ngFor="let col of columns" 
+                    [style.minWidth.px]="col.min_width"
+                    [style.maxWidth.px]="col.width"
+                    [style.width.px]="col.width"
+             >
+                <div *ngIf="col.field === 'pickup_short'"
+                [style.width.px]="col.width * 0.80" 
+                style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
+                    {{reservation.pickup_short}} {{reservation.pickup_full}}
+                </div>
+
+                <div *ngIf="col.field === 'amount'"
+                [style.width.px]="col.width * 0.80" 
+                style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
+                    {{reservation.amount | number:'1.2-2' }} {{reservation.currency_obj?.sign}}
+                </div>
+                
+                <div *ngIf="col.field === 'dest_short'"
+                [style.width.px]="col.width * 0.80" 
+                style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
+                    {{reservation.dest_short}} - {{reservation.dest_full}}
+                </div>
+                <div *ngIf="col.field === 'passenger_count'"
+                [style.width.px]="col.width * 0.80" 
+                style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
+                    {{reservation.passenger_count}}
+                    <div *ngIf="reservation.passenger_count_child">
+                        + {{reservation.passenger_count_child}}
+                    </div> 
+                </div>
+                <div *ngIf="col.field === 'car_type_obj'"
+                [style.width.px]="col.width * 0.80" 
+                style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
+                    {{reservation.car_type_obj?.name}}
+                </div>
+                
+                
+                <div *ngIf="col.field === 'flight_number'"
+                    [style.width.px]="col.width * 0.80" 
+                    style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
+                    {{reservation.flight_number}}
+                    <span *ngIf="reservation.flight_date">
+                        ({{reservation.flight_date | date:'yyyy-MM-dd'}})
+                    </span>
+                    <span *ngIf="reservation.flight_time">
+                        {{reservation.flight_time}}
+                    </span>
+                </div>
+                
+                @if (col.field === 'status') {
+                    <div [style.width.px]="col.width * 0.80" 
+                        style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
+                        <span *ngIf="reservation.status === 'confirmed'">Onaylandı</span>
+                        <span *ngIf="reservation.status === 'inoperation'">Operasyonda</span>
+                        <span *ngIf="reservation.status === 'cancelled'">İptal Edildi</span>
+                        <span *ngIf="reservation.status === 'completed'">Tamamlandı</span>
+                        <span *ngIf="reservation.status === 'noshow'">No Show</span>
+                    </div>
+            
+                    <p-button 
+                        icon="pi pi-wave-pulse" 
+                        [rounded]="true" 
+                        [text]="true" 
+                        [raised]="true" 
+                        label="Degiştir" 
+                        (click)="openStatusForm(reservation)"
+                        />
+                    
+                }
+
+                <div *ngIf="col.field === 'reservation_date'
+                || col.field === 'transfer_date'
+                || col.field === 'transfer_time'
+                || col.field === 'passenger_name'
+                || col.field === 'passenger_phone'
+                || col.field === 'child_seat_count'
+                || col.field === 'note'
+                || col.field === 'number'
+                "
+                [style.width.px]="col.width * 0.80" 
+                style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
+                    {{ reservation[col.field] }}
+                </div>
+                
+            </td>
+
+                <td class="action-column">
+                    <app-action-buttons 
+                        [obj]="reservation" 
+                        [editRole]="'company_rezervasyoncu'"
+                        [deleteRole]="'company_rezervasyoncu'"
+                        [wantEdit]="reservation.status == 'confirmed'"
+                        [wantDelete]="reservation.status == 'confirmed'" 
+                        [wantDownloadPdf]="true" 
+                        [wantDetail]="true"
+                        (detailEmitter)="detailObj(reservation)"
+                        (updateEmitter)="updateObj($event)" 
+                        (deleteEmitter)="deleteObj($event)" 
+                        (downloadPdfEmitter)="downloadPdf($event)"
+                        >
+                    </app-action-buttons>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    
+<app-shared-paginator 
+    [first]="first" 
+    [rows]="rows" 
+    [totalRecords]="totalRecords" 
+    (onPageChangeEmitter)="onPageChange($event)">
+</app-shared-paginator>
+
+<!-- Hidden PDF Component -->
+ @if (isGeneratingPdf) {
+     <app-reservation-pdf #pdfContent
+     [reservation]="reservationForPdf!"
+     >
+    </app-reservation-pdf>
+}
+
+
+<p-toast position="bottom-right" [life]="20000"/>
+<p-confirmDialog />

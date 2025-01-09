@@ -1,0 +1,47 @@
+.reservation-confirmation {
+    font-family: Arial, sans-serif;
+    max-width: 600px; /* Width already fits A4 */
+    height: 842px; /* Height of A4 page at 96 DPI (11.69 inches) */
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Prevent content overflow */
+  }
+  
+  .reservation-confirmation h1 {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .reservation-confirmation hr {
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+    margin: 20px 0;
+  }
+  
+  .reservation-confirmation h2 {
+    font-size: 18px;
+    color: #555;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+  }
+  
+  .reservation-confirmation p {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+    margin: 5px 0;
+  }
+  
+  .reservation-confirmation p strong {
+    color: #333;
+  }
+  

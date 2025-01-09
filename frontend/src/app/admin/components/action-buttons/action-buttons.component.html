@@ -1,0 +1,25 @@
+
+<p-button *ngIf="wantEdit && hasPermission(editRole)" 
+    icon="pi pi-pencil" [rounded]="true" 
+    (click)="onUpdate()" 
+    />
+
+<p-button *ngIf="wantDelete && hasPermission(deleteRole)" 
+    icon="pi pi-times" severity="danger" 
+    (click)="onDelete()" 
+    />
+
+<p-button *ngIf="wantDetail && hasPermission(detailRole)" 
+    icon="pi pi-list" severity="info" label="Detay"
+    (click)="onDetail()" 
+    />
+
+<p-button *ngIf="wantAssignDriver && hasPermission(assignDriverRole)" 
+    icon="pi pi-car" [rounded]="true" [outlined]="true"
+    (click)="onAssignDriver()" 
+    />
+
+<p-button *ngIf="wantDownloadPdf && hasPermission(downloadPdfRole)" 
+    icon="pi pi-file-pdf" 
+    (click)="downloadPdf()"
+    />

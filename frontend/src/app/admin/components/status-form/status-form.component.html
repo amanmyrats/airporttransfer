@@ -1,0 +1,35 @@
+<p-panel>
+    <form [formGroup]="statusForm" class="generic-form" (ngSubmit)="submitForm()">
+      <div class="p-grid p-fluid">
+        <input id="id" type="text" formControlName="id" hidden>
+        
+      <div class="p-col-12">
+          <p-floatlabel variant="on">
+              <p-select 
+                  [options]="statuses"
+                  formControlName="status"
+                  optionLabel="label"
+                  optionValue="value"
+                  [filter]="true"
+                  id="status"
+                  filterBy="label" 
+                  [showClear]="true"
+                  placeholder="Durum seçiniz"
+                  appendTo="body">
+              </p-select>
+
+              <label for="status">Durum*</label>
+          </p-floatlabel>
+      </div>
+
+
+        <div class="p-col-6">
+          <button type="submit" pButton label="Kaydet " class="p-button-success"></button>
+        </div>
+        <div class="p-col-6" style="font-size: small;">
+          <span class="required-fields">Yıldızlı alanlar zorunludur.</span>
+        </div>
+      </div>
+    </form>
+    <p-messages></p-messages>
+  </p-panel>

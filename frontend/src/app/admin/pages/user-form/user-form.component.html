@@ -1,0 +1,70 @@
+<p-panel>
+    <form [formGroup]="userForm" class="generic-form" (ngSubmit)="submitForm()">
+      <div class="p-grid p-fluid">
+        <div class="p-col-12">
+            <p-floatlabel variant="on">
+              <input id="email" type="email" formControlName="email" pInputText>
+              <label for="email">E-mail*</label>
+            </p-floatlabel>
+        </div>
+
+        <div class="p-col-12">
+          <p-floatlabel variant="on">
+            <input id="first_name" type="text" formControlName="first_name" pInputText>
+            <label for="first_name">Adı*</label>
+          </p-floatlabel>
+        </div>
+
+        <div class="p-col-12">
+            <p-floatlabel variant="on">
+              <input id="last_name" type="text" formControlName="last_name" pInputText>
+              <label for="last_name">Soyadı</label>
+            </p-floatlabel>
+          </div>
+
+          <div class="p-col-12">
+            <p-floatlabel variant="on">
+              <input 
+                id="phone" 
+                type="text" 
+                formControlName="phone" 
+                pInputText
+                [ngClass]="{'p-invalid': userForm.get('phone')?.invalid && (userForm.get('phone')?.touched || userForm.get('phone')?.dirty)}"
+              >
+              <label for="phone">Telefon*</label>
+            </p-floatlabel>
+          
+            <div *ngIf="userForm.get('phone')?.invalid && (userForm.get('phone')?.touched || userForm.get('phone')?.dirty)" class="p-error">
+              <div *ngIf="userForm.get('phone')?.hasError('required')">
+                Telefon Zorunlu.
+              </div>
+              <div *ngIf="userForm.get('phone')?.hasError('pattern')">
+                Telefon formatı hatalı.<br> Örnek: +90 550 555 0000 
+                <br> Boşluk bırakmadan yazınız.
+              </div>
+            </div>
+          </div>
+          
+        <div class="p-col-12" style="margin-top: 2rem;">
+          <p-floatlabel variant="on">
+              <p-select 
+              [options]="roles"
+              formControlName="role" 
+              optionLabel="role_name" 
+              optionValue="id"
+              appendTo="body" 
+              id="role"/>
+              <label for="role">İzin Seviyesi*</label>
+            </p-floatlabel>
+          </div>
+
+          <div class="p-col-6">
+            <button type="submit" pButton label="Kaydet" class="p-button-success"></button>
+          </div>
+          <div class="p-col-6" style="font-size: small;">
+            <span class="required-fields">Yıldızlı alanlar zorunludur.</span>
+          </div>
+      </div>
+    </form>
+    <!-- <p-messages></p-messages> -->
+  </p-panel>

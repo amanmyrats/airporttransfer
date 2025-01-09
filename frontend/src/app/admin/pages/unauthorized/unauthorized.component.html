@@ -1,0 +1,12 @@
+<!-- unauthorized.component.html -->
+<div class="unauthorized-container">
+    <div class="unauthorized-content">
+      <h1>Yetkisiz Erişim</h1>
+      <p>Bu sayfayı görüntülemek için gerekli izniniz bulunmamaktadır.</p>
+      <p>Bir hata olduğunu düşünüyorsanız lütfen sistem yöneticinizle iletişime geçiniz.</p>
+      <div class="links">
+        <a routerLink="/" *ngIf="isLoggedIn" class="btn btn-primary">Anasaya Git</a>
+        <a routerLink="/login" *ngIf="!isLoggedIn" class="btn btn-secondary">Giriş Yap</a>
+      </div>
+    </div>
+  </div>

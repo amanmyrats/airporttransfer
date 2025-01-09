@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CurrencyService } from '../../services/currency.service';
 import { SUPPORTED_CURRENCIES } from '../../constants/currency.constants';
 import { CommonModule } from '@angular/common';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-currency-selection',

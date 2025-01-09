@@ -1,0 +1,35 @@
+:host ::ng-deep  .p-frozen-column {
+    font-weight: bold;
+}
+
+:host ::ng-deep .p-datatable-frozen-tbody {
+    font-weight: bold;
+}
+
+:host ::ng-deep .p-progressbar {
+    height:.5rem;
+}
+
+  .cancelled, .noshow {
+    background: #ff0000; /* Pure red background */
+    color: #32f905; /* Dark gray text */
+    font-weight: 550;
+  }
+  
+  .completed {
+    background-color: #f8f9fa; /* Light gray */
+    color: #6c757d; /* Muted gray text */
+    border: 1px solid #dee2e6; /* Soft gray border */
+    border-radius: 4px;
+    padding: 10px;
+    opacity: 0.6; /* Slightly transparent to indicate disabled state */
+  }
+  
+  .inoperation {
+    background-color: #f5ce81;
+    color: #6c5205; /* Dark yellow text */
+    animation: blink 1.8s infinite ease-in-out;
+    border-radius: 4px; /* Optional: Rounded corners */
+    padding: 10px; /* Add some spacing */
+  }
+  

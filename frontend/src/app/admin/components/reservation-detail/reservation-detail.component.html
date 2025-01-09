@@ -1,0 +1,74 @@
+
+<div id="pdf-content" class="reservation-confirmation">
+    <hr>
+    <!-- <h1>Rezervasyon Detayı</h1> -->
+    <p><strong>Numarası:</strong>{{reservation.number}}</p>
+    <p><strong>Rezervasyon Tarihi:</strong>{{reservation.reservation_date}}</p>
+    <p><strong>Rezervasyon Durumu:</strong>
+        @if (reservation.status == 'confirmed'){
+            Onaylandı
+        } @else if (reservation.status == 'inoperation'){
+            Operasyonda
+        } @else if (reservation.status == 'completed'){
+            Tamamlandı
+        } @else if (reservation.status == 'cancelled'){
+            İptal Edildi
+        } @else if (reservation.status == 'noshow'){
+            No Show
+        }
+    </p>
+    <hr>
+  
+    <h2>Kişisel Bilgiler</h2>
+    <p><strong>Müşteri İsmi</strong> {{ reservation.passenger_name }}</p>
+    <p><strong>Müşteri Telefonu</strong> {{ reservation.passenger_phone }}</p>
+    <p><strong>Müşteri Email</strong> {{ reservation.passenger_email }}</p>
+    <hr>
+    
+    <h2>Transfer Bilgileri</h2>
+    <p><strong>Araba Tipi:</strong> {{ reservation.car_type_obj?.name }}</p>
+    <p><strong>Transfer Tarihi:</strong> {{ reservation.transfer_date }}</p>
+    <p><strong>Transfer Saati:</strong> {{ reservation.transfer_time }}</p>
+    <p><strong>Alınacak Yer:</strong> {{ reservation.pickup_full }}</p>
+    <p><strong>Varılacak Yer:</strong> {{ reservation.dest_full }}</p>
+    <p><strong>Uçuş Bilgileri:</strong> 
+        {{ reservation.flight_number }}
+        (@if (reservation.flight_date){
+            {{ reservation.flight_date }}
+        } 
+        @if (reservation.flight_time){
+            {{ reservation.flight_time }}
+        })
+    </p>
+    <p><strong>Yolcu Sayısı</strong> 
+        {{ reservation.passenger_count }} Yetişkin 
+        @if (reservation.passenger_count_children){
+        / {{ reservation.passenger_count_children }} Çocuk
+        }
+    </p>
+
+    <p><strong>Çocuk Koltuğu:</strong> 
+        @if (reservation.need_child_seat){
+            {{ reservation.child_seat_count }} Adet
+        } @else {
+            Yok
+        }
+    </p>
+    <p><strong>Karşılama İsteği:</strong> 
+        @if (reservation.need_greet_sign){
+            Var
+        } @else {
+            Yok
+        }
+    </p>
+
+    <p><strong>Not:</strong> {{ reservation.note }}</p>
+    <hr>
+
+    <p><strong>Toplam Tutar:</strong> 
+        {{ reservation.amount }} {{reservation.currency_obj?.code}} 
+    </p>
+    <hr>
+    
+</div>
+        

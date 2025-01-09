@@ -1,0 +1,42 @@
+.next-prev-button {
+    margin-top: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .next-prev-button .pi {
+    font-size: 1.5em;
+    color: #007bff; /* Change this color as per your requirement */
+  }
+
+.item-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+
+  .item {
+    margin: 5px 5px;
+    max-width: 200px;
+  }
+}
+
+.custom-clear-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f6f2f2; /* Replace with your desired fill color */
+  border-radius: 0 15% 15% 0; /* Optional: Makes the background circular */
+  width: 24px; /* Adjust width and height as needed */
+  height: 35px;
+}
+
+.p-select {
+  min-width: 200px;
+}
+
+.p-floatlabel {
+  margin-top: 10px;
+}
