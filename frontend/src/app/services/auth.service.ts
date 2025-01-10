@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map, switchMap, catchError, finalize } from 'rxjs/operators';
 import { environment as env } from '../../environments/environment';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class AuthService {
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
     
   ) { 
     this.accessTokenSubject.next(this.currentAccessToken);
@@ -31,15 +33,17 @@ export class AuthService {
         map(response => {
           console.log(response);
           if (response && response.access) {
-            localStorage.setItem('accessToken', response.access);
-            localStorage.setItem('refreshToken', response.refresh);
-            localStorage.setItem('userId', response.user_id);
-            localStorage.setItem('firstName', response.first_name);
-            localStorage.setItem('roleName', response.role);
-            localStorage.setItem('isSuperuser', response.is_superuser);
-            this.accessTokenSubject.next(response.access);
-            this.refreshTokenSubject.next(response.refresh);
-            return true;
+            if (isPlatformBrowser(this.platformId)) {
+              localStorage.setItem('accessToken', response.access);
+              localStorage.setItem('refreshToken', response.refresh);
+              localStorage.setItem('userId', response.user_id);
+              localStorage.setItem('firstName', response.first_name);
+              localStorage.setItem('roleName', response.role);
+              localStorage.setItem('isSuperuser', response.is_superuser);
+              this.accessTokenSubject.next(response.access);
+              this.refreshTokenSubject.next(response.refresh);
+              return true;
+            }
           }
           return false;
         })
@@ -69,8 +73,10 @@ export class AuthService {
             // Use map operator within the projection function
             map(response => {
               if (response && response.access) {
+              if (isPlatformBrowser(this.platformId)) {
                 localStorage.setItem('accessToken', response.access);
-                this.refreshTokenSubject.next(response.refresh);
+              }  
+              this.refreshTokenSubject.next(response.refresh);
               }
               return response;
             }),
@@ -87,31 +93,42 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('firstName');
-    localStorage.removeItem('roleName');
-    localStorage.removeItem('isSuperuser');
-    this.accessTokenSubject.next('');
-    this.refreshTokenSubject.next('');
+                
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('firstName');
+      localStorage.removeItem('roleName');
+      localStorage.removeItem('isSuperuser');
+      this.accessTokenSubject.next('');
+      this.refreshTokenSubject.next('');
+    }
   }
 
   public get currentAccessToken(): string | null {
-    return localStorage.getItem('accessToken');
-    // Access the current value using getValue()
-    // return this.accessTokenSubject.getValue();
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('accessToken');
+      // Access the current value using getValue()
+      // return this.accessTokenSubject.getValue();
+    }
+    return null;
   }
 
   setAccessToken(accessToken: string): void {
-    return localStorage.setItem('accessToken', accessToken);
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.setItem('accessToken', accessToken);
+    }
   }
 
   
   public get currentRefreshToken(): string | null {
-    return localStorage.getItem('refreshToken');
-    // Access the current value using getValue()
-    // return this.refreshTokenSubject.getValue();
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('refreshToken');
+      // Access the current value using getValue()
+      // return this.refreshTokenSubject.getValue();
+    }
+    return null;
   }
 
   public get accessTokenChanges(): Observable<string> {

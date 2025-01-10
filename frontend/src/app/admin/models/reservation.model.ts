@@ -1,5 +1,3 @@
-import { CarType } from "./car-type.model";
-import { Currency } from "./currency.model";
 
 export class Reservation {
     id?: string; 
@@ -7,12 +5,10 @@ export class Reservation {
     number?: string; 
 
     amount?: string;
-    currency?: string; 
-    currency_obj?: Currency; 
+    currency_code?: string; 
     
     reservation_date?: Date;
     car_type?: string; 
-    car_type_obj?: CarType; 
     transfer_date?: Date;
     transfer_time?: string;
     transfer_date_time?: string;

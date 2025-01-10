@@ -10,13 +10,13 @@
     
     <h2>Transfer Information</h2>
     <p><strong>Message:</strong> {{ reservation.note }}</p>
-    <p><strong>Vehicle Type:</strong> {{ reservation.car_type_obj?.name }}</p>
+    <p><strong>Vehicle Type:</strong> {{ reservation.car_type }}</p>
     <p><strong>Pickup:</strong> {{ reservation.pickup_full }}</p>
     <p><strong>Destination:</strong> {{ reservation.dest_full }}</p>
     <p><strong>Number of Passengers:</strong> {{ reservation.passenger_count }} Adults / {{ reservation.passenger_count_children }} Children</p>
     <p><strong>Transfer Date:</strong> {{ reservation.transfer_date }}</p>
     <p><strong>Transfer Time:</strong> {{ reservation.transfer_time }}</p>
     <p><strong>Flight Number:</strong> {{ reservation.flight_number }}</p>
-    <p><strong>Total Amount:</strong> {{ reservation.amount }} {{reservation.currency_obj?.code}} </p>
+    <p><strong>Total Amount:</strong> {{ reservation.amount }} {{reservation.currency_code}} </p>
   </div>
   

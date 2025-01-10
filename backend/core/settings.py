@@ -56,6 +56,8 @@ INSTALLED_APPS = [
 
     'authentication',
     'accounts', 
+    'common', 
+    'transfer', 
 
 
 ]

@@ -38,11 +38,11 @@ export const routes: Routes = [
     },
     {
         path: 'admin',
-        canActivate: [AuthGuard],
-        canActivateChild: [AuthGuard],
+        // canActivate: [AuthGuard],
+        // canActivateChild: [AuthGuard],
         component: AdminHomeComponent, 
-        loadChildren: () => import('./admin/admin.routes').then(x => x.adminRoutes)
-        
+        loadChildren: () => import('./admin/admin.routes').then(x => x.adminRoutes),
+        data: { noHydration: true },
     },
 
 

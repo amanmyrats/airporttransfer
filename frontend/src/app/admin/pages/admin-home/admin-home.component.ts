@@ -35,14 +35,9 @@ export class AdminHomeComponent implements OnInit {
           routerLink: '/admin/popularroutes'
       },
       {
-          label: 'Araba Tipleri',
-          icon: 'pi pi-car', 
-          routerLink: '/admin/cartypes'
-      },
-      {
-          label: 'Ana Lokasyonlar',
-          icon: 'pi pi-map-marker', 
-          routerLink: '/admin/mainlocations'
+          label: 'Kurler',
+          icon: 'pi pi-dollar', 
+          routerLink: '/admin/rates'
       },
       {
           label: 'Kullanıcılar',

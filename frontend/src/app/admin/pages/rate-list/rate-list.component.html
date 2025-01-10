@@ -22,18 +22,14 @@
     <ng-template pTemplate="header">
         <tr>
             <th>Param Birimi</th>
-            <th>Tarih</th>
-            <th>Alış</th>
-            <th>Satış</th>
+            <th>Euro'ya karşı kuru</th>
             <th></th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rate>
         <tr>
             <td>{{rate.currency_obj?.code}}</td>
-            <td>{{rate.rate_date }}</td>
-            <td>{{rate.buying_rate }}</td>
-            <td>{{rate.selling_rate}}</td>
+            <td>{{rate.euro_rate }}</td>
             <td class="action-column">
                 <app-action-buttons 
                     [obj]="rate" 

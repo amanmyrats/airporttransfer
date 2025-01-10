@@ -26,7 +26,7 @@
     <hr>
     
     <h2>Transfer Bilgileri</h2>
-    <p><strong>Araba Tipi:</strong> {{ reservation.car_type_obj?.name }}</p>
+    <p><strong>Araba Tipi:</strong> <span appCarTypeName="reservation.car_type"></span> </p>
     <p><strong>Transfer Tarihi:</strong> {{ reservation.transfer_date }}</p>
     <p><strong>Transfer Saati:</strong> {{ reservation.transfer_time }}</p>
     <p><strong>Alınacak Yer:</strong> {{ reservation.pickup_full }}</p>
@@ -66,7 +66,7 @@
     <hr>
 
     <p><strong>Toplam Tutar:</strong> 
-        {{ reservation.amount }} {{reservation.currency_obj?.code}} 
+        {{ reservation.amount }} {{reservation.currency_code}} 
     </p>
     <hr>
     

@@ -12,7 +12,7 @@ import { Rate, } from '../../models/rate.model';
 import { RateService } from '../../services/rate.service';
 import { InputNumber } from 'primeng/inputnumber';
 import { CommonModule } from '@angular/common';
-import { Currency } from '../../models/currency.model';
+import { Currency } from '../../../models/currency.model';
 import { PaginatedResponse } from '../../../models/paginated-response.model';
 import { Select } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';

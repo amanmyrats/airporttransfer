@@ -101,16 +101,6 @@
           },
           "defaultConfiguration": "development"
         },
-        "prerender": {
-          "builder": "@angular/ssr:prerender",
-          "options": {
-            "browserTarget": "airporttransfer:build:production",
-            "serverTarget": "airporttransfer:server:production",
-            "routes": [
-              "/"
-            ]
-          }
-        }, 
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
         },

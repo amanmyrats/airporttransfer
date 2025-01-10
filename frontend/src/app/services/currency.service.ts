@@ -1,14 +1,16 @@
 import { Injectable, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SUPPORTED_CURRENCIES } from '../constants/currency.constants';
+import { Currency } from '../models/currency.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CurrencyService {
   // Use a signal for the current currency
+  private currencies: Currency[] = SUPPORTED_CURRENCIES;
   currentCurrency = signal<{ name: string; code: string; sign: string }>(
-    SUPPORTED_CURRENCIES.find(currency => currency.code === 'EUR')! // Default currency: USD
+    SUPPORTED_CURRENCIES.find(currency => currency.code === 'EUR')!
   );
 
   constructor(private route: ActivatedRoute, private router: Router) {}
@@ -46,4 +48,44 @@ export class CurrencyService {
       }
     }
   }
+
+
+  /**
+   * Get the list of all supported currencies.
+   * @returns Currency[]
+   */
+  getCurrencies(): Currency[] {
+    return this.currencies;
+  }
+
+  /**
+   * Find a currency by its code.
+   * @param code The code of the currency (e.g., 'EUR', 'USD').
+   * @returns Currency | undefined
+   */
+  getCurrencyByCode(code: string): Currency | undefined {
+    return this.currencies.find((currency) => currency.code === code);
+  }
+
+  /**
+   * Get the currency symbol by its code.
+   * @param code The currency code (e.g., 'EUR', 'USD').
+   * @returns string | undefined
+   */
+  getCurrencySign(code: string): string | undefined {
+    const currency = this.getCurrencyByCode(code);
+    return currency ? currency.sign : undefined;
+  }
+
+  /**
+   * Get the currency name by its code.
+   * @param code The currency code (e.g., 'EUR', 'USD').
+   * @returns string | undefined
+   */
+  getCurrencyName(code: string): string | undefined {
+    const currency = this.getCurrencyByCode(code);
+    return currency ? currency.name : undefined;
+  }
+
+
 }

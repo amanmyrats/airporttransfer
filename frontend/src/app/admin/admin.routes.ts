@@ -5,14 +5,19 @@ import { ChangePasswordComponent } from './pages/change-password/change-password
 import { PasswordResetComponent } from './pages/password-reset/password-reset.component';
 import { PasswordResetConfirmComponent } from './pages/password-reset-confirm/password-reset-confirm.component';
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
-import { CarTypeListComponent } from './pages/car-type-list/car-type-list.component';
-import { MainLocationListComponent } from './pages/main-location-list/main-location-list.component';
 import { PopularRouteListComponent } from './pages/popular-route-list/popular-route-list.component';
 import { RateListComponent } from './pages/rate-list/rate-list.component';
 import { ReservationListComponent } from './pages/reservation-list/reservation-list.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
+import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
 
 export const adminRoutes: Routes = [
+    // {
+    //     path: '',
+    //     // loadComponent: () =>
+    //     //     import('./pages/login/login.component').then((c) => c.LoginComponent),
+    //     component: AdminHomeComponent,
+    // },
     {
         path: 'login',
         // loadComponent: () =>
@@ -48,18 +53,6 @@ export const adminRoutes: Routes = [
         // loadComponent: () =>
         //     import('./pages/unauthorized/unauthorized.component').then((c) => c.UnauthorizedComponent),
         component: UnauthorizedComponent,
-    },
-    {
-        path: 'cartypes',
-        // loadComponent: () =>
-        //     import('./pages/car-type-list/car-type-list.component').then((c) => c.CarTypeListComponent),
-        component: CarTypeListComponent,
-    },
-    {
-        path: 'mainlocations',
-        // loadComponent: () =>
-        //     import('./pages/main-location-list/main-location-list.component').then((c) => c.MainLocationListComponent),
-        component: MainLocationListComponent,
     },
     {
         path: 'popularroutes',

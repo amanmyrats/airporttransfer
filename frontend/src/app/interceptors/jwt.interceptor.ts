@@ -26,19 +26,13 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authReq).pipe(
     catchError((err: any) => {
       if (err instanceof HttpErrorResponse) {
-        if (err.status === 403 && err.error?.error === 'subscription_expired') {
-          // Handle subscription expired error
-          console.error('Subscription expired:', err.error.message);
-          router.navigate(['company/subscriptionexpired']);
-          return throwError(() => err);
-        }
 
         // Handle HTTP errors
         if (err.status === 401) {
           // Specific handling for unauthorized errors         
           console.error('Inside jwt.interceptor: Unauthorized request:', err);
           authService.logout();
-          router.navigate(['/login']);
+          router.navigate(['admin/login']);
 
           // Check for refresh method in AuthService
           // if (authService.refreshToken && !!authToken) {

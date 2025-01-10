@@ -1,11 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SUPPORTED_LANGUAGES } from '../constants/language.contants';
+import { Language } from '../models/language.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LanguageService  {
+  private languages: Language[] = SUPPORTED_LANGUAGES;
   // Use a signal for the current language
   currentLang = signal<{}>(
     SUPPORTED_LANGUAGES.find(lang => lang.code === 'en')!
@@ -53,5 +55,33 @@ export class LanguageService  {
       }
     });
   }
-  
+
+
+  /**
+   * Get the list of all supported languages.
+   * @returns Language[]
+   */
+  getLanguages(): Language[] {
+    return this.languages;
+  }
+
+  /**
+   * Find a language by its code.
+   * @param code The code of the language (e.g., 'en', 'tr').
+   * @returns Language | undefined
+   */
+  getLanguageByCode(code: string): Language | undefined {
+    return this.languages.find((language) => language.code === code);
+  }
+
+  /**
+   * Get the name of a language by its code.
+   * @param code The language code.
+   * @returns string | undefined
+   */
+  getLanguageName(code: string): string | undefined {
+    const language = this.getLanguageByCode(code);
+    return language ? language.name : undefined;
+  }
+
 }

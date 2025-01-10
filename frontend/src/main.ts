@@ -14,7 +14,7 @@ bootstrapApplication(AppComponent, appConfig)
 
         // Detect the current language from the URL and initialize it
         console.log("calling detect language in main.ts")
-        languageService.detectLanguage();
-        currencyService.detectCurrency();
+        // languageService.detectLanguage();
+        // currencyService.detectCurrency();
     })
     .catch(err => console.error(err));

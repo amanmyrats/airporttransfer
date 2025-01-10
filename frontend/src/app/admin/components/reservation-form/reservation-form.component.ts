@@ -14,13 +14,12 @@ import { SelectButton } from 'primeng/selectbutton';
 import { DatePicker } from 'primeng/datepicker';
 import { InputMask } from 'primeng/inputmask';
 import { HttpErrorPrinterService } from '../../../services/http-error-printer.service';
-import { Currency } from '../../models/currency.model';
-import { CarType } from '../../models/car-type.model';
 import { Reservation } from '../../models/reservation.model';
 import { CurrencyService } from '../../../services/currency.service';
-import { CarTypeService } from '../../services/car-type.service';
+import { CarTypeService } from '../../../services/car-type.service';
 import { ReservationService } from '../../services/reservation.service';
-import { PaginatedResponse } from '../../../models/paginated-response.model';
+import { CarType } from '../../../models/car-type.model';
+import { Currency } from '../../../models/currency.model';
 
 @Component({
     selector: 'app-reservation-form',
@@ -154,16 +153,7 @@ export class ReservationFormComponent implements OnInit {
   }
 
   getCarTypes(queryString: string = ''): void {
-    this.carTypeService.getCarTypes(queryString).subscribe({
-      next: (pagintatedCarTypes: PaginatedResponse<CarType>) => {
-        console.log("Fetched Car Types successfully");
-        console.log(pagintatedCarTypes);
-        this.carTypes = pagintatedCarTypes.results!;
-      },
-      error: (error: any) => {
-        this.httpErrorPrinter.printHttpError(error);
-      }
-    });
+    this.carTypes = this.carTypeService.getCarTypes(queryString);
   }
 
   needChildSeatToggle(event: any){

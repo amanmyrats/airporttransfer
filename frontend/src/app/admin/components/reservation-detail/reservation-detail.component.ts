@@ -1,10 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Reservation } from '../../models/reservation.model';
+import { CarTypeNameDirective } from '../../../directives/car-type-name.directive';
 
 @Component({
   selector: 'app-reservation-detail',
-  imports: [],
+  imports: [
+    CarTypeNameDirective, 
+  ],
   templateUrl: './reservation-detail.component.html',
   styleUrl: './reservation-detail.component.scss'
 })
