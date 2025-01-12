@@ -40,7 +40,9 @@
             <td>{{user.first_name}}</td>
             <td>{{user.last_name}}</td>
             <td>{{user.phone}}</td>
-            <td>{{user.role_name}}</td>
+            <td>
+                <span appRoleName [roleKey]="user.role" [roleChoices]="roles"></span>
+            </td>
             <td class="action-column">
                 <app-action-buttons 
                     [obj]="user" 

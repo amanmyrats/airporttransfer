@@ -11,9 +11,9 @@ import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessagesModule } from 'primeng/messages';
 import { CommonModule } from '@angular/common';
-import { HttpErrorPrinterService } from '../../services/http-error-printer.service';
-import { FormErrorPrinterService } from '../../services/form-error-printer.service';
 import { FloatLabel } from 'primeng/floatlabel';
+import { HttpErrorPrinterService } from '../../../services/http-error-printer.service';
+import { FormErrorPrinterService } from '../../../services/form-error-printer.service';
 
 @Component({
     selector: 'app-user-profile-form',

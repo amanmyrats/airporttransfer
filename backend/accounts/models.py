@@ -29,6 +29,15 @@ class UserManager(BaseUserManager):
     
 
 class Account(AbstractBaseUser, PermissionsMixin):
+    ROLE_CHOICES = (
+        ('company_admin', 'Admin'),
+        ('company_yonetici', 'Yönetici'),
+        ('company_muhasebeci', 'Muhasabeci'),
+        ('company_employee', 'Çalışan'),
+        ('company_rezervasyoncu', 'Rezervasyoncu'),
+        ('company_operasyoncu', 'Operasyoncu'),
+        ('company_driver', 'Sürücü'),
+    )
     email = models.EmailField(unique=True)
     # username = models.CharField(max_length=150, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
@@ -37,6 +46,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
+    role = models.CharField(max_length=50, choices=ROLE_CHOICES, default='company_employee')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name']
@@ -45,28 +55,6 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.email} - {self.first_name}"
-    
-
-class Role(models.Model):
-    # company_admin
-    # company_employee
-    # company_driver
-    role_name = models.CharField(max_length=50)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.role_name
-    
-
-class AccountRole(models.Model):
-    account = models.OneToOneField(Account, on_delete=models.CASCADE, related_name='account_role')
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f'{self.account} - {self.role}'
     
 
 class UserColumn(models.Model):

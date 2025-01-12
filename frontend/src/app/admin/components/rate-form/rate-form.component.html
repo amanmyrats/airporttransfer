@@ -4,39 +4,27 @@
             <input id="id" type="text" formControlName="id" hidden>
                 <div class="p-col-12 p-float-label">
                     <p-floatlabel variant="on">
-                        <p-select [fluid]="true" [options]="currencies" formControlName="currency" optionLabel="code"
-                            optionValue="id" appendTo="body" id="currency">
+                        <p-select [fluid]="true" [options]="currencies" 
+                            formControlName="currency_code" optionLabel="code"
+                            optionValue="code" appendTo="body" id="currency_code">
                             <ng-template let-currency pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ currency.code }}</div>
                                 </div>
                             </ng-template>
                         </p-select>
-                        <label for="currency">Para Birimi*</label>
+                        <label for="currency_code">Para Birimi*</label>
                     </p-floatlabel>
                 </div>
 
-            <div class="p-col-12 p-float-label" >
-                <p-floatlabel variant="on">
-                    <p-datepicker [fluid]="true" formControlName="rate_date" [showIcon]="true" inputId="icondisplay"
-                        dateFormat="yy-mm-dd" dataType="string" appendTo="body" />
-                    <label for="rateDate">Kur Tarihi*</label>
-                </p-floatlabel>
-            </div>
             <div class="p-col-12 p-float-label">
                 <p-floatlabel variant="on">
-                    <p-inputnumber [fluid]="true" formControlName="buying_rate" inputId="minmaxfraction" mode="decimal"
+                    <p-inputnumber [fluid]="true" formControlName="euro_rate" inputId="minmaxfraction" mode="decimal"
                         [minFractionDigits]="4" [maxFractionDigits]="4" />
-                    <label for="number-input">Alış Kuru</label>
+                    <label for="euro_rate">Euro Kuru</label>
                 </p-floatlabel>
             </div>
-            <div class="p-col-12 p-float-label">
-                <p-floatlabel variant="on">
-                    <p-inputnumber [fluid]="true" formControlName="selling_rate" inputId="minmaxfraction" mode="decimal"
-                        [minFractionDigits]="4" [maxFractionDigits]="4" />
-                    <label for="number-input">Satış Kuru</label>
-                </p-floatlabel>
-            </div>
+            
             <div class="p-col-6 p-float-label">
                 <button type="submit" pButton label="Save Changes" class="p-button-success"></button>
             </div>

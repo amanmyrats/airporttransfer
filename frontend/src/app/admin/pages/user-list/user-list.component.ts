@@ -21,6 +21,7 @@ import { RoleService } from '../../services/role.service';
 import { environment as env } from '../../../../environments/environment';
 import { HttpErrorPrinterService } from '../../../services/http-error-printer.service';
 import { PaginatedResponse } from '../../../models/paginated-response.model';
+import { RoleNameDirective } from '../../directives/role-name.directive';
 
 @Component({
     selector: 'app-user-list',
@@ -34,7 +35,8 @@ import { PaginatedResponse } from '../../../models/paginated-response.model';
         ActionButtonsComponent,
         SharedToolbarComponent,
         ConfirmDialogModule,
-        FilterSearchComponent, SharedPaginatorComponent,
+        FilterSearchComponent, SharedPaginatorComponent, 
+        RoleNameDirective, 
     ],
     providers: [
         DialogService,
@@ -55,7 +57,7 @@ export class UserListComponent implements OnInit{
 
   loading: boolean = false;
   users: User[] = [];
-  roles: Role[] = [];
+  roles: any[] = [];
   ref: DynamicDialogRef | undefined;
 
   constructor(
@@ -92,14 +94,14 @@ export class UserListComponent implements OnInit{
   }
 
   getRoles(queryString: string = ''){
-    this.roleService.getRoles(queryString).subscribe({
-      next: (paginatedRoles: PaginatedResponse<Role>) => {
-        this.roles = paginatedRoles.results!;
-        console.log("Successfully fetched roles");
-        console.log(paginatedRoles);
+    this.userService.getRoleChoices(queryString).subscribe({
+      next: (roles: any[]) => {
+        this.roles = roles;
+        console.log("Successfully fetched role choices");
+        console.log(roles);
       },
       error: (error: any) => {
-        console.log("Error happened when fetching roles.");
+        console.log("Error happened when fetching role choices.");
         console.log(error);
       }
     })

@@ -1,1 +1,66 @@
-<p>popular-route-form works!</p>
+<p-panel>
+    <form [formGroup]="popularRouteForm" class="generic-form" (ngSubmit)="submitForm()">
+        <div class="p-grid p-fluid">
+            <input id="id" type="text" formControlName="id" hidden>
+                <div class="p-col-12 p-float-label">
+                    <p-floatlabel variant="on">
+                        <p-select [fluid]="true" [options]="mainLocations" 
+                            formControlName="main_location" optionLabel="name"
+                            optionValue="code" appendTo="body" id="main_location">
+                            <ng-template let-mainLocation pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <div>{{ mainLocation.code }} 
+                                        - 
+                                        {{ mainLocation.name }}
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-select>
+                        <label for="main_location">Ana Lokasyon*</label>
+                    </p-floatlabel>
+                </div>
+
+
+            <div class="p-col-12 p-float-label">
+                <p-floatlabel variant="on">
+                    <input  [fluid]="true" 
+                        pInputText 
+                        id="destination" 
+                        formControlName="destination" />
+                    <label for="destination">Nereye</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="p-col-12 p-float-label">
+                <p-floatlabel variant="on">
+                    <p-select [fluid]="true" [options]="carTypes" 
+                        formControlName="car_type" optionLabel="name"
+                        optionValue="code" appendTo="body" id="car_type">
+                        <ng-template let-carType pTemplate="item">
+                            <div class="flex align-items-center gap-2">
+                                <div>{{ carType.code }}</div>
+                            </div>
+                        </ng-template>
+                    </p-select>
+                    <label for="car_type">Araba Tipi*</label>
+                </p-floatlabel>
+            </div>
+
+            <div class="p-col-12 p-float-label">
+                <p-floatlabel variant="on">
+                    <p-inputnumber [fluid]="true" formControlName="euro_price" inputId="minmaxfraction" mode="decimal"
+                        [minFractionDigits]="4" [maxFractionDigits]="4" />
+                    <label for="euro_price">Euro Fiyatı</label>
+                </p-floatlabel>
+            </div>
+            
+            <div class="p-col-6 p-float-label">
+                <button type="submit" pButton label="Save Changes" class="p-button-success"></button>
+            </div>
+            <div class="p-col-6" style="font-size: small;">
+              <span class="required-fields">Yıldızlı alanlar zorunludur.</span>
+            </div>
+        </div>
+    </form>
+    <p-messages></p-messages>
+</p-panel>

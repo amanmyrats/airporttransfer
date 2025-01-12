@@ -10,8 +10,9 @@ from rest_framework import status
 from rest_framework.decorators import action
 from django.utils import timezone
 
+from common.utils import transform_choices_to_key_value_pairs
 from .serializers import (
-    EuroRateModelSerializer, PopularRouteModelSerializer,
+    EuroRateModelSerializer, PopularRouteModelSerializer, 
 )
 from .models import (
     EuroRate, PopularRoute,
@@ -39,11 +40,38 @@ class PopularRouteModelViewSet(viewsets.ModelViewSet):
     queryset = PopularRoute.objects.all()
     serializer_class = PopularRouteModelSerializer
     filterset_class = PopularRouteFilterSet
-    search_fields = ('main_location', 'to', 'euro_price',)
-    ordering_fields = ('main_location', 'to', 'euro_price',)
+    search_fields = ('main_location', 'destination', 'euro_price',)
+    ordering_fields = ('main_location', 'destination', 'euro_price',)
     ordering = ('main_location',)
 
     def get_permissions(self):
         if self.action == 'list':
             return []
         return [IsAdminUser()]
+    
+
+class CurrencyChoicesAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        return Response(
+            transform_choices_to_key_value_pairs(EuroRate.CURRENCY_CHOICES), 
+            status=status.HTTP_200_OK)
+
+
+class MainLocationChoicesAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        return Response(
+            transform_choices_to_key_value_pairs(PopularRoute.MAIN_LOCATION_CHOICES), 
+            status=status.HTTP_200_OK)
+    
+
+class CarTypeChoicesAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        return Response(
+            transform_choices_to_key_value_pairs(PopularRoute.CAR_TYPE_CHOICES), 
+            status=status.HTTP_200_OK)

@@ -2,24 +2,11 @@ from django.contrib.auth.hashers import make_password
 
 from rest_framework import serializers
 
-from .models import Account, Role, AccountRole, UserColumn
-from .utils import sendpassword_task
-
-class RoleModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Role
-        fields = '__all__'
-
-
-class AccountRoleModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AccountRole
-        fields = '__all__'
+from .models import Account, UserColumn
+from .utils import sendpassword_task, make_random_password
 
 
 class AccountModelSerializer(serializers.ModelSerializer):
-    role = serializers.IntegerField(write_only=True, required=False)
-    role_name = serializers.CharField(read_only=True, source='account_role.role_name')
     email = serializers.EmailField(required=False)
 
     class Meta:
@@ -28,45 +15,21 @@ class AccountModelSerializer(serializers.ModelSerializer):
             'id', 'email', 'first_name', 'last_name', 
             'phone', 
             'is_active', 'is_staff', 'is_superuser', 'date_joined', 
-            'role', 'role_name')
-        read_only_fields = ('is_active', 'is_staff', 'is_superuser', 'date_joined', 'role_name',)
-
-    def get_role(self, obj):
-        if hasattr(obj, 'account_role'):
-            return obj.account_role.role.id
-        return None
+            'role')
+        read_only_fields = ('is_active', 'is_staff', 'is_superuser', 'date_joined',)
 
     def create(self, validated_data):
-        role_id = validated_data.pop('role', None)
-        password = Account.objects.make_random_password()
-        # password = make_password(validated_data.get('email'))
-        validated_data['password'] = make_password(password)
-        account = super().create(validated_data)
-        if role_id:
-            role = Role.objects.get(id=role_id)
-            AccountRole.objects.create(account=account, role=role)
+        try:
+            password = make_random_password()
+            # password = make_password(validated_data.get('email'))
+            validated_data['password'] = make_password(password)
+            account = super().create(validated_data)
             sendpassword_task(account.email, password)
+
+        except Exception as e:
+            print(e)
+            raise serializers.ValidationError('Failed to create account.')
         return account
-    
-    def update(self, instance, validated_data):
-        role_id = validated_data.pop('role', None)
-        if role_id:
-            role = Role.objects.get(id=role_id)
-            if hasattr(instance, 'account_role'):
-                instance.account_role.role = role
-                instance.account_role.save()
-            else:
-                AccountRole.objects.create(account=instance, role=role)
-        return super().update(instance, validated_data)
-    
-    def to_representation(self, instance):
-        # Custom representation to include role information in the output
-        representation = super().to_representation(instance)
-        if hasattr(instance, 'account_role'):
-            representation['role'] = instance.account_role.role.id
-        else:
-            representation['role'] = None
-        return representation
     
 
 class ChangePasswordSerializer(serializers.Serializer):

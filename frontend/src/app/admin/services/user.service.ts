@@ -97,4 +97,8 @@ export class UserService {
     
     tryFetch();
   }
+
+  getRoleChoices(queryString: string = ''): Observable<any> {
+    return this.http.get<any>(`${env.baseUrl}${env.apiV1}accounts/rolechoices/`);
+  }
 }

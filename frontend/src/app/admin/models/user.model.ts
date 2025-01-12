@@ -12,6 +12,4 @@ export class User {
     date_joined?: Date;
 
     role?: string;
-    role_obj?: Role;
-    role_name?: string;
 }

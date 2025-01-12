@@ -14,12 +14,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from core.permissions import IsCompanyYonetici
-from accounts.utils import sendpassword_task
-from accounts.models import Account, Role, AccountRole, UserColumn
+from accounts.utils import sendpassword_task, make_random_password
+from accounts.models import Account, UserColumn
 from accounts.filtersets import AccountFilterSet, UserColumnFilterSet
 from accounts.serializers import (
     AccountModelSerializer, ChangePasswordSerializer, ProfileSerializer, 
-    RoleModelSerializer, AccountRoleModelSerializer, 
     PasswordResetRequestSerializer, PasswordResetConfirmSerializer, 
     UserColumnModelSerializer, 
 )
@@ -70,7 +69,7 @@ class AccountModelViewSet(viewsets.ModelViewSet):
     def activatedeactivate(self, request, pk=None):
         user = self.get_object()
         user.is_active = not user.is_active
-        password = Account.objects.make_random_password()
+        password = make_random_password()
         user.set_password(password)
         user.save()
         sendpassword_task(user.email, password)
@@ -81,17 +80,7 @@ class AccountModelViewSet(viewsets.ModelViewSet):
         user = self.request.user
         data = AccountModelSerializer(user).data
         return Response(data)
-    
-    # override delete method, if user is company owner then just deactivate the account
-    def destroy(self, request, *args, **kwargs):
-        user = self.get_object()
-        if user.is_owner:
-            user.is_active = False
-            user.save()
-            return Response({'status': 'Kullanıcı başarıyla deaktif edildi.'})
-        user.delete()
-        return Response({'status': 'Kullanıcı başarıyla silindi.'})
-    
+
 
 class PublicAccountModelViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()
@@ -190,22 +179,6 @@ class ProfileAPIView(views.APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-class RoleModelViewSet(viewsets.ModelViewSet):
-    queryset = Role.objects.all()
-    serializer_class = RoleModelSerializer
-    ordering_fields = ['role_name']
-    ordering = ['role_name']
-    permission_classes = [IsCompanyYonetici, ]
-
-
-class AccountRoleModelViewSet(viewsets.ModelViewSet):
-    queryset = AccountRole.objects.all()
-    serializer_class = AccountRoleModelSerializer
-    ordering_fields = ['account', 'role']
-    ordering = ['account', 'role']
-    permission_classes = [IsCompanyYonetici, ]
-
-
 class UserColumnModelViewSet(viewsets.ModelViewSet):
     queryset = UserColumn.objects.all()
     serializer_class = UserColumnModelSerializer
@@ -270,3 +243,13 @@ class UserColumnModelViewSet(viewsets.ModelViewSet):
             )
 
         return Response({"message": "Column orders saved successfully."}, status=status.HTTP_200_OK)
+    
+
+class RoleChoicesAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        from common.utils import transform_choices_to_key_value_pairs
+        return Response(
+            transform_choices_to_key_value_pairs(Account.ROLE_CHOICES), 
+            status=status.HTTP_200_OK)

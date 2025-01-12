@@ -10,7 +10,7 @@ import { saveAs } from 'file-saver';
   providedIn: 'root', 
 })
 export class ReservationService {
-  endPoint: string = "reservations/"
+  endPoint: string = "transfer/reservations/"
   constructor(
     private http: HttpClient
   ) { 

@@ -1,99 +1,120 @@
-<div class="price-list">
-    <!-- Vito Section -->
-    <div class="car-section">
-      <img src="cars/vito.png" alt="Mercedes Vito" class="car-image" />
-      <h2 class="car-title">Mercedes Vito</h2>
-      <div class="car-routes">
-        <h3 class="route-header">From Antalya Airport</h3>
-        <ul class="destination-list">
-          <li>
-            <span class="destination-name">Lara Beach</span>
-            <span class="price">$50</span>
-            <button class="btn-book" onclick="bookRoute('Lara Beach', 'Mercedes Vito')">
-              Book Now
-            </button>
-          </li>
-          <li>
-            <span class="destination-name">Belek</span>
-            <span class="price">$60</span>
-            <button class="btn-book" onclick="bookRoute('Belek', 'Mercedes Vito')">
-              Book Now
-            </button>
-          </li>
-          <li>
-            <span class="destination-name">Kemer</span>
-            <span class="price">$70</span>
-            <button class="btn-book" onclick="bookRoute('Kemer', 'Mercedes Vito')">
-              Book Now
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
+<div class="tabs-container">
+  <p-tabs value="0" scrollable>
+  <p-tablist>
+      @for(mainLocation of mainLocations; track mainLocation.value){
+          <p-tab [value]="mainLocation.value">
+              {{ mainLocation.code }} - {{ mainLocation.name }}
+          </p-tab>
+      }
+  </p-tablist>
   
-    <!-- Sprinter Section -->
-    <div class="car-section">
-      <img src="cars/sprinter.png" alt="Mercedes Sprinter" class="car-image" />
-      <h2 class="car-title">Mercedes Sprinter</h2>
-      <div class="car-routes">
-        <h3 class="route-header">From Antalya Airport</h3>
-        <ul class="destination-list">
-          <li>
-            <span class="destination-name">Lara Beach</span>
-            <span class="price">$70</span>
-            <button class="btn-book" onclick="bookRoute('Lara Beach', 'Mercedes Sprinter')">
-              Book Now
-            </button>
-          </li>
-          <li>
-            <span class="destination-name">Belek</span>
-            <span class="price">$80</span>
-            <button class="btn-book" onclick="bookRoute('Belek', 'Mercedes Sprinter')">
-              Book Now
-            </button>
-          </li>
-          <li>
-            <span class="destination-name">Kemer</span>
-            <span class="price">$90</span>
-            <button class="btn-book" onclick="bookRoute('Kemer', 'Mercedes Sprinter')">
-              Book Now
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  
-    <!-- Sprinter Section -->
-    <div class="car-section">
-      <img src="cars/sprinter.png" alt="Mercedes Sprinter" class="car-image" />
-      <h2 class="car-title">Mercedes Sprinter</h2>
-      <div class="car-routes">
-        <h3 class="route-header">From Antalya Airport</h3>
-        <ul class="destination-list">
-          <li>
-            <span class="destination-name">Lara Beach</span>
-            <span class="price">$70</span>
-            <button class="btn-book" onclick="bookRoute('Lara Beach', 'Mercedes Sprinter')">
-              Book Now
-            </button>
-          </li>
-          <li>
-            <span class="destination-name">Belek</span>
-            <span class="price">$80</span>
-            <button class="btn-book" onclick="bookRoute('Belek', 'Mercedes Sprinter')">
-              Book Now
-            </button>
-          </li>
-          <li>
-            <span class="destination-name">Kemer</span>
-            <span class="price">$90</span>
-            <button class="btn-book" onclick="bookRoute('Kemer', 'Mercedes Sprinter')">
-              Book Now
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
+  <p-tabpanels>
+    @for(mainLocation of mainLocations; track mainLocation.value){
+        <p-tabpanel [value]="mainLocation.value">
 
-  </div>
+      <div class="price-list">
+        
+        @for( carType of carTypeService.getCarTypes(); track carType.code){
+          @let carTypePopularRoutes = popularRouteService.getPopularRoutesByMainLocationCodeAndCarType(mainLocation.code, carType.code!);
+          @if (carTypePopularRoutes.length > 0) {
+          <div class="car-section">
+            <img src="cars/vito.png" alt="Mercedes Vito" class="car-image" />
+            <h2 class="car-title">{{carType.name}}
+              <br>
+              <span>or equivalent</span>
+            </h2>
+            <div class="car-routes">
+              <!-- <h3 class="route-header">From: {{popularRoute.main_location}}</h3> -->
+              <ul class="destination-list">
+            @for (popularRoute of carTypePopularRoutes; track popularRoute.id){
+                    <li>
+                      <span class="destination-name">
+                        {{mainLocation.code}}<span class="arrow">→</span>
+                        {{popularRoute.destination}}</span>
+                      <span class="price">€ {{popularRoute.euro_price}}</span>
+                      <button class="btn-book" onclick="bookRoute('Lara Beach', 'Mercedes Vito')">
+                        Book Now
+                      </button>
+                    </li>
+                  }
+                </ul>
+              </div>
+            </div>
+          }
+
+          }
+        </div>
+    </p-tabpanel>
+  }
+</p-tabpanels>
+</p-tabs>
+
+</div>
   
+          <!-- Vito Section -->
+
+        
+          <!-- Sprinter Section -->
+          <!-- <div class="car-section">
+            <img src="cars/sprinter.png" alt="Mercedes Sprinter" class="car-image" />
+            <h2 class="car-title">Mercedes Sprinter</h2>
+            <div class="car-routes">
+              <h3 class="route-header">From Antalya Airport</h3>
+              <ul class="destination-list">
+                <li>
+                  <span class="destination-name">Lara Beach</span>
+                  <span class="price">$70</span>
+                  <button class="btn-book" onclick="bookRoute('Lara Beach', 'Mercedes Sprinter')">
+                    Book Now
+                  </button>
+                </li>
+                <li>
+                  <span class="destination-name">Belek</span>
+                  <span class="price">$80</span>
+                  <button class="btn-book" onclick="bookRoute('Belek', 'Mercedes Sprinter')">
+                    Book Now
+                  </button>
+                </li>
+                <li>
+                  <span class="destination-name">Kemer</span>
+                  <span class="price">$90</span>
+                  <button class="btn-book" onclick="bookRoute('Kemer', 'Mercedes Sprinter')">
+                    Book Now
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div> -->
+        
+          <!-- Sprinter Section -->
+          <!-- <div class="car-section">
+            <img src="cars/sprinter.png" alt="Mercedes Sprinter" class="car-image" />
+            <h2 class="car-title">Mercedes Sprinter</h2>
+            <div class="car-routes">
+              <h3 class="route-header">From Antalya Airport</h3>
+              <ul class="destination-list">
+                <li>
+                  <span class="destination-name">Lara Beach</span>
+                  <span class="price">$70</span>
+                  <button class="btn-book" onclick="bookRoute('Lara Beach', 'Mercedes Sprinter')">
+                    Book Now
+                  </button>
+                </li>
+                <li>
+                  <span class="destination-name">Belek</span>
+                  <span class="price">$80</span>
+                  <button class="btn-book" onclick="bookRoute('Belek', 'Mercedes Sprinter')">
+                    Book Now
+                  </button>
+                </li>
+                <li>
+                  <span class="destination-name">Kemer</span>
+                  <span class="price">$90</span>
+                  <button class="btn-book" onclick="bookRoute('Kemer', 'Mercedes Sprinter')">
+                    Book Now
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div> -->
+      

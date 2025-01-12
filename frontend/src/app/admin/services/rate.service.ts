@@ -9,7 +9,7 @@ import { Rate } from '../models/rate.model';
   providedIn: 'root'
 })
 export class RateService {
-  endPoint: string = "common/rates/";
+  endPoint: string = "common/eurorates/";
 
   constructor(
     private http: HttpClient, 

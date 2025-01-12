@@ -26,6 +26,15 @@
     margin: 10px 0;
     color: #333;
   }
+
+  .car-title span {
+    font-size: 0.85rem; /* Smaller font size for "or equivalent" */
+    font-weight: normal; /* Regular weight to make it less prominent */
+    color: #777; /* Lighter grey to visually differentiate */
+    margin-left: 5px; /* Add some spacing from the main title */
+    display: inline-block; /* Ensures it flows with the main title */
+    vertical-align: middle; /* Aligns well with the text baseline */
+  }
   
   .route-header {
     font-size: 1.2em;
@@ -77,4 +86,26 @@
   .btn-book:hover {
     background-color: #0056b3;
   }
+  
+  .arrow {
+    margin: 0 10px;
+    font-size: 1.5em;
+    color: #007bff;
+  }
+
+  .tabs-container .p-tab-list-tab-list {
+    display: flex;
+    justify-content: center; /* Centers the tabs horizontally */
+    align-items: center; /* Centers the tabs vertically if necessary */
+    // flex-wrap: wrap; /* Ensures tabs wrap to the next line on small screens */
+    // padding: 10px; /* Optional: Add padding for better spacing */
+  }
+  
+  // .tabs-container p-tablist {
+  //   display: flex; /* Ensures tabs are in a row */
+  //   justify-content: center; /* Centers the tabs */
+  //   gap: 10px; /* Add spacing between tabs */
+  //   flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
+  // }
+  
   

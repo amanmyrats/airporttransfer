@@ -1,9 +1,6 @@
 from rest_framework.permissions import (
     BasePermission, IsAuthenticated, IsAdminUser
 ) 
-    
-
-from accounts.models import AccountRole
 
 
 class IsCompanyAdmin(IsAdminUser, BasePermission):
@@ -16,9 +13,7 @@ class IsCompanyAdmin(IsAdminUser, BasePermission):
             return True
 
         # Check for authentication and company_admin role
-        if not AccountRole.objects.filter(
-            account=request.user, role__role_name='company_admin'
-        ).exists():
+        if not request.user.role == 'company_admin':
             return False
         return True  # Allow all actions for company admins (subject to object-level check)
 
@@ -37,9 +32,7 @@ class IsCompanyYonetici(IsCompanyAdmin):
             return True
 
         # Check for authentication and company_yonetici role
-        if not AccountRole.objects.filter(
-            account=request.user, role__role_name='company_yonetici'
-        ).exists():
+        if not request.user.role == 'company_yonetici':
             return False
         return True  # Allow all actions for company yonetici (subject to object-level check)
 
@@ -58,9 +51,7 @@ class IsCompanyRezervasyoncu(IsCompanyYonetici):
             return True
 
         # Check for authentication and company_rezervasyoncu role
-        if not AccountRole.objects.filter(
-            account=request.user, role__role_name='company_rezervasyoncu'
-        ).exists():
+        if not request.user.role == 'company_rezervasyoncu':
             return False
         return True  # Allow all actions for company rezervasyoncu (subject to object-level check)
 
@@ -79,9 +70,7 @@ class IsCompanyOperasyoncu(IsCompanyRezervasyoncu):
             return True
 
         # Check for authentication and company_operasyoncu role
-        if not AccountRole.objects.filter(
-            account=request.user, role__role_name='company_operasyoncu'
-        ).exists():
+        if not request.user.role == 'company_operasyoncu':
             return False
         return True  # Allow all actions for company operasyoncu (subject to object-level check)
 
@@ -105,9 +94,7 @@ class IsCompanyEmployeeReadOnly(IsCompanyOperasyoncu):
             return False
         
         # Check for authentication and company_employee role
-        if not AccountRole.objects.filter(
-            account=request.user, role__role_name='company_employee'
-        ).exists():
+        if not request.user.role == 'company_employee':
             return False
         return True  # Allow GET requests for company employees (subject to object-level check)
 
@@ -125,9 +112,7 @@ class IsCompanyDriverReadOnly(IsCompanyOperasyoncu):
         if request.method != 'GET':
             return False
         # Check for authentication and company_driver role
-        if not AccountRole.objects.filter(
-            account=request.user, role__role_name='company_driver'
-        ).exists():
+        if not request.user.role == 'company_driver':
             return False
         return True  # Allow all actions for company drivers (subject to object-level check)
 

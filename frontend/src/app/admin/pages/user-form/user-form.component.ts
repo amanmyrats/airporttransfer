@@ -40,7 +40,8 @@ export class UserFormComponent implements OnInit{
 
   userForm: FormGroup;
   user: User | null = null;
-  roles: Role[] = [];
+  roles: any[] = [];
+  isSaving: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -70,6 +71,7 @@ export class UserFormComponent implements OnInit{
 
   submitForm() {
     if (this.userForm.valid) {
+      this.isSaving = true;
       if (this.user) {
         console.log('Updating user:', this.userForm.value);
         this.userService.updateUser(this.user?.id!, this.userForm.value).subscribe({
@@ -79,6 +81,7 @@ export class UserFormComponent implements OnInit{
           },
           error: (err: HttpErrorResponse) => {
             this.httpErrorPrinter.printHttpError(err);
+            this.isSaving = false;
           }
         });
       } else {
@@ -90,20 +93,22 @@ export class UserFormComponent implements OnInit{
           error: (err: HttpErrorResponse) => {
             console.log(err);
             this.httpErrorPrinter.printHttpError(err);
+            this.isSaving = false;
           }
         });
     }
     } else {
       this.formErrorPrinter.printFormValidationErrors(this.userForm);
+      this.isSaving = false;
     }
   }
 
   getRoles(queryString: string = '') {
-    this.roleService.getRoles(queryString).subscribe({
-      next: (paginatedRoles: PaginatedResponse<Role>) => {
-        this.roles = paginatedRoles.results!;
+    this.userService.getRoleChoices(queryString).subscribe({
+      next: (roles: any[]) => {
+        this.roles = roles;
         console.log("Successfully fetched roles");
-        console.log(paginatedRoles);
+        console.log(roles);
       },
       error: (error: any) => {
         console.log("Error happened when fetching roles.");

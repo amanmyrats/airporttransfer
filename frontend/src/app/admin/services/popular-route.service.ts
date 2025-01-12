@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { environment as env } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,7 +9,9 @@ import { PopularRoute } from '../models/popular-route.model';
   providedIn: 'root'
 })
 export class PopularRouteService {
-  endPoint: string = "popularroutes/";
+  endPoint: string = "common/popularroutes/";
+
+  popularRoutesSignal = signal<PopularRoute[]>([]);
 
   constructor(
     private http: HttpClient, 
@@ -33,6 +35,25 @@ export class PopularRouteService {
 
   deletePopularRoute(id: string): Observable<any>  {
     return this.http.delete<any>(`${env.baseUrl}${env.apiV1}${this.endPoint}${id}/`);
+  }
+
+  updatePopularRoutesSignal(): void {
+    this.getPopularRoutes('').subscribe({
+      next: (paginatedResponse: PaginatedResponse<PopularRoute>)=> {
+        this.popularRoutesSignal.set(paginatedResponse.results!);
+        console.log('Fetched popular places and set it to signal')
+        console.log(paginatedResponse.results!)
+      }, 
+      error: (err: any) => {
+        console.log('Error while fething popuplar places');
+        console.log(err);
+      }
+    });
+  }
+
+  getPopularRoutesByMainLocationCodeAndCarType(mainLocationCode: string, carTypeCode: string): PopularRoute[] {
+    return this.popularRoutesSignal().filter(
+      (popularRoute: PopularRoute) => popularRoute.main_location === mainLocationCode && popularRoute.car_type === carTypeCode);
   }
 
 }

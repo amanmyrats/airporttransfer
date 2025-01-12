@@ -2,7 +2,7 @@ from django_filters import rest_framework as filters
 from django.db.models import Q
 
 from .models import (
-    Role, Account, AccountRole, UserColumn, 
+    Account, UserColumn, 
 ) 
 
 

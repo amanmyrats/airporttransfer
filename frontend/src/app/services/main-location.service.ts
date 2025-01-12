@@ -14,7 +14,7 @@ export class MainLocationService {
    * Get the full list of supported main locations.
    * @returns MainLocation[]
    */
-  getAllLocations(): MainLocation[] {
+  getMainLocations(): MainLocation[] {
     return this.locations;
   }
 
@@ -23,7 +23,7 @@ export class MainLocationService {
    * @param code The location code.
    * @returns MainLocation | undefined
    */
-  getLocationByCode(code: string): MainLocation | undefined {
+  getMainLocationByCode(code: string): MainLocation | undefined {
     return this.locations.find((location) => location.code === code);
   }
 
@@ -33,8 +33,8 @@ export class MainLocationService {
    * @param lang The language code ('en', 'tr', 'ru', etc.).
    * @returns string | undefined
    */
-  getLocationNameInLanguage(code: string, lang: keyof MainLocation): string | undefined {
-    const location = this.getLocationByCode(code);
+  getMainLocationNameInLanguage(code: string, lang: keyof MainLocation): string | undefined {
+    const location = this.getMainLocationByCode(code);
     return location ? location[lang] : undefined;
   }
 }

@@ -23,15 +23,17 @@
         <tr>
             <th>Nereden</th>
             <th>Nereye</th>
+            <th>Araba Tipi</th>
             <th>Fiyatı (Euro)</th>
             <th></th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-popularRoute>
         <tr>
-            <td>{{popularRoute.main_location_obj?.name}}</td>
-            <td>{{popularRoute.destination }}</td>
-            <td>{{popularRoute.euro_price }}</td>
+            <td>{{popularRoute.main_location}}</td>
+            <td>{{popularRoute.to }}</td>
+            <td>{{popularRoute.car_type }}</td>
+            <td>{{popularRoute.euro_price }} € </td>
             <td class="action-column">
                 <app-action-buttons 
                     [obj]="popularRoute" 

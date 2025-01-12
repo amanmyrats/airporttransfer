@@ -33,27 +33,9 @@ Kullanıcı adınız: {recipient}
         logger.debug('Email not sent:', e)
         return False
 
-def check_initial_roles():
-    """
-    company_admin
-    company_yonetici
-    company_muhasebeci
-    company_employee
-    company_rezervasyoncu
-    company_operasyoncu
-    company_driver
-    """
-    from accounts.models import Role
-    roles = [
-        'company_admin',
-        'company_yonetici',
-        'company_muhasebeci',
-        'company_employee',
-        'company_rezervasyoncu',
-        'company_operasyoncu',
-        'company_driver',
-    ]
-    for role in roles:
-        role_exists = Role.objects.filter(role_name=role).exists()
-        if not role_exists:
-            Role.objects.create(role_name=role)
+def make_random_password(length=10, allowed_chars='abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'):
+        "Generates a random password with the given length and given allowed_chars"
+        # Note that default value of allowed_chars does not have "I" or letters
+        # that look like it -- just to avoid confusion.
+        from random import choice
+        return ''.join([choice(allowed_chars) for i in range(length)])

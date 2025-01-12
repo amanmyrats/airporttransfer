@@ -3,11 +3,14 @@ import logging
 from django.http import HttpResponse
 
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
+from common.utils import transform_choices_to_key_value_pairs
 from .serializers import (
     ReservationModelSerializer,
     ReservationStatusModelSerializer,
@@ -135,3 +138,13 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
         statuses = Reservation.STATUS_CHOICES
         statuses = [{"value": status[0], "label": status[1]} for status in statuses]
         return Response(statuses, status=status.HTTP_200_OK)
+
+
+class StatusChoicesAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        return Response(
+            transform_choices_to_key_value_pairs(Reservation.STATUS_CHOICES),
+            status=status.HTTP_200_OK,
+        )

@@ -29,7 +29,7 @@ import { CurrencyService } from '../../../services/currency.service';
         InputTextModule,
         ButtonModule,
         Select, InputTextModule, ButtonModule, ReactiveFormsModule,
-        MessagesModule, DatePicker, FloatLabel,
+        MessagesModule, FloatLabel,
         InputNumber, CommonModule, PanelModule, 
     ],
     providers: [
@@ -55,10 +55,8 @@ export class RateFormComponent implements OnInit {
   ) {
     this.rateForm = this.fb.group({
       id: [''],
-      currency: ['', Validators.required],
-      rate_date: [new Date().toISOString().split('T')[0], Validators.required],
-      buying_rate: null,
-      selling_rate: null,
+      currency_code: ['', Validators.required],
+      euro_rate: null,
     });
   }
 
@@ -67,7 +65,7 @@ export class RateFormComponent implements OnInit {
     if (this.rate) {
       this.rateForm.patchValue(this.rate);
     }
-    this.getCurrencies();
+    this.currencies = this.currencyService.getCurrencies();
   }
 
   submitForm() {
@@ -102,19 +100,6 @@ export class RateFormComponent implements OnInit {
     } else {
       this.formErrorPrinter.printFormValidationErrors(this.rateForm);
     }
-  }
-
-  getCurrencies(queryString: string = '') {
-    // this.currencyService.getCurrencies(queryString).subscribe({
-    //   next: (paginatedResponse: PaginatedResponse<Currency>) => {
-    //     this.currencies = paginatedResponse.results!;
-    //     console.log('Successfully fetched Currencies:', this.currencies);
-    //   }, 
-    //   error: (err: HttpErrorResponse) => {
-    //     this.httpErrorPrinter.printHttpError(err);
-    //   }
-    // });
-
   }
   
 }
