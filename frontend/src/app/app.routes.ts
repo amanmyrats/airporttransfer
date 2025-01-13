@@ -10,6 +10,7 @@ import { GalleryComponent } from './pages/gallery/gallery.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
 import { BookingComponent } from './pages/booking/booking.component';
+import { BookingReceivedComponent } from './pages/booking-received/booking-received.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent }, // Set HomeComponent for root
@@ -20,6 +21,9 @@ export const routes: Routes = [
     },
     {
         path: ':lang/booking',component: BookingComponent,
+    },
+    {
+        path: ':lang/booking/received',component: BookingReceivedComponent,
     },
     {
         path: ':lang/aboutus',component: AboutUsComponent,

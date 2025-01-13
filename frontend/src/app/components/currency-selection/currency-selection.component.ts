@@ -13,14 +13,11 @@ import { CurrencyService } from '../../services/currency.service';
 })
 export class CurrencySelectionComponent implements OnInit {
   supportedCurrencies = SUPPORTED_CURRENCIES; // Use the constants for supported currencies
-  selectedCurrency: any;
   isDropdownVisible = false; // Tracks the visibility of the dropdown menu
 
-  constructor(private currencyService: CurrencyService) {}
+  constructor(public currencyService: CurrencyService) {}
 
   ngOnInit(): void {
-    // Set initial selected currency from the service
-    this.selectedCurrency = this.currencyService.currentCurrency();
   }
 
   /**
@@ -29,7 +26,6 @@ export class CurrencySelectionComponent implements OnInit {
    */
   onCurrencySelect(currency: any): void {
     this.currencyService.setCurrency(currency.code); // Update the currency via service
-    this.selectedCurrency = currency; // Update the locally selected currency
     this.isDropdownVisible = false; // Close the dropdown menu
   }
 

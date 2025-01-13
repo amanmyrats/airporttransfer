@@ -2,12 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component, effect, inject, input, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
+import { ButtonModule } from 'primeng/button';
+import { Router } from '@angular/router';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-booking-completion-form',
   imports: [
     CommonModule, 
     FormsModule, ReactiveFormsModule, 
+    ButtonModule, 
   ],
   templateUrl: './booking-completion-form.component.html',
   styleUrl: './booking-completion-form.component.scss'
@@ -17,6 +21,8 @@ export class BookingCompletionFormComponent implements OnInit {
 
   stepsInfo = input<any>();
   previousStep = output<any>();
+
+  isSaving = false;
 
   // Mock data for reservation details (these would typically come from a service or state)
   selectedCar = {
@@ -31,7 +37,10 @@ export class BookingCompletionFormComponent implements OnInit {
   passengerCount = 3;
 
   constructor(
-    private fb: FormBuilder) {
+    private fb: FormBuilder, 
+    private router: Router,  
+    private languageService: LanguageService, 
+  ) {
     effect(() => {
       console.log('Steps Info in completion:', this.stepsInfo());
     });
@@ -69,14 +78,18 @@ export class BookingCompletionFormComponent implements OnInit {
     this.bookingService.mergeForms();
     console.log('Merged form:', this.bookingService.bookingForm.value);
     if (this.bookingService.bookingForm.valid) {
+      this.isSaving = true;
       console.log('Form is valid');
       this.bookingService.createBooking(
         this.bookingService.bookingForm.value).subscribe({
           next: (response) => {
             console.log('Reservation created successfully:', response);
+            this.isSaving = false;
+            this.router.navigate([`${this.languageService.currentLang().code}/booking/received`]);
           },
           error: (error) => {
             console.error('Error creating reservation:', error);
+            this.isSaving = false;
           }
         });
       // Send data to a backend API or navigate to a confirmation page

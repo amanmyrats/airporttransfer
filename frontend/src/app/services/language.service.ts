@@ -4,14 +4,15 @@ import { SUPPORTED_LANGUAGES } from '../constants/language.contants';
 import { Language } from '../models/language.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class LanguageService  {
+export class LanguageService {
   private languages: Language[] = SUPPORTED_LANGUAGES;
-  // Use a signal for the current language
-  currentLang = signal<{}>(
-    SUPPORTED_LANGUAGES.find(lang => lang.code === 'en')!
+  private storageKey = 'selectedLanguage'; // Key for local storage
 
+  // Signal for the current language
+  currentLang = signal<any>(
+    this.getStoredLanguage() || SUPPORTED_LANGUAGES.find((lang) => lang.code === 'en')!
   );
 
   constructor(private route: ActivatedRoute, private router: Router) {}
@@ -21,10 +22,11 @@ export class LanguageService  {
    * @param langCode - The new language code to set (e.g., 'en', 'tr')
    */
   setLanguage(langCode: string): void {
-    const selectedLang = SUPPORTED_LANGUAGES.find(lang => lang.code === langCode);
+    const selectedLang = SUPPORTED_LANGUAGES.find((lang) => lang.code === langCode);
 
     if (selectedLang) {
       this.currentLang.set(selectedLang); // Update the signal value
+      this.storeLanguage(langCode); // Persist the selected language
       const currentRoute = this.router.url.split('/').slice(2).join('/'); // Remove language from URL
       this.router.navigate([`/${langCode}/${currentRoute}`]);
     } else {
@@ -36,26 +38,22 @@ export class LanguageService  {
    * Detect the language from the URL and update the signal
    */
   detectLanguage(): void {
-    console.log('Calling detectLanguage in LanguageService');
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const langCode = params['lang'];
-      console.log('langCode:', langCode);
 
       if (langCode) {
-        const detectedLang = SUPPORTED_LANGUAGES.find(lang => lang.code === langCode);
+        const detectedLang = SUPPORTED_LANGUAGES.find((lang) => lang.code === langCode);
 
         if (detectedLang) {
           this.currentLang.set(detectedLang); // Update the signal value
-          console.log('Detected language:', detectedLang);
+          this.storeLanguage(langCode); // Persist the detected language
         } else {
           console.warn(`Unsupported language code detected in URL: ${langCode}`);
-          // Optionally redirect to a default language
-          this.router.navigate(['/en']);
+          this.router.navigate(['/en']); // Fallback to default language
         }
       }
     });
   }
-
 
   /**
    * Get the list of all supported languages.
@@ -84,4 +82,20 @@ export class LanguageService  {
     return language ? language.name : undefined;
   }
 
+  /**
+   * Store the selected language in local storage.
+   * @param langCode - The language code to store.
+   */
+  private storeLanguage(langCode: string): void {
+    localStorage.setItem(this.storageKey, langCode);
+  }
+
+  /**
+   * Retrieve the stored language from local storage.
+   * @returns The stored language or undefined.
+   */
+  private getStoredLanguage(): Language | undefined {
+    const langCode = localStorage.getItem(this.storageKey);
+    return SUPPORTED_LANGUAGES.find((lang) => lang.code === langCode);
+  }
 }

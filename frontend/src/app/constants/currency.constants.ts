@@ -1,5 +1,20 @@
 export const SUPPORTED_CURRENCIES = [
-    { code: 'EUR', sign: '€', name: 'Euro' },
-    { code: 'USD', sign: '$', name: 'US Dollar' },
-    { code: 'GBP', sign: '£', name: 'British Pound' },
+    { 
+        code: 'EUR', 
+        sign: '€', 
+        name: 'Euro',
+        rate: 1,
+    },
+    { 
+        code: 'USD', 
+        sign: '$', 
+        name: 'US Dollar',
+        rate: 1.18,
+    },
+    { 
+        code: 'GBP', 
+        sign: '£', 
+        name: 'British Pound',
+        rate: 0.9,
+    },
 ];

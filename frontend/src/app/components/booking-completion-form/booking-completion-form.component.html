@@ -98,7 +98,7 @@
           <!-- Complete Reservation -->
           <div class="form-actions">
             <button type="button" class="btn-back" (click)="goToPreviousStep()">Back</button>
-            <button type="submit" class="btn-complete">Complete Reservation</button>
+            <button pButton [loading]="isSaving" type="submit" class="btn-complete">Complete Reservation</button>
           </div>
         </form>
       </div>

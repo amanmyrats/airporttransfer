@@ -94,27 +94,52 @@
     resize: none;
   }
   
-  /* Complete Reservation Button */
-  .form-actions {
-    text-align: right;
-  }
-  
-  .btn-complete {
-    background-color: #007bff;
-    color: #fff;
-    font-size: 1.2em;
-    font-weight: bold;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-complete:hover {
-    background-color: #0056b3;
-  }
-  
+  /* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* Back Button */
+.btn-back {
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 1em;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-back:hover {
+  background-color: #ddd;
+  color: #000;
+}
+
+/* Complete Reservation Button */
+.btn-complete {
+  background-color: #007bff;
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-complete:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
   /* Responsive Design */
   @media (max-width: 768px) {
     .container {
@@ -125,5 +150,15 @@
     .reservation-form {
       max-width: 100%;
     }
+    
+    .form-actions {
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .btn-back,
+    .btn-complete {
+      width: 100%;
+      font-size: 1.1em;
+    }
   }
-  

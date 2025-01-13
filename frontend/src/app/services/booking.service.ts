@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Reservation } from '../admin/models/reservation.model';
 import { Observable } from 'rxjs';
@@ -10,6 +10,9 @@ import { environment as env } from '../../environments/environment';
 })
 export class BookingService {
   endPoint: string = "transfer/bookingcreate/"
+
+  distance = signal<number>(0);
+  drivingDuration = signal<number>(0);
   
   fb = inject(FormBuilder);
   bookingForm!: FormGroup;

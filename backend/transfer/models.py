@@ -53,7 +53,7 @@ class Reservation(models.Model):
     pickup_lng = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
     dest_lat = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
     dest_lng = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
-    distance = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
+    distance = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
     driving_duration = models.IntegerField(null=True, blank=True)
     
     # Extra services

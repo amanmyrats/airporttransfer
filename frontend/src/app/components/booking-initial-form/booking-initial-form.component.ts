@@ -63,9 +63,12 @@ export class BookingInitialFormComponent implements OnInit {
 
     this.googleMapsService.calculateDrivingDistanceAndTime(origin, destination
     ).then(result => {
-      this.bookingService.bookingCarTypeSelectionForm.get('distance')?.setValue(
+      console.log('Distance and duration:', result);
+      this.bookingService.distance.set(result.distance);
+      this.bookingService.drivingDuration.set(result.duration);
+      this.bookingService.bookingCarTypeSelectionForm.get('distance')!.setValue(
         result.distance);
-      this.bookingService.bookingCarTypeSelectionForm.get('driving_duration')?.setValue(
+      this.bookingService.bookingCarTypeSelectionForm.get('driving_duration')!.setValue(
         result.duration);
     }).catch(error => {
       console.error('Error calculating distance:', error);
