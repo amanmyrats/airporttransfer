@@ -84,6 +84,7 @@ export class BookingCompletionFormComponent implements OnInit {
     this.hasSubmitted = true;
     console.log('Booking Completion Form:', this.bookingService.bookingCompletionForm.value);
     console.log(this.bookingService.bookingCompletionForm.value);
+    
     // add 2 other forms into this.bookingService.bookingCompletionForm
     this.bookingService.mergeForms();
     console.log('Merged form:', this.bookingService.bookingForm.value);
