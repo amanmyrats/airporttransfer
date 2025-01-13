@@ -49,11 +49,13 @@ class Reservation(models.Model):
     pickup_full = models.CharField(max_length=1024, null=True, blank=True)
     dest_short = models.CharField(max_length=255, null=True, blank=True)
     dest_full = models.CharField(max_length=1024, null=True, blank=True)
-    pickup_lat = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    pickup_lon = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    dest_lat = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    dest_lon = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-
+    pickup_lat = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    pickup_lng = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    dest_lat = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    dest_lng = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    distance = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
+    driving_duration = models.IntegerField(null=True, blank=True)
+    
     # Extra services
     need_child_seat = models.BooleanField(default=False)
     child_seat_count = models.IntegerField(default=0)

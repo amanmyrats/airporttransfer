@@ -21,7 +21,7 @@ class Time24HourField(TimeField):
 
 class ReservationModelSerializer(ModelSerializer):
     transfer_time = Time24HourField(format='%H:%M')
-    flight_time = Time24HourField(format='%H:%M')
+    flight_time = Time24HourField(format='%H:%M', required=False)
 
     class Meta:
         model = Reservation

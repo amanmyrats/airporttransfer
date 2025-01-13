@@ -40,6 +40,13 @@ class EuroRateModelViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
     
+    def get_authenticators(self):
+        if self.request.resolver_match.view_name.endswith('list'):
+            # Skip authentication for 'list' action
+            return []
+        # Use default authentication classes for other actions
+        return super().get_authenticators()
+    
 
 class PopularRouteModelViewSet(viewsets.ModelViewSet):
     queryset = PopularRoute.objects.all()
@@ -68,6 +75,7 @@ class PopularRouteModelViewSet(viewsets.ModelViewSet):
 
 class CurrencyChoicesAPIView(APIView):
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def get(self, request, *args, **kwargs):
         return Response(
@@ -77,6 +85,7 @@ class CurrencyChoicesAPIView(APIView):
 
 class MainLocationChoicesAPIView(APIView):
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def get(self, request, *args, **kwargs):
         return Response(
@@ -86,6 +95,7 @@ class MainLocationChoicesAPIView(APIView):
 
 class CarTypeChoicesAPIView(APIView):
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def get(self, request, *args, **kwargs):
         return Response(

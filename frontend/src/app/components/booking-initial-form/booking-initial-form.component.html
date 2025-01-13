@@ -1,0 +1,82 @@
+<section class="booking">
+    <!-- Hero Section -->
+    <!-- <div class="booking-hero">
+      <h1 class="booking-title">Book Your Airport Transfer</h1>
+      <p class="booking-subtitle">
+        Plan your journey in just a few steps. Choose your destination, date, and time, and enjoy a seamless travel experience.
+      </p>
+    </div> -->
+  
+    <!-- Booking Form -->
+    <form [formGroup]="bookingService.bookingInitialForm" (ngSubmit)="onSubmit()" class="booking-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pickup_full">From</label>
+          <input
+            type="text"
+            id="pickup_full"
+            placeholder="Enter pickup location"
+            formControlName="pickup_full"
+            appGmapsAutocomplete
+            (placeChanged)="onPickupPlaceChanged($event)" 
+            (keydown)="preventFormSubmit($event)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="dest_full">To</label>
+          <input
+            type="text"
+            id="dest_full"
+            placeholder="Enter drop-off location"
+            formControlName="dest_full"
+            appGmapsAutocomplete
+            (placeChanged)="onDestPlaceChanged($event)" 
+            (keydown)="preventFormSubmit($event)"
+          />
+        </div>
+        <!-- <div class="form-group">
+          <label for="transfer_date">Date</label>
+          <input type="date" id="transfer_date" formControlName="transfer_date" required />
+        </div>
+        <div class="form-group">
+          <label for="transfer_time">Time</label>
+          <input type="time" id="transfer_time" formControlName="transfer_time" required />
+        </div>
+        <div class="form-group">
+          <label for="passenger_count">Passengers</label>
+          <input
+            type="number"
+            id="passenger_count"
+            formControlName="passenger_count"
+            placeholder="1"
+            min="1"
+            max="20"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" formControlName="is_round_trip" (change)="toggleReturnTrip()" />
+            Want Return?
+          </label>
+        </div> -->
+      </div>
+  
+      <!-- Return Fields -->
+      <!-- <div class="form-row" *ngIf="bookingForm.get('is_round_trip')?.value">
+        <div class="form-group">
+          <label for="return_transfer_date">Return Date</label>
+          <input type="date" id="return_transfer_date" formControlName="return_transfer_date" />
+        </div>
+        <div class="form-group">
+          <label for="return_tranfser_time">Return Time</label>
+          <input type="time" id="return_tranfser_time" formControlName="return_tranfser_time" />
+        </div>
+      </div> -->
+  
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" [disabled]="!bookingService.bookingInitialForm.valid">Search</button>
+      </div>
+    </form>
+  </section>
+  

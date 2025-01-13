@@ -2,6 +2,7 @@ import logging
 
 from django.http import HttpResponse
 
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
@@ -148,3 +149,15 @@ class StatusChoicesAPIView(APIView):
             transform_choices_to_key_value_pairs(Reservation.STATUS_CHOICES),
             status=status.HTTP_200_OK,
         )
+    
+
+class BookingCreateAPIView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self, request, *args, **kwargs):
+        serializer = ReservationModelSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

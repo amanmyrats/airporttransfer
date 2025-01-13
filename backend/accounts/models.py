@@ -32,11 +32,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
         ('company_admin', 'Admin'),
         ('company_yonetici', 'Yönetici'),
-        ('company_muhasebeci', 'Muhasabeci'),
-        ('company_employee', 'Çalışan'),
         ('company_rezervasyoncu', 'Rezervasyoncu'),
-        ('company_operasyoncu', 'Operasyoncu'),
-        ('company_driver', 'Sürücü'),
+        ('company_employee', 'Çalışan'),
     )
     email = models.EmailField(unique=True)
     # username = models.CharField(max_length=150, unique=True)

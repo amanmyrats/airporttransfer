@@ -1,0 +1,36 @@
+<section class="car-type-selection">
+    <!-- Title Section -->
+    <div class="title-section">
+      <h1>Available Car Types</h1>
+      <div class="route-info">
+        <span class="from">{{bookingService.bookingInitialForm.value.pickup_full}}</span>
+        <span class="arrow">→</span>
+        <span class="to">{{bookingService.bookingInitialForm.value.dest_full}}</span>
+      </div>    
+      <div class="distance-info">
+        <span>
+         <span>
+           Distance: 
+         </span> 
+          {{ bookingService.bookingCarTypeSelectionForm.value.distance | number: '1.0-0' }} km
+          <!-- format minutes without decimals -->
+          ({{ bookingService.bookingCarTypeSelectionForm.value.driving_duration | number: '1.0-0' }} mins)
+        </span>
+      </div>
+    </div>
+  
+    <!-- Vehicle List -->
+    <div class="car-type-list">
+      <!-- Vehicle Item -->
+      <div class="car-type-card" *ngFor="let carType of carTypes">
+        <img [src]="'cars/vito.png'" [alt]="carType.name" class="car-type-image" />
+        <div class="car-type-info">
+          <h2 class="car-type-name">{{ carType.name }}</h2>
+          <p class="car-type-price">Price: <span>50 euro</span></p>
+          <!-- <p class="car-type-price">Price: <span>{{ carType.price | currency }}</span></p> -->
+          <button class="select-button" (click)="onCarTypeSelection(carType, 50, 'EUR', 100)">Select</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  

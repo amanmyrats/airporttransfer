@@ -93,10 +93,10 @@
                         + {{reservation.passenger_count_child}}
                     </div> 
                 </div>
-                <div *ngIf="col.field === 'car_type_obj'"
+                <div *ngIf="col.field === 'car_type'"
                 [style.width.px]="col.width * 0.80" 
                 style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
-                    {{reservation.car_type_obj?.name}}
+                    {{reservation.car_type}}
                 </div>
                 
                 

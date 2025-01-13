@@ -1,5 +1,5 @@
 /* Vehicle Selection Section */
-.vehicle-selection {
+.car-type-selection {
     font-family: Arial, sans-serif;
     padding: 20px;
     line-height: 1.6;
@@ -36,16 +36,25 @@
     font-size: 1.5em;
     color: #007bff;
   }
+
+  /* Distance Info */
+  .distance-info {
+    text-align: center;
+    font-size: 1.2em;
+    color: #333;
+    margin-top: 10px;
+    font-weight: bold;
+  }
   
   /* Vehicle List */
-  .vehicle-list {
+  .car-type-list {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
   }
   
-  .vehicle-card {
+  .car-type-card {
     display: flex;
     align-items: center;
     gap: 20px;
@@ -59,36 +68,36 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   
-  .vehicle-card:hover {
+  .car-type-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   }
   
-  .vehicle-image {
+  .car-type-image {
     width: 150px;
     height: 100px;
     object-fit: cover;
     border-radius: 10px;
   }
   
-  .vehicle-info {
+  .car-type-info {
     flex: 1;
     text-align: left;
   }
   
-  .vehicle-name {
+  .car-type-name {
     font-size: 1.5em;
     margin-bottom: 5px;
     color: #007bff;
   }
   
-  .vehicle-price {
+  .car-type-price {
     font-size: 1.5em;
     color: #333;
     margin: 10px 0;
   }
   
-  .vehicle-price span {
+  .car-type-price span {
     font-weight: bold;
     color: #007bff;
   }
@@ -110,23 +119,23 @@
   
   /* Responsive Design */
   @media (max-width: 768px) {
-    .vehicle-card {
+    .car-type-card {
       flex-direction: column;
       align-items: center;
       text-align: center;
     }
   
-    .vehicle-image {
+    .car-type-image {
       width: 100%;
       height: auto;
       max-height: 200px;
     }
   
-    .vehicle-info {
+    .car-type-info {
       text-align: center;
     }
   
-    .vehicle-price {
+    .car-type-price {
       font-size: 2em;
       margin: 15px 0;
     }
