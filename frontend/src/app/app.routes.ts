@@ -44,6 +44,9 @@ export const routes: Routes = [
         loadChildren: () => import('./admin/admin.routes').then(x => x.adminRoutes),
         data: { noHydration: true },
     },
+    {
+        path: ':lang',component: PricesComponent,
+    },
 
 
     { path: '**', redirectTo: 'en/home' }, // Redirect unknown paths
