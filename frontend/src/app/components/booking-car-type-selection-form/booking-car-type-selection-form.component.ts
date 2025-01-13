@@ -5,6 +5,7 @@ import { CarType } from '../../models/car-type.model';
 import { SUPPORTED_CAR_TYPES } from '../../constants/car-type.constants';
 import { PriceCalculatorService } from '../../services/price-calculator.service';
 import { CurrencyService } from '../../services/currency.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-booking-car-type-selection-form',
@@ -20,15 +21,19 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
   currencyService = inject(CurrencyService);
   carTypeSelectionOutput = output<any>();
 
+
   carTypes: CarType[] = [];
 
   constructor(
+    private route: ActivatedRoute, 
   ) {
     this.carTypes = SUPPORTED_CAR_TYPES;
   }
 
   ngOnInit(): void {
     console.log('BookingCarTypeSelectionFormComponent initialized');
+    console.log(this.bookingService.bookingCarTypeSelectionForm.value);
+    this.bookingService.distance.set(this.bookingService.bookingCarTypeSelectionForm.value.distance);
   }
 
   onCarTypeSelection(carType: any, price: number, currency_code: string, distance: number): void {

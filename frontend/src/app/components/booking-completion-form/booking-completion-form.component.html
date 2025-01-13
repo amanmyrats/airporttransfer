@@ -3,12 +3,12 @@
       <!-- Left Section: Reservation Details -->
       <div class="reservation-details">
         <h2>Reservation Details</h2>
-        <img [src]="'cars/vito.png'" [alt]="selectedCar.name" class="car-image" />
-        <p><strong>Car:</strong> {{ selectedCar.name }}</p>
+        <img [src]="'cars/vito.png'" [alt]="selectedCar?.name" class="car-image" />
+        <p><strong>Car:</strong> {{ selectedCar?.name }}</p>
         <p><strong>From:</strong> {{ fromLocation }}</p>
         <p><strong>To:</strong> {{ toLocation }}</p>
         <p><strong>Distance:</strong> {{ distance }} km</p>
-        <p><strong>Price:</strong> {{ selectedCar.price | currency }}</p>
+        <p><strong>Price:</strong> {{ price! }} {{ currency?.sign }}</p>
         <p><strong>Passengers:</strong> {{ passengerCount }}</p>
       </div>
   
@@ -32,7 +32,7 @@
               </div>
               <div class="form-item">
                 <label for="flight_number">Flight Number</label>
-                <input type="text" id="flight_number" formControlName="flight_number" placeholder="e.g., TK1234" required />
+                <input type="text" id="flight_number" formControlName="flight_number" placeholder="e.g., TK1234" />
               </div>
             </div>
             <label>
@@ -102,7 +102,7 @@
           <!-- Complete Reservation -->
           <div class="form-actions">
             <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.invalid" severity="info" variant="simple" size="small">Please fill required fields</p-message>
-            <button type="button" class="btn-back" (click)="goToPreviousStep()">Back</button>
+            <button [hidden]="stepFromUrl == 3" type="button" class="btn-back" (click)="goToPreviousStep()">Back</button>
             <button pButton [loading]="isSaving" type="submit" class="btn-complete">Complete Reservation</button>
           </div>
         </form>

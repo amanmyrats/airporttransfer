@@ -5,5 +5,5 @@ export class PopularRoute {
     destination?: string;
     car_type?: string;
     distance?: string;
-    euro_price?: string;
+    euro_price?: number;
 }

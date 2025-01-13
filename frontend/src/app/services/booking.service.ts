@@ -51,7 +51,7 @@ export class BookingService {
     this.bookingCompletionForm = this.fb.group({
       transfer_date: ['', Validators.required],
       transfer_time: ['', Validators.required],
-      flight_number: ['', Validators.required],
+      flight_number: '',
       is_round_trip: [false],
       return_transfer_date: [''],
       return_transfer_time: [''],
@@ -60,7 +60,8 @@ export class BookingService {
       extra_luggage: [false],
       note: [''],
       passenger_name: ['', Validators.required],
-      passenger_email: ['', [Validators.required, Validators.email]],
+      passenger_email: '',
+      // passenger_email: ['', [Validators.required, Validators.email]],
       passenger_phone: ['', Validators.required],
       passenger_additional_phone: ['']
     });

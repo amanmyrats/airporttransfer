@@ -27,12 +27,27 @@
               <!-- <h3 class="route-header">From: {{popularRoute.main_location}}</h3> -->
               <ul class="destination-list">
             @for (popularRoute of carTypePopularRoutes; track popularRoute.id){
+              @let currency_code = currencyService.currentCurrency().code!;
+              @let price = priceCalculatorService.getRoundedPrice(
+                popularRoute.euro_price!,
+                currency_code, 
+                currencyService.currentCurrency().rate!
+                );
                     <li>
                       <span class="destination-name">
                         {{mainLocation.code}}<span class="arrow">→</span>
                         {{popularRoute.destination}}</span>
-                      <span class="price">€ {{popularRoute.euro_price}}</span>
-                      <button class="btn-book" onclick="bookRoute('Lara Beach', 'Mercedes Vito')">
+                      <span class="price">
+                        {{ price }} 
+                        {{ currency_code }}
+                      </span>
+                      <button class="btn-book" (click)="bookRoute( 
+                        mainLocation.name, 
+                        popularRoute.destination!, 
+                        popularRoute.car_type!, 
+                        price, 
+                        currency_code)"
+                        >
                         Book Now
                       </button>
                     </li>

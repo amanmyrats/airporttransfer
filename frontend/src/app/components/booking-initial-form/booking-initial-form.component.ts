@@ -17,7 +17,6 @@ import { GoogleMapsService } from '../../services/google-maps.service';
 })
 export class BookingInitialFormComponent implements OnInit {
   bookingService = inject(BookingService);
-  stepsInfo = input<any>();
   searchVehicle = output<any>();
 
   hasSubmitted = false;
@@ -26,10 +25,6 @@ export class BookingInitialFormComponent implements OnInit {
     private fb: FormBuilder, 
     private googleMapsService: GoogleMapsService, 
   ) {
-    
-    effect(() => {
-      console.log('Steps Info in booking form:', this.stepsInfo());
-    });
   }
 
   ngOnInit(): void {

@@ -3,9 +3,11 @@ import { Component, effect, inject, input, OnInit, output } from '@angular/core'
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
 import { ButtonModule } from 'primeng/button';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { MessageModule } from 'primeng/message';
+import { CarTypeService } from '../../services/car-type.service';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-booking-completion-form',
@@ -19,36 +21,41 @@ import { MessageModule } from 'primeng/message';
 })
 export class BookingCompletionFormComponent implements OnInit {
   bookingService = inject(BookingService);
+  carTypeService = inject(CarTypeService);
+  currencyService = inject(CurrencyService);
 
-  stepsInfo = input<any>();
+  stepFromUrl: number | null = null;
+
   previousStep = output<any>();
 
   isSaving = false;
   hasSubmitted = false;
 
   // Mock data for reservation details (these would typically come from a service or state)
-  selectedCar = {
-    name: 'Mercedes Vito',
-    price: 50, 
-    currency_code: 'EUR', 
-    image: 'assets/images/vito.jpg'
-  };
-  fromLocation = 'Antalya Airport';
-  toLocation = 'Lara Beach';
-  distance = 20; // in km
-  passengerCount = 3;
+  selectedCar = this.carTypeService.getCarTypeByCode(
+    this.bookingService.bookingCarTypeSelectionForm.get('car_type')?.value
+  ) 
+  price = this.bookingService.bookingCarTypeSelectionForm.get('amount')?.value;
+  currency = this.currencyService.getCurrencyByCode(
+    this.bookingService.bookingCarTypeSelectionForm.get('currency_code')?.value
+  )
+  fromLocation = this.bookingService.bookingInitialForm.get('pickup_full')?.value;
+  toLocation = this.bookingService.bookingInitialForm.get('dest_full')?.value;
+  distance = this.bookingService.bookingCarTypeSelectionForm.get('distance')?.value;
+  passengerCount = 333;
 
   constructor(
     private fb: FormBuilder, 
     private router: Router,  
     private languageService: LanguageService, 
+    private route: ActivatedRoute, 
   ) {
-    effect(() => {
-      console.log('Steps Info in completion:', this.stepsInfo());
-    });
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      this.stepFromUrl = params['step'];
+    });
 
     // Ensure the return fields are updated based on the "returnTrip" checkbox
     this.toggleReturnFields();

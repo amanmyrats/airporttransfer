@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { SuperHeaderComponent } from '../../components/super-header/super-header.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from '../../components/footer/footer.component';
@@ -7,6 +7,8 @@ import { StepperModule } from 'primeng/stepper';
 import { BookingInitialFormComponent } from '../../components/booking-initial-form/booking-initial-form.component';
 import { BookingCompletionFormComponent } from '../../components/booking-completion-form/booking-completion-form.component';
 import { BookingCarTypeSelectionFormComponent } from '../../components/booking-car-type-selection-form/booking-car-type-selection-form.component';
+import { ActivatedRoute } from '@angular/router';
+import { BookingService } from '../../services/booking.service';
 
 @Component({
   selector: 'app-booking',
@@ -23,12 +25,52 @@ import { BookingCarTypeSelectionFormComponent } from '../../components/booking-c
   styleUrl: './booking.component.scss'
 })
 export class BookingComponent implements OnInit {
+  bookingService = inject(BookingService);
   activeStep: number = 1;
+  stepFromUrl: number | null = null;
 
   constructor(
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
+    console.log('BookingComponent initialized');
+    this.route.queryParams.subscribe((params) => {
+      if (params['step'] === '2') {
+        this.prefillStep1Data(params);
+        this.stepFromUrl = 2; // Start from step 2
+        this.activeStep = this.stepFromUrl;
+      }
+      if (params['step'] === '3') {
+        this.prefillStep1Data(params);
+        this.prefillStep2Data(params);
+        this.stepFromUrl = 3;
+        this.activeStep = this.stepFromUrl; // Start from step 3
+      }
+    });
+  }
+
+  prefillStep1Data(params: any): void {
+    this.bookingService.bookingInitialForm.patchValue({
+      pickup_full: params['pickup_full'],
+      pickup_lat: params['pickup_lat'],
+      pickup_lng: params['pickup_lng'],
+      dest_full: params['dest_full'],
+      dest_lat: params['dest_lat'],
+      dest_lng: params['dest_lng'],
+    });
+    this.bookingService.bookingCarTypeSelectionForm.patchValue({
+      distance: params['distance'],
+      driving_duration: params['driving_duration'],
+    });
+  }
+
+  prefillStep2Data(params: any): void {
+    this.bookingService.bookingCarTypeSelectionForm.patchValue({
+      car_type: params['car_type'],
+      amount: params['amount'],
+      currency_code: params['currency_code'],
+    });
   }
 
   goToStep(event: any, fromStep: number, toStep: number): void {

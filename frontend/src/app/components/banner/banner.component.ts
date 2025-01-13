@@ -1,11 +1,82 @@
 import { Component } from '@angular/core';
+import { GmapsAutocompleteDirective } from '../../directives/gmaps-autocomplete.directive';
+import { GoogleMapsService } from '../../services/google-maps.service';
+import { BookingService } from '../../services/booking.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-banner',
-  imports: [],
+  imports: [
+    GmapsAutocompleteDirective, 
+    FormsModule, ReactiveFormsModule, 
+  ],
   templateUrl: './banner.component.html',
   styleUrl: './banner.component.scss'
 })
 export class BannerComponent {
 
+  constructor(
+    public googleMapsService: GoogleMapsService, 
+    public bookingService: BookingService, 
+    private router: Router, 
+    private languageService: LanguageService,
+  ) {
+  }
+
+  onSubmit(): void {
+    const formValue = this.bookingService.bookingInitialForm.value;
+    console.log('Booking Form:', formValue);
+    const origin: google.maps.LatLngLiteral = { 
+      lat: formValue.pickup_lat, lng: formValue.pickup_lng };
+    const destination: google.maps.LatLngLiteral = { 
+      lat: formValue.dest_lat, lng: formValue.dest_lng };
+
+    this.googleMapsService.calculateDrivingDistanceAndTime(origin, destination
+    ).then(result => {
+        this.router.navigate([`${this.languageService.currentLang().code}/booking`], {
+          queryParams: {
+            step: 2,
+            pickup_full: formValue.pickup_full,
+            dest_full: formValue.dest_full,
+            pickup_lat: formValue.pickup_lat,
+            pickup_lng: formValue.pickup_lng,
+            dest_lat: formValue.dest_lat,
+            dest_lng: formValue.dest_lng, 
+            distance: result.distance,
+            driving_duration: result.duration,
+          },
+        });
+    }).catch(error => {
+      console.error('Error calculating distance:', error);
+    });
+
+  }
+
+  onPickupPlaceChanged(place: google.maps.places.PlaceResult): void {
+    console.log('Pickup place selected:', place);
+    const pickup_full = this.googleMapsService.getFormattedAddress(place);
+    const pickup_lat = this.googleMapsService.getLatitude(place);
+    const pickup_lng = this.googleMapsService.getLongitude(place);
+    this.bookingService.bookingInitialForm.patchValue({
+      pickup_full: pickup_full, pickup_lat: pickup_lat, pickup_lng: pickup_lng
+    });
+  }
+
+  onDestPlaceChanged(place: google.maps.places.PlaceResult): void {
+    console.log('Destination place selected:', place);
+    const dest_full = this.googleMapsService.getFormattedAddress(place);
+    const dest_lat = this.googleMapsService.getLatitude(place);
+    const dest_lng = this.googleMapsService.getLongitude(place);
+    this.bookingService.bookingInitialForm.patchValue({
+      dest_full: dest_full, dest_lat: dest_lat, dest_lng: dest_lng
+    });
+  }
+
+  preventFormSubmit(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent the form from submitting
+    }
+  }
 }
