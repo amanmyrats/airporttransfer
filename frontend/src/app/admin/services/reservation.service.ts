@@ -38,7 +38,7 @@ export class ReservationService {
   }
 
   getStatuses(): Observable<any[]> {
-    return this.http.get<any[]>(`${env.baseUrl}${env.apiV1}${this.endPoint}statuses/`);
+    return this.http.get<any[]>(`${env.baseUrl}${env.apiV1}transfer/statuschoices/`);
   }
 
   updateStatus(id: string, reservation: Reservation): Observable<Reservation> {

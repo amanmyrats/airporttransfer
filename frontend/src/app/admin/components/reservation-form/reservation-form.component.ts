@@ -20,6 +20,7 @@ import { CarTypeService } from '../../../services/car-type.service';
 import { ReservationService } from '../../services/reservation.service';
 import { CarType } from '../../../models/car-type.model';
 import { Currency } from '../../../models/currency.model';
+import { StepperModule } from 'primeng/stepper';
 
 @Component({
     selector: 'app-reservation-form',
@@ -28,7 +29,6 @@ import { Currency } from '../../../models/currency.model';
       MessagesModule, 
       InputTextModule, 
       TextareaModule, 
-      ButtonModule, 
       CommonModule, 
       PanelModule, 
       FloatLabel, 
@@ -37,6 +37,7 @@ import { Currency } from '../../../models/currency.model';
       InputNumber, 
       DatePicker, 
       InputMask, 
+      ButtonModule, StepperModule, 
     ],
     providers: [
         HttpErrorPrinterService,

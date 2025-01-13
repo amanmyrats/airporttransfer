@@ -33,7 +33,9 @@
           label=" Ana Sayfaya Dön" class="p-button-link"
           icon="pi pi-home" (click)="onBackToMain()">
         </p-button>
-        <p-messages></p-messages>
+        @for (message of messages(); track message; let first = $first) {
+          <p-message [severity]="message.severity" [text]="message.content" [ngClass]="{ 'mt-4': !first }" />
+        }
         <p-toast [life]="10000"></p-toast>
       </div>
     </div>

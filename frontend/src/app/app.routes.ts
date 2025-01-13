@@ -7,9 +7,9 @@ import { BlogComponent } from './pages/blog/blog.component';
 import { PricesComponent } from './pages/prices/prices.component';
 import { AppComponent } from './app.component';
 import { GalleryComponent } from './pages/gallery/gallery.component';
-import { ReservationComponent } from './pages/reservation/reservation.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
+import { BookingComponent } from './pages/booking/booking.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent }, // Set HomeComponent for root
@@ -19,7 +19,7 @@ export const routes: Routes = [
         path: ':lang/prices',component: PricesComponent,
     },
     {
-        path: ':lang/reservation',component: ReservationComponent,
+        path: ':lang/booking',component: BookingComponent,
     },
     {
         path: ':lang/aboutus',component: AboutUsComponent,

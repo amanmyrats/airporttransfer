@@ -33,7 +33,7 @@ export class HomeComponent {
   }
 
   ngOnInit(): void {
-
+    console.log('HomeComponent');
   }
 
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
@@ -17,5 +17,4 @@ import { CurrencySelectionComponent } from '../currency-selection/currency-selec
   styleUrl: './super-header.component.scss'
 })
 export class SuperHeaderComponent {
-
 }

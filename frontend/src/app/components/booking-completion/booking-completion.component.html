@@ -15,7 +15,7 @@
       <!-- Right Section: Form -->
       <div class="reservation-form">
         <h2>Complete Your Reservation</h2>
-        <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="bookingCompletionForm" (ngSubmit)="onSubmit()">
           <!-- Travel and Flight Info -->
           <div class="form-group">
             <h3>Travel and Flight Information</h3>
@@ -37,7 +37,7 @@
               <input type="checkbox" formControlName="returnTrip" (change)="toggleReturnFields()" />
               Want Return?
             </label>
-            <div *ngIf="reservationForm.get('returnTrip')?.value">
+            <div *ngIf="bookingCompletionForm.get('returnTrip')?.value">
               <div class="form-row">
                 <div class="form-item">
                   <label for="returnDate">Return Date</label>

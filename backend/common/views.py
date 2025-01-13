@@ -2,7 +2,8 @@ import datetime
 
 from django.contrib.auth.hashers import make_password
 
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -32,8 +33,12 @@ class EuroRateModelViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'list':
-            return []
-        return [IsAdminUser()]
+            # Allow anyone to access the 'list' action
+            permission_classes = [AllowAny]
+        else:
+            # Require authentication for all other actions
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
     
 
 class PopularRouteModelViewSet(viewsets.ModelViewSet):
@@ -46,9 +51,20 @@ class PopularRouteModelViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'list':
-            return []
-        return [IsAdminUser()]
+            # Allow anyone to access the 'list' action
+            permission_classes = [AllowAny]
+        else:
+            # Require authentication for all other actions
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
     
+    def get_authenticators(self):
+        if self.request.resolver_match.view_name.endswith('list'):
+            # Skip authentication for 'list' action
+            return []
+        # Use default authentication classes for other actions
+        return super().get_authenticators()
+
 
 class CurrencyChoicesAPIView(APIView):
     permission_classes = [AllowAny]

@@ -3,16 +3,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-reservation-completion',
+  selector: 'app-booking-completion',
   imports: [
     CommonModule, 
     FormsModule, ReactiveFormsModule, 
   ],
-  templateUrl: './reservation-completion.component.html',
-  styleUrl: './reservation-completion.component.scss'
+  templateUrl: './booking-completion.component.html',
+  styleUrl: './booking-completion.component.scss'
 })
-export class ReservationCompletionComponent implements OnInit {
-  reservationForm!: FormGroup;
+export class BookingCompletionComponent implements OnInit {
+  bookingCompletionForm!: FormGroup;
 
   // Mock data for reservation details (these would typically come from a service or state)
   selectedCar = {
@@ -33,7 +33,7 @@ export class ReservationCompletionComponent implements OnInit {
 
   // Initialize the form
   initForm(): void {
-    this.reservationForm = this.fb.group({
+    this.bookingCompletionForm = this.fb.group({
       transferDate: ['', Validators.required],
       transferTime: ['', Validators.required],
       flightNumber: ['', Validators.required],
@@ -56,9 +56,9 @@ export class ReservationCompletionComponent implements OnInit {
 
   // Toggle the validators for return trip fields
   toggleReturnFields(): void {
-    const returnDateControl = this.reservationForm.get('returnDate');
-    const returnTimeControl = this.reservationForm.get('returnTime');
-    const isReturnTrip = this.reservationForm.get('returnTrip')?.value;
+    const returnDateControl = this.bookingCompletionForm.get('returnDate');
+    const returnTimeControl = this.bookingCompletionForm.get('returnTime');
+    const isReturnTrip = this.bookingCompletionForm.get('returnTrip')?.value;
 
     if (isReturnTrip) {
       returnDateControl?.setValidators(Validators.required);
@@ -74,14 +74,14 @@ export class ReservationCompletionComponent implements OnInit {
 
   // Handle form submission
   onSubmit(): void {
-    if (this.reservationForm.valid) {
+    if (this.bookingCompletionForm.valid) {
       const reservationData = {
-        ...this.reservationForm.value,
+        ...this.bookingCompletionForm.value,
         selectedCar: this.selectedCar,
         fromLocation: this.fromLocation,
         toLocation: this.toLocation,
         distance: this.distance,
-        price: this.selectedCar.price * (this.reservationForm.get('returnTrip')?.value ? 2 : 1)
+        price: this.selectedCar.price * (this.bookingCompletionForm.get('returnTrip')?.value ? 2 : 1)
       };
 
       console.log('Reservation Data:', reservationData);

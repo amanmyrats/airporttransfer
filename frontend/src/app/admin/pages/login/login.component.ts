@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -7,12 +7,12 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
 import { PasswordModule } from 'primeng/password';
-import { MessagesModule } from 'primeng/messages';
 import { FloatLabel } from 'primeng/floatlabel';
 import { HttpErrorPrinterService } from '../../../services/http-error-printer.service';
 import { FormErrorPrinterService } from '../../../services/form-error-printer.service';
 import { AuthService } from '../../../services/auth.service';
 import { UserService } from '../../services/user.service';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'app-login',
@@ -25,7 +25,7 @@ import { UserService } from '../../services/user.service';
         CommonModule,
         PasswordModule,
         ToastModule, 
-        MessagesModule, 
+        MessageModule, 
     ],
     providers: [
         HttpErrorPrinterService, 
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading: boolean = false;
   queryParams: any = null;
-  messages: any[] = [];
+  messages = signal<any[]>([]);
 
   constructor(
     private router: Router,
@@ -116,7 +116,17 @@ export class LoginComponent implements OnInit {
   getQueryParams() {
     this.queryParams = this.router.parseUrl(this.router.url).queryParams;
     if (this.queryParams.msg) {
-      this.messages = [{ severity: 'success', detail: this.queryParams.msg }];
+      this.messages.set([{ severity: 'success', detail: this.queryParams.msg }]);
     }
+  }
+
+  addMessage(message: any) {
+    const currentMessages = this.messages();
+    currentMessages.push(message);
+    this.messages.set(currentMessages);
+  }
+
+  clearMessages() {
+      this.messages.set([]);
   }
 }
