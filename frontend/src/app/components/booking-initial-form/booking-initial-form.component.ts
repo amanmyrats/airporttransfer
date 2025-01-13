@@ -20,6 +20,8 @@ export class BookingInitialFormComponent implements OnInit {
   stepsInfo = input<any>();
   searchVehicle = output<any>();
 
+  hasSubmitted = false;
+
   constructor(
     private fb: FormBuilder, 
     private googleMapsService: GoogleMapsService, 
@@ -52,6 +54,7 @@ export class BookingInitialFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.hasSubmitted = true;
     console.log('Booking Form:', this.bookingService.bookingInitialForm.value);
     const pickupLat: number = this.bookingService.bookingInitialForm.get('pickup_lat')?.value;
     const pickupLng: number = this.bookingService.bookingInitialForm.get('pickup_lng')?.value;

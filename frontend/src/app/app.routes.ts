@@ -49,7 +49,7 @@ export const routes: Routes = [
         data: { noHydration: true },
     },
     {
-        path: ':lang',component: PricesComponent,
+        path: ':lang',component: HomeComponent,
     },
 
 

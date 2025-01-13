@@ -1,16 +1,9 @@
 <section class="booking">
-    <!-- Hero Section -->
-    <!-- <div class="booking-hero">
-      <h1 class="booking-title">Book Your Airport Transfer</h1>
-      <p class="booking-subtitle">
-        Plan your journey in just a few steps. Choose your destination, date, and time, and enjoy a seamless travel experience.
-      </p>
-    </div> -->
   
     <!-- Booking Form -->
     <form [formGroup]="bookingService.bookingInitialForm" (ngSubmit)="onSubmit()" class="booking-form">
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group" [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid">
           <label for="pickup_full">From</label>
           <input
             type="text"
@@ -21,8 +14,11 @@
             (placeChanged)="onPickupPlaceChanged($event)" 
             (keydown)="preventFormSubmit($event)"
           />
+          <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid" class="field-error">
+            Pickup location is required.
+          </p>
         </div>
-        <div class="form-group">
+        <div class="form-group" [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid">
           <label for="dest_full">To</label>
           <input
             type="text"
@@ -33,50 +29,47 @@
             (placeChanged)="onDestPlaceChanged($event)" 
             (keydown)="preventFormSubmit($event)"
           />
+          <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid" class="field-error">
+            Destination location is required.
+          </p>
         </div>
-        <!-- <div class="form-group">
-          <label for="transfer_date">Date</label>
-          <input type="date" id="transfer_date" formControlName="transfer_date" required />
-        </div>
-        <div class="form-group">
-          <label for="transfer_time">Time</label>
-          <input type="time" id="transfer_time" formControlName="transfer_time" required />
-        </div>
-        <div class="form-group">
-          <label for="passenger_count">Passengers</label>
-          <input
-            type="number"
-            id="passenger_count"
-            formControlName="passenger_count"
-            placeholder="1"
-            min="1"
-            max="20"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label>
-            <input type="checkbox" formControlName="is_round_trip" (change)="toggleReturnTrip()" />
-            Want Return?
-          </label>
-        </div> -->
       </div>
-  
-      <!-- Return Fields -->
-      <!-- <div class="form-row" *ngIf="bookingForm.get('is_round_trip')?.value">
-        <div class="form-group">
-          <label for="return_transfer_date">Return Date</label>
-          <input type="date" id="return_transfer_date" formControlName="return_transfer_date" />
-        </div>
-        <div class="form-group">
-          <label for="return_tranfser_time">Return Time</label>
-          <input type="time" id="return_tranfser_time" formControlName="return_tranfser_time" />
-        </div>
-      </div> -->
-  
+      <div *ngIf="hasSubmitted && bookingService.bookingInitialForm.invalid" class="error-message">
+        <p class="error-title">Couldn't find your desired location?</p>
+        <p class="error-text">
+          No problem! Contact us, and we will assist you in finding the best transfer option. Choose any of the options below to reach us:
+        </p>
+        <ul class="contact-options">
+          <li>
+            <strong>Email:</strong> <a href="mailto:support&#64;yourcompany.com">support&#64;yourcompany.com</a>
+          </li>
+          <li>
+            <strong>Phone:</strong> <a href="tel:+123456789">+123 456 789</a>
+          </li>
+          <li>
+            <strong>WhatsApp:</strong> <a href="https://wa.me/123456789" target="_blank">+123 456 789</a>
+          </li>
+          <li>
+            <strong>Telegram:</strong> <a href="https://t.me/yourcompany" target="_blank">&#64;yourcompany</a>
+          </li>
+        </ul>
+      </div>
+      
+
       <div class="form-actions">
-        <button type="submit" class="btn-submit" [disabled]="!bookingService.bookingInitialForm.valid">Search</button>
+        <button type="submit" class="btn-submit" 
+        >
+        Search
+      </button>
       </div>
     </form>
+    
+    <!-- Hero Section -->
+    <div class="booking-hero">
+      <h1 class="booking-title">Book Your Airport Transfer</h1>
+      <p class="booking-subtitle">
+        Plan your journey in just a few steps. Choose your destination, date, and time, and enjoy a seamless travel experience.
+      </p>
+    </div>
   </section>
   

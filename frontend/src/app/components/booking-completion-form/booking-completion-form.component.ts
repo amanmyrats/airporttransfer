@@ -5,13 +5,14 @@ import { BookingService } from '../../services/booking.service';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-booking-completion-form',
   imports: [
     CommonModule, 
     FormsModule, ReactiveFormsModule, 
-    ButtonModule, 
+    ButtonModule, MessageModule, 
   ],
   templateUrl: './booking-completion-form.component.html',
   styleUrl: './booking-completion-form.component.scss'
@@ -23,6 +24,7 @@ export class BookingCompletionFormComponent implements OnInit {
   previousStep = output<any>();
 
   isSaving = false;
+  hasSubmitted = false;
 
   // Mock data for reservation details (these would typically come from a service or state)
   selectedCar = {
@@ -72,6 +74,7 @@ export class BookingCompletionFormComponent implements OnInit {
 
   // Handle form submission
   onSubmit(): void {
+    this.hasSubmitted = true;
     console.log('Booking Completion Form:', this.bookingService.bookingCompletionForm.value);
     console.log(this.bookingService.bookingCompletionForm.value);
     // add 2 other forms into this.bookingService.bookingCompletionForm

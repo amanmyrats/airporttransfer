@@ -26,8 +26,8 @@ export class BookingService {
     this.bookingInitialForm = this.fb.group({
       pickup_place: '',
       dest_place: '',
-      pickup_full: '',
-      dest_full: '',
+      pickup_full: ['', Validators.required],
+      dest_full: ['', Validators.required],
       pickup_lat: '',
       pickup_lng: '',
       dest_lat: '',
