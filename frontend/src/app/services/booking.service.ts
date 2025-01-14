@@ -66,6 +66,45 @@ export class BookingService {
       passenger_additional_phone: ['']
     });
 
+  this.bookingForm = this.fb.group({
+    pickup_place: '',
+    dest_place: '',
+    pickup_full: ['', Validators.required],
+    dest_full: ['', Validators.required],
+    pickup_lat: '',
+    pickup_lng: '',
+    dest_lat: '',
+    dest_lng: '',
+    // date: '',
+    // time: '',
+    // passengerCount: [1, [Validators.required, Validators.min(1), Validators.max(20)]],
+    // returnTrip: [false],
+    // returnDate: [''],
+    // returnTime: [''],
+
+    car_type: '', 
+    amount: 0,
+    currency_code: 'EUR', 
+    distance: 0,
+    driving_duration: 0,
+
+    transfer_date: ['', Validators.required],
+    transfer_time: ['', Validators.required],
+    flight_number: '',
+    is_round_trip: [false],
+    return_transfer_date: [''],
+    return_transfer_time: [''],
+    need_greet_sign: [false],
+    need_child_seat: [false],
+    extra_luggage: [false],
+    note: [''],
+    passenger_name: ['', Validators.required],
+    passenger_email: '',
+    // passenger_email: ['', [Validators.required, Validators.email]],
+    passenger_phone: ['', Validators.required],
+    passenger_additional_phone: ['']
+  });
+
   }  
 
   createBooking(reservation: Reservation): Observable<Reservation> {
@@ -73,11 +112,6 @@ export class BookingService {
   }
 
   mergeForms(): void {
-    this.bookingForm = this.fb.group({
-      ...this.bookingInitialForm.controls,
-      ...this.bookingCarTypeSelectionForm.controls,
-      ...this.bookingCompletionForm.controls,
-    });
     // patch the form values
     this.bookingForm.patchValue({
       ...this.bookingInitialForm.value,

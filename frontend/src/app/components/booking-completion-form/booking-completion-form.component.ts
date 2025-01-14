@@ -63,9 +63,9 @@ export class BookingCompletionFormComponent implements OnInit {
 
   // Toggle the validators for return trip fields
   toggleReturnFields(): void {
-    const returnDateControl = this.bookingService.bookingCompletionForm.get('returnDate');
-    const returnTimeControl = this.bookingService.bookingCompletionForm.get('returnTime');
-    const isReturnTrip = this.bookingService.bookingCompletionForm.get('returnTrip')?.value;
+    const returnDateControl = this.bookingService.bookingCompletionForm.get('return_transfer_date');
+    const returnTimeControl = this.bookingService.bookingCompletionForm.get('return_transfer_time');
+    const isReturnTrip = this.bookingService.bookingCompletionForm.get('is_round_trip')?.value;
 
     if (isReturnTrip) {
       returnDateControl?.setValidators(Validators.required);
@@ -82,12 +82,14 @@ export class BookingCompletionFormComponent implements OnInit {
   // Handle form submission
   onSubmit(): void {
     this.hasSubmitted = true;
-    console.log('Booking Completion Form:', this.bookingService.bookingCompletionForm.value);
-    console.log(this.bookingService.bookingCompletionForm.value);
     
     // add 2 other forms into this.bookingService.bookingCompletionForm
-    this.bookingService.mergeForms();
-    console.log('Merged form:', this.bookingService.bookingForm.value);
+    this.bookingService.bookingForm.patchValue({
+      ...this.bookingService.bookingInitialForm.value,
+      ...this.bookingService.bookingCarTypeSelectionForm.value,
+      ...this.bookingService.bookingCompletionForm.value,
+    });
+    console.log('Booking Form:', this.bookingService.bookingForm.value);
     if (this.bookingService.bookingForm.valid) {
       this.isSaving = true;
       console.log('Form is valid');

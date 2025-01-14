@@ -23,12 +23,14 @@
               <div class="form-item">
                 <label for="transfer_date">Transfer Date</label>
                 <input type="date" id="transfer_date" formControlName="transfer_date" required />
-                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_date')?.invalid" severity="error" variant="simple" size="small">Transfer date is required</p-message>
+                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_date')?.invalid" 
+                severity="error" variant="simple" size="small">Transfer date is required</p-message>
               </div>
               <div class="form-item">
                 <label for="transfer_time">Transfer Time</label>
                 <input type="time" id="transfer_time" formControlName="transfer_time" required />
-                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_time')?.invalid" severity="error" variant="simple" size="small">Transfer Time is required</p-message>
+                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_time')?.invalid" 
+                severity="error" variant="simple" size="small">Transfer Time is required</p-message>
               </div>
               <div class="form-item">
                 <label for="flight_number">Flight Number</label>
@@ -81,7 +83,8 @@
               <div class="form-item">
                 <label for="passenger_name">Name and Surname</label>
                 <input type="text" id="passenger_name" formControlName="passenger_name" placeholder="Full Name" required />
-                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_name')?.invalid" severity="error" variant="simple" size="small">Full Name is required</p-message>
+                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_name')?.invalid" 
+                severity="error" variant="simple" size="small">Full Name is required</p-message>
               </div>
               <div class="form-item">
                 <label for="passenger_email">Email</label>
@@ -90,7 +93,8 @@
               <div class="form-item">
                 <label for="passenger_phone">Phone</label>
                 <input type="tel" id="passenger_phone" formControlName="passenger_phone" placeholder="Primary Phone" required />
-                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_phone')?.invalid" severity="error" variant="simple" size="small">Mobile Phone is required</p-message>
+                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_phone')?.invalid" 
+                severity="error" variant="simple" size="small">Mobile Phone is required</p-message>
               </div>
               <div class="form-item">
                 <label for="passenger_additional_phone">Additional Phone</label>
@@ -101,7 +105,8 @@
   
           <!-- Complete Reservation -->
           <div class="form-actions">
-            <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.invalid" severity="info" variant="simple" size="small">Please fill required fields</p-message>
+            <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.invalid" 
+            severity="info" variant="simple" size="small">Please fill required fields</p-message>
             <button [hidden]="stepFromUrl == 3" type="button" class="btn-back" (click)="goToPreviousStep()">Back</button>
             <button pButton [loading]="isSaving" type="submit" class="btn-complete">Complete Reservation</button>
           </div>
