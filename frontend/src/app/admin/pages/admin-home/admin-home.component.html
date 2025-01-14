@@ -1,4 +1,16 @@
-<div class="card">
-    <p-menubar [model]="items" />
-</div>
+<div *ngIf="authService.isLoggedIn()" class="header">
+    <div class="card">
+      <p-menubar [model]="items"></p-menubar>
+      <div class="user-actions">
+        <p-splitButton 
+          label="{{userService.userDetailSignal()?.first_name}}" 
+          icon="pi pi-user" 
+          [model]="userActions" 
+          class="user-button" 
+          >
+        </p-splitButton>
+      </div>
+    </div>
+  </div>
+  
 <router-outlet></router-outlet>

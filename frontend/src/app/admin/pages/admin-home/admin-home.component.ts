@@ -1,20 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 import { Menubar } from 'primeng/menubar';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { AuthService } from '../../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-admin-home',
   imports: [
     RouterOutlet, Menubar, 
+    SplitButtonModule, ButtonModule,  
+    CommonModule, 
   ],
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.scss'
 })
 export class AdminHomeComponent implements OnInit {
   items: MenuItem[] | undefined;
+  userActions: MenuItem[] | undefined;
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router, 
+    public authService: AuthService, 
+    public userService: UserService, 
+  ) { 
+    this.userService.initGetUserDetail();
+  }
 
   ngOnInit(): void {
 
@@ -46,6 +60,30 @@ export class AdminHomeComponent implements OnInit {
       },
   ];
 
+  this.userActions = [
+    {
+      label: 'See Profile',
+      icon: 'pi pi-user',
+      command: () => {
+        console.log('See Profile clicked');
+      }
+    },
+    {
+      label: 'Change Password',
+      icon: 'pi pi-lock',
+      command: () => {
+        console.log('Change Password clicked');
+      }
+    },
+    {
+      label: 'Logout',
+      icon: 'pi pi-sign-out',
+      command: () => {
+        this.authService.logout();
+        this.router.navigate(['/']);
+      }
+    }
+  ];
   this.router.navigate(['/admin/reservations']);
 }
 

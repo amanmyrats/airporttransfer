@@ -1,0 +1,29 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 20px;
+  }
+  
+  p-menubar {
+    flex-grow: 1; /* Ensure menubar takes all available space */
+  }
+  
+  .user-actions {
+    margin-left: 20px;
+  }
+  
+  .user-button {
+    --button-bg: var(--primary-color);
+    --button-text-color: #fff;
+  }
+  

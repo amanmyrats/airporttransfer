@@ -31,15 +31,6 @@ class EuroRateModelViewSet(viewsets.ModelViewSet):
     ordering_fields = ('currency_code', 'euro_rate',)
     ordering = ('currency_code',)
 
-    def get_permissions(self):
-        if self.action == 'list':
-            # Allow anyone to access the 'list' action
-            permission_classes = [AllowAny]
-        else:
-            # Require authentication for all other actions
-            permission_classes = [IsAuthenticated]
-        return [permission() for permission in permission_classes]
-    
     def get_authenticators(self):
         if self.request.resolver_match.view_name.endswith('list'):
             # Skip authentication for 'list' action
@@ -56,15 +47,6 @@ class PopularRouteModelViewSet(viewsets.ModelViewSet):
     ordering_fields = ('main_location', 'destination', 'euro_price',)
     ordering = ('main_location',)
 
-    def get_permissions(self):
-        if self.action == 'list':
-            # Allow anyone to access the 'list' action
-            permission_classes = [AllowAny]
-        else:
-            # Require authentication for all other actions
-            permission_classes = [IsAuthenticated]
-        return [permission() for permission in permission_classes]
-    
     def get_authenticators(self):
         if self.request.resolver_match.view_name.endswith('list'):
             # Skip authentication for 'list' action
