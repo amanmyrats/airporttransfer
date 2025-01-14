@@ -1,4 +1,6 @@
-<div *ngIf="authService.isLoggedIn()" class="card">
+@if (authService.isLoggedIn()) {
+
+<div class="card">
   <p-menubar [model]="items">
       <ng-template pTemplate="start">
           <a href="/">
@@ -42,5 +44,8 @@
       </ng-template>
   </p-menubar>
 </div>
+} @else {
+  <app-login></app-login>
+}
 
 <router-outlet></router-outlet>

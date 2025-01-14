@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
       // Redirect to admin page
       console.log('Redirect to admin page');
       this.userService.initGetUserDetail();
-      this.router.navigate(['/admin']);
+      this.router.navigate(['/admin/reservations']);
     }
     this.getQueryParams();
   }
@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit {
             // Redirect to admin page
             console.log('Redirect to admin page');
             this.userService.initGetUserDetail();
-            this.router.navigate(['/admin']);
+            this.router.navigate(['/admin/reservations']);
           } else {
             // Show error message
             console.log('Login failed');
@@ -110,7 +110,7 @@ export class LoginComponent implements OnInit {
 
   onGoToPasswordReset() {
     console.log('Redirect to password reset page');
-    this.router.navigate(['/passwordreset']);
+    this.router.navigate(['passwordreset']);
   }
 
   getQueryParams() {

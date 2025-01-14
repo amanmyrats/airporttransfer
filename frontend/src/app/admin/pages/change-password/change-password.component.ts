@@ -86,7 +86,7 @@ export class ChangePasswordComponent  implements OnInit {
     // Redirect to main page
     console.log('Redirect to login page');
     // add queryparams to the route
-    this.router.navigate(['/login'], { queryParams });
+    this.router.navigate(['admin/login'], { queryParams });
   }
 
 }

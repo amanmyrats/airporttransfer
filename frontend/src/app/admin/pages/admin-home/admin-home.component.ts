@@ -1,4 +1,4 @@
-import { Component, effect, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterOutlet, RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -17,13 +17,14 @@ import { OverlayModule } from 'primeng/overlay';
 import { Popover } from 'primeng/popover';
 import { AuthService } from '../../../services/auth.service';
 import { ActiveRouteService } from '../../../services/active-route.service';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-admin-home',
   imports: [
-    RouterOutlet, Menubar, 
-    ButtonModule, 
-    PopoverModule, 
+    RouterOutlet, Menubar,
+    ButtonModule,
+    PopoverModule,
     MenubarModule,
     BadgeModule,
     AvatarModule,
@@ -33,110 +34,99 @@ import { ActiveRouteService } from '../../../services/active-route.service';
     OverlayModule,
     Popover,
     RouterModule,
+    LoginComponent,
   ],
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.scss'
 })
 export class AdminHomeComponent implements OnInit {
-    
-    @ViewChild('op') op: any | null = null;
-    
-    items: MenuItem[] | undefined;
-    userMenuItems: MenuItem[] | undefined;
-    activeRoute: string = '';
-    logoPath: string = '';
-    firstName: string = '';
-    
-    constructor(
-        private activeRouteService: ActiveRouteService,
-        private router: Router,
-        public userService: UserService, 
-        public authService: AuthService, 
-    ) { 
-      this.setNavbarMenu();
-    }
 
-    ngOnInit() {
-        this.userService.initGetUserDetail();
+  @ViewChild('op') op: any | null = null;
 
-        this.getFirstName();
+  items: MenuItem[] | undefined;
+  userMenuItems: MenuItem[] | undefined;
+  activeRoute: string = '';
+  logoPath: string = 'logos/logo_airporttransfer-min.png';
+  firstName: string = '';
 
-        this.logoPath = 'logos/logo_airporttransfer-min.png';
+  constructor(
+    private activeRouteService: ActiveRouteService,
+    private router: Router,
+    public userService: UserService,
+    public authService: AuthService,
+  ) {
+    this.setNavbarMenu();
+  }
 
-        this.activeRouteService.activeRoute$.subscribe(route => {
-            this.activeRoute = route;
-        });
+  ngOnInit() {
+    this.userService.initGetUserDetail();
+    this.activeRouteService.activeRoute$.subscribe(route => {
+      this.activeRoute = route;
+    });
+  }
 
-        this.router.navigate(['/admin/reservations']);
-    }
+  setNavbarMenu(): void {
+    this.setSuperAdminMenu();
+    this.setUserMenu();
+  }
 
-    setNavbarMenu(): void {
-        this.setSuperAdminMenu();
-        this.setUserMenu();
-    }
+  onMenuItemClick(linkAddress: string) {
+    (this.op ?? { hide: () => { } }).hide();
+    this.router.navigateByUrl(linkAddress);
+  }
 
-    onMenuItemClick(linkAddress: string) {
-        (this.op ?? { hide: () => { } }).hide();
-        this.router.navigateByUrl(linkAddress);
-    }
+  logOut() {
+    this.authService.logout();
+    this.router.navigateByUrl('/');
+  }
 
-    logOut() {
-        this.authService.logout();
-        this.router.navigateByUrl('/');
-    }
+  getFirstName(): void {
+    this.firstName = localStorage?.getItem('firstName')!;
+  }
 
-    getFirstName(): void {
-        this.firstName = localStorage?.getItem('firstName')!;
-    }
+  private setSuperAdminMenu() {
+    this.items = [
+      {
+        label: 'Rezervasyonlar',
+        icon: 'pi pi-star',
+        routerLink: '/admin/reservations'
+      },
+      {
+        label: 'Meşhur Güzergahlar Fiyat Listesi',
+        icon: 'pi pi-euro',
+        routerLink: '/admin/popularroutes'
+      },
+      {
+        label: 'Kurler',
+        icon: 'pi pi-dollar',
+        routerLink: '/admin/rates'
+      },
+      {
+        label: 'Kullanıcılar',
+        icon: 'pi pi-user',
+        routerLink: '/admin/users'
+      },
+    ];
+  }
 
-    private setSuperAdminMenu() {
-        this.items = [
-          {
-              label: 'Anasayfa',
-              icon: 'pi pi-home', 
-              routerLink: '/'
-          },
-          {
-              label: 'Rezervasyonlar',
-              icon: 'pi pi-star', 
-              routerLink: '/admin/reservations'
-          },
-          {
-              label: 'Meşhur Güzergahlar Fiyat Listesi',
-              icon: 'pi pi-euro', 
-              routerLink: '/admin/popularroutes'
-          },
-          {
-              label: 'Kurler',
-              icon: 'pi pi-dollar', 
-              routerLink: '/admin/rates'
-          },
-          {
-              label: 'Kullanıcılar',
-              icon: 'pi pi-user', 
-              routerLink: '/admin/users'
-          },
-      ];
-    }
+  private setUserMenu() {
+    this.userMenuItems = [
+      {
+        label: 'Profil',
+        icon: 'pi pi-user',
+        command: () => this.onMenuItemClick('/admin/profile')
 
-    private setUserMenu() {
-        this.userMenuItems = [
-            {
-                label: 'Profil',
-                icon: 'pi pi-user',
-                command: () => this.onMenuItemClick('/admin/profile')
-
-            },
-            {
-                label: 'Şifre değiştir',
-                icon: 'pi pi-key',
-                command: () => this.onMenuItemClick('/admin/changepassword')
-            },
-            {
-                label: 'Çıkış',
-                icon: 'pi pi-sign-out',
-                command: () => this.logOut()
-            },
-        ];
-    }
+      },
+      {
+        label: 'Şifre değiştir',
+        icon: 'pi pi-key',
+        command: () => this.onMenuItemClick('/admin/changepassword')
+      },
+      {
+        label: 'Çıkış',
+        icon: 'pi pi-sign-out',
+        command: () => this.logOut()
+      },
+    ];
+  }
 }

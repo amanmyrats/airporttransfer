@@ -11,6 +11,9 @@ import { AuthGuard } from './guards/auth.guard';
 import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
 import { BookingComponent } from './pages/booking/booking.component';
 import { BookingReceivedComponent } from './pages/booking-received/booking-received.component';
+import { PasswordResetComponent } from './admin/pages/password-reset/password-reset.component';
+import { PasswordResetConfirmComponent } from './admin/pages/password-reset-confirm/password-reset-confirm.component';
+import { UnauthorizedComponent } from './admin/pages/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent }, // Set HomeComponent for root
@@ -48,6 +51,20 @@ export const routes: Routes = [
         loadChildren: () => import('./admin/admin.routes').then(x => x.adminRoutes),
         data: { noHydration: true },
     },
+
+    {
+        path: 'passwordreset',
+        component: PasswordResetComponent,
+    },
+    {
+        path: 'passwordresetconfirm',
+        component: PasswordResetConfirmComponent,
+    },
+    {
+        path: 'unauthorized',
+        component: UnauthorizedComponent,
+    },
+
     {
         path: ':lang',component: HomeComponent,
     },

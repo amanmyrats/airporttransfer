@@ -41,11 +41,6 @@ class AccountModelViewSet(viewsets.ModelViewSet):
             return PasswordResetConfirmSerializer
         return AccountModelSerializer
 
-    def get_queryset(self):
-        if self.request.user.is_superuser:
-            return Account.objects.all()
-        return Account.objects.none()
-    
     @action(detail=False, methods=['post'], url_path='changepassword')
     def changepassword(self, request):
         user = request.user

@@ -67,7 +67,7 @@ export class PasswordResetConfirmComponent {
     }
 
     onGotoLogin(queryParams: any = {}) {
-      this.router.navigate(['/login'], { queryParams });
+      this.router.navigate(['admin/login'], { queryParams });
     }
 }
 
