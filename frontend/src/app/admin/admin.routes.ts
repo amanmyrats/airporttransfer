@@ -10,6 +10,8 @@ import { RateListComponent } from './pages/rate-list/rate-list.component';
 import { ReservationListComponent } from './pages/reservation-list/reservation-list.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
+import { UserProfileFormComponent } from './pages/user-profile-form/user-profile-form.component';
+import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 
 export const adminRoutes: Routes = [
     // {
@@ -29,6 +31,10 @@ export const adminRoutes: Routes = [
         // loadComponent: () =>
         //     import('./pages/logout/logout.component').then((c) => c.LogoutComponent),
         component: LogoutComponent,
+    },
+    {
+        path: 'profile', 
+        component: UserDetailComponent,
     },
     {
         path: 'changepassword',

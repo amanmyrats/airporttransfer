@@ -50,13 +50,10 @@ export class AdminHomeComponent implements OnInit {
     constructor(
         private activeRouteService: ActiveRouteService,
         private router: Router,
-        private userService: UserService, 
-        private authService: AuthService, 
+        public userService: UserService, 
+        public authService: AuthService, 
     ) { 
-        
-        effect(() => {
-            this.setNavbarMenu();
-        });
+      this.setNavbarMenu();
     }
 
     ngOnInit() {
@@ -81,6 +78,11 @@ export class AdminHomeComponent implements OnInit {
     onMenuItemClick(linkAddress: string) {
         (this.op ?? { hide: () => { } }).hide();
         this.router.navigateByUrl(linkAddress);
+    }
+
+    logOut() {
+        this.authService.logout();
+        this.router.navigateByUrl('/');
     }
 
     getFirstName(): void {
@@ -122,18 +124,18 @@ export class AdminHomeComponent implements OnInit {
             {
                 label: 'Profil',
                 icon: 'pi pi-user',
-                command: () => this.onMenuItemClick('/admin/users/profile')
+                command: () => this.onMenuItemClick('/admin/profile')
 
             },
             {
                 label: 'Şifre değiştir',
                 icon: 'pi pi-key',
-                command: () => this.onMenuItemClick('/admin/users/changepassword')
+                command: () => this.onMenuItemClick('/admin/changepassword')
             },
             {
                 label: 'Çıkış',
                 icon: 'pi pi-sign-out',
-                command: () => this.authService.logout()
+                command: () => this.logOut()
             },
         ];
     }

@@ -1,4 +1,4 @@
-<div class="card">
+<div *ngIf="authService.isLoggedIn()" class="card">
   <p-menubar [model]="items">
       <ng-template pTemplate="start">
           <a href="/">
@@ -24,7 +24,7 @@
               style="cursor: pointer;display:flex;align-items:center;" 
               (click)="op.toggle($event)" 
               >
-                  <span style="margin-right:3px;">{{firstName | titlecase }}</span>
+                  <span style="margin-right:3px;">{{userService.userDetailSignal()?.first_name| titlecase }}</span>
                   <!-- <p-avatar 
                   image="" 
                   shape="circle" 

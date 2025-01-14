@@ -43,9 +43,9 @@ class PopularRouteModelViewSet(viewsets.ModelViewSet):
     queryset = PopularRoute.objects.all()
     serializer_class = PopularRouteModelSerializer
     filterset_class = PopularRouteFilterSet
-    search_fields = ('main_location', 'destination', 'euro_price',)
-    ordering_fields = ('main_location', 'destination', 'euro_price',)
-    ordering = ('main_location',)
+    search_fields = ('main_location', 'destination', 'car_type',)
+    ordering_fields = ('main_location', 'destination', 'car_type',)
+    ordering = ('main_location', 'destination', 'car_type',)
 
     def get_authenticators(self):
         if self.request.resolver_match.view_name.endswith('list'):
