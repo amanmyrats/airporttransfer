@@ -20,6 +20,9 @@ export class BookingService {
   bookingCarTypeSelectionForm!: FormGroup;
   bookingCompletionForm!: FormGroup;
   
+// # Extra services
+
+
   constructor(
     private http: HttpClient
   ) { 
@@ -28,6 +31,8 @@ export class BookingService {
       dest_place: '',
       pickup_full: ['', Validators.required],
       dest_full: ['', Validators.required],
+      pickup_short: '',
+      dest_short: '',
       pickup_lat: '',
       pickup_lng: '',
       dest_lat: '',
@@ -57,13 +62,16 @@ export class BookingService {
       return_transfer_time: [''],
       need_greet_sign: [false],
       need_child_seat: [false],
+      child_seat_count: 0,
       extra_luggage: [false],
       note: [''],
       passenger_name: ['', Validators.required],
       passenger_email: '',
       // passenger_email: ['', [Validators.required, Validators.email]],
       passenger_phone: ['', Validators.required],
-      passenger_additional_phone: ['']
+      passenger_additional_phone: [''], 
+      passenger_count: 1,
+      passenger_count_child: 0,
     });
 
   this.bookingForm = this.fb.group({
@@ -71,16 +79,12 @@ export class BookingService {
     dest_place: '',
     pickup_full: ['', Validators.required],
     dest_full: ['', Validators.required],
+    pickup_short: '',
+    dest_short: '',
     pickup_lat: '',
     pickup_lng: '',
     dest_lat: '',
     dest_lng: '',
-    // date: '',
-    // time: '',
-    // passengerCount: [1, [Validators.required, Validators.min(1), Validators.max(20)]],
-    // returnTrip: [false],
-    // returnDate: [''],
-    // returnTime: [''],
 
     car_type: '', 
     amount: 0,
@@ -96,13 +100,16 @@ export class BookingService {
     return_transfer_time: [''],
     need_greet_sign: [false],
     need_child_seat: [false],
-    extra_luggage: [false],
-    note: [''],
+    child_seat_count: 0,
+    
     passenger_name: ['', Validators.required],
     passenger_email: '',
     // passenger_email: ['', [Validators.required, Validators.email]],
     passenger_phone: ['', Validators.required],
-    passenger_additional_phone: ['']
+    passenger_additional_phone: [''],
+    passenger_count: 1,
+    passenger_count_child: 0,
+    note: [''],
   });
 
   }  

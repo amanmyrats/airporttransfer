@@ -8,6 +8,11 @@ import { LanguageService } from '../../services/language.service';
 import { MessageModule } from 'primeng/message';
 import { CarTypeService } from '../../services/car-type.service';
 import { CurrencyService } from '../../services/currency.service';
+import { CheckboxModule } from 'primeng/checkbox';
+import { FloatLabel } from 'primeng/floatlabel';
+import { SelectButton } from 'primeng/selectbutton';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-booking-completion-form',
@@ -15,6 +20,9 @@ import { CurrencyService } from '../../services/currency.service';
     CommonModule, 
     FormsModule, ReactiveFormsModule, 
     ButtonModule, MessageModule, 
+    CheckboxModule, 
+    ToggleSwitchModule, 
+    InputNumberModule, 
   ],
   templateUrl: './booking-completion-form.component.html',
   styleUrl: './booking-completion-form.component.scss'
@@ -30,6 +38,11 @@ export class BookingCompletionFormComponent implements OnInit {
 
   isSaving = false;
   hasSubmitted = false;
+
+  needChildSeatOptions: any[] = [
+    {label: 'Çocuk Koltuğu Lazım', value: true},
+    {label: 'Lazım Değil', value: false},
+  ];
 
   // Mock data for reservation details (these would typically come from a service or state)
   selectedCar = this.carTypeService.getCarTypeByCode(

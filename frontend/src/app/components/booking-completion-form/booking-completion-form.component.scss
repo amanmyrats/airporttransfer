@@ -140,6 +140,81 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+
+/* Need Child Seat Section */
+.toggle-switch-container {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Space between items */
+  padding: 15px;
+  background-color: #f9f9f9; /* Neutral light background */
+  border: 1px solid #ddd; /* Subtle border */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  margin-top: 15px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Label Styling */
+.toggle-switch-container span {
+  font-size: 1em;
+  font-weight: bold;
+  color: #333;
+  // flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+/* Toggle Switch Styling */
+.toggle-switch-container p-toggleswitch {
+  transform: scale(1.2); /* Larger for better visibility */
+  flex-shrink: 0; /* Prevent toggle switch from shrinking */
+}
+
+/* Hover Effects */
+.toggle-switch-container:hover {
+  background-color: #f1f7ff; /* Subtle highlight on hover */
+  border-color: #c6d8ff; /* Slightly darker border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+}
+
+
+
+/* Payment Information Styling */
+.payment-info {
+  margin-bottom: 20px; /* Space below the payment info */
+  padding: 20px; /* Padding for comfortable spacing */
+  background-color: #f9fbff; /* Soft blue-tinted background for trustworthiness */
+  border: 1px solid #cfe2ff; /* Light blue border to emphasize importance */
+  border-radius: 10px; /* Smooth, rounded corners */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  font-size: 1em; /* Standard text size for readability */
+  color: #333; /* Neutral dark gray for clear text */
+  text-align: center; /* Center align for uniformity */
+}
+
+/* Total Price Styling */
+.payment-info .total-price {
+  font-size: 1.5em; /* Larger font for price */
+  font-weight: bold; /* Emphasize the price */
+  color: #004085; /* Dark blue for trustworthiness */
+  margin-bottom: 10px; /* Space below the price */
+}
+
+/* Payment Info Text Styling */
+.payment-info p {
+  margin: 0;
+  line-height: 1.6; /* Improved readability */
+  font-size: 0.9em; /* Slightly smaller text for description */
+  color: #555; /* Subtle gray for secondary information */
+}
+
+/* Hover Effect */
+.payment-info:hover {
+  background-color: #f1f8ff; /* Slightly darker blue on hover */
+  border-color: #b8daff; /* Highlight border on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+}
+
+
   /* Responsive Design */
   @media (max-width: 768px) {
     .container {

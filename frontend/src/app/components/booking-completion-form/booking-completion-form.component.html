@@ -7,9 +7,8 @@
         <p><strong>Car:</strong> {{ selectedCar?.name }}</p>
         <p><strong>From:</strong> {{ fromLocation }}</p>
         <p><strong>To:</strong> {{ toLocation }}</p>
-        <p><strong>Distance:</strong> {{ distance }} km</p>
+        <p *ngIf="distance > 0"><strong>Distance:</strong> {{ distance }} km</p>
         <p><strong>Price:</strong> {{ price! }} {{ currency?.sign }}</p>
-        <p><strong>Passengers:</strong> {{ passengerCount }}</p>
       </div>
   
       <!-- Right Section: Form -->
@@ -37,10 +36,12 @@
                 <input type="text" id="flight_number" formControlName="flight_number" placeholder="e.g., TK1234" />
               </div>
             </div>
-            <label>
-              <input type="checkbox" formControlName="is_round_trip" (change)="toggleReturnFields()" />
-              Want Return?
-            </label>
+
+            <div class="toggle-switch-container">
+              <span>Want Return Transfer?</span>
+              <p-toggleswitch formControlName="is_round_trip"></p-toggleswitch>
+            </div>
+
             <div *ngIf="bookingService.bookingCompletionForm.get('is_round_trip')?.value">
               <div class="form-row">
                 <div class="form-item">
@@ -52,27 +53,6 @@
                   <input type="time" id="return_transfer_time" formControlName="return_transfer_time" />
                 </div>
               </div>
-            </div>
-          </div>
-  
-          <!-- Extra Services -->
-          <div class="form-group">
-            <h3>Extra Services</h3>
-            <label>
-              <input type="checkbox" formControlName="need_greet_sign" />
-              Greeter Service
-            </label>
-            <label>
-              <input type="checkbox" formControlName="need_child_seat" />
-              Child Seat
-            </label>
-            <label>
-              <input type="checkbox" formControlName="extra_luggage" />
-              Extra Luggage
-            </label>
-            <div class="form-item">
-              <label for="note">Note</label>
-              <textarea id="note" formControlName="note" rows="3" placeholder="Write any additional details..."></textarea>
             </div>
           </div>
   
@@ -100,15 +80,98 @@
                 <label for="passenger_additional_phone">Additional Phone</label>
                 <input type="tel" id="passenger_additional_phone" formControlName="passenger_additional_phone" placeholder="Optional Phone" />
               </div>
+              <div class="form-item">
+                <label for="passenger_count">Passenger Count:</label>
+                <p-inputnumber formControlName="passenger_count" 
+                    [showButtons]="true" 
+                    buttonLayout="horizontal" 
+                    spinnerMode="horizontal" 
+                    [min]="0" [max]="20"
+                    [inputStyle]="{ width: '5rem' }">
+                  <ng-template #incrementbuttonicon>
+                    <span class="pi pi-plus"></span>
+                  </ng-template>
+                  <ng-template #decrementbuttonicon>
+                    <span class="pi pi-minus"></span>
+                  </ng-template>
+                </p-inputnumber>
+              </div>
+              <div class="form-item">
+                <label for="passenger_count_child">Child Count (1-7 years):</label>
+                <p-inputnumber 
+                  formControlName="passenger_count_child" 
+                  [showButtons]="true" 
+                  buttonLayout="horizontal" 
+                  spinnerMode="horizontal" 
+                  [min]="0" [max]="9"
+                  [inputStyle]="{ width: '5rem' }">
+                  <ng-template #incrementbuttonicon>
+                    <span class="pi pi-plus"></span>
+                  </ng-template>
+                  <ng-template #decrementbuttonicon>
+                    <span class="pi pi-minus"></span>
+                  </ng-template>
+                </p-inputnumber>
+              </div>
             </div>
           </div>
   
+
+          <!-- Extra Services -->
+          <div class="form-group">
+            <h3>Extra Services</h3>
+            
+            
+            <div class="toggle-switch-container">
+              <span>Need Greeter Sign?</span>
+              <p-toggleswitch formControlName="need_greet_sign"></p-toggleswitch>
+            </div>
+
+            <div class="toggle-switch-container">
+              <span>Need Child Seat?</span>
+              <p-toggleswitch formControlName="need_child_seat"></p-toggleswitch>
+              <p-inputnumber 
+                *ngIf="this.bookingService.bookingCompletionForm.value.need_child_seat" 
+                formControlName="child_seat_count" 
+                [showButtons]="true" 
+                buttonLayout="horizontal" 
+                spinnerMode="horizontal" 
+                [min]="0" [max]="9"
+                [inputStyle]="{ width: '3rem' }">
+                <ng-template #incrementbuttonicon>
+                  <span class="pi pi-plus"></span>
+                </ng-template>
+                <ng-template #decrementbuttonicon>
+                  <span class="pi pi-minus"></span>
+                </ng-template>
+              </p-inputnumber>
+            </div>
+            
+
+            <div class="form-item">
+              <label for="note">Note</label>
+              <textarea id="note" formControlName="note" rows="3" placeholder="Write any additional details..."></textarea>
+            </div>
+          </div>
+          
+          <!-- Payment Information -->
+          <div class="form-group">
+            <h3>Payment </h3>
+            <div class="payment-info">
+              <div class="total-price"><strong>{{ price! }} {{ currency?.sign }}</strong></div>
+              <p>
+                Pay cash to the driver after your trip. No payment is required until you're fully satisfied.
+              </p>
+            </div>
+            
+          </div>
+
           <!-- Complete Reservation -->
           <div class="form-actions">
             <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.invalid" 
             severity="info" variant="simple" size="small">Please fill required fields</p-message>
-            <button [hidden]="stepFromUrl == 3" type="button" class="btn-back" (click)="goToPreviousStep()">Back</button>
             <button pButton [loading]="isSaving" type="submit" class="btn-complete">Complete Reservation</button>
+            <button [hidden]="stepFromUrl == 3" type="button" class="btn-back" (click)="goToPreviousStep()">Back</button>
           </div>
         </form>
       </div>
