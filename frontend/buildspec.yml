@@ -13,6 +13,10 @@ phases:
       - npm run build --prod
   post_build:
     commands:
+
+      # Delete all files in the S3 bucket
+      - aws s3 rm s3://724supertransfers.com --recursive
+
       # - cd frontend
       # - aws s3 sync ./dist/airporttransfer/browser s3://airporttransfer.com --delete
       # - aws cloudfront create-invalidation --distribution-id E1MJNHUS0SC6E9 --paths "/*"
@@ -22,7 +26,7 @@ phases:
       # - aws s3 cp ./dist/airporttransfer/browser/index.html s3://724supertransfers.com/index.html --cache-control "max-age=86400, public"
 
       # Sync other files with longer cache duration
-      - aws s3 sync ./dist/airporttransfer/browser s3://724supertransfers.com --exclude "index.html" --delete --cache-control "max-age=31536000,immutable"
+      - aws s3 sync ./dist/airporttransfer/browser s3://724supertransfers.com --exclude "index.html" --delete --cache-control "max-age=86400,immutable"
 
       # Invalidate CloudFront
       - aws cloudfront create-invalidation --distribution-id ERWTRAHG56HIT --paths "/*"
