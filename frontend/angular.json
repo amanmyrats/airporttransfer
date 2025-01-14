@@ -41,9 +41,11 @@
               "discoverRoutes": false,
               "routesFile": "routes.txt"
             },
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "ssr": false,
+            "allowedCommonJsDependencies": [
+              "pako", 
+              "dom-to-image-more"
+            ]
           },
           "configurations": {
             "production": {
@@ -57,7 +59,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -65,7 +67,11 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true
             },
             "en": {
               "localize": ["en"],
