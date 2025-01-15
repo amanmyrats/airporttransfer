@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, Inject, inject, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { SuperHeaderComponent } from '../../components/super-header/super-header.component';
 import { BannerComponent } from '../../components/banner/banner.component';
@@ -33,13 +33,14 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent {
   private router! : Router;
+  isBrowser: boolean;
 
-  constructor() {
+  constructor(@Inject(PLATFORM_ID) private platformId: any) {
     if (typeof window !== 'undefined') {
       this.router = inject(Router);
     }
+    this.isBrowser = isPlatformBrowser(this.platformId);
   }
-
   ngOnInit(): void {
     console.log(`HomeComponent in url ${this.router.url}`);
   }
