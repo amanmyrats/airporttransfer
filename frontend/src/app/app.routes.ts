@@ -16,9 +16,17 @@ import { PasswordResetConfirmComponent } from './admin/pages/password-reset-conf
 import { UnauthorizedComponent } from './admin/pages/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent }, // Set HomeComponent for root
+    { path: '', component: HomeComponent },
+
+    { path: 'en', component: HomeComponent },
+    { path: 'de', component: HomeComponent },
+    { path: 'ru', component: HomeComponent },
+    { path: 'tr', component: HomeComponent },
 
     { path: 'en/home', component: HomeComponent },
+    { path: 'de/home', component: HomeComponent },
+    { path: 'ru/home', component: HomeComponent },
+    { path: 'tr/home', component: HomeComponent },
     {
         path: ':lang/prices',component: PricesComponent,
     },
@@ -28,25 +36,32 @@ export const routes: Routes = [
     {
         path: ':lang/booking/received',component: BookingReceivedComponent,
     },
-    {
-        path: 'en/aboutus',component: AboutUsComponent,
-    },
-    {
-        path: 'en/services',component: ServicesComponent,
-    },
-    {
-        path: 'en/gallery',component: GalleryComponent,
-    },
-    {
-        path: 'en/contact',component: ContactUsComponent,
-    },
-    {
-        path: 'en/blog', component: BlogComponent,
-    },
+    { path: 'en/aboutus',component: AboutUsComponent },
+    { path: 'de/aboutus',component: AboutUsComponent },
+    { path: 'ru/aboutus',component: AboutUsComponent },
+    { path: 'tr/aboutus',component: AboutUsComponent },
+
+    { path: 'en/services',component: ServicesComponent },
+    { path: 'de/services',component: ServicesComponent },
+    { path: 'ru/services',component: ServicesComponent },
+    { path: 'tr/services',component: ServicesComponent },
+
+    { path: 'en/gallery',component: GalleryComponent },
+    { path: 'de/gallery',component: GalleryComponent },
+    { path: 'ru/gallery',component: GalleryComponent },
+    { path: 'tr/gallery',component: GalleryComponent },
+
+    { path: 'en/contact',component: ContactUsComponent },
+    { path: 'de/contact',component: ContactUsComponent },
+    { path: 'ru/contact',component: ContactUsComponent },
+    { path: 'tr/contact',component: ContactUsComponent },
+
+    { path: 'en/blog', component: BlogComponent },
+    { path: 'de/blog', component: BlogComponent },
+    { path: 'ru/blog', component: BlogComponent },
+    { path: 'tr/blog', component: BlogComponent },
     {
         path: 'admin',
-        // canActivate: [AuthGuard],
-        // canActivateChild: [AuthGuard],
         component: AdminHomeComponent, 
         loadChildren: () => import('./admin/admin.routes').then(x => x.adminRoutes),
         data: { noHydration: true },
@@ -64,11 +79,6 @@ export const routes: Routes = [
         path: 'unauthorized',
         component: UnauthorizedComponent,
     },
-
-    {
-        path: 'en',component: HomeComponent,
-    },
-
 
     { path: '**', redirectTo: 'en/home' }, // Redirect unknown paths
 ];
