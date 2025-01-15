@@ -18,7 +18,10 @@ export const routes: Routes = [
     {   path: ':lang', component: HomeComponent },
 
     {   path: ':lang/home', component: HomeComponent    },
-    {   path: ':lang/aboutus',component: AboutUsComponent   },
+    {   path: 'en/aboutus',component: AboutUsComponent, data: { language: 'en' }  },
+    {   path: 'de/aboutus',component: AboutUsComponent, data: { language: 'de' } },
+    {   path: 'ru/aboutus',component: AboutUsComponent, data: { language: 'ru' } },
+    {   path: 'tr/aboutus',component: AboutUsComponent, data: { language: 'tr' } },
     {   path: ':lang/services',component: ServicesComponent },
     {   path: ':lang/gallery',component: GalleryComponent   },
     {   path: ':lang/contact',component: ContactUsComponent },
