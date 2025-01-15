@@ -42,7 +42,6 @@ export class HomeComponent {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
   ngOnInit(): void {
-    console.log(`HomeComponent in url ${this.router.url}`);
   }
 
 }
