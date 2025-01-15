@@ -16,7 +16,7 @@ import { PasswordResetConfirmComponent } from './admin/pages/password-reset-conf
 import { UnauthorizedComponent } from './admin/pages/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
-    { path: ':lang/', component: HomeComponent },
+    { path: ':lang', component: HomeComponent },
 
     { path: ':lang/home', component: HomeComponent },
     { path: ':lang/aboutus',component: AboutUsComponent },
