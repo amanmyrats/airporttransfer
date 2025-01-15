@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { effect, Injectable, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SUPPORTED_LANGUAGES } from '../constants/language.contants';
 import { Language } from '../models/language.model';
@@ -15,7 +15,11 @@ export class LanguageService {
     this.getStoredLanguage() || SUPPORTED_LANGUAGES.find((lang) => lang.code === 'en')!
   );
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private route: ActivatedRoute, private router: Router) {
+    effect(() => {
+      this.setLanguage(this.currentLang().code);
+    });
+  }
 
   /**
    * Set and navigate to a new language
