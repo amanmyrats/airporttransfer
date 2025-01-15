@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit } from '@angular/core';
 import { SUPPORTED_CURRENCIES } from '../../constants/currency.constants';
 import { CommonModule } from '@angular/common';
 import { CurrencyService } from '../../services/currency.service';
@@ -12,13 +12,26 @@ import { CurrencyService } from '../../services/currency.service';
   styleUrls: ['./currency-selection.component.scss'],
 })
 export class CurrencySelectionComponent implements OnInit {
-  currencyService = inject(CurrencyService); // Inject the currency service
-  supportedCurrencies = SUPPORTED_CURRENCIES; // Use the constants for supported currencies
+  supportedCurrencies = SUPPORTED_CURRENCIES;
+  selectedCurrency: any = { name: 'Euro', code: 'EUR', symbol: '€' };
   isDropdownVisible = false; // Tracks the visibility of the dropdown menu
+  currencyService!: CurrencyService;
+  
+  constructor() {
+    if (typeof window !== 'undefined') {
+      this.currencyService = inject(CurrencyService);
 
-  constructor() {}
+      effect(() => {
+        this.selectedCurrency = this.currencyService.currentCurrency();
+      }
+      );
+    }
+  }
 
   ngOnInit(): void {
+    if (typeof window !== 'undefined') {
+      this.selectedCurrency = this.currencyService.currentCurrency();
+    }
   }
 
   /**

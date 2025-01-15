@@ -8,13 +8,6 @@ import { CurrencyService } from './app/services/currency.service';
 
 bootstrapApplication(AppComponent, appConfig)
     .then(appRef => {
-        // Inject the LanguageService to handle language detection
-        const languageService = appRef.injector.get(LanguageService);
-        const currencyService = appRef.injector.get(CurrencyService);
-
-        // Detect the current language from the URL and initialize it
-        console.log("calling detect language in main.ts")
-        // languageService.detectLanguage();
-        // currencyService.detectCurrency();
+        // You can call any service method here
     })
     .catch(err => console.error(err));

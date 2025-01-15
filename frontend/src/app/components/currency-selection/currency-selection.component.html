@@ -1,8 +1,8 @@
 <div class="dropdown" (mouseleave)="closeDropdown()">
     <!-- Dropdown Button -->
     <button class="dropdown-button" (click)="toggleDropdown()">
-      <span class="currency-sign">{{ this.currencyService.currentCurrency().sign }}</span>
-      <span>{{ this.currencyService.currentCurrency().name }}</span>
+      <span class="currency-sign">{{ selectedCurrency.sign }}</span>
+      <span>{{ selectedCurrency.name }}</span>
       <i class="dropdown-arrow pi pi-chevron-down"></i>
     </button>
   
@@ -18,4 +18,3 @@
       </li>
     </ul>
   </div>
-  

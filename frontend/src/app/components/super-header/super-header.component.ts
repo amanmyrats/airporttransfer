@@ -11,7 +11,7 @@ import { CurrencySelectionComponent } from '../currency-selection/currency-selec
   imports: [FormsModule, SelectModule, ButtonModule, 
     CommonModule, 
     LanguageSelectionComponent, 
-    // CurrencySelectionComponent, 
+    CurrencySelectionComponent, 
   ],
   templateUrl: './super-header.component.html',
   styleUrl: './super-header.component.scss'
