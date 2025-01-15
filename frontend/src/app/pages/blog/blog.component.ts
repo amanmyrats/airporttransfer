@@ -29,7 +29,6 @@ export class BlogComponent implements OnInit {
   ngOnInit(): void {
     const languageCode = this.route.snapshot.data['language'] || 'en';
     this.currentLanguage.code = languageCode;
-    console.log(this.translations.blog.blogItems)
   }
 
   getTranslation(key: string): string {

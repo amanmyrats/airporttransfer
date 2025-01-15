@@ -15,6 +15,8 @@ import { PasswordResetConfirmComponent } from './admin/pages/password-reset-conf
 import { UnauthorizedComponent } from './admin/pages/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
+    {   path: '', component: HomeComponent, data: { language: 'en' }  },
+
     {   path: 'en', component: HomeComponent, data: { language: 'en' }  },
     {   path: 'de', component: HomeComponent, data: { language: 'de' }  },
     {   path: 'ru', component: HomeComponent, data: { language: 'ru' }  },
@@ -80,5 +82,5 @@ export const routes: Routes = [
     },
 
     {   path: '**', redirectTo: 'en/home' }, // Redirect unknown paths
-    
+
 ];
