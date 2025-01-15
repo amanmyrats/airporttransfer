@@ -13,8 +13,10 @@
         (click)="onLanguageSelect(lang)"
         class="dropdown-item"
       >
+      <a [href]="lang.url" (click)="onLanguageSelect(lang)" [attr.aria-label]="'Switch to ' + lang.name">
         <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" />
-        <span>{{ lang.name }}</span>
+        {{ lang.name }}
+      </a>
       </li>
     </ul>
   </div>

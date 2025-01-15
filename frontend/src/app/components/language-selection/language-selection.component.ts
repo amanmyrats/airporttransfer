@@ -2,6 +2,7 @@ import { Component, effect, inject } from '@angular/core';
 import { LanguageService } from '../../services/language.service';
 import { CommonModule } from '@angular/common';
 import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-language-selection',
@@ -17,10 +18,12 @@ export class LanguageSelectionComponent {
 
   isDropdownVisible = false; // Tracks the visibility of the dropdown menu
   private languageService!: LanguageService;
+  private router!: Router;
 
   constructor() {
     if (typeof window !== 'undefined') {
       this.languageService = inject(LanguageService);
+      this.router = inject(Router);
 
       effect(() => {
         this.selectedLanguage = this.languageService.currentLang();
@@ -41,8 +44,17 @@ export class LanguageSelectionComponent {
    * @param lang - The selected language object
    */
   onLanguageSelect(lang: any): void {
-    this.languageService.setLanguage(lang.code); // Update language via the service
-    this.isDropdownVisible = false; // Close the dropdown menu
+    const translatedUrl = this.getTranslatedUrl(lang.code);
+    this.languageService.setLanguage(lang.code);
+    this.router.navigateByUrl(translatedUrl);
+    this.isDropdownVisible = false; // Close the dropdown
+  }
+
+  getTranslatedUrl(langCode: string): string {
+    const currentUrl = this.router.url; // Get the current URL
+    const segments = currentUrl.split('/'); // Split URL into segments
+    segments[1] = langCode; // Replace the language code segment
+    return segments.join('/'); // Reconstruct the URL
   }
 
   /**
