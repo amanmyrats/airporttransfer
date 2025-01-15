@@ -6,6 +6,7 @@
 /en/services
 /en/prices
 /en/blog
+/en/booking/received
 /tr
 /tr/home
 /tr/aboutus
@@ -13,13 +14,15 @@
 /tr/services
 /tr/prices
 /tr/blog
-/fr
-/fr/home
-/fr/aboutus
-/fr/contactus
-/fr/services
-/fr/prices
-/fr/blog
+/tr/booking/received
+/de
+/de/home
+/de/aboutus
+/de/contactus
+/de/services
+/de/prices
+/de/blog
+/de/booking/received
 /ru
 /ru/home
 /ru/aboutus
@@ -27,3 +30,4 @@
 /ru/services
 /ru/prices
 /ru/blog
+/ru/booking/received

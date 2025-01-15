@@ -20,8 +20,14 @@
           <div class="car-section">
             <img src="cars/vito.png" alt="Mercedes Vito" class="car-image" />
             <h2 class="car-title">{{carType.name}}
-              <br>
-              <span>or equivalent</span>
+              <br> 
+              <!-- user icon pi icon -->
+              <span class="icon">
+                <i class="pi pi-user"> {{carType.pax}}, </i>
+              </span>
+              <span>
+                {{getTranslation('or_equivalent', this.languageService.currentLang().code)}}
+              </span>
             </h2>
             <div class="car-routes">
               <!-- <h3 class="route-header">From: {{popularRoute.main_location}}</h3> -->

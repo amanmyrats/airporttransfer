@@ -28,6 +28,15 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   priceCalculatorService = inject(PriceCalculatorService);
   currencyService = inject(CurrencyService);
 
+  translations: any = {
+    'or_equivalent': {
+      'en': 'or equivalent', 
+      'de': 'oder gleichwertig',
+      'tr': 'veya eşdeğeri',
+      'ru': 'или эквивалент',
+    }
+  };
+
   popularRoutesSignal = this.popularRouteService.popularRoutesSignal;
   
   mainLocations: any[] = this.mainLocationService.getMainLocations();
@@ -35,7 +44,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   constructor(
     private googleMapsService: GoogleMapsService, 
     private bookingService: BookingService, 
-    private languageService: LanguageService, 
+    public languageService: LanguageService, 
     private router: Router,
   ) {
     this.mainLocations = this.mainLocationService.getMainLocations();
@@ -97,6 +106,10 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.activeIndex = 2;
       
+  }
+
+  getTranslation(key: string, langCode: string): string {
+    return this.translations[key][langCode];
   }
 
 }
