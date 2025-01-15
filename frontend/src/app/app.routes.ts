@@ -18,7 +18,7 @@ import { UnauthorizedComponent } from './admin/pages/unauthorized/unauthorized.c
 export const routes: Routes = [
     { path: '', component: HomeComponent }, // Set HomeComponent for root
 
-    { path: ':lang/home', component: HomeComponent },
+    { path: 'en/home', component: HomeComponent },
     {
         path: ':lang/prices',component: PricesComponent,
     },
@@ -29,19 +29,19 @@ export const routes: Routes = [
         path: ':lang/booking/received',component: BookingReceivedComponent,
     },
     {
-        path: ':lang/aboutus',component: AboutUsComponent,
+        path: 'en/aboutus',component: AboutUsComponent,
     },
     {
-        path: ':lang/services',component: ServicesComponent,
+        path: 'en/services',component: ServicesComponent,
     },
     {
-        path: ':lang/gallery',component: GalleryComponent,
+        path: 'en/gallery',component: GalleryComponent,
     },
     {
-        path: ':lang/contact',component: ContactUsComponent,
+        path: 'en/contact',component: ContactUsComponent,
     },
     {
-        path: ':lang/blog', component: BlogComponent,
+        path: 'en/blog', component: BlogComponent,
     },
     {
         path: 'admin',
@@ -66,7 +66,7 @@ export const routes: Routes = [
     },
 
     {
-        path: ':lang',component: HomeComponent,
+        path: 'en',component: HomeComponent,
     },
 
 

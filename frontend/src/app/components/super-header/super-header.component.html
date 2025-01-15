@@ -27,8 +27,14 @@
         </div>
 
         <div class="social-media">
-            <app-language-selection></app-language-selection>
-            <app-currency-selection></app-currency-selection>
+            <div class="language-fallback">
+                <span>English</span>
+              </div>
+              <!-- <ng-container *ngIf="isClient"> -->
+
+                  <app-language-selection></app-language-selection>
+                <!-- </ng-container> -->
+            <!-- <app-currency-selection></app-currency-selection> -->
         </div>
 
     </div>

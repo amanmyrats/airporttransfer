@@ -11,7 +11,6 @@ export class NavbarComponent {
   menuOpen = false;
 
   constructor(
-    public languageService: LanguageService,
   ) { }
 
   toggleMenu(): void {

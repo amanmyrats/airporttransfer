@@ -12,22 +12,28 @@ import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
   styleUrl: './language-selection.component.scss'
 })
 export class LanguageSelectionComponent {
-  supportedLanguages = SUPPORTED_LANGUAGES; // Use the constants for supported languages
-  selectedLanguage: any = '';
-  isDropdownVisible = false; // Tracks the visibility of the dropdown menu
+  supportedLanguages = SUPPORTED_LANGUAGES;
+  selectedLanguage: any = { name: 'English', code: 'en', flag: 'flags/gb.svg' };
 
-  constructor(private languageService: LanguageService) {
-    // React to changes in the signal
-    effect(() => {
-      console.log('Inside language effect');
-      this.selectedLanguage = this.languageService.currentLang();
-    });
+  isDropdownVisible = false; // Tracks the visibility of the dropdown menu
+  private languageService!: LanguageService;
+
+  constructor() {
+    if (typeof window !== 'undefined') {
+      this.languageService = inject(LanguageService);
+
+      effect(() => {
+        this.selectedLanguage = this.languageService.currentLang();
+      });
+    }
   }
 
   ngOnInit(): void {
     console.log('Updating selected language');
-    this.selectedLanguage = this.languageService.currentLang();
-    console.log(this.selectedLanguage);
+    if (typeof window !== 'undefined') {
+      this.selectedLanguage = this.languageService.currentLang();
+      console.log(this.selectedLanguage);
+    }
   }
 
   /**
