@@ -10,10 +10,10 @@
     <ul class="dropdown-menu" [class.show]="isDropdownVisible">
       <li
         *ngFor="let lang of supportedLanguages"
+        class="dropdown-item" 
         (click)="onLanguageSelect(lang)"
-        class="dropdown-item"
       >
-      <a [href]="getTranslatedUrl(lang.code)" (click)="onLanguageSelect(lang)" [attr.aria-label]="'Switch to ' + lang.name">
+      <a [href]="lang.code + translatedUrlWithoutLang" [attr.aria-label]="'Switch to ' + lang.name">
         <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" />
         {{ lang.name }}
       </a>

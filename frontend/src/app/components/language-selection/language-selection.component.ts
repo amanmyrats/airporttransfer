@@ -16,6 +16,8 @@ export class LanguageSelectionComponent {
   supportedLanguages = SUPPORTED_LANGUAGES;
   selectedLanguage: any = { name: 'English', code: 'en', flag: 'flags/gb.svg' };
 
+  translatedUrlWithoutLang: string = '';
+
   isDropdownVisible = false; // Tracks the visibility of the dropdown menu
   private languageService!: LanguageService;
   private router!: Router;
@@ -27,14 +29,16 @@ export class LanguageSelectionComponent {
 
       effect(() => {
         this.selectedLanguage = this.languageService.currentLang();
-      });
+        this.translatedUrlWithoutLang = this.getTranslatedUrlWithoutLang(this.selectedLanguage.code);
+    });
     }
   }
 
   ngOnInit(): void {
-    console.log('Updating selected language');
     if (typeof window !== 'undefined') {
+      console.log('Updating selected language in language selection component, no redirection');
       this.selectedLanguage = this.languageService.currentLang();
+      this.translatedUrlWithoutLang = this.getTranslatedUrlWithoutLang(this.selectedLanguage.code);
       console.log(this.selectedLanguage);
     }
   }
@@ -44,16 +48,19 @@ export class LanguageSelectionComponent {
    * @param lang - The selected language object
    */
   onLanguageSelect(lang: any): void {
-    const translatedUrl = this.getTranslatedUrl(lang.code);
-    this.languageService.setLanguage(lang.code);
-    this.router.navigateByUrl(translatedUrl);
+    console.log('onLanguageSelect Selected language in language selection component:', lang);
+    this.languageService.setLanguage(lang.code, true)
     this.isDropdownVisible = false; // Close the dropdown
   }
 
-  getTranslatedUrl(langCode: string): string {
+  getTranslatedUrlWithoutLang(langCode: string): string {
     const currentUrl = this.router.url; // Get the current URL
     const segments = currentUrl.split('/'); // Split URL into segments
-    segments[1] = langCode; // Replace the language code segment
+    // segments[1] = langCode; // Replace the language code segment
+    // if segments[1] is in the supported languages then remove it
+    if (this.supportedLanguages.map((lang) => lang.code).includes(segments[1])) {
+      segments.splice(1, 1);
+    }
     return segments.join('/'); // Reconstruct the URL
   }
 

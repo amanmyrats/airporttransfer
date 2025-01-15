@@ -17,6 +17,7 @@ export class LanguageService {
 
   constructor(private route: ActivatedRoute, private router: Router) {
     effect(() => {
+      console.log('Triggered currentLang() effect in language service');
       this.setLanguage(this.currentLang().code);
     });
   }
@@ -25,14 +26,17 @@ export class LanguageService {
    * Set and navigate to a new language
    * @param langCode - The new language code to set (e.g., 'en', 'tr')
    */
-  setLanguage(langCode: string): void {
+  setLanguage(langCode: string, alreadyNavigated: boolean = false): void {
     const selectedLang = SUPPORTED_LANGUAGES.find((lang) => lang.code === langCode);
 
     if (selectedLang) {
       this.currentLang.set(selectedLang); // Update the signal value
       this.storeLanguage(langCode); // Persist the selected language
-      const currentRoute = this.router.url.split('/').slice(2).join('/'); // Remove language from URL
-      this.router.navigate([`/${langCode}/${currentRoute}`]);
+      if (!alreadyNavigated) {
+        console.log('Navigating to new language in language service');
+        const currentRoute = this.router.url.split('/').slice(2).join('/'); // Remove language from URL
+        this.router.navigate([`/${langCode}/${currentRoute}`]);
+      }
     } else {
       console.warn(`Unsupported language code: ${langCode}`);
     }

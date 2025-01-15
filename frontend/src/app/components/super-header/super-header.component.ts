@@ -17,9 +17,7 @@ import { CurrencySelectionComponent } from '../currency-selection/currency-selec
   styleUrl: './super-header.component.scss'
 })
 export class SuperHeaderComponent implements OnInit {
-  isClient = false;
 
   ngOnInit(): void {
-    this.isClient = typeof window !== 'undefined';
   }
 }
