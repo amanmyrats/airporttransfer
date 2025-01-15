@@ -16,14 +16,14 @@ import { PasswordResetConfirmComponent } from './admin/pages/password-reset-conf
 import { UnauthorizedComponent } from './admin/pages/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent },
+    { path: ':lang/', component: HomeComponent },
 
-    { path: 'home', component: HomeComponent },
-    { path: 'aboutus',component: AboutUsComponent },
-    { path: 'services',component: ServicesComponent },
-    { path: 'gallery',component: GalleryComponent },
-    { path: 'contact',component: ContactUsComponent },
-    { path: 'blog', component: BlogComponent },
+    { path: ':lang/home', component: HomeComponent },
+    { path: ':lang/aboutus',component: AboutUsComponent },
+    { path: ':lang/services',component: ServicesComponent },
+    { path: ':lang/gallery',component: GalleryComponent },
+    { path: ':lang/contact',component: ContactUsComponent },
+    { path: ':lang/blog', component: BlogComponent },
 
     // { path: 'en', component: HomeComponent },
     // { path: 'de', component: HomeComponent },
