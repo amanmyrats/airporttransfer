@@ -13,7 +13,7 @@
         (click)="onLanguageSelect(lang)"
         class="dropdown-item"
       >
-      <a [href]="lang.url" (click)="onLanguageSelect(lang)" [attr.aria-label]="'Switch to ' + lang.name">
+      <a [href]="getTranslatedUrl(lang.code)" (click)="onLanguageSelect(lang)" [attr.aria-label]="'Switch to ' + lang.name">
         <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" />
         {{ lang.name }}
       </a>
