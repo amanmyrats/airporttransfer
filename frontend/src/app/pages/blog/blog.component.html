@@ -1,77 +1,52 @@
 <div class="home-wrapper">
-    <app-super-header></app-super-header>
-    <app-navbar></app-navbar>
+  <app-super-header></app-super-header>
+  <app-navbar></app-navbar>
 
-    <section class="blogs">
-        <!-- Hero Section -->
-        <div class="blogs-hero">
-          <h1 class="blogs-title">Our Blog</h1>
-          <p class="blogs-subtitle">
-            Stay updated with the latest travel tips, airport transfer insights, and guides to make your journey seamless and enjoyable.
-          </p>
-        </div>
-      
-        <!-- Blog Categories -->
-        <div class="blog-categories">
-          <h2 class="categories-title">Categories</h2>
-          <ul class="categories-list">
-            <li><a href="/blog/category/tips">Travel Tips</a></li>
-            <li><a href="/blog/category/destinations">Destinations</a></li>
-            <li><a href="/blog/category/luxury-travel">Luxury Travel</a></li>
-            <li><a href="/blog/category/family-travel">Family Travel</a></li>
-          </ul>
-        </div>
-      
-        <!-- Blog List -->
-        <div class="blog-list">
-          <!-- Blog Item 1 -->
-          <div class="blog-item">
-            <img src="blogs/blog.png" alt="Top Tips for Airport Transfers" class="blog-image" />
-            <div class="blog-content">
-              <h3 class="blog-title"><a href="/blog/top-tips-airport-transfers">Top Tips for Airport Transfers</a></h3>
-              <p class="blog-excerpt">
-                Discover how to make your airport transfer smooth and stress-free with these expert tips. Learn about the best practices to ensure comfort and reliability.
-              </p>
-              <a href="/blog/top-tips-airport-transfers" class="read-more">Read More</a>
-            </div>
-          </div>
-      
-          <!-- Blog Item 2 -->
-          <div class="blog-item">
-            <img src="blogs/blog.png" alt="Luxury Airport Transfers in Turkey" class="blog-image" />
-            <div class="blog-content">
-              <h3 class="blog-title"><a href="/blog/luxury-airport-transfers-turkey">Luxury Airport Transfers in Turkey</a></h3>
-              <p class="blog-excerpt">
-                Explore our premium services that redefine luxury travel. From Mercedes Vito to Sprinter vans, indulge in style and comfort on your next journey.
-              </p>
-              <a href="/blog/luxury-airport-transfers-turkey" class="read-more">Read More</a>
-            </div>
-          </div>
-      
-          <!-- Blog Item 3 -->
-          <div class="blog-item">
-            <img src="blogs/blog.png" alt="Family-Friendly Airport Transfers" class="blog-image" />
-            <div class="blog-content">
-              <h3 class="blog-title"><a href="/blog/family-friendly-transfers">Family-Friendly Airport Transfers</a></h3>
-              <p class="blog-excerpt">
-                Traveling with family? Learn how our spacious vehicles and child-friendly amenities make family travel effortless and enjoyable.
-              </p>
-              <a href="/blog/family-friendly-transfers" class="read-more">Read More</a>
-            </div>
-          </div>
-        </div>
-      
-        <!-- Pagination -->
-        <div class="pagination">
-          <a href="#" class="pagination-link">Previous</a>
-          <a href="#" class="pagination-link active">1</a>
-          <a href="#" class="pagination-link">2</a>
-          <a href="#" class="pagination-link">3</a>
-          <a href="#" class="pagination-link">Next</a>
-        </div>
-      </section>
+  <section class="blogs">
+    <!-- Hero Section -->
+    <div class="blogs-hero">
+      <h1 class="blogs-title">{{ getTranslation('blog.title') }}</h1>
+      <p class="blogs-subtitle">{{ getTranslation('blog.subtitle') }}</p>
+    </div>
 
-      
+    <!-- Blog Categories -->
+    <div class="blog-categories">
+      <h2 class="categories-title">{{ getTranslation('blog.categories.title') }}</h2>
+      <ul class="categories-list">
+        <li><a href="/blog/category/tips">{{ getTranslation('blog.categories.list.tips') }}</a></li>
+        <li><a href="/blog/category/destinations">{{ getTranslation('blog.categories.list.destinations') }}</a></li>
+        <li><a href="/blog/category/luxury-travel">{{ getTranslation('blog.categories.list.luxuryTravel') }}</a></li>
+        <li><a href="/blog/category/family-travel">{{ getTranslation('blog.categories.list.familyTravel') }}</a></li>
+      </ul>
+    </div>
 
-    <app-footer></app-footer>
+    <!-- Blog List -->
+    <div class="blog-list">
+      <div *ngFor="let blog of translations.blog.blogItems" class="blog-item">
+        <img src="blogs/blog.png" alt="{{ blog.title[currentLanguage.code] }}" class="blog-image" />
+        <div class="blog-content">
+          <h3 class="blog-title">
+            <a [href]="'/blog/' + generateSlug(blog.title.en)">
+              {{ blog.title[currentLanguage.code] }}
+            </a>
+          </h3>
+          <p class="blog-excerpt">{{ blog.excerpt[currentLanguage.code] }}</p>
+          <a [href]="'/blog/' + generateSlug(blog.title.en)" class="read-more">
+            {{ getTranslation('blog.readMore') }}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <a href="#" class="pagination-link">{{ getTranslation('blog.pagination.previous') }}</a>
+      <a href="#" class="pagination-link active">1</a>
+      <a href="#" class="pagination-link">2</a>
+      <a href="#" class="pagination-link">3</a>
+      <a href="#" class="pagination-link">{{ getTranslation('blog.pagination.next') }}</a>
+    </div>
+  </section>
+
+  <app-footer></app-footer>
 </div>

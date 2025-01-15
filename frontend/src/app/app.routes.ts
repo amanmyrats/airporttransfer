@@ -15,17 +15,40 @@ import { PasswordResetConfirmComponent } from './admin/pages/password-reset-conf
 import { UnauthorizedComponent } from './admin/pages/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
-    {   path: ':lang', component: HomeComponent },
+    {   path: 'en', component: HomeComponent, data: { language: 'en' }  },
+    {   path: 'de', component: HomeComponent, data: { language: 'de' }  },
+    {   path: 'ru', component: HomeComponent, data: { language: 'ru' }  },
+    {   path: 'tr', component: HomeComponent, data: { language: 'tr' }  },
 
-    {   path: ':lang/home', component: HomeComponent    },
+    {   path: 'en/home', component: HomeComponent, data: { language: 'en' }  },
+    {   path: 'de/home', component: HomeComponent, data: { language: 'de' }  },
+    {   path: 'ru/home', component: HomeComponent, data: { language: 'ru' }  },
+    {   path: 'tr/home', component: HomeComponent, data: { language: 'tr' }  },
+
     {   path: 'en/aboutus',component: AboutUsComponent, data: { language: 'en' }  },
-    {   path: 'de/aboutus',component: AboutUsComponent, data: { language: 'de' } },
-    {   path: 'ru/aboutus',component: AboutUsComponent, data: { language: 'ru' } },
-    {   path: 'tr/aboutus',component: AboutUsComponent, data: { language: 'tr' } },
-    {   path: ':lang/services',component: ServicesComponent },
-    {   path: ':lang/gallery',component: GalleryComponent   },
-    {   path: ':lang/contact',component: ContactUsComponent },
-    {   path: ':lang/blog', component: BlogComponent    },
+    {   path: 'de/aboutus',component: AboutUsComponent, data: { language: 'de' }  },
+    {   path: 'ru/aboutus',component: AboutUsComponent, data: { language: 'ru' }  },
+    {   path: 'tr/aboutus',component: AboutUsComponent, data: { language: 'tr' }  },
+
+    {   path: 'en/services',component: ServicesComponent, data: { language: 'en' }  },
+    {   path: 'de/services',component: ServicesComponent, data: { language: 'de' }  },
+    {   path: 'ru/services',component: ServicesComponent, data: { language: 'ru' }  },
+    {   path: 'tr/services',component: ServicesComponent, data: { language: 'tr' }  },
+
+    {   path: 'en/gallery',component: GalleryComponent, data: { language: 'en' }  },
+    {   path: 'de/gallery',component: GalleryComponent, data: { language: 'de' }  },
+    {   path: 'ru/gallery',component: GalleryComponent, data: { language: 'ru' }  },
+    {   path: 'tr/gallery',component: GalleryComponent, data: { language: 'tr' }  },
+
+    {   path: 'en/contact',component: ContactUsComponent, data: { language: 'en' }  },
+    {   path: 'de/contact',component: ContactUsComponent, data: { language: 'de' }  },
+    {   path: 'ru/contact',component: ContactUsComponent, data: { language: 'ru' }  },
+    {   path: 'tr/contact',component: ContactUsComponent, data: { language: 'tr' }  },
+
+    {   path: 'en/blog', component: BlogComponent, data: { language: 'en' }  },
+    {   path: 'de/blog', component: BlogComponent, data: { language: 'de' }  },
+    {   path: 'ru/blog', component: BlogComponent, data: { language: 'ru' }  },
+    {   path: 'tr/blog', component: BlogComponent, data: { language: 'tr' }  },
 
     {
         path: ':lang/prices',component: PricesComponent,
