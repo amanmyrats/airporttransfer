@@ -18,13 +18,13 @@ phases:
       # - aws s3 sync ./dist/airporttransfer/browser s3://airporttransfer.com --delete
       # - aws cloudfront create-invalidation --distribution-id E1MJNHUS0SC6E9 --paths "/*"
       
-      # Sync all files with language prefix, which are localized
-      - aws s3 sync ./dist/airporttransfer/browser s3://724supertransfers.com  --delete --cache-control "max-age=1200,immutable"
-
       # Sync HTML with short cache duration copy en/index to root
-      - aws s3 cp ./dist/airporttransfer/browser/en/index.html s3://724supertransfers.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
+      - aws s3 cp ./dist/airporttransfer/browser/en/home/index.html s3://724supertransfers.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
       # Then sync other files of /en with long cache duration
       - aws s3 sync ./dist/airporttransfer/browser/en s3://724supertransfers.com --exclude "index.html" --delete --cache-control "max-age=1200,immutable"
+
+      # Sync all files with language prefix, which are localized
+      - aws s3 sync ./dist/airporttransfer/browser s3://724supertransfers.com  --delete --cache-control "max-age=1200,immutable"
 
       # Invalidate CloudFront
       - aws cloudfront create-invalidation --distribution-id ERWTRAHG56HIT --paths "/*"
