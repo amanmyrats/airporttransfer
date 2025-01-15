@@ -1,29 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+  <file source-language="en" datatype="plaintext" original="ng2.template" target-language="tr">
     <body>
-      <trans-unit id="home.title" datatype="html">
-        <source>Welcome to home</source>
-        <target>Evimize hoşgeldiniz</target>
+      <trans-unit id="banner.title" datatype="html">
+        <source> Hassle-Free Airport Transfers in Turkey </source>
+        <target state="new"> Hassle-Free Airport Transfers in Turkey </target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/pages/home/home.component.html</context>
-          <context context-type="linenumber">4,5</context>
+          <context context-type="sourcefile">src/app/components/banner/banner.component.html</context>
+          <context context-type="linenumber">4,6</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="home.description" datatype="html">
-        <source>This is the home page</source>
-        <target>Bu ev sayfasıdır</target>
+      <trans-unit id="banner.subtitle" datatype="html">
+        <source> Reliable, affordable, and comfortable rides to and from major Turkish airports. </source>
+        <target state="new"> Reliable, affordable, and comfortable rides to and from major Turkish airports. </target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/pages/home/home.component.html</context>
-          <context context-type="linenumber">5</context>
+          <context context-type="sourcefile">src/app/components/banner/banner.component.html</context>
+          <context context-type="linenumber">7,9</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="home.footer" datatype="html">
-        <source>This is footer</source>
-        <target state="new"/>
+      <trans-unit id="form.pickup" datatype="html">
+        <source>Pickup Location</source>
+        <target state="new">Pickup Location</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/pages/home/home.component.html</context>
-          <context context-type="linenumber">7,8</context>
+          <context context-type="sourcefile">src/app/components/banner/banner.component.html</context>
+          <context context-type="linenumber">12,13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="form.dropoff" datatype="html">
+        <source>Dropoff Location</source>
+        <target state="new">Dropoff Location</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/banner/banner.component.html</context>
+          <context context-type="linenumber">20,21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="form.submit" datatype="html">
+        <source> Book Now </source>
+        <target state="new"> Book Now </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/banner/banner.component.html</context>
+          <context context-type="linenumber">35,36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="aboutus.title" datatype="html">
+        <source>About Us</source>
+        <target state="new">Hakkımızda</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/pages/about-us/about-us.component.html</context>
+          <context context-type="linenumber">8,9</context>
         </context-group>
       </trans-unit>
     </body>

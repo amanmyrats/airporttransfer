@@ -3,14 +3,12 @@
         "defaultLanguage": "en",
         "languages": [
             "tr",
-            "fr",
             "de",
-            "nl",
             "ru"
         ],
         "srcDir": "src/locale",
         "genDir": "src/locale",
-        "useSourceAsTarget": false,
+        "useSourceAsTarget": true,
         "targetPraefix": "",
         "targetSuffix": "",
         "beautifyOutput": true,
