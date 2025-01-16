@@ -1,22 +1,24 @@
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    background-color: #f8f9fa;
-    color: #333;
-}
-header, footer {
-    background-color: #007bff;
-    color: #fff;
-    padding: 20px 10%;
-    text-align: center;
-}
-main {
-    padding: 20px 10%;
-}
-h1, h2 {
-    color: #0056b3;
+// .blog-wrapper {
+//     font-family: Arial, sans-serif;
+//     line-height: 1.6;
+//     margin: 0;
+//     padding: 0;
+//     background-color: #f8f9fa;
+//     color: #333;
+// }
+    header, footer {
+        background-color: #f9fbff;  
+        border: 1px solid #cfe2ff; /* Light blue border to emphasize importance */
+        border-radius: 10px; /* Smooth, rounded corners */
+        color: #453fb0;
+        padding: 20px 10%;
+        text-align: center;
+    }
+    main {
+        padding: 20px 10%;
+    }
+    h1, h2 {
+        color: #0056b3;
 }
 ul, ol {
     margin: 20px 0;

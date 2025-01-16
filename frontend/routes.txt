@@ -32,3 +32,6 @@
 /ru/blogs
 /ru/booking/received
 en/blogs/antalya-airport-transfer
+de/blogs/antalya-airport-transfer
+ru/blogs/antalya-airport-transfer
+tr/blogs/antalya-airport-transfer
