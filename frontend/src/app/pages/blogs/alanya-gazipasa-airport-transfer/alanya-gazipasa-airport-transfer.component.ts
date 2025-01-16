@@ -5,16 +5,16 @@ import { FooterComponent } from '../../../components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-antalya-airport-transfer',
-  imports: [
-    SuperHeaderComponent, 
-    NavbarComponent, 
-    FooterComponent, 
-  ],
-  templateUrl: './antalya-airport-transfer.component.html',
-  styleUrl: './antalya-airport-transfer.component.scss'
+  selector: 'app-alanya-gazipasa-airport-transfer',
+    imports: [
+      SuperHeaderComponent, 
+      NavbarComponent, 
+      FooterComponent, 
+    ],
+  templateUrl: './alanya-gazipasa-airport-transfer.component.html',
+  styleUrl: './alanya-gazipasa-airport-transfer.component.scss'
 })
-export class AntalyaAirportTransferComponent {
+export class AlanyaGazipasaAirportTransferComponent {
 
   currentLanguage: any = {
     code: 'en',

@@ -58,7 +58,31 @@ export class BlogsComponent implements OnInit {
       .replace(/ /g, '-')
       .replace(/[^\w-]+/g, ''); // Remove special characters
     } else {
-      return 'anyblog';
+      return '';
+    }
+  }
+
+  getImageName(blog: any, lang: any): string {
+    if (blog.image && blog.image.name && blog.image.name[lang.code]!) {
+      return blog.image.name[lang.code];
+    } else {
+      return 'airport-transfer-turkey.jpg';
+    }
+  }
+
+  getImageAlt(blog: any, lang: any): string {
+    if (blog.image && blog.image.alt && blog.image.alt[lang.code]!) {
+      return blog.image.alt[lang.code];
+    } else {
+      return 'Airport Transfer Turkey';
+    }
+  }
+
+  getSlug(blog: any, lang: any): string {
+    if (blog.slug && blog.slug[lang.code]!) {
+      return blog.slug[lang.code];
+    } else {
+      return ''
     }
   }
 

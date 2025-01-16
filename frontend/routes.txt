@@ -32,6 +32,14 @@
 /ru/blogs
 /ru/booking/received
 en/blogs/antalya-airport-transfer
-de/blogs/antalya-airport-transfer
-ru/blogs/antalya-airport-transfer
-tr/blogs/antalya-airport-transfer
+de/blogs/antalya-flughafentransfer
+ru/blogs/transfer-aeroport-antalia
+tr/blogs/antalya-havalimani-transfer
+en/blogs/alanya-gazipasa-airport-transfer
+de/blogs/alanya-gazipasa-flughafentransfer
+ru/blogs/transfer-aeroport-alanya-gazipasa
+tr/blogs/alanya-gazipasa-havalimani-transfer
+en/blogs/istanbul-sabiha-gokcen-airport-transfer
+de/blogs/istanbul-sabiha-gokcen-flughafentransfer
+ru/blogs/transfer-aeroport-stambul-sabiha-gokcen
+tr/blogs/istanbul-sabiha-gokcen-havalimani-transfer

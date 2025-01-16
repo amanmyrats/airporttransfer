@@ -14,6 +14,8 @@ import { PasswordResetConfirmComponent } from './admin/pages/password-reset-conf
 import { UnauthorizedComponent } from './admin/pages/unauthorized/unauthorized.component';
 import { BlogsComponent } from './pages/blogs/blogs.component';
 import { AntalyaAirportTransferComponent } from './pages/blogs/antalya-airport-transfer/antalya-airport-transfer.component';
+import { AlanyaGazipasaAirportTransferComponent } from './pages/blogs/alanya-gazipasa-airport-transfer/alanya-gazipasa-airport-transfer.component';
+import { IstanbulAirportTransferComponent } from './pages/blogs/istanbul-airport-transfer/istanbul-airport-transfer.component';
 
 export const routes: Routes = [
     {   path: '', component: HomeComponent, data: { language: 'en' }  },
@@ -53,22 +55,63 @@ export const routes: Routes = [
     {   path: 'ru/blogs', component: BlogsComponent, data: { language: 'ru' }  },
     {   path: 'tr/blogs', component: BlogsComponent, data: { language: 'tr' }  },
 
+    // Blog routes
+    // Antalya Airport Transfer
     {   path: 'en/blogs/antalya-airport-transfer',
         component: AntalyaAirportTransferComponent, 
         data: { language: 'en' }  
     },
-    {   path: 'de/blogs/antalya-airport-transfer',
+    {   path: 'de/blogs/antalya-flughafentransfer',
         component: AntalyaAirportTransferComponent, 
         data: { language: 'de' }  
     },
-    {   path: 'ru/blogs/antalya-airport-transfer',
+    {   path: 'ru/blogs/transfer-aeroport-antalia',
         component: AntalyaAirportTransferComponent, 
         data: { language: 'ru' }  
     },
-    {   path: 'tr/blogs/antalya-airport-transfer',
+    {   path: 'tr/blogs/antalya-havalimani-transfer',
         component: AntalyaAirportTransferComponent, 
         data: { language: 'tr' }  
     },
+
+    // Alanya Gazipasa Airport Transfer
+    {   path: 'en/blogs/alanya-gazipasa-airport-transfer',
+        component: AlanyaGazipasaAirportTransferComponent, 
+        data: { language: 'en' }  
+    },
+    {   path: 'de/blogs/alanya-gazipasa-flughafentransfer',
+        component: AlanyaGazipasaAirportTransferComponent, 
+        data: { language: 'de' }  
+    },
+    {   path: 'ru/blogs/transfer-aeroport-alanya-gazipasa',
+        component: AlanyaGazipasaAirportTransferComponent, 
+        data: { language: 'ru' }  
+    },
+    {   path: 'tr/blogs/alanya-gazipasa-havalimani-transfer',
+        component: AlanyaGazipasaAirportTransferComponent, 
+        data: { language: 'tr' }  
+    },
+
+    // istanbul-sabiha-gokcen-airport-transfer
+    // Istanbul Sabiha Gokcen Airport Transfer
+    {   path: 'en/blogs/istanbul-sabiha-gokcen-airport-transfer',
+        component: IstanbulAirportTransferComponent, 
+        data: { language: 'en' }  
+    },
+    {   path: 'de/blogs/istanbul-sabiha-gokcen-flughafentransfer',
+        component: IstanbulAirportTransferComponent, 
+        data: { language: 'de' }  
+    },
+    {   path: 'ru/blogs/transfer-aeroport-stambul-sabiha-gokcen',
+        component: IstanbulAirportTransferComponent, 
+        data: { language: 'ru' }  
+    },
+    {   path: 'tr/blogs/istanbul-sabiha-gokcen-havalimani-transfer',
+        component: IstanbulAirportTransferComponent, 
+        data: { language: 'tr' }  
+    },
+
+
     {
         path: ':lang/prices',component: PricesComponent,
     },
