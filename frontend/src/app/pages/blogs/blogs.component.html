@@ -1,0 +1,53 @@
+<div class="home-wrapper">
+    <app-super-header></app-super-header>
+    <app-navbar></app-navbar>
+  
+    <section class="blogs">
+      <!-- Hero Section -->
+      <div class="blogs-hero">
+        <h1 class="blogs-title">{{ getTranslation('blog.title') }}</h1>
+        <p class="blogs-subtitle">{{ getTranslation('blog.subtitle') }}</p>
+      </div>
+  
+      <!-- Blog Categories -->
+      <!-- <div class="blog-categories">
+        <h2 class="categories-title">{{ getTranslation('blog.categories.title') }}</h2>
+        <ul class="categories-list">
+          <li><a href="/blog/category/tips">{{ getTranslation('blog.categories.list.tips') }}</a></li>
+          <li><a href="/blog/category/destinations">{{ getTranslation('blog.categories.list.destinations') }}</a></li>
+          <li><a href="/blog/category/luxury-travel">{{ getTranslation('blog.categories.list.luxuryTravel') }}</a></li>
+          <li><a href="/blog/category/family-travel">{{ getTranslation('blog.categories.list.familyTravel') }}</a></li>
+        </ul>
+      </div> -->
+  
+      <!-- Blog List -->
+      <div class="blog-list">
+        <div *ngFor="let blog of blogItems" class="blog-item">
+          <img src="blogs/blog.png" alt="{{ blog.title[currentLanguage.code] }}" class="blog-image" />
+          <div class="blog-content">
+            <h3 class="blog-title">
+              <a [href]="currentLanguage.code + '/blogs/' + generateSlug(blog, currentLanguage)">
+                {{ blog.title[currentLanguage.code] }}
+              </a>
+            </h3>
+            <p class="blog-excerpt">{{ blog.excerpt[currentLanguage.code] }}</p>
+            <a [href]="currentLanguage.code + '/blogs/' + generateSlug(blog, currentLanguage)" class="read-more">
+              {{ getTranslation('blog.readMore') }}
+            </a>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Pagination -->
+      <!-- <div class="pagination">
+        <a href="#" class="pagination-link">{{ getTranslation('blog.pagination.previous') }}</a>
+        <a href="#" class="pagination-link active">1</a>
+        <a href="#" class="pagination-link">2</a>
+        <a href="#" class="pagination-link">3</a>
+        <a href="#" class="pagination-link">{{ getTranslation('blog.pagination.next') }}</a>
+      </div> -->
+    </section>
+  
+    <app-footer></app-footer>
+  </div>
+  

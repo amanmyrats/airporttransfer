@@ -3,7 +3,6 @@ import { HomeComponent } from './pages/home/home.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
 import { ContactUsComponent } from './pages/contact-us/contact-us.component';
 import { ServicesComponent } from './pages/services/services.component';
-import { BlogComponent } from './pages/blog/blog.component';
 import { PricesComponent } from './pages/prices/prices.component';
 import { AppComponent } from './app.component';
 import { GalleryComponent } from './pages/gallery/gallery.component';
@@ -13,6 +12,8 @@ import { BookingReceivedComponent } from './pages/booking-received/booking-recei
 import { PasswordResetComponent } from './admin/pages/password-reset/password-reset.component';
 import { PasswordResetConfirmComponent } from './admin/pages/password-reset-confirm/password-reset-confirm.component';
 import { UnauthorizedComponent } from './admin/pages/unauthorized/unauthorized.component';
+import { BlogsComponent } from './pages/blogs/blogs.component';
+import { AntalyaAirportTransferComponent } from './pages/blogs/antalya-airport-transfer/antalya-airport-transfer.component';
 
 export const routes: Routes = [
     {   path: '', component: HomeComponent, data: { language: 'en' }  },
@@ -47,11 +48,27 @@ export const routes: Routes = [
     {   path: 'ru/contact',component: ContactUsComponent, data: { language: 'ru' }  },
     {   path: 'tr/contact',component: ContactUsComponent, data: { language: 'tr' }  },
 
-    {   path: 'en/blog', component: BlogComponent, data: { language: 'en' }  },
-    {   path: 'de/blog', component: BlogComponent, data: { language: 'de' }  },
-    {   path: 'ru/blog', component: BlogComponent, data: { language: 'ru' }  },
-    {   path: 'tr/blog', component: BlogComponent, data: { language: 'tr' }  },
+    {   path: 'en/blogs', component: BlogsComponent, data: { language: 'en' }  },
+    {   path: 'de/blogs', component: BlogsComponent, data: { language: 'de' }  },
+    {   path: 'ru/blogs', component: BlogsComponent, data: { language: 'ru' }  },
+    {   path: 'tr/blogs', component: BlogsComponent, data: { language: 'tr' }  },
 
+    {   path: 'en/blogs/antalya-airport-transfer',
+        component: AntalyaAirportTransferComponent, 
+        data: { language: 'en' }  
+    },
+    {   path: 'de/blogs/antalya-airport-transfer',
+        component: AntalyaAirportTransferComponent, 
+        data: { language: 'de' }  
+    },
+    {   path: 'ru/blogs/antalya-airport-transfer',
+        component: AntalyaAirportTransferComponent, 
+        data: { language: 'ru' }  
+    },
+    {   path: 'tr/blogs/antalya-airport-transfer',
+        component: AntalyaAirportTransferComponent, 
+        data: { language: 'tr' }  
+    },
     {
         path: ':lang/prices',component: PricesComponent,
     },

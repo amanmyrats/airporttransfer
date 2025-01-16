@@ -5,7 +5,7 @@
 /en/contactus
 /en/services
 /en/prices
-/en/blog
+/en/blogs
 /en/booking/received
 /tr
 /tr/home
@@ -13,7 +13,7 @@
 /tr/contactus
 /tr/services
 /tr/prices
-/tr/blog
+/tr/blogs
 /tr/booking/received
 /de
 /de/home
@@ -21,7 +21,7 @@
 /de/contactus
 /de/services
 /de/prices
-/de/blog
+/de/blogs
 /de/booking/received
 /ru
 /ru/home
@@ -29,5 +29,6 @@
 /ru/contactus
 /ru/services
 /ru/prices
-/ru/blog
+/ru/blogs
 /ru/booking/received
+en/blogs/antalya-airport-transfer
