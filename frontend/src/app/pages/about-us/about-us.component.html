@@ -1,82 +1,346 @@
 <div class="home-wrapper">
-    <app-super-header></app-super-header>
-    <app-navbar></app-navbar>
-    
+  <app-super-header></app-super-header>
+  <app-navbar></app-navbar>
+
+  @if (currentLanguage.code == 'de') {
     <section class="about-us">
-        <!-- Hero Section -->
-        <div class="about-hero">
-          <h1 i18n="@@aboutus.title"  class="about-title">About Us</h1>
-          <p class="about-subtitle">
-            Your trusted partner for reliable, comfortable, and stress-free airport transfers in Turkey.
-          </p>
-        </div>
-      
-        <!-- Who We Are Section -->
-        <div class="about-section">
-          <h2 class="section-title">Who We Are</h2>
-          <p>
-            Welcome to <strong>Airport Transfer Co.</strong>, the leading provider of
-            premium airport transfer services across Turkey. With years of
-            experience, a fleet of modern vehicles, and a commitment to excellence,
-            we ensure a seamless travel experience for our customers.
-          </p>
-          <p>
-            Whether you're traveling for business, leisure, or with family, our
-            mission is to make your journey from the airport to your destination as
-            smooth and comfortable as possible.
-          </p>
-        </div>
-      
-        <!-- Why Choose Us Section -->
-        <div class="about-section why-choose-us">
-          <h2 class="section-title">Why Choose Us?</h2>
-          <ul class="usp-list">
-            <li><strong>Reliable Service:</strong> On-time pickups and drop-offs, every time.</li>
-            <li><strong>Comfortable Rides:</strong> Enjoy spacious, air-conditioned vehicles tailored to your needs.</li>
-            <li><strong>Professional Drivers:</strong> Courteous, experienced, and fluent in multiple languages.</li>
-            <li><strong>Transparent Pricing:</strong> No hidden fees—just clear, upfront rates.</li>
-            <li><strong>24/7 Support:</strong> We're here to assist you whenever you need us.</li>
-          </ul>
-        </div>
-      
-        <!-- Our Fleet Section -->
-        <div class="about-section fleet">
-          <h2 class="section-title">Our Fleet</h2>
-          <p>
-            Choose from a wide range of vehicles to suit your travel needs:
-          </p>
-          <ul class="fleet-list">
-            <li>Luxury sedans for solo travelers or couples.</li>
-            <li>Spacious vans (e.g., Mercedes Vito) for families or groups.</li>
-            <li>Business-class vehicles for corporate transfers.</li>
-          </ul>
-        </div>
-      
-        <!-- Service Areas Section -->
-        <div class="about-section service-areas">
-          <h2 class="section-title">Where We Operate</h2>
-          <p>
-            We proudly serve all major airports in Turkey, including:
-          </p>
-          <ul class="area-list">
-            <li>Istanbul Airport (IST)</li>
-            <li>Sabiha Gökçen Airport (SAW)</li>
-            <li>Antalya Airport (AYT)</li>
-            <li>Izmir Adnan Menderes Airport (ADB)</li>
-            <li>Ankara Esenboğa Airport (ESB)</li>
-          </ul>
-        </div>
-      
-        <!-- Call to Action -->
-        <div class="about-cta">
-          <h2>Ready to Travel in Comfort?</h2>
-          <p>
-            Experience hassle-free airport transfers with <strong>Airport Transfer Co.</strong>
-          </p>
-          <a href="/book" class="btn-book-now">Book Your Transfer Now</a>
-        </div>
-      </section>
+      <!-- Hero Section -->
+      <div class="about-hero">
+        <h1 i18n="@@aboutus.title" class="about-title">Über uns</h1>
+        <p class="about-subtitle">
+          Ihr vertrauenswürdiger Partner für zuverlässige, komfortable und stressfreie Flughafentransfers in der Türkei, unter anderem in Istanbul, Antalya, Izmir, Ankara und weiteren Städten.
+        </p>
+      </div>
+    
+      <!-- Who We Are Section -->
+      <div class="about-section">
+        <h2 class="section-title">Wer wir sind</h2>
+        <p>
+          Willkommen bei <strong>SuperTransferS Airport Transfer Company</strong>, dem führenden Anbieter von Flughafentransfers in der Türkei. Wir verfügen über eine <strong>A Group Travel Agency</strong>-Lizenz und ein <strong>D2 Tourism Transport Certificate</strong>, die Qualität und Einhaltung in jeder Fahrt garantieren.
+        </p>
+        <p>
+          Unser Team von <strong>professionellen Fahrern</strong> mit mindestens 5 Jahren Erfahrung durchläuft eine intensive Schulung, um den bestmöglichen Service zu bieten. Egal ob Sie vom oder zum <strong>Istanbul Airport (IST – İstanbul Havalimanı)</strong>, <strong>Sabiha Gökçen Airport (SAW – Sabiha Gökçen Havalimanı)</strong> oder anderen wichtigen Zielen wie <strong>Antalya (Antalya Havalimanı)</strong>, <strong>Izmir (Adnan Menderes Havalimanı)</strong> und <strong>Alanya (Gazipaşa Havalimanı)</strong> reisen, wir sorgen dafür, dass Ihre Reise reibungslos und zuverlässig verläuft.
+        </p>
+      </div>
+    
+      <!-- Why Choose Us Section -->
+      <div class="about-section why-choose-us">
+        <h2 class="section-title">Warum uns wählen?</h2>
+        <ul class="usp-list">
+          <li><strong>24/7 mehrsprachiger Support:</strong> Sprechen Sie jederzeit in Ihrer Sprache mit uns.</li>
+          <li><strong>Transparente Preise:</strong> Genießen Sie unsere <strong>keine-versteckten-Gebühren-Politik</strong> mit wettbewerbsfähigen Preisen.</li>
+          <li><strong>Baby- und Kindersitze:</strong> Sicherheit hat für uns oberste Priorität für alle Familienmitglieder.</li>
+          <li><strong>Bargeldzahlung vor Ort:</strong> Bequemes Bezahlen an Ihrem Zielort.</li>
+          <li><strong>Kostenlose Stornierung:</strong> Flexible Buchungsoptionen, die zu Ihren Plänen passen.</li>
+          <li><strong>Flugüberwachung:</strong> Wir verfolgen Verspätungen für pünktliche Abholungen und Rückfahrten.</li>
+          <li><strong>VIP-Dienste:</strong> Business-Class und VIP-Transfers verfügbar.</li>
+        </ul>
+      </div>
+    
+      <!-- Our Fleet Section -->
+      <div class="about-section fleet">
+        <h2 class="section-title">Unsere Fahrzeugflotte</h2>
+        <p>Wählen Sie aus unserer vielfältigen und modernen Flotte das passende Fahrzeug für Ihre Reise:</p>
+        <ul class="fleet-list">
+          <li>Luxuslimousinen für Einzelreisende oder Geschäftsreisende.</li>
+          <li>Geräumige Vans (z. B. Mercedes Vito) ideal für Familien oder Gruppen.</li>
+          <li>Executive-Class-Fahrzeuge für höchsten Komfort.</li>
+        </ul>
+      </div>
+    
+      <!-- Service Areas Section -->
+      <div class="about-section service-areas">
+        <h2 class="section-title">Unsere Einsatzgebiete</h2>
+        <p>
+          Wir bedienen wichtige Flughäfen in der Türkei, darunter:
+        </p>
+        <ul class="area-list">
+          <li>Istanbul Airport (IST – Flughafen Istanbul)</li>
+          <li>Sabiha Gokcen Airport (SAW – Flughafen Sabiha Gokcen)</li>
+          <li>Antalya Airport (AYT – Flughafen Antalya)</li>
+          <li>Izmir Adnan Menderes Airport (ADB – Flughafen Izmir Adnan Menderes)</li>
+          <li>Ankara Esenboga Airport (ESB – Flughafen Ankara Esenboga)</li>
+          <li>Gazipasa-Alanya Airport (GZP – Flughafen Gazipasa-Alanya)</li>
+          <li>Milas-Bodrum Airport (BJV – Flughafen Milas-Bodrum)</li>
+          <li>Dalaman Airport (DLM – Flughafen Dalaman)</li>
+        </ul>
+      </div>
+    
+      <!-- Call to Action -->
+      <div class="about-cta">
+        <h2>Buchen Sie Ihren nächsten Transfer mit Vertrauen</h2>
+        <p>
+          Entdecken Sie stressfreie und pünktliche Flughafentransfers mit <strong>SuperTransferS Airport Transfer Company</strong> in den wichtigsten Zielen der Türkei.
+        </p>
+        <a href="{{currentLanguage.code}}/booking" class="btn-book-now">Jetzt Transfer buchen</a>
+      </div>
+    </section>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  } @else if (currentLanguage.code == 'ru') {
+    <section class="about-us">
+      <!-- Hero Section -->
+      <div class="about-hero">
+        <h1 i18n="@@aboutus.title" class="about-title">О нас</h1>
+        <p class="about-subtitle">
+          Ваш надежный партнер для надежных, комфортных и беззаботных трансферов из аэропорта в Турции, включая Стамбул, Анталию, Измир, Анкару и другие города.
+        </p>
+      </div>
+    
+      <!-- Who We Are Section -->
+      <div class="about-section">
+        <h2 class="section-title">Кто мы</h2>
+        <p>
+          Добро пожаловать в <strong>SuperTransferS Airport Transfer Company</strong>, ведущую компанию по организации трансферов из аэропортов в Турции. У нас есть лицензия <strong>A Group Travel Agency</strong> и <strong>D2 Tourism Transport Certificate</strong>, что гарантирует качество и соответствие всем требованиям на каждом этапе поездки.
+        </p>
+        <p>
+          Наша команда <strong>профессиональных водителей</strong> с минимум 5-летним опытом проходит строгую подготовку, чтобы обеспечить лучший сервис. Независимо от того, путешествуете ли вы из или в <strong>Стамбульский аэропорт (IST)</strong>, <strong>Аэропорт Сабиха Гекчен (SAW)</strong>, или в другие ключевые направления, такие как <strong>Анталия</strong>, <strong>Измир</strong> и <strong>Аланья</strong>, мы обеспечим вам комфортное и надежное путешествие.
+        </p>
+      </div>
+    
+      <!-- Why Choose Us Section -->
+      <div class="about-section why-choose-us">
+        <h2 class="section-title">Почему выбирают нас?</h2>
+        <ul class="usp-list">
+          <li><strong>Круглосуточная поддержка на нескольких языках:</strong> Общайтесь с нами на вашем языке в любое время.</li>
+          <li><strong>Прозрачные цены:</strong> Наслаждайтесь <strong>политикой без скрытых сборов</strong> с конкурентоспособными тарифами.</li>
+          <li><strong>Детские кресла:</strong> Мы заботимся о безопасности всех членов семьи.</li>
+          <li><strong>Оплата наличными на месте:</strong> Удобная оплата по прибытии.</li>
+          <li><strong>Бесплатная отмена:</strong> Гибкие варианты бронирования, подходящие под ваши планы.</li>
+          <li><strong>Отслеживание рейсов:</strong> Мы следим за задержками рейсов, чтобы обеспечить своевременную встречу и доставку.</li>
+          <li><strong>VIP-услуги:</strong> Бизнес-класс и VIP-трансферы доступны.</li>
+        </ul>
+      </div>
+    
+      <!-- Our Fleet Section -->
+      <div class="about-section fleet">
+        <h2 class="section-title">Наш автопарк</h2>
+        <p>Выбирайте из нашего разнообразного и современного автопарка транспорт, подходящий для вашего путешествия:</p>
+        <ul class="fleet-list">
+          <li>Роскошные седаны для индивидуальных или деловых поездок.</li>
+          <li>Просторные минивэны (например, Mercedes Vito), идеально подходящие для семей или групп.</li>
+          <li>Автомобили премиум-класса для максимального комфорта.</li>
+        </ul>
+      </div>
+    
+      <!-- Service Areas Section -->
+      <div class="about-section service-areas">
+        <h2 class="section-title">Регионы нашего обслуживания</h2>
+        <p>
+          Мы предоставляем услуги трансфера из основных аэропортов Турции, включая:
+        </p>
+        <ul class="area-list">
+          <li>Istanbul Havalimanı (IST – Стамбульский аэропорт)</li>
+          <li>Sabiha Gökçen Havalimanı (SAW – Аэропорт Сабиха Гекчен)</li>
+          <li>Antalya Havalimanı (AYT – Аэропорт Анталия)</li>
+          <li>Izmir Adnan Menderes Havalimanı (ADB – Аэропорт Измир Аднан Мендерес)</li>
+          <li>Ankara Esenboğa Havalimanı (ESB – Аэропорт Анкара Эсенбога)</li>
+          <li>Gazipaşa-Alanya Havalimanı (GZP – Аэропорт Газипаша-Аланья)</li>
+          <li>Milas-Bodrum Havalimanı (BJV – Аэропорт Милас-Бодрум)</li>
+          <li>Dalaman Havalimanı (DLM – Аэропорт Даламан)</li>
+        </ul>
+      </div>
+    
+      <!-- Call to Action -->
+      <div class="about-cta">
+        <h2>Забронируйте ваш следующий трансфер с уверенностью</h2>
+        <p>
+          Откройте для себя удобные и пунктуальные трансферы с <strong>SuperTransferS Airport Transfer Company</strong> в лучших направлениях Турции.
+        </p>
+        <a href="{{currentLanguage.code}}/booking" class="btn-book-now">Забронировать трансфер</a>
+      </div>
+    </section>
+    
+
+    
+
+
+    
+    
+    
+    
+    
+    
+    
+    
   
-      
-    <app-footer></app-footer>
+  } @else if (currentLanguage.code == 'tr') {
+    <section class="about-us">
+      <!-- Kahraman Bölümü -->
+      <div class="about-hero">
+        <h1 i18n="@@aboutus.title" class="about-title">Hakkımızda</h1>
+        <p class="about-subtitle">
+          İstanbul, Antalya, İzmir, Ankara ve diğer şehirlerde güvenilir, konforlu ve stressiz havaalanı transferleri için güvenilir ortağınız.
+        </p>
+      </div>
+    
+      <!-- Biz Kimiz Bölümü -->
+      <div class="about-section">
+        <h2 class="section-title">Biz Kimiz</h2>
+        <p>
+          <strong>SuperTransferS Havaalanı Transfer Şirketi</strong>'ne hoş geldiniz! Türkiye'deki havaalanı transfer hizmetlerinde lider bir sağlayıcıyız. Bir <strong>A Grubu Seyahat Acentası</strong> lisansına ve <strong>D2 Turizm Taşıma Belgesi</strong>'ne sahibiz ve her yolculukta kalite ve uyumluluk garantisi sunuyoruz.
+        </p>
+        <p>
+          En az 5 yıllık deneyime sahip <strong>profesyonel şoförlerimiz</strong>, en iyi hizmeti sunmak için titiz bir eğitimden geçmektedir. İster <strong>İstanbul Havalimanı (IST)</strong>, ister <strong>Sabiha Gökçen Havalimanı (SAW)</strong> veya <strong>Antalya</strong>, <strong>İzmir</strong> ve <strong>Alanya</strong> gibi diğer önemli destinasyonlara seyahat ediyor olun, yolculuğunuzun sorunsuz ve güvenilir olmasını sağlıyoruz.
+        </p>
+      </div>
+    
+      <!-- Neden Bizi Seçmelisiniz Bölümü -->
+      <div class="about-section why-choose-us">
+        <h2 class="section-title">Neden Bizi Seçmelisiniz?</h2>
+        <ul class="usp-list">
+          <li><strong>7/24 Çok Dilli Destek:</strong> Her zaman kendi dilinizde konuşabilirsiniz.</li>
+          <li><strong>Şeffaf Fiyat Politikası:</strong> <strong>Gizli ücret yok</strong> politikamızla rekabetçi fiyatların keyfini çıkarın.</li>
+          <li><strong>Bebek ve Çocuk Koltukları:</strong> Ailenizin tüm üyelerinin güvenliği bizim önceliğimizdir.</li>
+          <li><strong>Yerinde Nakit Ödeme:</strong> Varış yerinizde rahatça ödeme yapın.</li>
+          <li><strong>Ücretsiz İptal:</strong> Planlarınıza uygun esnek rezervasyon seçenekleri.</li>
+          <li><strong>Uçuş Takibi:</strong> Zamanında karşılamalar ve bırakmalar için gecikmeleri takip ediyoruz.</li>
+          <li><strong>VIP Hizmetler:</strong> Business sınıfı ve VIP transfer seçenekleri mevcuttur.</li>
+        </ul>
+      </div>
+    
+      <!-- Araç Filomuz Bölümü -->
+      <div class="about-section fleet">
+        <h2 class="section-title">Araç Filomuz</h2>
+        <p>Seyahat ihtiyaçlarınıza uygun çeşitli ve modern araç filomuzdan seçim yapabilirsiniz:</p>
+        <ul class="fleet-list">
+          <li>Bireysel veya iş seyahatleri için lüks sedan araçlar.</li>
+          <li>Aileler veya gruplar için ideal geniş minibüsler (ör. Mercedes Vito).</li>
+          <li>Üst düzey konfor için Executive sınıf araçlar.</li>
+        </ul>
+      </div>
+    
+      <!-- Hizmet Alanlarımız Bölümü -->
+      <div class="about-section service-areas">
+        <h2 class="section-title">Hizmet Verdiğimiz Alanlar</h2>
+        <p>
+          Türkiye'deki başlıca havaalanlarında hizmet vermekteyiz:
+        </p>
+        <ul class="area-list">
+          <li>İstanbul Havalimanı (IST)</li>
+          <li>Sabiha Gökçen Havalimanı (SAW)</li>
+          <li>Antalya Havalimanı (AYT)</li>
+          <li>İzmir Adnan Menderes Havalimanı (ADB)</li>
+          <li>Ankara Esenboğa Havalimanı (ESB)</li>
+          <li>Gazipaşa-Alanya Havalimanı (GZP)</li>
+          <li>Milas-Bodrum Havalimanı (BJV)</li>
+          <li>Dalaman Havalimanı (DLM)</li>
+        </ul>
+      </div>
+    
+      <!-- Harekete Geçme Çağrısı -->
+      <div class="about-cta">
+        <h2>Bir Sonraki Transferinizi Güvenle Rezerve Edin</h2>
+        <p>
+          Türkiye'nin en popüler destinasyonlarında <strong>SuperTransferS Havaalanı Transfer Şirketi</strong> ile stressiz ve zamanında transferlerin keyfini çıkarın.
+        </p>
+        <a href="{{currentLanguage.code}}/booking" class="btn-book-now">Transferinizi Şimdi Rezerve Edin</a>
+      </div>
+    </section>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+  } @else {
+  <section class="about-us">
+    <!-- Hero Section -->
+    <div class="about-hero">
+      <h1 i18n="@@aboutus.title" class="about-title">About Us</h1>
+      <p class="about-subtitle">
+        Your trusted partner for reliable, comfortable, and stress-free airport transfers in Turkey, serving Istanbul, Antalya, Izmir, Ankara, and more.
+      </p>
+    </div>
+
+    <!-- Who We Are Section -->
+    <div class="about-section">
+      <h2 class="section-title">Who We Are</h2>
+      <p>
+        Welcome to <strong>SuperTransferS Airport Transfer Company</strong>, the top-rated provider of airport transfer services in Turkey. We hold a <strong>A Group Travel Agency</strong> license and a <strong>D2 Tourism Transport Certificate</strong>, ensuring quality and compliance in every journey.
+      </p>
+      <p>
+        Our team of <strong>professional drivers</strong>, with a minimum of 5 years of experience, undergoes rigorous training to deliver the best service. Whether you're traveling to or from <strong>Istanbul Airport (IST)</strong>, <strong>Sabiha Gökçen Airport (SAW)</strong>, or other key destinations like <strong>Antalya</strong>, <strong>Izmir</strong>, and <strong>Alanya</strong>, we're here to make your journey smooth and reliable.
+      </p>
+    </div>
+
+    <!-- Why Choose Us Section -->
+    <div class="about-section why-choose-us">
+      <h2 class="section-title">Why Choose Us?</h2>
+      <ul class="usp-list">
+        <li><strong>24/7 Multilingual Support:</strong> Speak to us in your language anytime.</li>
+        <li><strong>Transparent Pricing:</strong> Enjoy our <strong>no-hidden-fee policy</strong> with competitive rates.</li>
+        <li><strong>Baby and Child Seats:</strong> Safety is our priority for all family members.</li>
+        <li><strong>Cash-on-Delivery Option:</strong> Pay conveniently at your destination.</li>
+        <li><strong>Free Cancellation:</strong> Flexible booking options to fit your plans.</li>
+        <li><strong>Flight Monitoring:</strong> We track delays for timely pickups and drop-offs.</li>
+        <li><strong>VIP Services:</strong> Business-class and VIP transfers available.</li>
+      </ul>
+    </div>
+
+    <!-- Our Fleet Section -->
+    <div class="about-section fleet">
+      <h2 class="section-title">Our Fleet</h2>
+      <p>Choose from our diverse and modern fleet to match your travel needs:</p>
+      <ul class="fleet-list">
+        <li>Luxury sedans for solo or business travelers.</li>
+        <li>Spacious vans (e.g., Mercedes Vito) ideal for families or groups.</li>
+        <li>Executive-class vehicles for premium comfort.</li>
+      </ul>
+    </div>
+
+    <!-- Service Areas Section -->
+    <div class="about-section service-areas">
+      <h2 class="section-title">Where We Operate</h2>
+      <p>
+        We serve major airports across Turkey, including:
+      </p>
+      <ul class="area-list">
+        <li>Istanbul Airport (IST)</li>
+        <li>Sabiha Gökçen Airport (SAW)</li>
+        <li>Antalya Airport (AYT)</li>
+        <li>Izmir Adnan Menderes Airport (ADB)</li>
+        <li>Ankara Esenboğa Airport (ESB)</li>
+        <li>Gazipaşa-Alanya Airport (GZP)</li>
+        <li>Milas-Bodrum Airport (BJV)</li>
+        <li>Dalaman Airport (DLM)</li>
+      </ul>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="about-cta">
+      <h2>Book Your Next Transfer with Confidence</h2>
+      <p>
+        Discover stress-free and punctual airport transfers with <strong>Airport Transfer Co.</strong> in Turkey's top destinations.
+      </p>
+      <a href="{{currentLanguage.code}}/booking" class="btn-book-now">Book Your Transfer Now</a>
+    </div>
+  </section>
+
+}
+  <app-footer></app-footer>
 </div>
