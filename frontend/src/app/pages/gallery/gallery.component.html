@@ -41,13 +41,13 @@
       <!-- Gallery Item 1 -->
        
       <a *ngFor="let image of GALLERY_IMAGES" 
-        href="{{getSmallImagePath(image, currentLanguage.code)}}" 
+        href="{{getLargeImagePath(image, currentLanguage.code)}}" 
         data-lightbox="gallery" 
         data-title="{{getImageDataTitle(image, currentLanguage.code)}}">
         <div class="gallery-item">
           <picture>
             <source srcset="{{getSmallImagePath(image, currentLanguage.code)}}" media="(max-width: 600px)">
-            <source srcset="{{getLargeImagePath(image, currentLanguage.code)}}" media="(min-width: 601px)">
+            <source srcset="{{getSmallImagePath(image, currentLanguage.code)}}" media="(min-width: 601px)">
             <img src="{{getLargeImagePath(image, currentLanguage.code)}}" 
               alt="{{getImageAlt(image, currentLanguage.code)}}" loading="lazy" />
           </picture>
