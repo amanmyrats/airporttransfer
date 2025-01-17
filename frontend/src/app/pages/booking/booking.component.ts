@@ -9,6 +9,7 @@ import { BookingCompletionFormComponent } from '../../components/booking-complet
 import { BookingCarTypeSelectionFormComponent } from '../../components/booking-car-type-selection-form/booking-car-type-selection-form.component';
 import { ActivatedRoute } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-booking',
@@ -30,7 +31,8 @@ export class BookingComponent implements OnInit {
   stepFromUrl: number | null = null;
 
   constructor(
-    private route: ActivatedRoute,
+    private route: ActivatedRoute, 
+    public languageService: LanguageService, 
   ) { }
 
   ngOnInit(): void {
@@ -78,6 +80,33 @@ export class BookingComponent implements OnInit {
     console.log('Navigating toStep:', toStep);
     console.log('Event:', event);
     this.activeStep = toStep;
+  }
+
+  translations: any = {
+    destination: {
+      en: 'Destination',
+      de: 'Ziel',
+      ru: 'Место назначения',
+      tr: 'Gidilecek Yer',
+    },
+    vehicle: {
+      en: 'Vehicle',
+      de: 'Fahrzeug',
+      ru: 'Транспортное средство',
+      tr: 'Araç',
+    }, 
+    personal: {
+      en: 'Personal Info', 
+      de: 'Persönliche Informationen',
+      ru: 'Личная информация',
+      tr: 'Kişisel Bilgiler',
+    }, 
+    back: {
+      en: 'Back', 
+      de: 'Zurück',
+      ru: 'Назад',
+      tr: 'Geri',
+    },
   }
 
 }

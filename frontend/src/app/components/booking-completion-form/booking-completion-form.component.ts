@@ -60,7 +60,7 @@ export class BookingCompletionFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder, 
     private router: Router,  
-    private languageService: LanguageService, 
+    public languageService: LanguageService, 
     private route: ActivatedRoute, 
   ) {
   }
@@ -126,5 +126,208 @@ export class BookingCompletionFormComponent implements OnInit {
 
   goToPreviousStep(): void {
     this.previousStep.emit(this.bookingService.bookingCompletionForm.value);
+  }
+
+// create translations for above texts line by line in en, de, ru, tr languages
+
+  translations: any = {
+    reservationDetails : {
+      en: 'Reservation Details',
+      de: 'Reservierungsdetails',
+      ru: 'Детали бронирования',
+      tr: 'Rezervasyon Detayları',
+    }, 
+    car: {
+      en: 'Car', 
+      de: 'Auto',
+      ru: 'Автомобиль',
+      tr: 'Araba',
+    },
+    from: {
+      en: 'From', 
+      de: 'Von',
+      ru: 'От',
+      tr: 'Nereden',
+    },
+    to: {
+      en: 'To', 
+      de: 'Nach',
+      ru: 'До',
+      tr: 'Nereye',
+    }, 
+    price: {
+      en: 'Price', 
+      de: 'Preis',
+      ru: 'Цена',
+      tr: 'Fiyat',
+    }, 
+    distance: {
+      en: 'Distance', 
+      de: 'Entfernung',
+      ru: 'Расстояние',
+      tr: 'Mesafe',
+    }, 
+    completeYourReservation: {
+      en: 'Complete Your Reservation',
+      de: 'Vervollständigen Sie Ihre Reservierung',
+      ru: 'Завершите вашу бронь',
+      tr: 'Rezervasyonunuzu Tamamlayın',
+    },
+    travelAndFlightInfo: {
+      en: 'Travel and Flight Information', 
+      de: 'Reise- und Fluginformationen',
+      ru: 'Информация о поездке и рейсе',
+      tr: 'Seyahat ve Uçuş Bilgileri',
+    }, 
+    transferDate: {
+      en: 'Transfer Date', 
+      de: 'Transferdatum',
+      ru: 'Дата трансфера',
+      tr: 'Transfer Tarihi',
+    }, 
+    transferTime: {
+      en: 'Transfer Time', 
+      de: 'Transferzeit',
+      ru: 'Время трансфера',
+      tr: 'Transfer Zamanı',
+    }, 
+    flightNumber: {
+      en: 'Flight Number', 
+      de: 'Flugnummer',
+      ru: 'Номер рейса',
+      tr: 'Uçuş Numarası',
+    }, 
+    returnTransfer: {
+      en: 'Want Return Transfer?',
+      de: 'Möchten Sie einen Rücktransfer?',
+      ru: 'Хотите обратный трансфер?',
+      tr: 'Dönüş Transferi İster misiniz?',
+    },
+    returnTransferDate: {
+      en: 'Return Transfer Date',
+      de: 'Rücktransferdatum',
+      ru: 'Дата обратного трансфера',
+      tr: 'Dönüş Transfer Tarihi',
+    }, 
+    returnTransferTime: {
+      en: 'Return Transfer Time', 
+      de: 'Rücktransferzeit',
+      ru: 'Время обратного трансфера',
+      tr: 'Dönüş Transfer Zamanı',
+    },
+    personalInfo: {
+      en: 'Personal Information', 
+      de: 'Persönliche Informationen',
+      ru: 'Личная информация',
+      tr: 'Kişisel Bilgiler',
+    }, 
+    fullName: {
+      en: 'Name and Surname', 
+      de: 'Vor- und Nachname',
+      ru: 'Имя и фамилия',
+      tr: 'Ad ve Soyad',
+    }, 
+    email: {
+      en: 'Email', 
+      de: 'Email',
+      ru: 'Эл. адрес',
+      tr: 'Email',
+    }, 
+    phone: {
+      en: 'Phone', 
+      de: 'Telefon',
+      ru: 'Телефон',
+      tr: 'Telefon',
+    }, 
+    primaryPhone: {
+      en: 'Primary Phone', 
+      de: 'Primäres Telefon',
+      ru: 'Основной телефон',
+      tr: 'Birincil Telefon',
+    }, 
+    additionalPhone: {
+      en: 'Additional Phone', 
+      de: 'Zusätzliches Telefon',
+      ru: 'Дополнительный телефон',
+      tr: 'Ek Telefon',
+    }, 
+    passengerCount: {
+      en: 'Passenger Count', 
+      de: 'Passagieranzahl',
+      ru: 'Количество пассажиров',
+      tr: 'Yolcu Sayısı',
+    }, 
+    childCount: {
+      en: 'Child Count', 
+      de: 'Kinderanzahl',
+      ru: 'Количество детей',
+      tr: 'Çocuk Sayısı',
+    }, 
+    extraServices: {
+      en: 'Extra Services', 
+      de: 'Zusatzleistungen',
+      ru: 'Дополнительные услуги',
+      tr: 'Ek Hizmetler',
+    }, 
+    needChildSeat: {
+      en: 'Need Child Seat?', 
+      de: 'Brauchen Sie einen Kindersitz?',
+      ru: 'Нужен детский кресло?',
+      tr: 'Çocuk Koltuğu Gerekli mi?',
+    }, 
+    note: {
+      en: 'Note',
+      de: 'Hinweis',
+      ru: 'Примечание',
+      tr: 'Not',
+    }, 
+    notePlaceholder: {
+      en: 'Write any additional details...', 
+      de: 'Schreiben Sie weitere Details...',
+      ru: 'Напишите любые дополнительные сведения...',
+      tr: 'Herhangi ek detayları yazın...',
+    }, 
+    payment: {
+      en: 'Payment', 
+      de: 'Zahlung',
+      ru: 'Оплата',
+      tr: 'Ödeme',
+    }, 
+    paymentNote: {
+      en: 'Pay cash to the driver after your trip. No payment is required until you\'re fully satisfied.', 
+      de: 'Zahlen Sie bar an den Fahrer nach Ihrer Reise. Es ist keine Zahlung erforderlich, bis Sie vollständig zufrieden sind.',
+      ru: 'Оплатите наличными водителю после поездки. Оплата не требуется, пока вы полностью не удовлетворены.',
+      tr: 'Seyahatinizden sonra sürücüye nakit ödeyin. Tamamen memnun olana kadar ödeme yapmanız gerekmez.',
+    }, 
+    back: {
+      en: 'Back', 
+      de: 'Zurück',
+      ru: 'Назад',
+      tr: 'Geri',
+    }, 
+    fieldRequired: {
+      en: 'This field is required', 
+      de: 'Dieses Feld ist erforderlich',
+      ru: 'Это поле обязательно',
+      tr: 'Bu alan gereklidir',
+    }, 
+    formError: {
+      en: 'Please fill required fields', 
+      de: 'Bitte füllen Sie die erforderlichen Felder aus',
+      ru: 'Пожалуйста, заполните обязательные поля',
+      tr: 'Lütfen gerekli alanları doldurun',
+    }, 
+    yearsOld: {
+      en: 'years old',
+      de: 'Jahre alt',
+      ru: 'лет',
+      tr: 'yaşında',
+    }, 
+    completeReservation: {
+      en: 'Complete Reservation', 
+      de: 'Reservierung abschließen',
+      ru: 'Завершить бронирование',
+      tr: 'Rezervasyonu Tamamla',
+    }
   }
 }

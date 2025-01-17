@@ -2,7 +2,7 @@
 /en
 /en/home
 /en/aboutus
-/en/contactus
+/en/contact
 /en/services
 /en/gallery
 /en/prices
@@ -11,7 +11,7 @@
 /tr
 /tr/home
 /tr/aboutus
-/tr/contactus
+/tr/contact
 /tr/services
 /tr/gallery
 /tr/prices
@@ -20,7 +20,7 @@
 /de
 /de/home
 /de/aboutus
-/de/contactus
+/de/contact
 /de/services
 /de/gallery
 /de/prices
@@ -29,7 +29,7 @@
 /ru
 /ru/home
 /ru/aboutus
-/ru/contactus
+/ru/contact
 /ru/services
 /ru/gallery
 /ru/prices

@@ -6,6 +6,7 @@ import { SUPPORTED_CAR_TYPES } from '../../constants/car-type.constants';
 import { PriceCalculatorService } from '../../services/price-calculator.service';
 import { CurrencyService } from '../../services/currency.service';
 import { ActivatedRoute } from '@angular/router';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-booking-car-type-selection-form',
@@ -26,6 +27,7 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute, 
+    public languageService: LanguageService,
   ) {
     this.carTypes = SUPPORTED_CAR_TYPES;
   }
@@ -68,4 +70,31 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
       };
     })
   );
+
+  translations: any = {
+    cars: {
+      en: 'Available Car Types', 
+      de: 'Verfügbare Fahrzeugtypen',
+      ru: 'Доступные типы автомобилей',
+      tr: 'Mevcut Araç Tipleri',
+    }, 
+    distance: {
+      en: 'Distance', 
+      de: 'Entfernung',
+      ru: 'Расстояние',
+      tr: 'Mesafe',
+    }, 
+    select: {
+      en: 'Select', 
+      de: 'Auswählen',
+      ru: 'Выбрать',
+      tr: 'Seç',
+    }, 
+    price: {
+      en: 'Price', 
+      de: 'Preis',
+      ru: 'Цена',
+      tr: 'Fiyat',
+    }
+  }
 }

@@ -4,37 +4,101 @@
     <form [formGroup]="bookingService.bookingInitialForm" (ngSubmit)="onSubmit()" class="booking-form">
       <div class="form-row">
         <div class="form-group" [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid">
-          <label for="pickup_full">From</label>
+          <label for="pickup_full">
+            {{ translations.from[this.languageService.currentLang().code] }}
+          </label>
           <input
             type="text"
             id="pickup_full"
-            placeholder="Enter pickup location"
+            placeholder="{{ translations.from_placeholder[this.languageService.currentLang().code] }}"
             formControlName="pickup_full"
             appGmapsAutocomplete
             (placeChanged)="onPickupPlaceChanged($event)" 
             (keydown)="preventFormSubmit($event)"
           />
           <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid" class="field-error">
-            Pickup location is required.
+            {{ translations.from_required[this.languageService.currentLang().code] }}
           </p>
         </div>
         <div class="form-group" [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid">
-          <label for="dest_full">To</label>
+          <label for="dest_full">
+            {{ translations.to[this.languageService.currentLang().code] }}
+            
+          </label>
           <input
             type="text"
             id="dest_full"
-            placeholder="Enter drop-off location"
+            placeholder="{{ translations.to_placeholder[this.languageService.currentLang().code] }}"
             formControlName="dest_full"
             appGmapsAutocomplete
             (placeChanged)="onDestPlaceChanged($event)" 
             (keydown)="preventFormSubmit($event)"
           />
           <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid" class="field-error">
-            Destination location is required.
+            {{ translations.to_required[this.languageService.currentLang().code] }}
           </p>
         </div>
       </div>
+
       <div *ngIf="hasSubmitted && bookingService.bookingInitialForm.invalid" class="error-message">
+      @if (languageService.currentLang().code == 'de') {
+        <p class="error-title">Konnte Ihr gewünschtes Ziel nicht gefunden werden?</p>
+        <p class="error-text">
+          Kein Problem! Kontaktieren Sie uns, und wir helfen Ihnen, die beste Transferoption zu finden. Wählen Sie eine der unten stehenden Optionen, um uns zu erreichen:
+        </p>
+        <ul class="contact-options">
+          <li>
+            <strong>Email:</strong> <a href="mailto:support&#64;yourcompany.com">support&#64;yourcompany.com</a>
+          </li>
+          <li>
+            <strong>Telefon:</strong> <a href="tel:+123456789">+123 456 789</a>
+          </li>
+          <li>
+            <strong>WhatsApp:</strong> <a href="https://wa.me/123456789" target="_blank">+123 456 789</a>
+          </li>
+          <li>
+            <strong>Telegram:</strong> <a href="https://t.me/yourcompany" target="_blank">&#64;yourcompany</a>
+          </li>
+        </ul>
+      } @else if (languageService.currentLang().code == 'ru') {
+        <p class="error-title">Не можете найти нужное направление?</p>
+        <p class="error-text">
+          Не проблема! Свяжитесь с нами, и мы поможем вам найти лучший вариант трансфера. Выберите любой из вариантов ниже, чтобы связаться с нами:
+        </p>
+        <ul class="contact-options">
+          <li>
+            <strong>Email:</strong> <a href="mailto:support&#64;yourcompany.com">support&#64;yourcompany.com</a>
+          </li>
+          <li>
+            <strong>Телефон:</strong> <a href="tel:+123456789">+123 456 789</a>
+          </li>
+          <li>
+            <strong>WhatsApp:</strong> <a href="https://wa.me/123456789" target="_blank">+123 456 789</a>
+          </li>
+          <li>
+            <strong>Telegram:</strong> <a href="https://t.me/yourcompany" target="_blank">&#64;yourcompany</a>
+          </li>
+        </ul>
+      } @else if (languageService.currentLang().code == 'tr') {
+        <p class="error-title">Aradığınız konumu bulamadınız mı?</p>
+        <p class="error-text">
+          Sorun değil! Bize ulaşın, size en iyi transfer seçeneğini bulmanızda yardımcı olalım. Bize ulaşmak için aşağıdaki seçeneklerden birini tercih edebilirsiniz:
+        </p>
+        <ul class="contact-options">
+          <li>
+            <strong>Email:</strong> <a href="mailto:support&#64;yourcompany.com">support&#64;yourcompany.com</a>
+          </li>
+          <li>
+            <strong>Telefon:</strong> <a href="tel:+123456789">+123 456 789</a>
+          </li>
+          <li>
+            <strong>WhatsApp:</strong> <a href="https://wa.me/123456789" target="_blank">+123 456 789</a>
+          </li>
+          <li>
+            <strong>Telegram:</strong> <a href="https://t.me/yourcompany" target="_blank">&#64;yourcompany</a>
+          </li>
+        </ul>
+      } @else {
         <p class="error-title">Couldn't find your desired location?</p>
         <p class="error-text">
           No problem! Contact us, and we will assist you in finding the best transfer option. Choose any of the options below to reach us:
@@ -53,22 +117,27 @@
             <strong>Telegram:</strong> <a href="https://t.me/yourcompany" target="_blank">&#64;yourcompany</a>
           </li>
         </ul>
-      </div>
-      
+      }
+    </div>
 
       <div class="form-actions">
         <button type="submit" class="btn-submit" 
         >
-        Search
+        {{ translations.search[this.languageService.currentLang().code] }}
+        
       </button>
       </div>
     </form>
     
     <!-- Hero Section -->
     <div class="booking-hero">
-      <h1 class="booking-title">Book Your Airport Transfer</h1>
+      <h1 class="booking-title">
+        {{ translations.book_your_transfer[this.languageService.currentLang().code] }}
+        
+      </h1>
       <p class="booking-subtitle">
-        Plan your journey in just a few steps. Choose your destination, date, and time, and enjoy a seamless travel experience.
+        {{ translations.description[this.languageService.currentLang().code] }}
+
       </p>
     </div>
   </section>

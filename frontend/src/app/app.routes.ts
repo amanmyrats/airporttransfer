@@ -118,9 +118,30 @@ export const routes: Routes = [
     {
         path: ':lang/booking',component: BookingComponent,
     },
+
+    // Booking received
     {
-        path: ':lang/booking/received',component: BookingReceivedComponent,
+        path: 'en/booking/received', 
+        component: BookingReceivedComponent, 
+        data: { language: 'en' }  
     },
+    {
+        path: 'de/booking/received', 
+        component: BookingReceivedComponent, 
+        data: { language: 'de' }  
+    },
+    {
+        path: 'ru/booking/received', 
+        component: BookingReceivedComponent, 
+        data: { language: 'ru' }  
+    },
+    {
+        path: 'tr/booking/received', 
+        component: BookingReceivedComponent, 
+        data: { language: 'tr' }  
+    },
+
+
     {
         path: 'admin',
         component: AdminHomeComponent, 

@@ -5,9 +5,32 @@
     <section class="contact-us">
         <!-- Hero Section -->
         <div class="contact-hero">
-          <h1 class="contact-title">Contact Us</h1>
+          <h1 class="contact-title">
+            @if (currentLanguage.code == 'de') {
+              {{ translations.de.contactUs }}
+
+            } @else if (currentLanguage.code == 'ru') {
+              {{ translations.ru.contactUs }}
+
+            } @else if (currentLanguage.code == 'tr') {
+              {{ translations.tr.contactUs }}
+
+            } @else {
+              Contact Us for Airport Transfers throughout Turkey
+            }
+          </h1>
           <p class="contact-subtitle">
-            We’re here to help! Reach out to us for bookings, inquiries, or any assistance with your airport transfer needs.
+            @if (currentLanguage.code == 'de') {
+              {{ translations.de.contactUsDescription }}
+
+            } @else if (currentLanguage.code == 'ru') {
+              {{ translations.ru.contactUsDescription }}
+
+            } @else if (currentLanguage.code == 'tr') {
+              {{ translations.tr.contactUsDescription }}
+
+            } @else {
+              We’re here to help! Reach out to us for bookings, inquiries, or any assistance with your airport transfer needs in Turkey. Contact Us for Airport Transfer throughout Turkey including cities Istanbul, Antalya, Alanya, Bodrum, Mugla, Ankara, Izmir.            }
           </p>
         </div>
       
@@ -15,38 +38,142 @@
         <div class="contact-info">
           <div class="contact-card">
             <i class="pi pi-map-marker"></i>
-            <h3>Our Address</h3>
+            <h3>
+              @if (currentLanguage.code == 'de') {
+                {{ translations.de.ourAddress }}
+  
+              } @else if (currentLanguage.code == 'ru') {
+                {{ translations.ru.ourAddress }}
+  
+              } @else if (currentLanguage.code == 'tr') {
+                {{ translations.tr.ourAddress }}
+  
+              } @else {
+                Our Address
+              }
+            </h3>
             <p>123 Airport Blvd, Antalya, Turkey</p>
           </div>
           <div class="contact-card">
             <i class="pi pi-phone"></i>
-            <h3>Call Us</h3>
+            <h3>
+            @if (currentLanguage.code == 'de') {
+              {{ translations.de.callUs }}
+
+            } @else if (currentLanguage.code == 'ru') {
+              {{ translations.ru.callUs }}
+
+            } @else if (currentLanguage.code == 'tr') {
+              {{ translations.tr.callUs }}
+
+            } @else {
+              Call Us
+            }
+            </h3>
             <p>+90 123 456 7890</p>
           </div>
           <div class="contact-card">
             <i class="pi pi-envelope"></i>
-            <h3>Email Us</h3>
+            <h3>
+              @if (currentLanguage.code == 'de') {
+                {{ translations.de.email }}
+  
+              } @else if (currentLanguage.code == 'ru') {
+                {{ translations.ru.email }}
+  
+              } @else if (currentLanguage.code == 'tr') {
+                {{ translations.tr.email }}
+  
+              } @else {
+                Email Us
+              }
+            </h3>
             <p>info&#64;airporttransfer.com</p>
           </div>
         </div>
       
         <!-- Contact Form -->
         <div class="contact-form-wrapper">
-          <h2 class="form-title">Get in Touch</h2>
+          <h2 class="form-title">
+            @if (currentLanguage.code == 'de') {
+              {{ translations.de.getInTouch }}
+
+            } @else if (currentLanguage.code == 'ru') {
+              {{ translations.ru.getInTouch }}
+
+            } @else if (currentLanguage.code == 'tr') {
+              {{ translations.tr.getInTouch }}
+
+            } @else {
+              Get in Touch
+            }
+          </h2>
           <form class="contact-form">
             <div class="form-group">
-              <label for="name">Your Name</label>
-              <input type="text" id="name" name="name" placeholder="Enter your name" required />
+              <label for="name">
+                @if (currentLanguage.code == 'de') {
+                  {{ translations.de.yourName }}
+    
+                } @else if (currentLanguage.code == 'ru') {
+                  {{ translations.ru.yourName }}
+    
+                } @else if (currentLanguage.code == 'tr') {
+                  {{ translations.tr.yourName }}
+    
+                } @else {
+                  Your Name
+                }
+              </label>
+              <input type="text" id="name" name="name" required />
             </div>
             <div class="form-group">
-              <label for="email">Your Email</label>
-              <input type="email" id="email" name="email" placeholder="Enter your email" required />
+              <label for="email">
+                @if (currentLanguage.code == 'de') {
+                  {{ translations.de.yourEmail }}
+    
+                } @else if (currentLanguage.code == 'ru') {
+                  {{ translations.ru.yourEmail }}
+    
+                } @else if (currentLanguage.code == 'tr') {
+                  {{ translations.tr.yourEmail }}
+    
+                } @else {
+                  Your Email
+                }
+              </label>
+              <input type="email" id="email" name="email" required />
             </div>
             <div class="form-group">
-              <label for="message">Your Message</label>
-              <textarea id="message" name="message" rows="5" placeholder="Write your message" required></textarea>
+              <label for="message">
+                @if (currentLanguage.code == 'de') {
+                  {{ translations.de.yourMessage }}
+    
+                } @else if (currentLanguage.code == 'ru') {
+                  {{ translations.ru.yourMessage }}
+    
+                } @else if (currentLanguage.code == 'tr') {
+                  {{ translations.tr.yourMessage }}
+    
+                } @else {
+                  Your Message
+                }
+              </label>
+              <textarea id="message" name="message" rows="5" required></textarea>
             </div>
-            <button type="submit" class="btn-submit">Send Message</button>
+            <button type="submit" class="btn-submit">
+              @if (currentLanguage.code == 'de') {
+                {{ translations.de.submit }}
+  
+              } @else if (currentLanguage.code == 'ru') {
+                {{ translations.ru.submit }}
+  
+              } @else if (currentLanguage.code == 'tr') {
+                {{ translations.tr.submit }}
+  
+              } @else {
+                Send Message
+              }
+            </button>
           </form>
         </div>
       

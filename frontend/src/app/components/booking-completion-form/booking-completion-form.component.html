@@ -2,54 +2,91 @@
     <div class="container">
       <!-- Left Section: Reservation Details -->
       <div class="reservation-details">
-        <h2>Reservation Details</h2>
+        <h2>
+          {{ translations.reservationDetails[this.languageService.currentLang().code] }}
+        </h2>
         <img [src]="'cars/vito.png'" [alt]="selectedCar?.name" class="car-image" />
-        <p><strong>Car:</strong> {{ selectedCar?.name }}</p>
-        <p><strong>From:</strong> {{ fromLocation }}</p>
-        <p><strong>To:</strong> {{ toLocation }}</p>
-        <p *ngIf="distance > 0"><strong>Distance:</strong> {{ distance }} km</p>
-        <p><strong>Price:</strong> {{ price! }} {{ currency?.sign }}</p>
+        <p><strong>
+          {{ translations.car[this.languageService.currentLang().code] }}
+          :
+        </strong> {{ selectedCar?.name }}</p>
+        <p><strong>
+          {{ translations.from[this.languageService.currentLang().code] }}
+          :
+        </strong> {{ fromLocation }}</p>
+        <p><strong>
+          {{ translations.to[this.languageService.currentLang().code] }}
+          :
+        </strong> {{ toLocation }}</p>
+        <p *ngIf="distance > 0"><strong>
+          {{ translations.distance[this.languageService.currentLang().code] }}
+          :
+        </strong> {{ distance }} km</p>
+        <p><strong>
+          {{ translations.price[this.languageService.currentLang().code] }}
+          :
+        </strong> {{ price! }} {{ currency?.sign }}</p>
       </div>
   
       <!-- Right Section: Form -->
       <div class="reservation-form">
-        <h2>Complete Your Reservation</h2>
+        <h2>
+          {{ translations.completeYourReservation[this.languageService.currentLang().code] }}
+        </h2>
         <form [formGroup]="bookingService.bookingCompletionForm" (ngSubmit)="onSubmit()">
           <!-- Travel and Flight Info -->
           <div class="form-group">
-            <h3>Travel and Flight Information</h3>
+            <h3>
+          {{ translations.travelAndFlightInfo[this.languageService.currentLang().code] }}
+            </h3>
             <div class="form-row">
               <div class="form-item">
-                <label for="transfer_date">Transfer Date</label>
+                <label for="transfer_date">          
+                  {{ translations.transferDate[this.languageService.currentLang().code] }}
+                </label>
                 <input type="date" id="transfer_date" formControlName="transfer_date" required />
                 <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_date')?.invalid" 
-                severity="error" variant="simple" size="small">Transfer date is required</p-message>
+                severity="error" variant="simple" size="small">
+                {{ translations.fieldRequired[this.languageService.currentLang().code] }}
+              </p-message>
               </div>
               <div class="form-item">
-                <label for="transfer_time">Transfer Time</label>
+                <label for="transfer_time">
+                {{ translations.transferTime[this.languageService.currentLang().code] }}
+                </label>
                 <input type="time" id="transfer_time" formControlName="transfer_time" required />
                 <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_time')?.invalid" 
-                severity="error" variant="simple" size="small">Transfer Time is required</p-message>
+                severity="error" variant="simple" size="small">
+                {{ translations.fieldRequired[this.languageService.currentLang().code] }}
+              </p-message>
               </div>
               <div class="form-item">
-                <label for="flight_number">Flight Number</label>
+                <label for="flight_number">
+                {{ translations.flightNumber[this.languageService.currentLang().code] }}
+                </label>
                 <input type="text" id="flight_number" formControlName="flight_number" placeholder="e.g., TK1234" />
               </div>
             </div>
 
             <div class="toggle-switch-container">
-              <span>Want Return Transfer?</span>
+              <span>
+                {{ translations.returnTransfer[this.languageService.currentLang().code] }}
+              </span>
               <p-toggleswitch formControlName="is_round_trip"></p-toggleswitch>
             </div>
 
             <div *ngIf="bookingService.bookingCompletionForm.get('is_round_trip')?.value">
               <div class="form-row">
                 <div class="form-item">
-                  <label for="return_transfer_date">Return Date</label>
+                  <label for="return_transfer_date">
+                {{ translations.returnTransferDate[this.languageService.currentLang().code] }}
+                  </label>
                   <input type="date" id="return_transfer_date" formControlName="return_transfer_date" />
                 </div>
                 <div class="form-item">
-                  <label for="return_transfer_time">Return Time</label>
+                  <label for="return_transfer_time">
+                {{ translations.returnTransferTime[this.languageService.currentLang().code] }}
+                  </label>
                   <input type="time" id="return_transfer_time" formControlName="return_transfer_time" />
                 </div>
               </div>
@@ -58,30 +95,49 @@
   
           <!-- Personal Info -->
           <div class="form-group">
-            <h3>Personal Information</h3>
+            <h3>
+              {{ translations.personalInfo[this.languageService.currentLang().code] }}
+            </h3>
             <div class="form-row">
               <div class="form-item">
-                <label for="passenger_name">Name and Surname</label>
-                <input type="text" id="passenger_name" formControlName="passenger_name" placeholder="Full Name" required />
+                <label for="passenger_name">
+              {{ translations.fullName[this.languageService.currentLang().code] }}
+                </label>
+                <input type="text" id="passenger_name" formControlName="passenger_name" placeholder="{{ translations.fullName[this.languageService.currentLang().code] }}" required />
                 <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_name')?.invalid" 
-                severity="error" variant="simple" size="small">Full Name is required</p-message>
+                severity="error" variant="simple" size="small">
+                {{ translations.fieldRequired[this.languageService.currentLang().code] }}
+              </p-message>
               </div>
               <div class="form-item">
-                <label for="passenger_email">Email</label>
-                <input type="email" id="passenger_email" formControlName="passenger_email" placeholder="Email Address" />
+                <label for="passenger_email">
+                  {{ translations.email[this.languageService.currentLang().code] }}
+                </label>
+                <input type="email" id="passenger_email" formControlName="passenger_email" placeholder="{{ translations.email[this.languageService.currentLang().code] }}" />
               </div>
               <div class="form-item">
-                <label for="passenger_phone">Phone</label>
-                <input type="tel" id="passenger_phone" formControlName="passenger_phone" placeholder="Primary Phone" required />
+                <label for="passenger_phone">
+                  {{ translations.phone[this.languageService.currentLang().code] }}
+                </label>
+                <input type="tel" id="passenger_phone" 
+                  formControlName="passenger_phone" placeholder="{{ translations.primaryPhone[this.languageService.currentLang().code] }}" required />
                 <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_phone')?.invalid" 
-                severity="error" variant="simple" size="small">Mobile Phone is required</p-message>
+                severity="error" variant="simple" size="small">
+                {{ translations.fieldRequired[this.languageService.currentLang().code] }}
+              </p-message>
               </div>
               <div class="form-item">
-                <label for="passenger_additional_phone">Additional Phone</label>
-                <input type="tel" id="passenger_additional_phone" formControlName="passenger_additional_phone" placeholder="Optional Phone" />
+                <label for="passenger_additional_phone">
+                {{ translations.additionalPhone[this.languageService.currentLang().code] }}
+                </label>
+                <input type="tel" id="passenger_additional_phone" 
+                formControlName="passenger_additional_phone" placeholder="{{ translations.additionalPhone[this.languageService.currentLang().code] }}" />
               </div>
               <div class="form-item">
-                <label for="passenger_count">Passenger Count:</label>
+                <label for="passenger_count">
+                  {{ translations.passengerCount[this.languageService.currentLang().code] }}
+                  :
+                </label>
                 <p-inputnumber formControlName="passenger_count" 
                     [showButtons]="true" 
                     buttonLayout="horizontal" 
@@ -97,7 +153,12 @@
                 </p-inputnumber>
               </div>
               <div class="form-item">
-                <label for="passenger_count_child">Child Count (1-7 years):</label>
+                <label for="passenger_count_child">
+                  {{ translations.childCount[this.languageService.currentLang().code] }}
+                   (1-7 
+                  {{ translations.yearsOld[this.languageService.currentLang().code] }}
+                  ):
+                </label>
                 <p-inputnumber 
                   formControlName="passenger_count_child" 
                   [showButtons]="true" 
@@ -119,7 +180,9 @@
 
           <!-- Extra Services -->
           <div class="form-group">
-            <h3>Extra Services</h3>
+            <h3>
+              {{ translations.extraServices[this.languageService.currentLang().code] }}
+            </h3>
             
             
             <div class="toggle-switch-container">
@@ -128,7 +191,9 @@
             </div>
 
             <div class="toggle-switch-container">
-              <span>Need Child Seat?</span>
+              <span>
+                {{ translations.needChildSeat[this.languageService.currentLang().code] }}
+              </span>
               <p-toggleswitch formControlName="need_child_seat"></p-toggleswitch>
               <p-inputnumber 
                 *ngIf="this.bookingService.bookingCompletionForm.value.need_child_seat" 
@@ -149,18 +214,23 @@
             
 
             <div class="form-item">
-              <label for="note">Note</label>
-              <textarea id="note" formControlName="note" rows="3" placeholder="Write any additional details..."></textarea>
+              <label for="note">
+                {{ translations.note[this.languageService.currentLang().code] }}
+              </label>
+              <textarea id="note" formControlName="note" rows="3" 
+                placeholder="{{ translations.notePlaceholder[this.languageService.currentLang().code] }}"></textarea>
             </div>
           </div>
           
           <!-- Payment Information -->
           <div class="form-group">
-            <h3>Payment </h3>
+            <h3>
+              {{ translations.payment[this.languageService.currentLang().code] }} 
+            </h3>
             <div class="payment-info">
               <div class="total-price"><strong>{{ price! }} {{ currency?.sign }}</strong></div>
               <p>
-                Pay cash to the driver after your trip. No payment is required until you're fully satisfied.
+                {{ translations.paymentNote[this.languageService.currentLang().code] }}
               </p>
             </div>
             
@@ -169,9 +239,15 @@
           <!-- Complete Reservation -->
           <div class="form-actions">
             <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.invalid" 
-            severity="info" variant="simple" size="small">Please fill required fields</p-message>
-            <button pButton [loading]="isSaving" type="submit" class="btn-complete">Complete Reservation</button>
-            <button [hidden]="stepFromUrl == 3" type="button" class="btn-back" (click)="goToPreviousStep()">Back</button>
+            severity="info" variant="simple" size="small">
+            {{ translations.formError[this.languageService.currentLang().code] }}
+          </p-message>
+            <button pButton [loading]="isSaving" type="submit" class="btn-complete">
+            {{ translations.completeReservation[this.languageService.currentLang().code] }}
+            </button>
+            <button [hidden]="stepFromUrl == 3" type="button" class="btn-back" (click)="goToPreviousStep()">
+            {{ translations.back[this.languageService.currentLang().code] }}
+            </button>
           </div>
         </form>
       </div>

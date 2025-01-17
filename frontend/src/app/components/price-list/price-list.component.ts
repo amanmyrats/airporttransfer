@@ -34,7 +34,13 @@ export class PriceListComponent implements OnInit, AfterViewInit {
       'de': 'oder gleichwertig',
       'tr': 'veya eşdeğeri',
       'ru': 'или эквивалент',
-    }
+    }, 
+    'book_now': {
+      'en': 'Book Now',
+      'de': 'Jetzt buchen',
+      'tr': 'Rezervasyon yap',
+      'ru': 'Забронировать сейчас',
+    },
   };
 
   popularRoutesSignal = this.popularRouteService.popularRoutesSignal;

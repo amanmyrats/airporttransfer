@@ -1,7 +1,9 @@
 <section class="car-type-selection">
   <!-- Title Section -->
   <div class="title-section">
-    <h1>Available Car Types</h1>
+    <h1>
+      {{ translations.cars[this.languageService.currentLang().code] }}
+    </h1>
     <div class="route-info">
       <span class="from">{{ bookingService.bookingInitialForm.value.pickup_full }}</span>
       <span class="arrow">→</span>
@@ -9,7 +11,9 @@
     </div>
     <div class="distance-info">
       <span>
-        Distance: {{ this.bookingService.bookingCarTypeSelectionForm.value.distance | number: '1.0-0' }} km
+      {{ translations.distance[this.languageService.currentLang().code] }}
+      : 
+      {{ this.bookingService.bookingCarTypeSelectionForm.value.distance | number: '1.0-0' }} km
         ({{ this.bookingService.bookingCarTypeSelectionForm.value.driving_duration | number: '1.0-0' }} mins)
       </span>
     </div>
@@ -22,13 +26,16 @@
       <img [src]="'cars/vito.png'" [alt]="carType.name" class="car-type-image" />
       <div class="car-type-info">
         <h2 class="car-type-name">{{ carType.name }}</h2>
-        <p class="car-type-price">Price: <span>{{ carType.price }} {{ this.currencyService.currentCurrency().sign }}</span></p>
+        <p class="car-type-price">
+          {{ translations.price[this.languageService.currentLang().code] }}
+          : 
+          <span>{{ carType.price }} {{ this.currencyService.currentCurrency().sign }}</span></p>
         <button class="select-button" (click)="onCarTypeSelection(
           carType, 
           carType.price, 
           this.currencyService.currentCurrency().code!, 
           this.bookingService.bookingCarTypeSelectionForm.value.distance)">
-          Select
+            {{ translations.select[this.languageService.currentLang().code] }}
         </button>
       </div>
     </div>

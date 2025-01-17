@@ -4,9 +4,15 @@
     <div class="card flex justify-center">
         <p-stepper [(value)]="activeStep" class="basis-[50rem]">
             <p-step-list>
-                <p-step [value]="1" [disabled]="activeStep !== 1">Destination</p-step>
-                <p-step [value]="2" [disabled]="activeStep !== 2">Vehicle</p-step>
-                <p-step [value]="3" [disabled]="activeStep !== 3">Personal</p-step>
+                <p-step [value]="1" [disabled]="activeStep !== 1">
+                    {{ translations.destination[languageService.currentLang().code] }}
+                </p-step>
+                <p-step [value]="2" [disabled]="activeStep !== 2">
+                    {{ translations.vehicle[languageService.currentLang().code] }}
+                </p-step>
+                <p-step [value]="3" [disabled]="activeStep !== 3">
+                    {{ translations.personal[languageService.currentLang().code] }}
+                </p-step>
             </p-step-list>
             <p-step-panels>
                 <p-step-panel [value]="1">
@@ -40,7 +46,8 @@
                             </div>
                         </div>
                         <div class="flex pt-6 justify-between">
-                            <p-button [hidden]="stepFromUrl == 2" label="Back" severity="secondary" icon="pi pi-arrow-left" (onClick)="goToStep($event, 2, 1)" />
+                            <p-button [hidden]="stepFromUrl == 2" 
+                                label="{{ translations.back[languageService.currentLang().code] }}" severity="secondary" icon="pi pi-arrow-left" (onClick)="goToStep($event, 2, 1)" />
                             <!-- <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(3)" /> -->
                         </div>
                     </ng-template>
