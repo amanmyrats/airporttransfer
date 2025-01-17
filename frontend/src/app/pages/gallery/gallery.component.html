@@ -3,62 +3,63 @@
     <app-navbar></app-navbar>
 <section class="gallery">
     <!-- Hero Section -->
-    <div class="gallery-hero">
-      <h1 class="gallery-title">Our Gallery</h1>
-      <p class="gallery-subtitle">
-        Discover our premium fleet, destinations, and exceptional service. Experience comfort, reliability, and style through our gallery.
-      </p>
-    </div>
+     @if (currentLanguage.code == 'de') {
+      <div class="gallery-hero">
+        <h1 class="gallery-title">Unsere Galerie</h1>
+        <p class="gallery-subtitle">
+          Entdecken Sie unsere Premiumflotte, Reiseziele und außergewöhnlichen Service. Erleben Sie Komfort, Zuverlässigkeit und Stil durch unsere Galerie.
+        </p>
+      </div>
+      
+    } @else if (currentLanguage.code == 'ru') {
+      <div class="gallery-hero">
+        <h1 class="gallery-title">Наша Галерея</h1>
+        <p class="gallery-subtitle">
+          Откройте для себя наш премиальный автопарк, направления и исключительный сервис. Испытайте комфорт, надежность и стиль с нашей галереей.
+        </p>
+      </div>
+      
+    } @else if (currentLanguage.code == 'tr') {
+      <div class="gallery-hero">
+        <h1 class="gallery-title">Galeri</h1>
+        <p class="gallery-subtitle">
+          Premium filomuzu, destinasyonlarımızı ve olağanüstü hizmetimizi keşfedin. Galerimizle konforu, güvenilirliği ve stili deneyimleyin.
+        </p>
+      </div>
+      
+    } @else {
+        <div class="gallery-hero">
+          <h1 class="gallery-title">Our Gallery</h1>
+          <p class="gallery-subtitle">
+            Discover our premium fleet, destinations, and exceptional service. Experience comfort, reliability, and style through our gallery.
+           </p>
+         </div>
+      }
   
     <!-- Gallery Grid -->
     <div class="gallery-grid">
       <!-- Gallery Item 1 -->
-      <a href="cars/sprinter.png" data-lightbox="gallery" data-title="Luxury Vehicle - Mercedes Vito">
+       
+      <a *ngFor="let image of GALLERY_IMAGES" 
+        href="{{getSmallImagePath(image, currentLanguage.code)}}" 
+        data-lightbox="gallery" 
+        data-title="{{getImageDataTitle(image, currentLanguage.code)}}">
         <div class="gallery-item">
-          <img src="cars/sprinter.png" alt="Luxury Vehicle - Mercedes Vito" loading="lazy" />
-          <div class="gallery-caption">Luxury Vehicle - Mercedes Vito</div>
+          <picture>
+            <source srcset="{{getSmallImagePath(image, currentLanguage.code)}}" media="(max-width: 600px)">
+            <source srcset="{{getLargeImagePath(image, currentLanguage.code)}}" media="(min-width: 601px)">
+            <img src="{{getLargeImagePath(image, currentLanguage.code)}}" 
+              alt="{{getImageAlt(image, currentLanguage.code)}}" loading="lazy" />
+          </picture>
+          <div class="gallery-caption">
+            {{getImageCaption(image, currentLanguage.code)}}
+          </div>
+          <p>
+            {{getImageDescription(image, currentLanguage.code)}}
+          </p>
         </div>
       </a>
   
-      <!-- Gallery Item 2 -->
-      <a href="cars/vito.png" data-lightbox="gallery" data-title="Group Travel in Comfort">
-        <div class="gallery-item">
-          <img src="cars/vito.png" alt="Group Travel in Comfort" loading="lazy" />
-          <div class="gallery-caption">Group Travel in Comfort</div>
-        </div>
-      </a>
-  
-      <!-- Gallery Item 3 -->
-      <a href="cars/vito.png" data-lightbox="gallery" data-title="Family-Friendly Transfers">
-        <div class="gallery-item">
-          <img src="cars/vito.png" alt="Family-Friendly Transfers" loading="lazy" />
-          <div class="gallery-caption">Family-Friendly Transfers</div>
-        </div>
-      </a>
-  
-      <!-- Gallery Item 4 -->
-      <a href="cars/vito.png" data-lightbox="gallery" data-title="Business-Class Transfers">
-        <div class="gallery-item">
-          <img src="cars/vito.png" alt="Business-Class Transfers" loading="lazy" />
-          <div class="gallery-caption">Business-Class Transfers</div>
-        </div>
-      </a>
-  
-      <!-- Gallery Item 5 -->
-      <a href="cars/vito.png" data-lightbox="gallery" data-title="VIP Transfer Experience">
-        <div class="gallery-item">
-          <img src="cars/vito.png" alt="VIP Transfer Experience" loading="lazy" />
-          <div class="gallery-caption">VIP Transfer Experience</div>
-        </div>
-      </a>
-  
-      <!-- Gallery Item 6 -->
-      <a href="cars/vito.png" data-lightbox="gallery" data-title="Destination Arrival">
-        <div class="gallery-item">
-          <img src="cars/vito.png" alt="Destination Arrival" loading="lazy" />
-          <div class="gallery-caption">Destination Arrival</div>
-        </div>
-      </a>
     </div>
   </section>
   

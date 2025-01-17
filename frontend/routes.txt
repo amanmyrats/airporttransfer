@@ -4,6 +4,7 @@
 /en/aboutus
 /en/contactus
 /en/services
+/en/gallery
 /en/prices
 /en/blogs
 /en/booking/received
@@ -12,6 +13,7 @@
 /tr/aboutus
 /tr/contactus
 /tr/services
+/tr/gallery
 /tr/prices
 /tr/blogs
 /tr/booking/received
@@ -20,6 +22,7 @@
 /de/aboutus
 /de/contactus
 /de/services
+/de/gallery
 /de/prices
 /de/blogs
 /de/booking/received
@@ -28,6 +31,7 @@
 /ru/aboutus
 /ru/contactus
 /ru/services
+/ru/gallery
 /ru/prices
 /ru/blogs
 /ru/booking/received

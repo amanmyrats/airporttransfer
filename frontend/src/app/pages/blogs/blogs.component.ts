@@ -100,54 +100,6 @@ export class BlogsComponent implements OnInit {
         tr: 'En son seyahat ipuçları, havalimanı transfer bilgileri ve yolculuğunuzu sorunsuz ve keyifli hale getirecek rehberlerle güncel kalın.',
         ru: 'Будьте в курсе последних советов по путешествиям, информации о трансферах из аэропорта и руководств, которые сделают ваше путешествие плавным и приятным.',
       },
-      // categories: {
-      //   title: {
-      //     en: 'Categories',
-      //     de: 'Kategorien',
-      //     tr: 'Kategoriler',
-      //     ru: 'Категории',
-      //   },
-      //   list: {
-      //     tips: {
-      //       en: 'Travel Tips',
-      //       de: 'Reisetipps',
-      //       tr: 'Seyahat İpuçları',
-      //       ru: 'Советы путешественникам',
-      //     },
-      //     destinations: {
-      //       en: 'Destinations',
-      //       de: 'Reiseziele',
-      //       tr: 'Destinasyonlar',
-      //       ru: 'Направления',
-      //     },
-      //     luxuryTravel: {
-      //       en: 'Luxury Travel',
-      //       de: 'Luxusreisen',
-      //       tr: 'Lüks Seyahat',
-      //       ru: 'Роскошные путешествия',
-      //     },
-      //     familyTravel: {
-      //       en: 'Family Travel',
-      //       de: 'Familienreisen',
-      //       tr: 'Aile Seyahati',
-      //       ru: 'Семейные путешествия',
-      //     },
-      //   },
-      // },
-      // pagination: {
-      //   previous: {
-      //     en: 'Previous',
-      //     de: 'Zurück',
-      //     tr: 'Önceki',
-      //     ru: 'Предыдущий',
-      //   },
-      //   next: {
-      //     en: 'Next',
-      //     de: 'Weiter',
-      //     tr: 'Sonraki',
-      //     ru: 'Следующий',
-      //   },
-      // },
       readMore: {
         en: 'Read More',
         de: 'Weiterlesen',
