@@ -1,45 +1,25 @@
 <div class="blog-section">
-    <h2 class="blog-header">Latest Blog Posts</h2>
+    <h2 class="blog-header">
+      {{ getTranslation('blog.title') }}
+    </h2>
     <div class="blog-container">
       <!-- Blog 1 -->
-      <div class="blog-card">
-        <img src="blogs/blog.png" alt="Best Airport Transfer Tips" class="blog-image" />
-        <h3 class="blog-title">Top Tips for Hassle-Free Airport Transfers</h3>
+      <div *ngFor="let blog of blogs" class="blog-card">
+        <img src="images/blogs/{{getImageName(blog, currentLanguage)}}" 
+          alt="{{getImageAlt(blog, currentLanguage.code)}}" class="blog-image" />
+        <h3 class="blog-title">
+          {{ getTitle(blog, currentLanguage) }}
+        </h3>
         <p class="blog-snippet">
-          Discover how to make your airport transfer in Turkey stress-free and efficient. Learn why choosing the right service is crucial for your travel experience.
+          {{ getExcerpt(blog, currentLanguage) }}
         </p>
-        <a href="/blog/airport-transfer-tips" class="read-more">Read More</a>
+        <a href="{{currentLanguage.code}}/blogs/{{getSlug(blog, currentLanguage)}}" 
+        class="read-more">
+        {{ getTranslation('blog.readMore') }}
+      
+      </a>
       </div>
   
-      <!-- Blog 2 -->
-      <div class="blog-card">
-        <img src="blogs/blog.png" alt="Luxury Vans for Antalya Transfers" class="blog-image" />
-        <h3 class="blog-title">Why Luxury Vans Are Perfect for Antalya Transfers</h3>
-        <p class="blog-snippet">
-          Planning your trip to Antalya? Learn why Mercedes Vito and Sprinter vans are the top choice for airport transfers in comfort and style.
-        </p>
-        <a href="/blog/luxury-vans-antalya" class="read-more">Read More</a>
-      </div>
-  
-      <!-- Blog 3 -->
-      <div class="blog-card">
-        <img src="blogs/blog.png" alt="Family-Friendly Transfers" class="blog-image" />
-        <h3 class="blog-title">Family-Friendly Airport Transfers in Turkey</h3>
-        <p class="blog-snippet">
-          Traveling with family? Explore the benefits of safe, spacious, and reliable airport transfers tailored for families visiting Turkey.
-        </p>
-        <a href="/blog/family-airport-transfers" class="read-more">Read More</a>
-      </div>
-  
-      <!-- Blog 4 -->
-      <div class="blog-card">
-        <img src="blogs/blog.png" alt="Affordable Airport Transfers" class="blog-image" />
-        <h3 class="blog-title">Affordable Airport Transfers in Turkey: A Complete Guide</h3>
-        <p class="blog-snippet">
-          Save money on your next trip! Learn about budget-friendly options for airport transfers in Istanbul, Antalya, and beyond.
-        </p>
-        <a href="/blog/affordable-transfers" class="read-more">Read More</a>
-      </div>
     </div>
   </div>
   

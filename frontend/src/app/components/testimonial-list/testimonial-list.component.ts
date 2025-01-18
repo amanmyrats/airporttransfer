@@ -12,20 +12,41 @@ import { CarouselModule } from 'primeng/carousel';
 })
 export class TestimonialListComponent {
 
-  testimonials = [
+  testimonials: any[] = [
     {
-      text: 'This was the smoothest airport transfer experience I’ve ever had. Highly recommend this service for stress-free travel!',
-      author: 'Anna K., Germany',
+      text: 'Booking our airport transfer from Antalya Airport to our hotel in Alanya was a breeze. The driver was punctual, professional, and made the ride so comfortable. I\'ll definitely use this service again for stress-free transfers in Turkey!',
+      author: 'Sarah J., United Kingdom',
     },
     {
-      text: 'Traveling with kids can be challenging, but this service made everything so easy! Definitely our go-to service for Turkey.',
-      author: 'Emily R., United Kingdom',
+      text: 'I needed a transfer from Istanbul Airport to Taksim late at night, and the service exceeded my expectations. The car was spotless, the driver was courteous, and everything felt premium. Highly recommend this company for Istanbul airport transfers!',
+      author: 'David L., United States',
     },
     {
-      text: 'We booked a Mercedes Vito for our airport transfer in Istanbul, and it felt like a VIP experience! Highly professional.',
-      author: 'Alexander S., Russia',
+      text: 'Der Flughafentransfer vom Flughafen Antalya nach Side war einfach perfekt. Der Fahrer war freundlich, das Auto komfortabel, und wir haben den Strandurlaub stressfrei gestartet. Ich kann diesen Service nur empfehlen!',
+      author: 'Lisa M., Deutschland',
+    },
+    {
+      text: 'Unser Transfer vom Flughafen Bodrum Milas nach Bodrum Zentrum verlief reibungslos. Es war ein sehr professioneller und bequemer Service, genau das, was man nach einem langen Flug braucht. Vielen Dank!',
+      author: 'Markus W., Deutschland',
+    },
+    {
+      text: 'Заказывали трансфер из аэропорта Сабиха Гёкчен в район Султанахмет. Машина приехала вовремя, водитель был очень вежливый, а поездка комфортной. Рекомендую всем, кто ищет надёжный трансфер в Стамбуле!',
+      author: 'Ольга П., Россия',
+    },
+    {
+      text: 'Трансфер из аэропорта Анталии в Аланью превзошел все ожидания! Чистый автомобиль, удобное сидение и дружелюбный водитель. Идеальный выбор для путешествий по Турции.',
+      author: 'Иван С., Россия',
+    },
+    {
+      text: 'Antalya Havalimanı’ndan Alanya’daki otelimize transferimiz harikaydı. Araç tertemizdi, şoför tam zamanında geldi ve oldukça nazikti. Kesinlikle tekrar tercih edeceğim bir hizmet!',
+      author: 'Elif K., Türkiye',
+    },
+    {
+      text: 'Bodrum Milas Havalimanı’ndan Bodrum merkezine olan transferimiz çok keyifli geçti. Yolculuk boyunca çok rahat ettik ve hizmet mükemmeldi. Teşekkür ederiz!',
+      author: 'Ahmet D., Türkiye',
     },
   ];
+  
 
   responsiveOptions = [
     {

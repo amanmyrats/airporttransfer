@@ -14,10 +14,10 @@ export const BLOG_ANTALYA = {
     },
     image: {
       name: {
-        en: 'antalya-airport-transfer.jpg',
-        de: 'antalya-flughafentransfer.jpg',
-        ru: 'трансфер-аэропорт-анталия.jpg',
-        tr: 'antalya-havalimani-transfer.jpg',
+        en: 'antalya-airport-transfer.webp',
+        de: 'antalya-flughafentransfer.webp',
+        ru: 'трансфер-аэропорт-анталия.webp',
+        tr: 'antalya-havalimani-transfer.webp',
       },
       alt: {
         en: 'Antalya Airport Transfer',

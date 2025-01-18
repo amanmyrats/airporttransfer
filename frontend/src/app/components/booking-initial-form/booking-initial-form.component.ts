@@ -109,7 +109,7 @@ export class BookingInitialFormComponent implements OnInit {
       event.preventDefault(); // Prevent the form from submitting
     }
   }
-
+  
   // translations for from, to, from placeholder, to placeholder, search, book your transfer, description
   translations: any = {
     from: {

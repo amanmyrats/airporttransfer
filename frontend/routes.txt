@@ -1,6 +1,5 @@
 /
 /en
-/en/home
 /en/aboutus
 /en/contact
 /en/services
@@ -9,7 +8,6 @@
 /en/blogs
 /en/booking/received
 /tr
-/tr/home
 /tr/aboutus
 /tr/contact
 /tr/services
@@ -18,7 +16,6 @@
 /tr/blogs
 /tr/booking/received
 /de
-/de/home
 /de/aboutus
 /de/contact
 /de/services
@@ -27,7 +24,6 @@
 /de/blogs
 /de/booking/received
 /ru
-/ru/home
 /ru/aboutus
 /ru/contact
 /ru/services

@@ -14,15 +14,15 @@ export const BLOG_ALANYA_GAZIPASA = {
     },
     image: {
       name: {
-        en: 'alanya-gazipasa-airport-transfer.jpg',
-        de: 'alanya-gazipasa-flughafentransfer.jpg',
-        ru: 'трансфер-аэропорт-аланья-гази-паша.jpg',
-        tr: 'alanya-gazipasa-havalimani-transfer.jpg',
+        en: 'alanya-gazipasa-airport-transfer.webp',
+        de: 'alanya-gazipasa-flughafentransfer.webp',
+        ru: 'трансфер-аэропорт-аланья-газипаша.webp',
+        tr: 'alanya-gazipasa-havalimani-transfer.webp',
       },
       alt: {
         en: 'Alanya Gazipasa Airport Transfer',
         de: 'Alanya Gazipasa Flughafentransfer',
-        ru: 'Трансфер аэропорт Аланья Гази Паша',
+        ru: 'Трансфер аэропорт Аланья Газипаша',
         tr: 'Alanya Gazipaşa Havalimanı Transfer',
       },
     },

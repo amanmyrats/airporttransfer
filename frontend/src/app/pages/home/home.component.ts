@@ -1,4 +1,4 @@
-import { Component, Inject, inject, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
@@ -12,7 +12,8 @@ import { CtaComponent } from "../../components/cta/cta.component";
 import { TestimonialListComponent } from '../../components/testimonial-list/testimonial-list.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { LanguageService } from '../../services/language.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SUPPORTED_MAIN_LOCATIONS } from '../../constants/main-location.constants';
 
 @Component({
   selector: 'app-home',
@@ -31,17 +32,26 @@ import { Router } from '@angular/router';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   private router! : Router;
+  currentLanguage = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
+  mainLocations: any[] = SUPPORTED_MAIN_LOCATIONS;
   isBrowser: boolean;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: any) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: any, 
+    private route: ActivatedRoute, 
+  ) {
     if (typeof window !== 'undefined') {
       this.router = inject(Router);
     }
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
+
   ngOnInit(): void {
+    const languageCode = this.route.snapshot.data['language'] || 'en';
+    this.currentLanguage.code = languageCode;
   }
 
 }
+  

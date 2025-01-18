@@ -13,10 +13,10 @@ export const BLOG_ISTANBUL = {
   },
   image: {
     name: {
-      en: 'istanbul-sabiha-gokcen-airport-transfer.jpg',
-      de: 'istanbul-sabiha-gokcen-flughafentransfer.jpg',
-      ru: 'трансфер-аэропорт-стамбул-сабиха-гёкчен.jpg',
-      tr: 'istanbul-sabiha-gokcen-havalimani-transfer.jpg',
+      en: 'istanbul-sabiha-gokcen-airport-transfer.webp',
+      de: 'istanbul-sabiha-gokcen-flughafentransfer.webp',
+      ru: 'трансфер-аэропорт-стамбул-сабиха-гёкчен.webp',
+      tr: 'istanbul-sabiha-gokcen-havalimani-transfer.webp',
     },
     alt: {
       en: 'Istanbul Sabiha Gokcen Airport Transfer',

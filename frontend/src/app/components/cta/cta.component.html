@@ -1,36 +1,34 @@
 <!-- CTA Section -->
 <div class="cta-section">
-    <h1 class="cta-title">Travel Hassle-Free with Our Premium Airport Transfer Services</h1>
+    <h1 class="cta-title">
+      {{ getTranslation('cta.title') }}
+    </h1>
     <p class="cta-description">
-      Reliable, comfortable, and on-time transfers from Turkey's major airports to your destination. Book now and enjoy a stress-free travel experience.
+      {{ getTranslation('cta.description') }}
     </p>
-    <a href="{{currentLanguage.code}}/booking" class="cta-button">Book Your Transfer Now</a>
+    <a href="{{currentLanguage.code}}/booking" class="cta-button">
+      {{ getTranslation('cta.button') }}
+    </a>
   </div>
   
   <!-- USP Section -->
   <div class="usp-section">
-    <h2 class="usp-header">Why Choose Us?</h2>
+    <h2 class="usp-header">
+      {{ getTranslation('usp.header') }}
+    </h2>
     <div class="usp-container">
-      <div class="usp-item">
-        <img src="ctas/fixed-pricing-icon.png" alt="Fixed Pricing Icon" class="usp-icon" />
-        <h3 class="usp-title">Transparent Pricing</h3>
-        <p class="usp-description">No hidden fees, fixed and fair prices for every trip.</p>
+
+      <div *ngFor="let usp of translations.usp.items" class="usp-item">
+        <img src="images/ctas/{{usp.image.name[currentLanguage.code]}}" 
+          alt="{{usp.image.alt[currentLanguage.code]}}" class="usp-icon" />
+        <h3 class="usp-title">
+          {{ usp.title[currentLanguage.code] }}
+        </h3>
+        <p class="usp-description">
+          {{ usp.description[currentLanguage.code] }}
+        </p>
       </div>
-      <div class="usp-item">
-        <img src="ctas/luxury-vehicles-icon.png" alt="Luxury Vehicles Icon" class="usp-icon" />
-        <h3 class="usp-title">Luxury Vehicles</h3>
-        <p class="usp-description">Travel in style with our modern and well-maintained fleet.</p>
-      </div>
-      <div class="usp-item">
-        <img src="ctas/professional-drivers-icon.png" alt="Professional Drivers Icon" class="usp-icon" />
-        <h3 class="usp-title">Professional Drivers</h3>
-        <p class="usp-description">Experienced, courteous drivers who prioritize your safety.</p>
-      </div>
-      <div class="usp-item">
-        <img src="ctas/24-7-support-icon.png" alt="24/7 Support Icon" class="usp-icon" />
-        <h3 class="usp-title">24/7 Support</h3>
-        <p class="usp-description">We’re here for you around the clock to assist with any queries.</p>
-      </div>
+
     </div>
   </div>
   

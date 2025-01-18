@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-footer',
@@ -8,17 +9,26 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent implements OnInit {
+  private languageService!: LanguageService;
+  
   currentLanguage: any = {
     code: 'en',
     name: 'English',
     flag: 'flags/gb.svg',
   };
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute) {
+      if (typeof window !== 'undefined') {
+        this.languageService = inject(LanguageService);}
+  }
 
   ngOnInit(): void {
     const languageCode = this.route.snapshot.data['language'] || 'en';
     this.currentLanguage.code = languageCode;
+  }
+
+  onLanguageSelect(langCode: any): void {
+    this.languageService.setLanguage(langCode, true)
   }
 
   getTranslation(key: string): string {
@@ -26,6 +36,12 @@ export class FooterComponent implements OnInit {
   }
 
   translations: any = {
+    home: {
+      en: 'Homepage',
+      de: 'Startseite',
+      ru: 'Главная страница',
+      tr: 'Anasayfa',
+    }, 
     contactus: {
       en: 'Contact Us',
       de: 'Kontaktiere uns',
@@ -68,6 +84,12 @@ export class FooterComponent implements OnInit {
       tr: 'İletişim',
       ru: 'Контакт',
     },
+    gallery: {
+      en: 'Gallery',
+      de: 'Galerie',
+      tr: 'Galeri',
+      ru: 'Галерея',
+    }, 
     privacyPolicy: {
       en: 'Privacy Policy',
       de: 'Datenschutz-Bestimmungen',
@@ -86,5 +108,11 @@ export class FooterComponent implements OnInit {
       tr: 'Tüm Hakları Saklıdır.',
       ru: 'Все права защищены.',
     },
+    allLanguages: {
+      en: 'All Languages',
+      de: 'Alle Sprachen',
+      tr: 'Tüm Diller',
+      ru: 'Все языки',
+    }
   };
 }

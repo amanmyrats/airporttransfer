@@ -1,45 +1,41 @@
-<!-- <nav class="navbar">
-    <div class="navbar-container">
-      <div class="navbar-logo">
-        <a href="/">
-          <img src="logos/logo_airporttransfer-min.png" alt="Logo" class="logo" />
-        </a>
-      </div>
-      <ul class="navbar-menu">
-        <li><a href="en/">Home</a></li>
-        <li><a href="en/prices">Prices</a></li>
-        <li><a href="en/reservation" class="book-now-button">Book Now</a></li>
-        <li><a href="en/aboutus">About Us</a></li>
-        <li><a href="en/services">Services</a></li>
-        <li><a href="en/gallery">Gallery</a></li>
-        <li><a href="en/contact">Contact</a></li>
-        <li><a href="en/blog">Blogs</a></li>
-      </ul>
+  <nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-logo">
+      <a href="/">
+        <img src="images/logos/{{getTranslation('logo.name') }}" 
+        alt="{{ getTranslation('logo.alt') }}" class="logo" />
+      </a>
     </div>
-  </nav>
-   -->
-   <nav class="navbar">
-    <div class="navbar-container">
-      <div class="navbar-logo">
-        <a href="/">
-          <img src="logos/logo_airporttransfer-min.png" alt="Logo" class="logo" />
-        </a>
-      </div>
-      <div class="hamburger-menu" (click)="toggleMenu()">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <ul class="navbar-menu" [class.open]="menuOpen">
-        <li><a href="{{selectedLang.code}}/">Home</a></li>
-        <li><a href="{{selectedLang.code}}/prices">Prices</a></li>
-        <li><a href="{{selectedLang.code}}/booking" class="book-now-button">Book Now</a></li>
-        <li><a href="{{selectedLang.code}}/aboutus">About Us</a></li>
-        <li><a href="{{selectedLang.code}}/services">Services</a></li>
-        <li><a href="{{selectedLang.code}}/gallery">Gallery</a></li>
-        <li><a href="{{selectedLang.code}}/contact">Contact</a></li>
-        <li><a href="{{selectedLang.code}}/blogs">Blogs</a></li>
-      </ul>
+    <div class="hamburger-menu" (click)="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
-  </nav>
-  
+    <ul class="navbar-menu" [class.open]="menuOpen">
+      <li><a href="{{currentLanguage.code}}/">
+        {{ getTranslation('home') }}
+      </a></li>
+      <li><a href="{{currentLanguage.code}}/prices">
+        {{ getTranslation('prices') }}
+      </a></li>
+      <li><a href="{{currentLanguage.code}}/booking" class="book-now-button">
+        {{ getTranslation('bookNow') }}
+      </a></li>
+      <li><a href="{{currentLanguage.code}}/aboutus">
+        {{ getTranslation('aboutUs') }}
+      </a></li>
+      <li><a href="{{currentLanguage.code}}/services">
+        {{ getTranslation('services') }}
+      </a></li>
+      <li><a href="{{currentLanguage.code}}/gallery">
+        {{ getTranslation('gallery') }}
+      </a></li>
+      <li><a href="{{currentLanguage.code}}/contact">
+        {{ getTranslation('contactUs') }}
+      </a></li>
+      <li><a href="{{currentLanguage.code}}/blogs">
+        {{ getTranslation('blogs') }}
+      </a></li>
+    </ul>
+  </div>
+</nav>

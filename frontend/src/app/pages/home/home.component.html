@@ -1,11 +1,19 @@
 <div class="home-wrapper">
     <app-super-header></app-super-header>
     <app-navbar></app-navbar>
-
-    <ng-container *ngIf="isBrowser">
-      <app-banner></app-banner>
+    
+    <app-banner></app-banner>
+    
+    <!-- Price List for Airport Transfer in Turkey -->
+    <ng-container *ngIf="isBrowser; else nonBrowserContent">
       <app-price-list></app-price-list>
     </ng-container>
+    
+    <ng-template #nonBrowserContent>
+      <h1 *ngFor="let mainLocation of mainLocations">
+        {{ mainLocation.code }} - {{ mainLocation[currentLanguage.code] }}
+      </h1>
+    </ng-template>
     
     <app-cta></app-cta>
     <app-testimonial-list></app-testimonial-list>

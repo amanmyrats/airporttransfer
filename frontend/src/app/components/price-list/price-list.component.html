@@ -3,7 +3,9 @@
   <p-tablist>
       @for(mainLocation of mainLocations; track mainLocation.value){
           <p-tab [value]="mainLocation.value">
-              {{ mainLocation.code }} - {{ mainLocation.name }}
+            <h1  style="font-size: large; padding: 0; margin: 0;">
+              {{ mainLocation.code }} - {{ mainLocation[languageService.currentLang().code] }}
+            </h1>
           </p-tab>
       }
   </p-tablist>
@@ -18,7 +20,9 @@
           @let carTypePopularRoutes = popularRouteService.getPopularRoutesByMainLocationCodeAndCarType(mainLocation.code, carType.code!);
           @if (carTypePopularRoutes.length > 0) {
           <div class="car-section">
-            <img src="cars/vito.png" alt="Mercedes Vito" class="car-image" />
+            <img src="images/cartypes/{{ carType.image.name[languageService.currentLang().code] }}" 
+              alt="{{ carType.image.alt[languageService.currentLang().code] }}" 
+                class="car-image" />
             <h2 class="car-title">{{carType.name}}
               <br> 
               <!-- user icon pi icon -->
@@ -26,7 +30,7 @@
                 <i class="pi pi-user"> {{carType.pax}}, </i>
               </span>
               <span>
-                {{getTranslation('or_equivalent', languageService.currentLang().code)}}
+                {{getTranslation('or_equivalent')}}
               </span>
             </h2>
             <div class="car-routes">
@@ -54,7 +58,7 @@
                         price, 
                         currency_code)"
                         >
-                {{getTranslation('book_now', languageService.currentLang().code)}}
+                        {{getTranslation('book_now')}}
 
                       </button>
                     </li>

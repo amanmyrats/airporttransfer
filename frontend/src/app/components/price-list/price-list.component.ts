@@ -28,25 +28,19 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   priceCalculatorService = inject(PriceCalculatorService);
   currencyService = inject(CurrencyService);
 
-  translations: any = {
-    'or_equivalent': {
-      'en': 'or equivalent', 
-      'de': 'oder gleichwertig',
-      'tr': 'veya eşdeğeri',
-      'ru': 'или эквивалент',
-    }, 
-    'book_now': {
-      'en': 'Book Now',
-      'de': 'Jetzt buchen',
-      'tr': 'Rezervasyon yap',
-      'ru': 'Забронировать сейчас',
-    },
-  };
-
   popularRoutesSignal = this.popularRouteService.popularRoutesSignal;
   
   mainLocations: any[] = this.mainLocationService.getMainLocations();
 
+  // private router! : Router;
+  // isBrowser: boolean;
+
+  // constructor(@Inject(PLATFORM_ID) private platformId: any) {
+  //   if (typeof window !== 'undefined') {
+  //     this.router = inject(Router);
+  //   }
+  //   this.isBrowser = isPlatformBrowser(this.platformId);
+  // }
   constructor(
     private googleMapsService: GoogleMapsService, 
     private bookingService: BookingService, 
@@ -114,8 +108,34 @@ export class PriceListComponent implements OnInit, AfterViewInit {
       
   }
 
-  getTranslation(key: string, langCode: string): string {
-    return this.translations[key][langCode];
+  getTranslation(key: string): string {
+    if (typeof key !== 'string') {
+      console.error('Translation key is not a string:', key);
+      return '';
+    }
+  
+    const keys = key.split('.');
+    let value = this.translations;
+    for (const k of keys) {
+      value = value[k];
+      if (!value) return key; // Return key if translation not found
+    }
+    return value[this.languageService.currentLang().code] || key;
   }
+
+  translations: any = {
+    or_equivalent: {
+      'en': 'or equivalent', 
+      'de': 'oder gleichwertig',
+      'tr': 'veya eşdeğeri',
+      'ru': 'или эквивалент',
+    }, 
+    book_now: {
+      'en': 'Book Now',
+      'de': 'Jetzt buchen',
+      'tr': 'Rezervasyon yap',
+      'ru': 'Забронировать сейчас',
+    },
+  };
 
 }

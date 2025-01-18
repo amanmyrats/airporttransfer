@@ -25,11 +25,6 @@ export const routes: Routes = [
     {   path: 'ru', component: HomeComponent, data: { language: 'ru' }  },
     {   path: 'tr', component: HomeComponent, data: { language: 'tr' }  },
 
-    {   path: 'en/home', component: HomeComponent, data: { language: 'en' }  },
-    {   path: 'de/home', component: HomeComponent, data: { language: 'de' }  },
-    {   path: 'ru/home', component: HomeComponent, data: { language: 'ru' }  },
-    {   path: 'tr/home', component: HomeComponent, data: { language: 'tr' }  },
-
     {   path: 'en/aboutus',component: AboutUsComponent, data: { language: 'en' }  },
     {   path: 'de/aboutus',component: AboutUsComponent, data: { language: 'de' }  },
     {   path: 'ru/aboutus',component: AboutUsComponent, data: { language: 'ru' }  },
@@ -162,6 +157,6 @@ export const routes: Routes = [
         component: UnauthorizedComponent,
     },
 
-    {   path: '**', redirectTo: 'en/home' }, // Redirect unknown paths
+    {   path: '**', redirectTo: 'en' }, // Redirect unknown paths
 
 ];

@@ -23,7 +23,7 @@
       <!-- Blog List -->
       <div class="blog-list">
         <div *ngFor="let blog of blogItems" class="blog-item">
-          <img src="images/blogs/ + {{getImageName(blog, currentLanguage)}}" alt="{{ getImageName(blog, currentLanguage) }}" class="blog-image" />
+          <img src="images/blogs/{{getImageName(blog, currentLanguage)}}" alt="{{ getImageName(blog, currentLanguage) }}" class="blog-image" />
           <div class="blog-content">
             <h3 class="blog-title">
               <a [href]="currentLanguage.code + '/blogs/' + generateSlug(blog, currentLanguage)">
