@@ -4,8 +4,9 @@ them one by one:
 
 ### **1. Technical SEO**
 - Ensure the site uses **clean and semantic HTML** (verify `<h1>`, `<p>`, `<ul>`, etc.).
-- Implement a **robots.txt** file to control crawler access.
-- Create and submit an **XML sitemap** to Google Search Console.
++ Implement a **robots.txt** file to control crawler access.
+- Create and submit an **XML sitemap** to Google Search Console. 
+    must be sent to yandex and others
 - Ensure the site has a **canonical tag** for every page to avoid duplicate content issues.
 - Configure proper **hreflang attributes** for multilingual pages (important for your audience).
 - Enable **lazy loading** for non-essential assets (e.g., images below the fold).

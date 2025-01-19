@@ -29,5 +29,8 @@ phases:
       - aws s3 cp ./sitemap.xml s3://724supertransfers.com/sitemap.xml --cache-control "max-age=86400, public"
       - aws s3 cp ./robots.txt s3://724supertransfers.com/robots.txt --cache-control "max-age=86400, public"
       
+      # Copy yandex_544c837bc47d578c.html to the root of the bucket with long cache
+      - aws s3 cp ./yandex_544c837bc47d578c.html s3://724supertransfers.com/yandex_544c837bc47d578c.html --cache-control "max-age=31536000, public"
+      
       # Invalidate CloudFront
       - aws cloudfront create-invalidation --distribution-id ERWTRAHG56HIT --paths "/*"
