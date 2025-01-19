@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+Disallow: /passwordreset/
+Disallow: /passwordresetconfirm/
+Disallow: /unauthorized/
+
+Sitemap: https://724supertransfers.com/sitemap.xml
