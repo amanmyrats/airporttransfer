@@ -43,6 +43,12 @@
     color: #555;
     text-decoration: none;
     transition: color 0.3s ease;
+
+    display: flex;
+
+    a {
+        margin-right: 5px;
+    }
 }
 
 /* Responsive Design */

@@ -3,26 +3,60 @@
 
         <!-- Contact Info -->
         <div class="contact-info">
-            <a href="https://wa.me/99365493616" aria-label="Contact us on WhatsApp" target="_blank" rel="noopener">
-                <img [src]="'social_icons/whatsapp.svg'" style="max-height: 30px;"/> 
+            <a href="https://wa.me/99365493616"  
+                [attr.aria-label]="translations.whatsapp.anchor.ariaLabel[currentLanguage.code]" 
+                target="_blank" rel="noopener">
+                <img [src]="'images/socialicons/' + translations.whatsapp.image.name[currentLanguage.code]" 
+                    [alt]="translations.whatsapp.image.alt[currentLanguage.code]" 
+                    style="max-height: 20px;"/> 
                 +90 555 555 5555
             </a>
-            <a href="https://t.me/amanmyrats" aria-label="Contact us on Telegram" target="_blank" rel="noopener">
-                <img [src]="'social_icons/telegram.svg'" style="max-height: 30px;"/> 
+            <a href="https://t.me/amanmyrats"  
+                [attr.aria-label]="translations.telegram.anchor.ariaLabel[currentLanguage.code]" 
+                target="_blank" rel="noopener">
+                <img [src]="'images/socialicons/' + translations.telegram.image.name[currentLanguage.code]" 
+                    [alt]="translations.telegram.image.alt[currentLanguage.code]" 
+                    style="max-height: 20px;"/> 
                 +90 555 555 5555
             </a>
         </div>
 
         <!-- Social Media Links -->
         <div class="social-media">
-            <a href="https://facebook.com/yourpage" title="Follow us on Facebook" target="_blank" rel="noopener">
-                <i class="fab fa-facebook"></i>
+            <a href="https://instagram.com/yourpage"  
+                [attr.aria-label]="translations.instagram.anchor.ariaLabel[currentLanguage.code]" 
+                target="_blank" rel="noopener">
+                <img [src]="'images/socialicons/' + translations.instagram.image.name[currentLanguage.code]" 
+                    [alt]="translations.instagram.image.alt[currentLanguage.code]" 
+                    style="max-height: 20px;"/> 
             </a>
-            <a href="https://instagram.com/yourpage" title="Follow us on Instagram" target="_blank" rel="noopener">
-                <i class="fab fa-instagram"></i>
+            <a href="https://facebook.com/yourpage"  
+                [attr.aria-label]="translations.facebook.anchor.ariaLabel[currentLanguage.code]" 
+                target="_blank" rel="noopener">
+                <img [src]="'images/socialicons/' + translations.facebook.image.name[currentLanguage.code]" 
+                    [alt]="translations.facebook.image.alt[currentLanguage.code]" 
+                    style="max-height: 20px;"/> 
             </a>
-            <a href="https://twitter.com/yourpage" title="Follow us on Twitter" target="_blank" rel="noopener">
-                <i class="fab fa-twitter"></i>
+            <a href="https://tiktok.com/yourpage"  
+                [attr.aria-label]="translations.tiktok.anchor.ariaLabel[currentLanguage.code]" 
+                target="_blank" rel="noopener">
+                <img [src]="'images/socialicons/' + translations.tiktok.image.name[currentLanguage.code]" 
+                    [alt]="translations.tiktok.image.alt[currentLanguage.code]" 
+                    style="max-height: 20px;"/> 
+            </a>
+            <a href="https://twitter.com/yourpage"  
+                [attr.aria-label]="translations.twitter.anchor.ariaLabel[currentLanguage.code]" 
+                target="_blank" rel="noopener">
+                <img [src]="'images/socialicons/' + translations.twitter.image.name[currentLanguage.code]" 
+                    [alt]="translations.twitter.image.alt[currentLanguage.code]" 
+                    style="max-height: 20px;"/> 
+            </a>
+            <a href="https://linkedin.com/yourpage"  
+                [attr.aria-label]="translations.linkedin.anchor.ariaLabel[currentLanguage.code]" 
+                target="_blank" rel="noopener">
+                <img [src]="'images/socialicons/' + translations.linkedin.image.name[currentLanguage.code]" 
+                    [alt]="translations.linkedin.image.alt[currentLanguage.code]" 
+                    style="max-height: 20px;"/> 
             </a>
         </div>
 
