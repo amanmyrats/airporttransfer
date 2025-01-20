@@ -32,5 +32,11 @@ export const BLOG_ANTALYA = {
       ru: 'transfer-aeroport-antalia',
       tr: 'antalya-havalimani-transfer',
     },
+    readMore: {
+      en: 'Read More about Antalya Airport Transfers',
+      de: 'Mehr über Antalya Flughafentransfers',
+      ru: 'Читать далее о трансферах из аэропорта Анталья',
+      tr: 'Antalya Havalimanı Transferleri Hakkında Daha Fazla Bilgi',
+    }
   };
   

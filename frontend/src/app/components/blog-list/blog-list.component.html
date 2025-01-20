@@ -15,9 +15,8 @@
         </p>
         <a href="{{currentLanguage.code}}/blogs/{{getSlug(blog, currentLanguage)}}" 
         class="read-more" 
-        [ariaLabel]="getTranslation('blog.readMore.description')"
         >
-        {{ getTranslation('blog.readMore') }}
+        {{ blog.readMore[currentLanguage.code] }}
       
       </a>
       </div>

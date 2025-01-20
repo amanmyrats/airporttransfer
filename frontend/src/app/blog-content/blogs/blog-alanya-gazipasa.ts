@@ -32,5 +32,11 @@ export const BLOG_ALANYA_GAZIPASA = {
       ru: 'transfer-aeroport-alanya-gazipasa',
       tr: 'alanya-gazipasa-havalimani-transfer',
     },
+    readMore: {
+      en: 'Read More about Alanya Gazipasa Airport Transfer',
+      de: 'Mehr über Alanya Gazipasa Flughafentransfer',
+      ru: 'Читать далее о трансфере аэропорт Аланья Газипаша',
+      tr: 'Alanya Gazipaşa Havalimanı Transferi Hakkında Daha Fazla Bilgi',
+    }
   };
   

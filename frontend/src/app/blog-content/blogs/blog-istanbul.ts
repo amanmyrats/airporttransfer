@@ -31,4 +31,10 @@ export const BLOG_ISTANBUL = {
     ru: 'transfer-aeroport-stambul-sabiha-gokcen',
     tr: 'istanbul-sabiha-gokcen-havalimani-transfer',
   },
+  readMore: {
+    en: 'Read More about Istanbul Airport Transfers',
+    de: 'Weiterlesen über Istanbul Flughafentransfers',
+    ru: 'Читать далее о трансферах из аэропортов Стамбула',
+    tr: 'İstanbul Havalimanı Transferleri Hakkında Daha Fazla Bilgi',
+  }
 };
