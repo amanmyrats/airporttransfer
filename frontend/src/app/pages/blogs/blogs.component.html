@@ -32,7 +32,7 @@
             </h3>
             <p class="blog-excerpt">{{ blog.excerpt[currentLanguage.code] }}</p>
             <a [href]="currentLanguage.code + '/blogs/' + generateSlug(blog, currentLanguage)" class="read-more">
-              {{ getTranslation('blog.readMore') }}
+              {{ blog.readMore[currentLanguage.code] }}
             </a>
           </div>
         </div>
