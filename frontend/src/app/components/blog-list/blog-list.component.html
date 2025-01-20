@@ -14,7 +14,9 @@
           {{ getExcerpt(blog, currentLanguage) }}
         </p>
         <a href="{{currentLanguage.code}}/blogs/{{getSlug(blog, currentLanguage)}}" 
-        class="read-more">
+        class="read-more" 
+        [ariaLabel]="getTranslation('blog.readMore.description')"
+        >
         {{ getTranslation('blog.readMore') }}
       
       </a>

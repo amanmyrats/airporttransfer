@@ -95,6 +95,12 @@ export class BlogListComponent  implements OnInit {
         de: 'Weiterlesen',
         tr: 'Devamını Oku',
         ru: 'Читать далее',
+        description: {
+          en: 'Discover how to make your airport transfer in Turkey stress-free and efficient. Learn why choosing the right service is crucial for your travel experience.',
+          de: 'Erfahren Sie, wie Sie Ihren Flughafentransfer in der Türkei stressfrei und effizient gestalten können. Erfahren Sie, warum die Wahl des richtigen Dienstes für Ihr Reiseerlebnis entscheidend ist.',
+          ru: 'Узнайте, как сделать ваш трансфер из аэропорта в Турции без стресса и эффективно. Узнайте, почему выбор правильного сервиса критичен для вашего путешествия.',
+          tr: 'Türkiye\'deki havalimanı transferinizi stresiz ve verimli hale getirmenin yollarını keşfedin. Seyahat deneyiminiz için doğru hizmeti seçmenin neden önemli olduğunu öğrenin.',
+        },
       },
     },
   };
