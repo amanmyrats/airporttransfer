@@ -48,6 +48,10 @@
   z-index: 1000;
   display: none; /* Hidden by default */
   padding-left: 5px;
+
+  li {
+    padding: 3px;
+  }
 }
 
 .dropdown-menu.show {

@@ -1,7 +1,9 @@
 <div class="dropdown" (mouseleave)="closeDropdown()">
     <!-- Dropdown Button -->
     <button class="dropdown-button" (click)="toggleDropdown()">
-      <img [src]="selectedLanguage.flag" [alt]="selectedLanguage.name + ' flag'" class="flag-icon" />
+      <img [src]="selectedLanguage.flag" [alt]="selectedLanguage.name + ' flag'" class="flag-icon" 
+        style="width: 20px; height: 15px;"
+        />
       <span>{{ selectedLanguage.name }}</span>
       <i class="dropdown-arrow pi pi-chevron-down"></i>
     </button>
@@ -14,7 +16,9 @@
         (click)="onLanguageSelect(lang)"
       >
       <a [href]="lang.code + translatedUrlWithoutLang" [attr.aria-label]="'Switch to ' + lang.name">
-        <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" />
+        <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" 
+        style="width: 20px; height: 15px;"
+        />
         {{ lang.name }}
       </a>
       </li>

@@ -20,7 +20,9 @@
 
       <div *ngFor="let usp of translations.usp.items" class="usp-item">
         <img src="images/ctas/{{usp.image.name[currentLanguage.code]}}" 
-          alt="{{usp.image.alt[currentLanguage.code]}}" class="usp-icon" />
+          alt="{{usp.image.alt[currentLanguage.code]}}" class="usp-icon" 
+          style="width: 75px; height: 75px;"
+          />
         <h3 class="usp-title">
           {{ usp.title[currentLanguage.code] }}
         </h3>
