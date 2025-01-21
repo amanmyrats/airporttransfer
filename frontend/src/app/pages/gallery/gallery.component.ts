@@ -5,6 +5,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
 import { title } from 'node:process';
 import { CommonModule } from '@angular/common';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-gallery',
@@ -26,12 +27,40 @@ export class GalleryComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private meta: Meta, 
+    private title: Title, 
   ) {
   }
 
   ngOnInit(): void {
     const languageCode = this.route.snapshot.data['language'] || 'en';
     this.currentLanguage.code = languageCode;
+    this.setMetaTags(this.currentLanguage.code);
+  }
+  
+  setMetaTags(langCode: string): void {
+    const metaTags: any = {
+      en: {
+        title: 'Antalya Airport Transfers Images',
+        description: 'Explore our gallery for airport transfers in Antalya and other Turkish cities.',
+      },
+      de: {
+        title: 'Bilder von Antalya Flughafentransfers',
+        description: 'Entdecken Sie unsere Galerie für Flughafentransfers in Antalya und anderen türkischen Städten.',
+      },
+      ru: {
+        title: 'Галерея трансферов из аэропорта Анталии',
+        description: 'Посмотрите нашу галерею трансферов из аэропорта в Анталии и других городах Турции.',
+      },
+      tr: {
+        title: 'Antalya Havalimanı Transfer Görselleri',
+        description: 'Antalya ve diğer Türk şehirlerindeki havalimanı transferleri galerimizi keşfedin.',
+      },
+    };
+
+    const meta: any = metaTags[langCode] || metaTags['en'];
+    this.title.setTitle(meta.title);
+    this.meta.updateTag({ name: 'description', content: meta.description });
   }
 
   getImageUrl(image: any, languageCode: string): string {

@@ -3,6 +3,7 @@ import { SuperHeaderComponent } from '../../components/super-header/super-header
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-contact-us',
@@ -18,12 +19,40 @@ export class ContactUsComponent implements OnInit {
   currentLanguage: any = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
 
   constructor(
-    private route: ActivatedRoute
+    private route: ActivatedRoute, 
+    private meta: Meta, 
+    private title: Title, 
   ) { }
 
   ngOnInit(): void {
     const languageCode = this.route.snapshot.data['language'] || 'en';
     this.currentLanguage.code = languageCode;
+    this.setMetaTags(this.currentLanguage.code);
+  }
+  
+  setMetaTags(langCode: string): void {
+    const metaTags: any = {
+      en: {
+        title: 'Contact for Antalya Airport Transfer',
+        description: 'Get in touch to arrange affordable and reliable airport transfers in Antalya, Istanbul, and more.',
+      },
+      de: {
+        title: 'Kontakt für Flughafentransfers in Antalya',
+        description: 'Kontaktieren Sie uns für günstige und zuverlässige Flughafentransfers in Antalya, Istanbul und anderen Städten.',
+      },
+      ru: {
+        title: 'Связаться по трансферам из аэропорта Анталии',
+        description: 'Свяжитесь с нами, чтобы организовать доступные и надежные трансферы из аэропорта в Анталии, Стамбуле и других городах.',
+      },
+      tr: {
+        title: 'Antalya Havalimanı Transfer İletişim',
+        description: 'Antalya, İstanbul ve diğer şehirlerdeki uygun ve güvenilir havalimanı transferleri için bizimle iletişime geçin.',
+      },
+    };
+    
+    const meta: any = metaTags[langCode] || metaTags['en'];
+    this.title.setTitle(meta.title);
+    this.meta.updateTag({ name: 'description', content: meta.description });
   }
 
   translations: any = {

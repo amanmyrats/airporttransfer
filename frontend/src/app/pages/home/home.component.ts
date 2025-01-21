@@ -14,6 +14,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { LanguageService } from '../../services/language.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SUPPORTED_MAIN_LOCATIONS } from '../../constants/main-location.constants';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -41,6 +42,8 @@ export class HomeComponent implements OnInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: any, 
     private route: ActivatedRoute, 
+    private title: Title, 
+    private meta: Meta, 
   ) {
     if (typeof window !== 'undefined') {
       this.router = inject(Router);
@@ -51,7 +54,33 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     const languageCode = this.route.snapshot.data['language'] || 'en';
     this.currentLanguage.code = languageCode;
+
+    this.setMetaTags(this.currentLanguage.code);
   }
 
+  setMetaTags(langCode: string): void {
+    const metaTags: any = {
+      en: {
+        title: 'Best Airport Transfer Services in Turkey | Antalya, Istanbul & More',
+        description: 'Affordable and reliable airport transfer services in Turkey. Covering Antalya, Istanbul, Alanya, Izmir, and more. Book now for seamless travel!',
+      },
+      de: {
+        title: 'Beste Flughafentransfers in der Türkei | Antalya, Istanbul & Mehr',
+        description: 'Bezahlbare und zuverlässige Flughafentransfers in der Türkei. Wir bedienen Antalya, Istanbul, Alanya, Izmir und mehr. Jetzt buchen für eine reibungslose Reise!',
+      },
+      ru: {
+        title: 'Лучшие трансферы из аэропорта в Турции | Анталия, Стамбул и другие',
+        description: 'Доступные и надежные трансферы из аэропорта в Турции. Обслуживаем Анталию, Стамбул, Аланью, Измир и другие. Забронируйте сейчас для комфортной поездки!',
+      },
+      tr: {
+        title: 'Türkiye Havalimanı Transfer Hizmetleri | Antalya, İstanbul ve Daha Fazlası',
+        description: 'Türkiye’de uygun ve güvenilir havalimanı transfer hizmetleri. Antalya, İstanbul, Alanya, İzmir ve daha fazlası için hemen rezervasyon yapın!',
+      },
+    };
+
+    const meta: any = metaTags[langCode] || metaTags['en'];
+    this.title.setTitle(meta.title);
+    this.meta.updateTag({ name: 'description', content: meta.description });
+  }
 }
   

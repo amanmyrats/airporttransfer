@@ -23,7 +23,7 @@
       <!-- Blog List -->
       <div class="blog-list">
         <div *ngFor="let blog of blogItems" class="blog-item">
-          <img src="images/{{navbarMenu.blogs.slug[currentLanguage.code]}}/{{getImageName(blog, currentLanguage)}}" 
+          <img src="images/blogs/{{getImageName(blog, currentLanguage)}}" 
             alt="{{ getImageName(blog, currentLanguage) }}" class="blog-image" />
           <div class="blog-content">
             <h3 class="blog-title">

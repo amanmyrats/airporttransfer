@@ -6,6 +6,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { BLOGS } from '../../blog-content';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-blogs',
@@ -27,16 +28,43 @@ export class BlogsComponent implements OnInit {
   };
   blogItems: any = BLOGS;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute, 
+    private title: Title, 
+    private meta: Meta, 
+  ) {}
 
   ngOnInit(): void {
     const languageCode = this.route.snapshot.data['language'] || 'en';
-    console.log("languageCode in blogs.init: " + languageCode);
-    console.log("this.currentLanguage.code in blogs.init: " + this.currentLanguage.code);
     this.currentLanguage.code = languageCode;
-    console.log("After setting this.currentLanguage.code in blogs.init: " + this.currentLanguage.code);
+    this.setMetaTags(this.currentLanguage.code);
   }
 
+  setMetaTags(langCode: string): void {
+    const metaTags: any = {
+      en: {
+        title: 'Tips for Airport Transfers in Turkey',
+        description: 'Learn how to go to Antalya, Istanbul, and other Turkish cities with our airport transfer tips.',
+      },
+      de: {
+        title: 'Tipps für Flughafentransfers in der Türkei',
+        description: 'Erfahren Sie, wie Sie Antalya, Istanbul und andere Städte in der Türkei mit unseren Flughafentransfertipps erreichen.',
+      },
+      ru: {
+        title: 'Советы по трансферам из аэропорта в Турции',
+        description: 'Узнайте, как добраться до Анталии, Стамбула и других городов Турции с помощью наших советов по трансферам.',
+      },
+      tr: {
+        title: 'Türkiye Havalimanı Transfer İpuçları',
+        description: 'Antalya, İstanbul ve diğer şehirler için havalimanı transfer ipuçlarımızı öğrenin.',
+      },
+    };
+    
+    const meta: any = metaTags[langCode] || metaTags['en'];
+    this.title.setTitle(meta.title);
+    this.meta.updateTag({ name: 'description', content: meta.description });
+  }
+    
   getTranslation(key: string): string {
     if (typeof key !== 'string') {
       console.error('Translation key is not a string:', key);
