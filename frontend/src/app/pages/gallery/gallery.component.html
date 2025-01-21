@@ -21,7 +21,7 @@
       
     } @else if (currentLanguage.code == 'tr') {
       <div class="gallery-hero">
-        <h1 class="gallery-title">Galeri</h1>
+        <h1 class="gallery-title">GALERİ</h1>
         <p class="gallery-subtitle">
           Premium filomuzu, destinasyonlarımızı ve olağanüstü hizmetimizi keşfedin. Galerimizle konforu, güvenilirliği ve stili deneyimleyin.
         </p>
@@ -41,7 +41,7 @@
       <!-- Gallery Item 1 -->
        
       <a *ngFor="let image of GALLERY_IMAGES" 
-        href="{{getLargeImagePath(image, currentLanguage.code)}}" 
+        href="{{getLargeImagePath(image, currentLanguage.code)}}/" 
         data-lightbox="gallery" 
         data-title="{{getImageDataTitle(image, currentLanguage.code)}}">
         <div class="gallery-item">

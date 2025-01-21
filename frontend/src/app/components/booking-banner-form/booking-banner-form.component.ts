@@ -35,7 +35,7 @@ export class BookingBannerFormComponent {
 
     this.googleMapsService.calculateDrivingDistanceAndTime(origin, destination
     ).then(result => {
-        this.router.navigate([`${this.languageService.currentLang().code}/booking`], {
+        this.router.navigate([`${this.languageService.currentLang().code}/booking/`], {
           queryParams: {
             step: 2,
             pickup_full: formValue.pickup_full,

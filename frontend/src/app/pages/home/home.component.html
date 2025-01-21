@@ -10,9 +10,9 @@
     </ng-container>
     
     <ng-template #nonBrowserContent>
-      <h1 *ngFor="let mainLocation of mainLocations">
+      <h2 *ngFor="let mainLocation of mainLocations">
         {{ mainLocation.code }} - {{ mainLocation[currentLanguage.code] }}
-      </h1>
+      </h2>
     </ng-template>
     
     <app-cta></app-cta>

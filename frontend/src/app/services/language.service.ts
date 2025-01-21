@@ -16,10 +16,11 @@ export class LanguageService {
   );
 
   constructor(private route: ActivatedRoute, private router: Router) {
-    effect(() => {
-      console.log('Triggered currentLang() effect in language service');
-      this.setLanguage(this.currentLang().code);
-    });
+    // effect(() => {
+    //   console.log('Triggered currentLang() effect in language service');
+    //   console.log('new lang:', this.currentLang());
+    //   this.setLanguage(this.currentLang().code);
+    // });
   }
 
   /**
@@ -30,12 +31,25 @@ export class LanguageService {
     const selectedLang = SUPPORTED_LANGUAGES.find((lang) => lang.code === langCode);
 
     if (selectedLang) {
-      this.currentLang.set(selectedLang); // Update the signal value
+      // this.currentLang.set(selectedLang); // Update the signal value
       this.storeLanguage(langCode); // Persist the selected language
+      console.log('setLanguage was called: ', langCode);
+      console.log('alreadyNavigated: ', alreadyNavigated);
+      console.log('alreadyNavigated: ', alreadyNavigated);
+      console.log('alreadyNavigated: ', alreadyNavigated);
+      console.log('alreadyNavigated: ', alreadyNavigated);
+      console.log('alreadyNavigated: ', alreadyNavigated);
       if (!alreadyNavigated) {
         console.log('Navigating to new language in language service');
         const currentRoute = this.router.url.split('/').slice(2).join('/'); // Remove language from URL
-        this.router.navigate([`/${langCode}/${currentRoute}`]);
+        console.log('Current route:', currentRoute);
+        if (currentRoute) {
+          console.log('navigating to ', `${langCode}/${currentRoute}/`);
+          this.router.navigate([`${langCode}/${currentRoute}/`]);
+        } else {
+          console.log('navigating to ', `${langCode}/`);
+          this.router.navigate([`${langCode}/`]);
+        }
       }
     } else {
       console.warn(`Unsupported language code: ${langCode}`);
@@ -57,7 +71,7 @@ export class LanguageService {
           this.storeLanguage(langCode); // Persist the detected language
         } else {
           console.warn(`Unsupported language code detected in URL: ${langCode}`);
-          this.router.navigate(['/en']); // Fallback to default language
+          this.router.navigate(['en/']); // Fallback to default language
         }
       }
     });

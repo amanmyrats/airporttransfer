@@ -3,7 +3,7 @@ Each step is essential for optimizing visibility and ranking. You can go through
 them one by one:
 
 ### **1. Technical SEO**
-- Ensure the site uses **clean and semantic HTML** (verify `<h1>`, `<p>`, `<ul>`, etc.).
++ Ensure the site uses **clean and semantic HTML** (verify `<h1>`, `<p>`, `<ul>`, etc.).
 + Implement a **robots.txt** file to control crawler access.
 - Create and submit an **XML sitemap** to Google Search Console. 
     must be sent to yandex and others
@@ -12,13 +12,13 @@ them one by one:
 - Enable **lazy loading** for non-essential assets (e.g., images below the fold).
 - Optimize the **Core Web Vitals** (LCP, FID, CLS).
 - Use **structured data/schema markup** (e.g., breadcrumbs, FAQ, reviews).
-- Use a **secure HTTPS connection**.
++ Use a **secure HTTPS connection**.
 - Set up **301 redirects** for broken or removed pages.
 
 ### **2. Mobile Optimization**
-- Ensure the site is **fully responsive** and works seamlessly on all devices.
++ Ensure the site is **fully responsive** and works seamlessly on all devices.
 - Use **mobile-friendly viewport meta tags**.
-- Avoid pop-ups that interfere with mobile usability.
++ Avoid pop-ups that interfere with mobile usability.
 
 ### **3. Content Optimization**
 - Use **keyword-rich headings** (`<h1>`, `<h2>`, etc.).
@@ -35,16 +35,16 @@ instead of `example.com/?id=123`).
 - Avoid unnecessary query strings or parameters in URLs.
 
 ### **5. Multimedia**
-- Compress images to optimize page loading speed.
-- Provide video transcriptions for SEO.
-- Use descriptive file names for media (e.g., `istanbul-airport-transfer.jpg`).
++ Compress images to optimize page loading speed.
++ Provide video transcriptions for SEO.
++ Use descriptive file names for media (e.g., `istanbul-airport-transfer.jpg`).
 
 ### **6. Speed Optimization**
-- Use a **content delivery network (CDN)** to reduce server load.
-- Minify CSS, JavaScript, and HTML.
++ Use a **content delivery network (CDN)** to reduce server load.
++ Minify CSS, JavaScript, and HTML.
 - Enable **Gzip compression**.
-- Cache static assets for quicker loading.
-- Test site speed with **Google PageSpeed Insights**.
++ Cache static assets for quicker loading.
++ Test site speed with **Google PageSpeed Insights**.
 
 ### **7. Local SEO**
 - Add a **Google My Business profile** for your business.

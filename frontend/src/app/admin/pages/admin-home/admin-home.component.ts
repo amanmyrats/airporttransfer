@@ -89,22 +89,22 @@ export class AdminHomeComponent implements OnInit {
       {
         label: 'Rezervasyonlar',
         icon: 'pi pi-star',
-        routerLink: '/admin/reservations'
+        routerLink: '/admin/reservations/'
       },
       {
         label: 'Meşhur Güzergahlar Fiyat Listesi',
         icon: 'pi pi-euro',
-        routerLink: '/admin/popularroutes'
+        routerLink: '/admin/popularroutes/'
       },
       {
         label: 'Kurler',
         icon: 'pi pi-dollar',
-        routerLink: '/admin/rates'
+        routerLink: '/admin/rates/'
       },
       {
         label: 'Kullanıcılar',
         icon: 'pi pi-user',
-        routerLink: '/admin/users'
+        routerLink: '/admin/users/'
       },
     ];
   }

@@ -13,25 +13,26 @@
       <!-- <div class="blog-categories">
         <h2 class="categories-title">{{ getTranslation('blog.categories.title') }}</h2>
         <ul class="categories-list">
-          <li><a href="/blog/category/tips">{{ getTranslation('blog.categories.list.tips') }}</a></li>
-          <li><a href="/blog/category/destinations">{{ getTranslation('blog.categories.list.destinations') }}</a></li>
-          <li><a href="/blog/category/luxury-travel">{{ getTranslation('blog.categories.list.luxuryTravel') }}</a></li>
-          <li><a href="/blog/category/family-travel">{{ getTranslation('blog.categories.list.familyTravel') }}</a></li>
+          <li><a href="/blog/category/tips/">{{ getTranslation('blog.categories.list.tips') }}</a></li>
+          <li><a href="/blog/category/destinations/">{{ getTranslation('blog.categories.list.destinations') }}</a></li>
+          <li><a href="/blog/category/luxury-travel/">{{ getTranslation('blog.categories.list.luxuryTravel') }}</a></li>
+          <li><a href="/blog/category/family-travel/">{{ getTranslation('blog.categories.list.familyTravel') }}</a></li>
         </ul>
       </div> -->
   
       <!-- Blog List -->
       <div class="blog-list">
         <div *ngFor="let blog of blogItems" class="blog-item">
-          <img src="images/blogs/{{getImageName(blog, currentLanguage)}}" alt="{{ getImageName(blog, currentLanguage) }}" class="blog-image" />
+          <img src="images/{{navbarMenu.blogs.slug[currentLanguage.code]}}/{{getImageName(blog, currentLanguage)}}" 
+            alt="{{ getImageName(blog, currentLanguage) }}" class="blog-image" />
           <div class="blog-content">
             <h3 class="blog-title">
-              <a [href]="currentLanguage.code + '/blogs/' + generateSlug(blog, currentLanguage)">
+              <a [href]="currentLanguage.code + '/' + navbarMenu.blogs.slug[currentLanguage.code] + '/' + generateSlug(blog, currentLanguage) + '/'">
                 {{ blog.title[currentLanguage.code] }}
               </a>
             </h3>
             <p class="blog-excerpt">{{ blog.excerpt[currentLanguage.code] }}</p>
-            <a [href]="currentLanguage.code + '/blogs/' + generateSlug(blog, currentLanguage)" class="read-more">
+            <a [href]="currentLanguage.code + '/' + navbarMenu.blogs.slug[currentLanguage.code] + '/' + generateSlug(blog, currentLanguage) + '/'" class="read-more">
               {{ blog.readMore[currentLanguage.code] }}
             </a>
           </div>

@@ -28,7 +28,8 @@ export const BLOG_ISTANBUL = {
   slug: {
     en: 'istanbul-sabiha-gokcen-airport-transfer',
     de: 'istanbul-sabiha-gokcen-flughafentransfer',
-    ru: 'transfer-aeroport-stambul-sabiha-gokcen',
+    ru: 'трансфер-аэропорт-стамбул-сабиха-гёкчен',
+    // ru: 'transfer-aeroport-stambul-sabiha-gokcen',
     tr: 'istanbul-sabiha-gokcen-havalimani-transfer',
   },
   readMore: {

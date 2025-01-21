@@ -111,7 +111,7 @@ export class BookingCompletionFormComponent implements OnInit {
           next: (response) => {
             console.log('Reservation created successfully:', response);
             this.isSaving = false;
-            this.router.navigate([`${this.languageService.currentLang().code}/booking/received`]);
+            this.router.navigate([`${this.languageService.currentLang().code}/booking/received/`]);
           },
           error: (error) => {
             console.error('Error creating reservation:', error);

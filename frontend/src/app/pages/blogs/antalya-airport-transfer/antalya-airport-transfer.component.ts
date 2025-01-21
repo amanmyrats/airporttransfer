@@ -3,6 +3,7 @@ import { SuperHeaderComponent } from '../../../components/super-header/super-hea
 import { NavbarComponent } from '../../../components/navbar/navbar.component';
 import { FooterComponent } from '../../../components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
+import { NAVBAR_MENU } from '../../../constants/navbar-menu.constants';
 
 @Component({
   selector: 'app-antalya-airport-transfer',
@@ -15,7 +16,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './antalya-airport-transfer.component.scss'
 })
 export class AntalyaAirportTransferComponent {
-
+  navbarMenu: any = NAVBAR_MENU;
   currentLanguage: any = {
     code: 'en',
     name: 'English',

@@ -29,7 +29,8 @@ export const BLOG_ALANYA_GAZIPASA = {
     slug: {
       en: 'alanya-gazipasa-airport-transfer',
       de: 'alanya-gazipasa-flughafentransfer',
-      ru: 'transfer-aeroport-alanya-gazipasa',
+      ru: 'трансфер-аэропорт-аланья-газипаша',
+      // ru: 'transfer-aeroport-alanya-gazipasa',
       tr: 'alanya-gazipasa-havalimani-transfer',
     },
     readMore: {

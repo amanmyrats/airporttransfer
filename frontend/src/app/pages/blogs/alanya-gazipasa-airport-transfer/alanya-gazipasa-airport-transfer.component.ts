@@ -3,6 +3,7 @@ import { SuperHeaderComponent } from '../../../components/super-header/super-hea
 import { NavbarComponent } from '../../../components/navbar/navbar.component';
 import { FooterComponent } from '../../../components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
+import { NAVBAR_MENU } from '../../../constants/navbar-menu.constants';
 
 @Component({
   selector: 'app-alanya-gazipasa-airport-transfer',
@@ -15,6 +16,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './alanya-gazipasa-airport-transfer.component.scss'
 })
 export class AlanyaGazipasaAirportTransferComponent {
+  navbarMenu: any = NAVBAR_MENU;
 
   currentLanguage: any = {
     code: 'en',

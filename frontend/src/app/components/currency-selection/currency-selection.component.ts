@@ -12,7 +12,7 @@ import { CurrencyService } from '../../services/currency.service';
   styleUrls: ['./currency-selection.component.scss'],
 })
 export class CurrencySelectionComponent implements OnInit {
-  supportedCurrencies = SUPPORTED_CURRENCIES;
+  supportedCurrencies: any = SUPPORTED_CURRENCIES;
   selectedCurrency: any = { name: 'Euro', code: 'EUR', symbol: '€' };
   isDropdownVisible = false; // Tracks the visibility of the dropdown menu
   currencyService!: CurrencyService;

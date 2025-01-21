@@ -5,6 +5,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { BLOGS } from '../../blog-content';
+import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
   selector: 'app-blogs',
@@ -18,6 +19,7 @@ import { BLOGS } from '../../blog-content';
   styleUrl: './blogs.component.scss'
 })
 export class BlogsComponent implements OnInit {
+  navbarMenu: any = NAVBAR_MENU;
   currentLanguage: any = {
     code: 'en',
     name: 'English',
@@ -25,13 +27,14 @@ export class BlogsComponent implements OnInit {
   };
   blogItems: any = BLOGS;
 
-
-
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     const languageCode = this.route.snapshot.data['language'] || 'en';
+    console.log("languageCode in blogs.init: " + languageCode);
+    console.log("this.currentLanguage.code in blogs.init: " + this.currentLanguage.code);
     this.currentLanguage.code = languageCode;
+    console.log("After setting this.currentLanguage.code in blogs.init: " + this.currentLanguage.code);
   }
 
   getTranslation(key: string): string {

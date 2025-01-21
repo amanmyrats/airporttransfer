@@ -15,7 +15,8 @@
         class="dropdown-item" 
         (click)="onLanguageSelect(lang)"
       >
-      <a [href]="lang.code + translatedUrlWithoutLang" [attr.aria-label]="'Switch to ' + lang.name">
+      <a [href]="lang.code + getTranslatedUrlWithoutLang(lang.code) + '/'" [attr.aria-label]="'Switch to ' + lang.name">
+        <!-- <a [href]="lang.code" [attr.aria-label]="'Switch to ' + lang.name"> -->
         <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" 
         style="width: 20px; height: 15px;"
         />

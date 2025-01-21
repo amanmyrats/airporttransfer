@@ -29,7 +29,8 @@ export const BLOG_ANTALYA = {
     slug: {
       en: 'antalya-airport-transfer',
       de: 'antalya-flughafentransfer',
-      ru: 'transfer-aeroport-antalia',
+      ru: 'трансфер-аэропорт-анталия',
+      // ru: 'transfer-aeroport-antalia',
       tr: 'antalya-havalimani-transfer',
     },
     readMore: {

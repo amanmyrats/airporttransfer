@@ -85,7 +85,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     console.log('Booking Car Type Selection Form:', carTypeSelectionFormValue);
 
 
-    this.router.navigate([`${this.languageService.currentLang().code}/booking`], {
+    this.router.navigate([`${this.languageService.currentLang().code}/booking/`], {
       queryParams: {
         step: 3,
         pickup_full: intialFormValue.pickup_full,

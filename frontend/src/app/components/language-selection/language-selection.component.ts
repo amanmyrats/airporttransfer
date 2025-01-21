@@ -3,6 +3,7 @@ import { LanguageService } from '../../services/language.service';
 import { CommonModule } from '@angular/common';
 import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
 import { Router } from '@angular/router';
+import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
   selector: 'app-language-selection',
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
   styleUrl: './language-selection.component.scss'
 })
 export class LanguageSelectionComponent {
+  navbarMenu: any = NAVBAR_MENU;
   supportedLanguages = SUPPORTED_LANGUAGES;
   selectedLanguage: any = { name: 'English', code: 'en', flag: 'flags/gb.svg' };
 
@@ -27,19 +29,17 @@ export class LanguageSelectionComponent {
       this.languageService = inject(LanguageService);
       this.router = inject(Router);
 
-      effect(() => {
-        this.selectedLanguage = this.languageService.currentLang();
-        this.translatedUrlWithoutLang = this.getTranslatedUrlWithoutLang(this.selectedLanguage.code);
-    });
+    //   effect(() => {
+    //     this.selectedLanguage = this.languageService.currentLang();
+    //     this.translatedUrlWithoutLang = this.getTranslatedUrlWithoutLang(this.selectedLanguage.code);
+    // });
     }
   }
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
-      console.log('Updating selected language in language selection component, no redirection');
       this.selectedLanguage = this.languageService.currentLang();
       this.translatedUrlWithoutLang = this.getTranslatedUrlWithoutLang(this.selectedLanguage.code);
-      console.log(this.selectedLanguage);
     }
   }
 
@@ -48,20 +48,36 @@ export class LanguageSelectionComponent {
    * @param lang - The selected language object
    */
   onLanguageSelect(lang: any): void {
-    console.log('onLanguageSelect Selected language in language selection component:', lang);
-    this.languageService.setLanguage(lang.code, true)
+    // this.languageService.setLanguage(lang.code, true)
+    this.languageService.currentLang.set(lang)
+    this.languageService.setLanguage(lang.code, true); // Update the language via service
     this.isDropdownVisible = false; // Close the dropdown
   }
 
   getTranslatedUrlWithoutLang(langCode: string): string {
-    const currentUrl = this.router.url; // Get the current URL
-    const segments = currentUrl.split('/'); // Split URL into segments
-    // segments[1] = langCode; // Replace the language code segment
-    // if segments[1] is in the supported languages then remove it
-    if (this.supportedLanguages.map((lang) => lang.code).includes(segments[1])) {
-      segments.splice(1, 1);
+    if (typeof window !== 'undefined') {
+      const currentUrl = this.router.url; // Get the current URL
+      const segments = currentUrl.split('/'); // Split URL into segments
+      let isFound: boolean = false;
+      if (this.supportedLanguages.map((lang) => lang.code).includes(segments[1])) {
+        segments.splice(1, 1);
+      }
+      for (let i = 0; i < segments.length; i++) {
+        for (const key in this.navbarMenu) {
+          for (const slugLang in this.navbarMenu[key].slug) {
+            if (encodeURIComponent(this.navbarMenu[key].slug[slugLang]) === segments[i]) {
+              segments[i] = this.navbarMenu[key].slug[langCode];
+              break;
+            }
+          }
+        }
+        if (isFound) {
+          break;
+        }
+      }
+      return segments.join('/'); // Reconstruct the URL
     }
-    return segments.join('/'); // Reconstruct the URL
+    return '/';
   }
 
   /**
