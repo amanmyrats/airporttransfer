@@ -17,7 +17,7 @@ import { LanguageService } from '../../services/language.service';
   styleUrl: './booking-car-type-selection-form.component.scss'
 })
 export class BookingCarTypeSelectionFormComponent implements OnInit {
-  maxDistance: number = 200;
+  maxDistance: number = 230;
 
   bookingService = inject(BookingService);
   priceCalculatorService = inject(PriceCalculatorService);
