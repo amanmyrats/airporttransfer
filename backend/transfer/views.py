@@ -1,6 +1,8 @@
 import logging
 
 from django.http import HttpResponse
+from django.core.mail import send_mail
+from django.conf import settings
 
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework import viewsets
@@ -14,13 +16,14 @@ from rest_framework.exceptions import ValidationError
 from common.utils import transform_choices_to_key_value_pairs
 from .serializers import (
     ReservationModelSerializer,
-    ReservationStatusModelSerializer,
+    ReservationStatusModelSerializer, 
+    ContactUsMessageModelSerializer,
 )
 from .models import (
-    Reservation,
+    Reservation, ContactUsMessage, 
 )
 from .filtersets import (
-    ReservationFilterSet,
+    ReservationFilterSet, ContactUsMessageFilterSet, 
 )
 from .resources import (
     ReservationModelResource,
@@ -159,5 +162,48 @@ class BookingCreateAPIView(APIView):
         serializer = ReservationModelSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ContactUsModelViewSet(viewsets.ModelViewSet):
+    queryset = ContactUsMessage.objects.all()
+    serializer_class = ContactUsMessageModelSerializer
+    filterset_class = ContactUsMessage
+    
+
+class SendMessageAPIView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self, request, *args, **kwargs):
+        serializer = ContactUsMessageModelSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+
+
+# DEFAULT_FROM_EMAIL = 'info@transfertakip.com'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = os.getenv('EMAIL_HOST_TRANSFERTAKIP')
+# EMAIL_PORT = os.getenv('EMAIL_PORT_TRANSFERTAKIP')
+# # EMAIL_USE_TLS = True
+# EMAIL_USE_TLS = False
+# EMAIL_USE_SSL = True
+# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER_TRANSFERTAKIP')
+# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD_TRANSFERTAKIP')
+
+            # send mail to info@transfertakip.com
+            message = f"""
+Name: {serializer.data.get('name')} 
+Email: {serializer.data.get('email')}
+Phone: {serializer.data.get('message')}
+"""
+            send_mail(
+                'Mail from ContactUs Page', 
+                message,
+                settings.EMAIL_HOST_USER, 
+                [settings.DEFAULT_FROM_EMAIL, 'amansarahs@gmail.com', 'deryamyrat899@gmail.com']
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

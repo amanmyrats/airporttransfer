@@ -99,3 +99,17 @@ class Reservation(models.Model):
 
     def __str__(self):
         return f"{self.transfer_date} - [{self.pickup_short}-{self.dest_short}] - {self.transfer_time}"
+
+
+class ContactUsMessage(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name} - {self.email}"

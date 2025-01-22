@@ -10,7 +10,7 @@ from .models import (
 )
 
 
-logger = logging.getLogger('transfertakip')
+logger = logging.getLogger('airporttransfer')
 
 class ReservationModelResource(resources.ModelResource):
         

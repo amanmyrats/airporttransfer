@@ -1,7 +1,7 @@
 from django_filters import rest_framework as filters
 
 from .models import (
-    Reservation, 
+    Reservation, ContactUsMessage, 
 ) 
 
 
@@ -16,3 +16,8 @@ class ReservationFilterSet(filters.FilterSet):
         # Explicitly list fields including the custom filters
         fields = ['year', 'month', 'start_date', 'end_date'] + [field.name for field in Reservation._meta.get_fields()]
 
+
+class ContactUsMessageFilterSet(filters.FilterSet):
+    class Meta:
+        model = ContactUsMessage
+        fields = [field.name for field in ContactUsMessage._meta.get_fields()]

@@ -1,9 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { SuperHeaderComponent } from '../../components/super-header/super-header.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ContactUsMessageService } from '../../admin/services/contact-us-message.service';
+import { ButtonModule } from 'primeng/button';
+import { MessageModule } from 'primeng/message';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-contact-us',
@@ -11,24 +16,77 @@ import { Meta, Title } from '@angular/platform-browser';
     SuperHeaderComponent,
     NavbarComponent,
     FooterComponent, 
+    FormsModule, ReactiveFormsModule, 
+    ButtonModule, MessageModule, 
+    CommonModule, 
   ],
   templateUrl: './contact-us.component.html',
   styleUrl: './contact-us.component.scss'
 })
 export class ContactUsComponent implements OnInit {
   currentLanguage: any = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
+  contactForm: FormGroup;
+  isSending: boolean = false;
+  isSentSuccessfully: boolean = false;
+  isSendingFailed: boolean = false;
+
+  contactUsMessageService!: ContactUsMessageService;
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: any, 
     private route: ActivatedRoute, 
     private meta: Meta, 
     private title: Title, 
-  ) { }
+    private fb: FormBuilder, 
+  ) { 
+    this.contactForm = this.fb.group({
+      name: ['', [Validators.required]], // Name is required
+      email: ['', [Validators.required, Validators.email]], // Email is required and must be valid
+      message: ['', [Validators.required]], // Message is required
+    });
+    if (typeof window !== 'undefined') {
+      this.contactUsMessageService = inject(ContactUsMessageService);
+    }
+  }
 
   ngOnInit(): void {
     const languageCode = this.route.snapshot.data['language'] || 'en';
     this.currentLanguage.code = languageCode;
     this.setMetaTags(this.currentLanguage.code);
+
   }
+
+  onSubmit(): void {
+    this.isSending = true;
+    if (typeof window !== 'undefined') {
+      const name = this.contactForm.get('name')?.value;
+      const email = this.contactForm.get('email')?.value;
+      const message = this.contactForm.get('message')?.value;
+      console.log('Name:', name, 'Email:', email, 'Message:', message);
+        if (this.contactForm.valid) {
+        this.contactUsMessageService.sendMessage(this.contactForm.value)
+          .subscribe({
+            next: (response: any) => {
+              console.log('Response:', response);
+              this.contactForm.reset();
+              this.isSending = false;
+              this.isSentSuccessfully = true;
+              this.isSendingFailed = false;
+            },
+            error: (err: any) => {
+              console.error('Error:', err);
+              this.isSending = false;
+              this.isSendingFailed = true;
+              this.isSentSuccessfully = false;
+            }
+      });
+      } else {
+        this.isSending = false;
+        this.isSendingFailed = true;
+        this.isSentSuccessfully = false;
+      }
+  }
+}
   
   setMetaTags(langCode: string): void {
     const metaTags: any = {
@@ -56,6 +114,26 @@ export class ContactUsComponent implements OnInit {
   }
 
   translations: any = {
+    en: {
+      contactUs: 'Contact Us for Airport Transfers Across Turkey',
+      contactUsDescription: 'We are here to help! Contact us for bookings, inquiries, or any assistance with your airport transfer needs across Turkey. Contact us for airport transfers across Turkey, including the cities of Istanbul, Antalya, Alanya, Bodrum, Mugla, Ankara, and Izmir.',
+      ourAddress: 'Our Address',
+      callUs: 'Call Us',
+      getInTouch: 'Get in Touch',
+      yourName: 'Your Name',
+      email: 'Email',
+      yourEmail: 'Your Email',
+      yourMessage: 'Your Message',
+      submit: 'Submit',
+      successMessage: 'Thank you for contacting us. We will get back to you as soon as possible.',
+      errorMessage: 'An error occurred. Please try again.', 
+      errors: {
+        nameRequired: 'Name is required.',
+        emailRequired: 'Email is required.',
+        invalidEmail: 'Please enter a valid email address.',
+        messageRequired: 'Message is required.',
+      },
+    }, 
     de: {
       contactUs: 'Kontaktieren Sie uns für Flughafentransfers in der gesamten Türkei',
       contactUsDescription: 'Wir sind hier, um Ihnen zu helfen! Kontaktieren Sie uns für Buchungen, Anfragen oder jegliche Unterstützung bei Ihren Flughafentransfer-Bedürfnissen in der Türkei. Kontaktieren Sie uns für Flughafentransfers in ganz Türkei, einschließlich der Städte Istanbul, Antalya, Alanya, Bodrum, Mugla, Ankara und Izmir.',
@@ -68,7 +146,13 @@ export class ContactUsComponent implements OnInit {
       yourMessage: 'Ihre Nachricht',
       submit: 'Einreichen',
       successMessage: 'Vielen Dank, dass Sie uns kontaktiert haben. Wir werden uns so schnell wie möglich bei Ihnen melden.',
-      errorMessage: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
+      errorMessage: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.', 
+      errors: {
+        nameRequired: 'Name ist erforderlich.',
+        emailRequired: 'E-Mail ist erforderlich.',
+        invalidEmail: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+        messageRequired: 'Nachricht ist erforderlich.',
+      },
     },
     ru: {
       contactUs: 'Свяжитесь с нами для трансферов из аэропорта по всей Турции',
@@ -82,8 +166,14 @@ export class ContactUsComponent implements OnInit {
       yourMessage: 'Ваше сообщение',
       submit: 'Отправить',
       successMessage: 'Спасибо, что связались с нами. Мы свяжемся с вами как можно скорее.',
-      errorMessage: 'Произошла ошибка. Пожалуйста, попробуйте позже.'
-    }, 
+      errorMessage: 'Произошла ошибка. Пожалуйста, попробуйте.', 
+      errors: {
+        nameRequired: 'Имя обязательно.',
+        emailRequired: 'Электронная почта обязательна.',
+        invalidEmail: 'Пожалуйста, введите действительный адрес электронной почты.',
+        messageRequired: 'Сообщение обязательно.',
+    }
+  }, 
     tr: {
       contactUs: 'Türkiye genelindeki havalimanı transferleri için bizimle iletişime geçin',
       contactUsDescription: 'Buradayız, size yardımcı olmak için! Türkiye’deki havalimanı transfer ihtiyaçlarınız için rezervasyon, sorular veya herhangi bir destek için bizimle iletişime geçin.İstanbul, Antalya, Alanya, Bodrum, Muğla, Ankara ve İzmir gibi şehirler dahil olmak üzere, Türkiye genelinde havalimanı transferi için bizimle iletişime geçin.',
@@ -96,8 +186,14 @@ export class ContactUsComponent implements OnInit {
       yourMessage: 'Mesajınız',
       submit: 'Gönder',
       successMessage: 'Bize ulaştığınız için teşekkür ederiz. En kısa sürede size geri döneceğiz.',
-      errorMessage: 'Bir hata oluştu. Lütfen daha sonra tekrar deneyin.'
-    },
+      errorMessage: 'Bir hata oluştu. Lütfen tekrar deneyin.', 
+      errors: {
+        nameRequired: 'Ad gerekli.',
+        emailRequired: 'E-posta gerekli.',
+        invalidEmail: 'Lütfen geçerli bir e-posta adresi girin.',
+        messageRequired: 'Mesaj gerekli.',
+    }
+    }
   }
 
 }

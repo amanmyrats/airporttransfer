@@ -2,7 +2,7 @@ import datetime
 
 from rest_framework.serializers import ModelSerializer, TimeField, ValidationError
 
-from .models import ( Reservation, ) 
+from .models import ( Reservation, ContactUsMessage ) 
 
 
 class Time24HourField(TimeField):
@@ -26,7 +26,6 @@ class ReservationModelSerializer(ModelSerializer):
     class Meta:
         model = Reservation
         fields = '__all__'
-        read_only_fields = ('company',)
     
 
 class ReservationStatusModelSerializer(ModelSerializer):
@@ -34,3 +33,8 @@ class ReservationStatusModelSerializer(ModelSerializer):
         model = Reservation
         fields = ('id', 'status')
         
+
+class ContactUsMessageModelSerializer(ModelSerializer):
+    class Meta:
+        model = ContactUsMessage
+        fields = '__all__'
