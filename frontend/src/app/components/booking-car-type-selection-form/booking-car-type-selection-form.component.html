@@ -21,23 +21,50 @@
 
   <!-- Vehicle List -->
   <div class="car-type-list">
+
+    <!-- Distance Validation -->
+    <div *ngIf="!isValidDistance()" class="contact-section">
+      <h2>{{ translations.contact[this.languageService.currentLang().code] }}</h2>
+      <p>{{ translations.invalidDistanceMessage[this.languageService.currentLang().code] }}</p>
+      <div class="contact-options">
+        <p>WhatsApp: <a href="https://wa.me/99365493616" target="_blank">993 65 493616</a></p>
+        <p>Telegram: <a href="https://t.me/amanmyrats" target="_blank">&#64;amanmyrats</a></p>
+        <p>Email: <a href="mailto:info@724supertransfers.com">info&#64;724supertransfers.com</a></p>
+        <p>Phone: <a href="tel:+123456789">+993 65 493616</a></p>
+      </div>
+    </div>
+
+    <!-- Special Price Section -->
+    <div *ngIf="isLongDistance()" class="contact-section">
+      <h2>{{ translations.specialPrice[this.languageService.currentLang().code] }}</h2>
+      <p>{{ translations.longDistanceMessage[this.languageService.currentLang().code] }}</p>
+      <div class="contact-options">
+        <p>WhatsApp: <a href="https://wa.me/99365493616" target="_blank">993 65 493616</a></p>
+        <p>Telegram: <a href="https://t.me/amanmyrats" target="_blank">&#64;amanmyrats</a></p>
+        <p>Email: <a href="mailto:info@724supertransfers.com">info&#64;724supertransfers.com</a></p>
+        <p>Phone: <a href="tel:+123456789">+993 65 493616</a></p>
+      </div>
+    </div>
+
     <!-- Vehicle Item -->
-    <div class="car-type-card" *ngFor="let carType of calculatedPrices()">
-      <img [src]="'images/cartypes/' + carType.image.name[languageService.currentLang().code]" 
-        [alt]="carType.image.alt[languageService.currentLang().code]" class="car-type-image" />
-      <div class="car-type-info">
-        <h2 class="car-type-name">{{ carType.name }}</h2>
-        <p class="car-type-price">
-          {{ translations.price[this.languageService.currentLang().code] }}
-          : 
-          <span>{{ carType.price }} {{ this.currencyService.currentCurrency().sign }}</span></p>
-        <button class="select-button" (click)="onCarTypeSelection(
-          carType, 
-          carType.price, 
-          this.currencyService.currentCurrency().code!, 
-          this.bookingService.bookingCarTypeSelectionForm.value.distance)">
-            {{ translations.select[this.languageService.currentLang().code] }}
-        </button>
+    <div *ngIf="isValidDistance() && !isLongDistance()" class="car-type-list">
+      <div class="car-type-card" *ngFor="let carType of calculatedPrices()">
+        <img [src]="'images/cartypes/' + carType.image.name[languageService.currentLang().code]" 
+          [alt]="carType.image.alt[languageService.currentLang().code]" class="car-type-image" />
+        <div class="car-type-info">
+          <h2 class="car-type-name">{{ carType.name }}</h2>
+          <p class="car-type-price">
+            {{ translations.price[this.languageService.currentLang().code] }}
+            : 
+            <span>{{ carType.price }} {{ this.currencyService.currentCurrency().sign }}</span></p>
+          <button class="select-button" (click)="onCarTypeSelection(
+            carType, 
+            carType.price, 
+            this.currencyService.currentCurrency().code!, 
+            this.bookingService.bookingCarTypeSelectionForm.value.distance)">
+              {{ translations.select[this.languageService.currentLang().code] }}
+          </button>
+        </div>
       </div>
     </div>
   </div>

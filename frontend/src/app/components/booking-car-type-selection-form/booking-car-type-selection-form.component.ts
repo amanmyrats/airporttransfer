@@ -17,6 +17,8 @@ import { LanguageService } from '../../services/language.service';
   styleUrl: './booking-car-type-selection-form.component.scss'
 })
 export class BookingCarTypeSelectionFormComponent implements OnInit {
+  maxDistance: number = 200;
+
   bookingService = inject(BookingService);
   priceCalculatorService = inject(PriceCalculatorService);
   currencyService = inject(CurrencyService);
@@ -73,6 +75,16 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
     })
   );
 
+  isValidDistance(): boolean {
+    const distance = this.bookingService.distance();
+    return typeof distance && distance > 0 && !isNaN(distance);
+  }
+  
+  isLongDistance(): boolean {
+    const distance = this.bookingService.distance();
+    return typeof distance && distance > this.maxDistance;
+  }
+
   translations: any = {
     cars: {
       en: 'Available Car Types', 
@@ -97,6 +109,30 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
       de: 'Preis',
       ru: 'Цена',
       tr: 'Fiyat',
+    }, 
+    contact: {
+      en: 'Write to us, we’ll help you find the best option', 
+      de: 'Schreiben Sie uns, wir helfen Ihnen, die beste Option zu finden',
+      ru: 'Напишите нам, и мы поможем найти лучший вариант',
+      tr: 'Bize yazın, size en iyi seçeneği bulalım',
+    },
+    invalidDistanceMessage: {
+      en: 'Please write to us directly, as your distance cannot be calculated.', 
+      de: 'Bitte schreiben Sie uns direkt, da Ihre Entfernung nicht berechnet werden kann.',
+      ru: 'Пожалуйста, свяжитесь с нами напрямую, так как ваше расстояние не может быть рассчитано.',
+      tr: 'Lütfen, mesafeniz hesaplanamadığı için doğrudan bize yazın.',
+    },
+    specialPrice: {
+      en: 'Write to us directly for a special price', 
+      de: 'Schreiben Sie uns direkt für einen Sonderpreis',
+      ru: 'Напишите нам напрямую для получения специальной цены',
+      tr: 'Özel fiyat için bize doğrudan yazın',
+    },
+    longDistanceMessage: {
+      en: 'The distance is too long to calculate a standard rate. Please contact us for an affordable price.', 
+      de: 'Die Entfernung ist zu groß, um einen Standardtarif zu berechnen. Bitte kontaktieren Sie uns für einen günstigen Preis.',
+      ru: 'Расстояние слишком велико для расчета стандартной ставки. Пожалуйста, свяжитесь с нами, чтобы получить доступную цену.',
+      tr: 'Mesafe standart bir ücret hesaplamak için çok uzun. Uygun fiyat için lütfen bizimle iletişime geçin.',
     }
   }
 }

@@ -32,9 +32,10 @@ export class BookingBannerFormComponent {
     const formValue = this.bookingService.bookingInitialForm.value;
     console.log('Booking Form:', formValue);
     const origin: google.maps.LatLngLiteral = { 
-      lat: formValue.pickup_lat, lng: formValue.pickup_lng };
+      lat: formValue.pickup_lat || 0, lng: formValue.pickup_lng || 0 };
     const destination: google.maps.LatLngLiteral = { 
-      lat: formValue.dest_lat, lng: formValue.dest_lng };
+      lat: formValue.dest_lat || 0, lng: formValue.dest_lng || 0 };
+      console.log('Origin:', origin, 'Destination:', destination);
 
     const airportCoefficientPickUp = this.priceCalculatorService.getAirportCoefficient(
       formValue.pickup_lat, formValue.pickup_lng);
@@ -68,6 +69,20 @@ export class BookingBannerFormComponent {
         });
     }).catch(error => {
       console.error('Error calculating distance:', error);
+      this.router.navigate([`${this.languageService.currentLang().code}/${NAVBAR_MENU.bookNow.slug[this.languageService.currentLang().code]}/`], {
+        queryParams: {
+          step: 2,
+          pickup_full: formValue.pickup_full,
+          dest_full: formValue.dest_full,
+          pickup_lat: formValue.pickup_lat,
+          pickup_lng: formValue.pickup_lng,
+          dest_lat: formValue.dest_lat,
+          dest_lng: formValue.dest_lng, 
+          distance: 0,
+          driving_duration: 0, 
+          airport_coefficient: formValue.airport_coefficient
+        },
+      });
     });
 
   }
