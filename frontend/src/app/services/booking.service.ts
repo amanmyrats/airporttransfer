@@ -12,6 +12,7 @@ export class BookingService {
   endPoint: string = "transfer/bookingcreate/"
 
   distance = signal<number>(0);
+  airportCoefficient = signal<number>(1);
   drivingDuration = signal<number>(0);
   
   fb = inject(FormBuilder);
@@ -37,6 +38,7 @@ export class BookingService {
       pickup_lng: '',
       dest_lat: '',
       dest_lng: '',
+      airport_coefficient: 1,
       // date: '',
       // time: '',
       // passengerCount: [1, [Validators.required, Validators.min(1), Validators.max(20)]],
@@ -51,6 +53,7 @@ export class BookingService {
       currency_code: 'EUR', 
       distance: 0,
       driving_duration: 0,
+      airport_coefficient: 1,
   });
 
     this.bookingCompletionForm = this.fb.group({
@@ -72,6 +75,7 @@ export class BookingService {
       passenger_additional_phone: [''], 
       passenger_count: 1,
       passenger_count_child: 0,
+      airport_coefficient: 1,
     });
 
   this.bookingForm = this.fb.group({
@@ -110,6 +114,7 @@ export class BookingService {
     passenger_count: 1,
     passenger_count_child: 0,
     note: [''],
+    airport_coefficient: 1,
   });
 
   }  

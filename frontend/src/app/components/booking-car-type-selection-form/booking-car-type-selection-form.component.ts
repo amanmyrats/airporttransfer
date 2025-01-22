@@ -60,7 +60,9 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
     this.carTypes.map((carType) => {
       const priceInEuros = this.priceCalculatorService.calculatePrice(
         this.bookingService.distance(), 
-        carType.coefficient!);
+        carType.coefficient!, 
+        this.bookingService.airportCoefficient()!
+      );
       return {
         ...carType,
         price: this.priceCalculatorService.getRoundedPrice(

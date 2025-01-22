@@ -5,7 +5,8 @@
         <h2>
           {{ translations.reservationDetails[this.languageService.currentLang().code] }}
         </h2>
-        <img [src]="'cars/vito.png'" [alt]="selectedCar?.name" class="car-image" />
+        <img [src]="'images/cartypes/' + selectedCar?.image.name[languageService.currentLang().code]" 
+          [alt]="selectedCar?.image.alt[languageService.currentLang().code]" class="car-image" />
         <p><strong>
           {{ translations.car[this.languageService.currentLang().code] }}
           :

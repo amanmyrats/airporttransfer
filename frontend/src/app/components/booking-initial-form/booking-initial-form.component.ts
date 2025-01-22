@@ -5,6 +5,7 @@ import { BookingService } from '../../services/booking.service';
 import { GmapsAutocompleteDirective } from '../../directives/gmaps-autocomplete.directive';
 import { GoogleMapsService } from '../../services/google-maps.service';
 import { LanguageService } from '../../services/language.service';
+import { PriceCalculatorService } from '../../services/price-calculator.service';
 
 @Component({
   selector: 'app-booking-initial-form',
@@ -17,7 +18,9 @@ import { LanguageService } from '../../services/language.service';
   styleUrl: './booking-initial-form.component.scss'
 })
 export class BookingInitialFormComponent implements OnInit {
+  
   bookingService = inject(BookingService);
+  priceCalculatorService = inject(PriceCalculatorService);
   searchVehicle = output<any>();
 
   hasSubmitted = false;
@@ -61,9 +64,20 @@ export class BookingInitialFormComponent implements OnInit {
     const origin: google.maps.LatLngLiteral = { lat: pickupLat, lng: pickupLng };
     const destination: google.maps.LatLngLiteral = { lat: destLat, lng: destLng };
 
+    const airportCoefficientPickUp = this.priceCalculatorService.getAirportCoefficient(pickupLat, pickupLng);
+    const airportCoefficientDest = this.priceCalculatorService.getAirportCoefficient(destLat, destLng);
+
+    console.log('Coefficients:', airportCoefficientPickUp, airportCoefficientDest);
+    // Assign bigger airport coefficient to booking form
+    this.bookingService.bookingInitialForm.get('airport_coefficient')!.setValue(
+      Math.max(airportCoefficientPickUp, airportCoefficientDest)
+    );
+    this.bookingService.airportCoefficient.set(
+      Math.max(airportCoefficientPickUp, airportCoefficientDest)
+    );
+    
     this.googleMapsService.calculateDrivingDistanceAndTime(origin, destination
     ).then(result => {
-      console.log('Distance and duration:', result);
       this.bookingService.distance.set(result.distance);
       this.bookingService.drivingDuration.set(result.duration);
       this.bookingService.bookingCarTypeSelectionForm.get('distance')!.setValue(

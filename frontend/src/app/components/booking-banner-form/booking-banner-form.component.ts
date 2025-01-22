@@ -5,6 +5,8 @@ import { BookingService } from '../../services/booking.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
+import { PriceCalculatorService } from '../../services/price-calculator.service';
+import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
   selector: 'app-booking-banner-form',
@@ -21,7 +23,8 @@ export class BookingBannerFormComponent {
     public googleMapsService: GoogleMapsService, 
     public bookingService: BookingService, 
     private router: Router, 
-    private languageService: LanguageService,
+    private languageService: LanguageService, 
+    private priceCalculatorService: PriceCalculatorService,
   ) {
   }
 
@@ -33,9 +36,23 @@ export class BookingBannerFormComponent {
     const destination: google.maps.LatLngLiteral = { 
       lat: formValue.dest_lat, lng: formValue.dest_lng };
 
+    const airportCoefficientPickUp = this.priceCalculatorService.getAirportCoefficient(
+      formValue.pickup_lat, formValue.pickup_lng);
+    const airportCoefficientDest = this.priceCalculatorService.getAirportCoefficient(
+      formValue.dest_lat, formValue.dest_lng);
+
+    console.log('Coefficients:', airportCoefficientPickUp, airportCoefficientDest);
+    // Assign bigger airport coefficient to booking form
+    this.bookingService.bookingInitialForm.get('airport_coefficient')!.setValue(
+      Math.max(airportCoefficientPickUp, airportCoefficientDest)
+    );
+    this.bookingService.airportCoefficient.set(
+      Math.max(airportCoefficientPickUp, airportCoefficientDest)
+    );
+    
     this.googleMapsService.calculateDrivingDistanceAndTime(origin, destination
     ).then(result => {
-        this.router.navigate([`${this.languageService.currentLang().code}/booking/`], {
+        this.router.navigate([`${this.languageService.currentLang().code}/${NAVBAR_MENU.bookNow.slug[this.languageService.currentLang().code]}/`], {
           queryParams: {
             step: 2,
             pickup_full: formValue.pickup_full,
@@ -45,7 +62,8 @@ export class BookingBannerFormComponent {
             dest_lat: formValue.dest_lat,
             dest_lng: formValue.dest_lng, 
             distance: result.distance,
-            driving_duration: result.duration,
+            driving_duration: result.duration, 
+            airport_coefficient: formValue.airport_coefficient
           },
         });
     }).catch(error => {

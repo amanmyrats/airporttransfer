@@ -1,4 +1,4 @@
-export const NAVBAR_MENU = {
+export const NAVBAR_MENU: any = {
     home: {
         name: {
             en: 'Home',

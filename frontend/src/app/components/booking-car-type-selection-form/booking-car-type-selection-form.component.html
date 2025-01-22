@@ -23,7 +23,8 @@
   <div class="car-type-list">
     <!-- Vehicle Item -->
     <div class="car-type-card" *ngFor="let carType of calculatedPrices()">
-      <img [src]="'cars/vito.png'" [alt]="carType.name" class="car-type-image" />
+      <img [src]="'images/cartypes/' + carType.image.name[languageService.currentLang().code]" 
+        [alt]="carType.image.alt[languageService.currentLang().code]" class="car-type-image" />
       <div class="car-type-info">
         <h2 class="car-type-name">{{ carType.name }}</h2>
         <p class="car-type-price">

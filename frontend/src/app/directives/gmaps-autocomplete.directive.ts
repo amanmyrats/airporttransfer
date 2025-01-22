@@ -18,7 +18,8 @@ export class GmapsAutocompleteDirective implements OnInit {
   
     ngOnInit(): void {
       this.autocomplete = new google.maps.places.Autocomplete(this.el.nativeElement, {
-        types: ['geocode'],
+        // types: ['geocode'],
+        componentRestrictions: { country: 'TR' }, // Restrict results to Turkey
       });
   
       this.autocomplete.addListener('place_changed', () => {

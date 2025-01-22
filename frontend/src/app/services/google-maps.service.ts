@@ -5,7 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class GoogleMapsService {
   private distanceMatrixService = new google.maps.DistanceMatrixService();
-
   /**
    * Extract formatted address, latitude, and longitude from PlaceResult.
    * @param place - The PlaceResult object from Google Places API.
@@ -61,4 +60,7 @@ export class GoogleMapsService {
       );
     });
   }
+
+
+
 }
