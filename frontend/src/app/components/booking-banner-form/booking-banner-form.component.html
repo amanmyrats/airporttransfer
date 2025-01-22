@@ -32,4 +32,44 @@
     <button (click)="onSubmit()" type="submit" class="btn btn-primary" i18n="@@form.submit">
         {{ getTranslation('bookNow') }}
     </button>
+
+    <div class="contact-section">
+        <p class="contact-message">
+            {{ translations.orWriteToUs[languageService.currentLang().code] }}
+        </p>
+        <ul class="contact-list">
+            <li>
+                <a href="https://wa.me/123456789" target="_blank">
+                <img [src]="'images/socialicons/' + socialIcons.whatsapp.image.name[languageService.currentLang().code]" 
+                [alt]="socialIcons.whatsapp.image.alt[languageService.currentLang().code]" 
+                style="max-height: 20px; width: 20px; height: 20px;"/> 
+                    +123 456 789
+                </a>
+            </li>
+            <li>
+                <a href="https://t.me/your_channel" target="_blank">
+                    <img [src]="'images/socialicons/' + socialIcons.telegram.image.name[languageService.currentLang().code]" 
+                    [alt]="socialIcons.telegram.image.alt[languageService.currentLang().code]" 
+                    style="max-height: 20px; width: 20px; height: 20px;"/> 
+                    &#64;your_channel
+                </a>
+            </li>
+            <li>
+                <a href="mailto:info&#64;example.com">
+                    <img [src]="'images/socialicons/' + socialIcons.email.image.name[languageService.currentLang().code]" 
+                    [alt]="socialIcons.email.image.alt[languageService.currentLang().code]" 
+                    style="max-height: 20px; width: 20px; height: 20px;"/> 
+                    info&#64;example.com
+                </a>
+            </li>
+            <li>
+                <a href="tel:+123456789">
+                    <img [src]="'images/socialicons/' + socialIcons.phone.image.name[languageService.currentLang().code]" 
+                    [alt]="socialIcons.phone.image.alt[languageService.currentLang().code]" 
+                    style="max-height: 20px; width: 20px; height: 20px;"/> 
+                    +123 456 789
+                </a>
+            </li>
+        </ul>
+    </div>
 </form>

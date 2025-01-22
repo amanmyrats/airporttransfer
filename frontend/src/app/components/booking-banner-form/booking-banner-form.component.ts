@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { PriceCalculatorService } from '../../services/price-calculator.service';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
+import { SOCIAL_ICONS } from '../../constants/social.constants';
 
 @Component({
   selector: 'app-booking-banner-form',
@@ -18,12 +19,13 @@ import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
   styleUrl: './booking-banner-form.component.scss'
 })
 export class BookingBannerFormComponent {
+  socialIcons = SOCIAL_ICONS;
 
   constructor(
     public googleMapsService: GoogleMapsService, 
     public bookingService: BookingService, 
     private router: Router, 
-    private languageService: LanguageService, 
+    public languageService: LanguageService, 
     private priceCalculatorService: PriceCalculatorService,
   ) {
   }
@@ -159,5 +161,11 @@ export class BookingBannerFormComponent {
       ru: 'Забронировать сейчас',
       tr: 'Şimdi rezervasyon yap',
     },
+    orWriteToUs: {
+      en: 'Or write to us directly, and we’ll help you find the best options.', 
+      de: 'Oder schreiben Sie uns direkt, und wir helfen Ihnen, die besten Optionen zu finden.',
+      ru: 'Или напишите нам напрямую, и мы поможем вам найти лучшие варианты.',
+      tr: 'Veya bize doğrudan yazın, ve size en iyi seçenekleri bulmanıza yardımcı olalım.',
+    }
   };
 }
