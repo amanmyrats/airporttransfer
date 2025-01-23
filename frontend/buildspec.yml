@@ -19,18 +19,18 @@ phases:
       # - aws cloudfront create-invalidation --distribution-id E1MJNHUS0SC6E9 --paths "/*"
       
       # Sync HTML with short cache duration
-      - aws s3 cp ./dist/airporttransfer/browser/index.html s3://724supertransfers.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
-      # - aws s3 cp ./dist/airporttransfer/browser/index.html s3://724supertransfers.com/index.html --cache-control "max-age=86400, public"
+      - aws s3 cp ./dist/airporttransfer/browser/index.html s3://airporttransferhub.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
+      # - aws s3 cp ./dist/airporttransfer/browser/index.html s3://airporttransferhub.com/index.html --cache-control "max-age=86400, public"
 
       # Sync other files with longer cache duration
-      - aws s3 sync ./dist/airporttransfer/browser s3://724supertransfers.com --exclude "index.html" --delete --cache-control "max-age=86400,immutable"
+      - aws s3 sync ./dist/airporttransfer/browser s3://airporttransferhub.com --exclude "index.html" --delete --cache-control "max-age=86400,immutable"
 
       # Copy sitemap.xml and robots.txt to the root of the bucket with 1 day cache
-      - aws s3 cp ./sitemap.xml s3://724supertransfers.com/sitemap.xml --cache-control "max-age=86400, public"
-      - aws s3 cp ./robots.txt s3://724supertransfers.com/robots.txt --cache-control "max-age=86400, public"
+      - aws s3 cp ./sitemap.xml s3://airporttransferhub.com/sitemap.xml --cache-control "max-age=86400, public"
+      - aws s3 cp ./robots.txt s3://airporttransferhub.com/robots.txt --cache-control "max-age=86400, public"
       
       # Copy yandex_544c837bc47d578c.html to the root of the bucket with long cache
-      - aws s3 cp ./yandex_544c837bc47d578c.html s3://724supertransfers.com/yandex_544c837bc47d578c.html --cache-control "max-age=31536000, public"
+      - aws s3 cp ./yandex_544c837bc47d578c.html s3://airporttransferhub.com/yandex_544c837bc47d578c.html --cache-control "max-age=31536000, public"
       
       # Invalidate CloudFront
       - aws cloudfront create-invalidation --distribution-id ERWTRAHG56HIT --paths "/*"

@@ -284,5 +284,5 @@ if DEBUG:
     FRONTEND_URL = 'http://localhost:4200'
     BACKEND_URL = 'http://localhost:8000'
 else:
-    FRONTEND_URL = 'https://724supertransfers.com'
+    FRONTEND_URL = 'https://airporttransferhub.com'
     BACKEND_URL = 'https://backend.airporttransfer.transfertakip.com'
