@@ -10,7 +10,7 @@ phases:
   build:
     commands:
       # - cd frontend
-      - npm run build --prod
+      - npm run build --prod --max-workers=2
   post_build:
     commands:
 
@@ -31,3 +31,5 @@ phases:
       
       # Invalidate CloudFront
       - aws cloudfront create-invalidation --distribution-id EFE0BEJMOHTXL --paths "/*"
+resources:
+  computeType: BUILD_GENERAL1_LARGE
