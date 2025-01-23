@@ -46,8 +46,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-north-1
         run: |
+          cd frontend
           echo $PWD
-          # cd frontend
           ls -al .
           aws s3 cp ./dist/airporttransfer/browser/index.html s3://airporttransferhub.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
           aws s3 sync ./dist/airporttransfer/browser s3://airporttransferhub.com --exclude "index.html" --delete --cache-control "max-age=86400,immutable"
