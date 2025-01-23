@@ -41,9 +41,13 @@ jobs:
 
       # Sync files to S3
       - name: Upload to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-north-1
         run: |
           echo $PWD
-          cd frontend
+          # cd frontend
           aws s3 cp ./dist/airporttransfer/browser/index.html s3://airporttransferhub.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
           aws s3 sync ./dist/airporttransfer/browser s3://airporttransferhub.com --exclude "index.html" --delete --cache-control "max-age=86400,immutable"
           aws s3 cp ./sitemap.xml s3://airporttransferhub.com/sitemap.xml --cache-control "max-age=86400, public"
@@ -53,10 +57,6 @@ jobs:
       - name: CloudFront Invalidation
         run: |
           aws cloudfront create-invalidation --distribution-id EFE0BEJMOHTXL --paths "/*"
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: eu-north-1
 
 # name: Deploy Airport Transfer to EC2
 
