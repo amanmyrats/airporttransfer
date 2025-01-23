@@ -30,4 +30,4 @@ phases:
       - aws s3 cp ./robots.txt s3://airporttransferhub.com/robots.txt --cache-control "max-age=86400, public"
       
       # Invalidate CloudFront
-      - aws cloudfront create-invalidation --distribution-id ERWTRAHG56HIT --paths "/*"
+      - aws cloudfront create-invalidation --distribution-id EFE0BEJMOHTXL --paths "/*"
