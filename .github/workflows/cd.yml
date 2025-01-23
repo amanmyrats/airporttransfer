@@ -13,19 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Node.js environment
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 22
-
-      # Install dependencies and build the project
-      - name: Install and Build
-        run: |
-          cd frontend
-          npm install
-          npm run build --prod
-
       # Deploy to EC2 via SSH
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
@@ -39,6 +26,19 @@ jobs:
             cd /home/ubuntu/airporttransfer
             ./deploy_script.sh ${{ secrets.GH_USERNAME }} ${{ secrets.GH_PAT }} ${{ secrets.GH_MAIN_BRANCH }}
 
+      # Set up Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      # Install dependencies and build the project
+      - name: Install and Build
+        run: |
+          cd frontend
+          npm install
+          npm run build --prod
+
       # Sync files to S3
       - name: Upload to S3
         env:
@@ -48,7 +48,7 @@ jobs:
         run: |
           echo $PWD
           # cd frontend
-          ls -al ./dist/airporttransfer/browser/
+          ls -al .
           aws s3 cp ./dist/airporttransfer/browser/index.html s3://airporttransferhub.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
           aws s3 sync ./dist/airporttransfer/browser s3://airporttransferhub.com --exclude "index.html" --delete --cache-control "max-age=86400,immutable"
           aws s3 cp ./sitemap.xml s3://airporttransferhub.com/sitemap.xml --cache-control "max-age=86400, public"
