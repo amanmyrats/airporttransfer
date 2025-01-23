@@ -48,6 +48,7 @@ jobs:
         run: |
           echo $PWD
           # cd frontend
+          ls -al ./dist/airporttransfer/browser/
           aws s3 cp ./dist/airporttransfer/browser/index.html s3://airporttransferhub.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
           aws s3 sync ./dist/airporttransfer/browser s3://airporttransferhub.com --exclude "index.html" --delete --cache-control "max-age=86400,immutable"
           aws s3 cp ./sitemap.xml s3://airporttransferhub.com/sitemap.xml --cache-control "max-age=86400, public"
