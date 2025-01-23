@@ -194,13 +194,15 @@ class SendMessageAPIView(APIView):
 # EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD_TRANSFERTAKIP')
 
             # send mail to info@transfertakip.com
+            subject = f"Contact Us Message from {serializer.data.get('email')} - {serializer.data.get('name')}"
             message = f"""
 Name: {serializer.data.get('name')} 
 Email: {serializer.data.get('email')}
-Phone: {serializer.data.get('message')}
+Phone: {serializer.data.get('phone')}
+Message: {serializer.data.get('message')}
 """
             send_mail(
-                'Mail from ContactUs Page', 
+                subject, 
                 message,
                 settings.EMAIL_HOST_USER, 
                 [settings.DEFAULT_FROM_EMAIL, 'amansarahs@gmail.com', 'deryamyrat899@gmail.com']

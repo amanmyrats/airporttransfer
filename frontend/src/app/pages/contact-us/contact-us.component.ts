@@ -42,6 +42,7 @@ export class ContactUsComponent implements OnInit {
     this.contactForm = this.fb.group({
       name: ['', [Validators.required]], // Name is required
       email: ['', [Validators.required, Validators.email]], // Email is required and must be valid
+      phone: '', // Phone is optional
       message: ['', [Validators.required]], // Message is required
     });
     if (typeof window !== 'undefined') {
@@ -61,8 +62,9 @@ export class ContactUsComponent implements OnInit {
     if (typeof window !== 'undefined') {
       const name = this.contactForm.get('name')?.value;
       const email = this.contactForm.get('email')?.value;
+      const phone = this.contactForm.get('phone')?.value;
       const message = this.contactForm.get('message')?.value;
-      console.log('Name:', name, 'Email:', email, 'Message:', message);
+      console.log('Name:', name, 'Email:', email, 'Phone:', phone, 'Message:', message);
         if (this.contactForm.valid) {
         this.contactUsMessageService.sendMessage(this.contactForm.value)
           .subscribe({
@@ -123,6 +125,7 @@ export class ContactUsComponent implements OnInit {
       yourName: 'Your Name',
       email: 'Email',
       yourEmail: 'Your Email',
+      yourPhone: 'Your Phone',
       yourMessage: 'Your Message',
       submit: 'Submit',
       successMessage: 'Thank you for contacting us. We will get back to you as soon as possible.',
@@ -143,6 +146,7 @@ export class ContactUsComponent implements OnInit {
       yourName: 'Ihr Name', 
       email: 'E-Mail',
       yourEmail: 'Ihre E-Mail',
+      yourPhone: 'Ihr Telefon',
       yourMessage: 'Ihre Nachricht',
       submit: 'Einreichen',
       successMessage: 'Vielen Dank, dass Sie uns kontaktiert haben. Wir werden uns so schnell wie möglich bei Ihnen melden.',
@@ -162,6 +166,7 @@ export class ContactUsComponent implements OnInit {
       getInTouch: 'Связаться с нами',
       yourName: 'Ваше имя', 
       email: 'Электронная почта',
+      yourPhone: 'Ваш телефон',
       yourEmail: 'Ваш адрес электронной почты',
       yourMessage: 'Ваше сообщение',
       submit: 'Отправить',
@@ -181,8 +186,9 @@ export class ContactUsComponent implements OnInit {
       callUs: 'Bizi Arayın',
       getInTouch: 'Bize Ulaşın',
       yourName: 'Adınız',
-      email: 'E-posta',
+      email: 'E-posta', 
       yourEmail: 'E-posta Adresiniz',
+      yourPhone: 'Telefonunuz',
       yourMessage: 'Mesajınız',
       submit: 'Gönder',
       successMessage: 'Bize ulaştığınız için teşekkür ederiz. En kısa sürede size geri döneceğiz.',
