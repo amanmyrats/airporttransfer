@@ -330,6 +330,30 @@ export class BookingCompletionFormComponent implements OnInit {
       de: 'Reservierung abschließen',
       ru: 'Завершить бронирование',
       tr: 'Rezervasyonu Tamamla',
+    }, 
+    returnTripPrice: {
+      en: 'Return Trip Price', 
+      de: 'Rückfahrpreis',
+      ru: 'Цена обратной поездки',
+      tr: 'Dönüş Yolculuğu Fiyatı',
+    },
+    twoTrips: {
+      en: 'You have booked 2 trips',
+      de: 'Sie haben 2 Fahrten gebucht',
+      ru: 'Вы забронировали 2 поездки',
+      tr: '2 yolculuk rezervasyonu yaptınız',
+    },
+    eachTripCost: {
+      en: 'trip costs',
+      de: 'Fahrt kostet',
+      ru: 'поездка стоит',
+      tr: 'yolculuğun maliyeti',
+    },
+    total: {
+      en: 'Total',
+      de: 'Gesamt',
+      ru: 'Итого',
+      tr: 'Toplam',
     }
   }
 }

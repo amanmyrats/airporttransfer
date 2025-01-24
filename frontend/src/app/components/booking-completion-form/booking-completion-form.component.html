@@ -26,7 +26,15 @@
         <p><strong>
           {{ translations.price[this.languageService.currentLang().code] }}
           :
-        </strong> {{ price! }} {{ currency?.sign }}</p>
+        </strong> 
+        {{ price! }} {{ currency?.sign }}
+        <span *ngIf="bookingService.bookingCompletionForm.get('is_round_trip')?.value">
+          +  
+          {{ price! }} {{ currency?.sign }} 
+          = 
+          {{ price! * 2 }} {{ currency?.sign }}
+        </span>
+      </p>
       </div>
   
       <!-- Right Section: Form -->
@@ -229,7 +237,29 @@
               {{ translations.payment[this.languageService.currentLang().code] }} 
             </h3>
             <div class="payment-info">
-              <div class="total-price"><strong>{{ price! }} {{ currency?.sign }}</strong></div>
+                <div class="total-price">
+                  <strong>
+                    <!-- {{ price! }} {{ currency?.sign }}
+                    <span *ngIf="bookingService.bookingCompletionForm.get('is_round_trip')?.value">
+                      +  
+                        {{ price! }} {{ currency?.sign }} 
+                        = 
+                        {{ price! * 2 }} {{ currency?.sign }}
+                    </span> -->
+                    <ng-container *ngIf="bookingService.bookingCompletionForm.get('is_round_trip')?.value; else singleTrip">
+                      {{ translations.twoTrips[this.languageService.currentLang().code] }}:
+                      <br />
+                      1. {{ translations.eachTripCost[this.languageService.currentLang().code] }} {{ price! }} {{ currency?.sign }}
+                      <br />
+                      2. {{ translations.eachTripCost[this.languageService.currentLang().code] }} {{ price! }} {{ currency?.sign }}
+                      <br />
+                      {{ translations.total[this.languageService.currentLang().code] }}: {{ price! * 2 }} {{ currency?.sign }}
+                    </ng-container>
+                    <ng-template #singleTrip>
+                      {{ price! }} {{ currency?.sign }}
+                    </ng-template>
+                  </strong>
+                </div>
               <p>
                 {{ translations.paymentNote[this.languageService.currentLang().code] }}
               </p>

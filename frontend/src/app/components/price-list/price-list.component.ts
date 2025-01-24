@@ -10,6 +10,7 @@ import { GoogleMapsService } from '../../services/google-maps.service';
 import { BookingService } from '../../services/booking.service';
 import { LanguageService } from '../../services/language.service';
 import { Router } from '@angular/router';
+import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
   selector: 'app-price-list',
@@ -21,6 +22,7 @@ import { Router } from '@angular/router';
   styleUrl: './price-list.component.scss'
 })
 export class PriceListComponent implements OnInit, AfterViewInit {
+  navbar = NAVBAR_MENU;
   activeIndex: number = 1;
   mainLocationService = inject(MainLocationService);
   popularRouteService = inject(PopularRouteService);
@@ -85,7 +87,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     console.log('Booking Car Type Selection Form:', carTypeSelectionFormValue);
 
 
-    this.router.navigate([`${this.languageService.currentLang().code}/booking/`], {
+    this.router.navigate([`${this.languageService.currentLang().code}/${this.navbar.bookNow.slug[this.languageService.currentLang().code]}/`], {
       queryParams: {
         step: 3,
         pickup_full: intialFormValue.pickup_full,
