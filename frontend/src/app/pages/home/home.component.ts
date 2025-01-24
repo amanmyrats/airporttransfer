@@ -35,6 +35,7 @@ import { Meta, Title } from '@angular/platform-browser';
 })
 export class HomeComponent implements OnInit {
   private router! : Router;
+  private languageService!: LanguageService;
   currentLanguage = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
   mainLocations: any[] = SUPPORTED_MAIN_LOCATIONS;
   isBrowser: boolean;
@@ -47,6 +48,7 @@ export class HomeComponent implements OnInit {
   ) {
     if (typeof window !== 'undefined') {
       this.router = inject(Router);
+      this.languageService = inject(LanguageService);
     }
     this.isBrowser = isPlatformBrowser(this.platformId);
   }

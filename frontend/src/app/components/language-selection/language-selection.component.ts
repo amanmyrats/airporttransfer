@@ -49,7 +49,7 @@ export class LanguageSelectionComponent {
    */
   onLanguageSelect(lang: any): void {
     // this.languageService.setLanguage(lang.code, true)
-    this.languageService.currentLang.set(lang)
+    // this.languageService.currentLang.set(lang)
     this.languageService.setLanguage(lang.code, true); // Update the language via service
     this.isDropdownVisible = false; // Close the dropdown
   }
