@@ -215,8 +215,24 @@
 }
 
 
+.custom-icon {
+  font-size: large;
+  font-weight: bold;
+}
+
+
+
+
+
+
+
+
   /* Responsive Design */
   @media (max-width: 768px) {
+    .reservation-detail-page {
+      padding: 3px;
+    }
+
     .container {
       flex-direction: column;
     }
