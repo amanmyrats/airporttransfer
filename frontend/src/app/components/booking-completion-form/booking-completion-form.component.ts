@@ -13,6 +13,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { SelectButton } from 'primeng/selectbutton';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
   selector: 'app-booking-completion-form',
@@ -28,6 +29,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
   styleUrl: './booking-completion-form.component.scss'
 })
 export class BookingCompletionFormComponent implements OnInit {
+  navbar = NAVBAR_MENU;
   bookingService = inject(BookingService);
   carTypeService = inject(CarTypeService);
   currencyService = inject(CurrencyService);
@@ -111,7 +113,7 @@ export class BookingCompletionFormComponent implements OnInit {
           next: (response) => {
             console.log('Reservation created successfully:', response);
             this.isSaving = false;
-            this.router.navigate([`${this.languageService.currentLang().code}/booking/received/`]);
+            this.router.navigate([`${this.languageService.currentLang().code}/${this.navbar.bookNow.slug[this.languageService.currentLang().code]}/received/`]);
           },
           error: (error) => {
             console.error('Error creating reservation:', error);

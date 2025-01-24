@@ -4,7 +4,8 @@
   <p-menubar [model]="items">
       <ng-template pTemplate="start">
           <a href="/">
-          <img [src]="logoPath" [height]="'60'" alt="Airport Transfer Istabul" class="logo" >
+          <img [src]="'images/logos/' + socialIcons.logo.image.name['tr']" 
+            [height]="'60'" alt="Airport Transfer Turkey" class="logo" >
           </a>
       </ng-template>
       <ng-template pTemplate="item" let-item let-root="root">

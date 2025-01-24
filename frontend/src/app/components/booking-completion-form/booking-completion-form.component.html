@@ -246,8 +246,9 @@
             <button pButton [loading]="isSaving" type="submit" class="btn-complete">
             {{ translations.completeReservation[this.languageService.currentLang().code] }}
             </button>
-            <button [hidden]="stepFromUrl == 3" type="button" class="btn-back" (click)="goToPreviousStep()">
-            {{ translations.back[this.languageService.currentLang().code] }}
+            <button [hidden]="stepFromUrl == 3" type="button" class="btn-back" 
+              (click)="goToPreviousStep()">
+              {{ translations.back[this.languageService.currentLang().code] }}
             </button>
           </div>
         </form>

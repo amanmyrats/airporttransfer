@@ -216,5 +216,21 @@ export const SOCIAL_ICONS: any = {
           tr: 'Türkiye Havaalanı Transferi Telefon İletişim',
         },
       }
+    }, 
+    logo: {
+      image: {
+        name: {
+          en: 'airport-transfer-in-istanbul.webp',
+          de: 'flughafen-transfer-in-alanya.webp',
+          ru: 'трансфер-из-аэропорта-в-анталии.webp',
+          tr: 'istanbul-havalimanı-transferi.webp',
+        }, 
+        alt: {
+          en: 'Istanbul Airport Transfer Logo', 
+          de: 'Alanya Flughafentransfer Logo',
+          ru: 'Турецкий трансфер из аэропорта Логотип',
+          tr: 'Türkiye Havaalanı Transferi Logo',
+        },
+      }
     }
   }

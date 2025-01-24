@@ -18,6 +18,7 @@ import { Popover } from 'primeng/popover';
 import { AuthService } from '../../../services/auth.service';
 import { ActiveRouteService } from '../../../services/active-route.service';
 import { LoginComponent } from '../login/login.component';
+import { SOCIAL_ICONS } from '../../../constants/social.constants';
 
 @Component({
   selector: 'app-admin-home',
@@ -40,13 +41,13 @@ import { LoginComponent } from '../login/login.component';
   styleUrl: './admin-home.component.scss'
 })
 export class AdminHomeComponent implements OnInit {
+  socialIcons = SOCIAL_ICONS;
 
   @ViewChild('op') op: any | null = null;
 
   items: MenuItem[] | undefined;
   userMenuItems: MenuItem[] | undefined;
   activeRoute: string = '';
-  logoPath: string = 'logos/logo_airporttransfer-min.png';
   firstName: string = '';
 
   constructor(
@@ -114,13 +115,13 @@ export class AdminHomeComponent implements OnInit {
       {
         label: 'Profil',
         icon: 'pi pi-user',
-        command: () => this.onMenuItemClick('/admin/profile')
+        command: () => this.onMenuItemClick('/admin/profile/')
 
       },
       {
         label: 'Şifre değiştir',
         icon: 'pi pi-key',
-        command: () => this.onMenuItemClick('/admin/changepassword')
+        command: () => this.onMenuItemClick('/admin/changepassword/')
       },
       {
         label: 'Çıkış',

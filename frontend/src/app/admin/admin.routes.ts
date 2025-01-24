@@ -13,37 +13,37 @@ import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 
 export const adminRoutes: Routes = [
     {
-        path: 'login/',
+        path: 'login',
         component: LoginComponent,
     },
     {
-        path: 'logout/',
+        path: 'logout',
         component: LogoutComponent,
     },
     {
-        path: 'profile/', 
+        path: 'profile', 
         component: UserDetailComponent,
     },
     {
-        path: 'changepassword/',
+        path: 'changepassword',
         component: ChangePasswordComponent,
     },
 
 
     {
-        path: 'reservations/',
+        path: 'reservations',
         component: ReservationListComponent,
     },
     {
-        path: 'popularroutes/',
+        path: 'popularroutes',
         component: PopularRouteListComponent,
     },
     {
-        path: 'rates/',
+        path: 'rates',
         component: RateListComponent,
     },
     {
-        path: 'users/',
+        path: 'users',
         component: UserListComponent,
     }
 ];
