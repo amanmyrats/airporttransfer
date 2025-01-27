@@ -60,8 +60,9 @@ class Reservation(models.Model):
     need_child_seat = models.BooleanField(default=False)
     child_seat_count = models.IntegerField(default=0)
     
-    need_greet_sign = models.BooleanField(default=False)
-
+    greet_with_champagne = models.BooleanField(default=False)
+    greet_with_flower = models.BooleanField(default=False)
+    
     status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='pending')
 
     created_at = models.DateTimeField(auto_now_add=True)

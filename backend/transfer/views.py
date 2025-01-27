@@ -161,7 +161,17 @@ class BookingCreateAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = ReservationModelSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
+            greet_with_flower = serializer.validated_data.get("greet_with_flower")
+            greet_with_champagne = serializer.validated_data.get("greet_with_champagne")
+            note = serializer.validated_data.get("note")
+
+            if greet_with_flower or greet_with_champagne:
+                # Add the note to the serializer's data
+                serializer.validated_data["note"] = f"{note or ''}\n" \
+                    f"{'ARRIVAL transferinde Çiçek ile karşılanacak.' if greet_with_flower else ''}\n" \
+                    f"{'ARRIVAL transferinde Şampanya ile karşılanacak.' if greet_with_champagne else ''}"
             reservation = serializer.save()
+
             is_round_trip = serializer.validated_data.get("is_round_trip")
             if is_round_trip:
                 round_trip_data = request.data.copy()
@@ -171,6 +181,11 @@ class BookingCreateAPIView(APIView):
                 round_trip_data["transfer_time"] = serializer.validated_data.get(
                     "return_transfer_time"
                 )
+                round_trip_data["amount"] = serializer.validated_data.get("return_trip_amount")
+                note = serializer.validated_data.get("note")
+                if greet_with_flower or greet_with_champagne:
+                    round_trip_data["note"] = note
+
                 round_trip_serializer = ReservationModelSerializer(data=round_trip_data)
                 if round_trip_serializer.is_valid(raise_exception=True):
                     round_trip_reservation = round_trip_serializer.save()

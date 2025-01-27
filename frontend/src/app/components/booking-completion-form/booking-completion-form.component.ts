@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, input, OnInit, output } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, computed, effect, inject, OnInit, output, signal } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
 import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -33,9 +33,38 @@ export class BookingCompletionFormComponent implements OnInit {
   carTypeService = inject(CarTypeService);
   currencyService = inject(CurrencyService);
 
+  flowerPriceInEuro = 15;
+  champagnePriceInEuro = 25;
+  childSeatPriceInEuro = 5;
+
   stepFromUrl: number | null = null;
 
   previousStep = output<any>();
+  // champa
+  return_trip_price = signal<number>(0);
+  champagnePrice = signal<number>(0);
+  flowerPrice = signal<number>(0);
+  childSeatCount = signal<number>(0);
+  childSeatPrice = computed<number>(() => { 
+    // if child_seat_count changes add 5 euro or equivalent to the price
+    const childSeatCount: number = this.childSeatCount();
+    console.log('Child seat count:', childSeatCount);
+    const currencyCode: string = this.bookingService.bookingCarTypeSelectionForm.get(
+      'currency_code')?.value;
+    const currency: Currency = this.currencyService.getCurrencyByCode(currencyCode)!;
+    console.log('Currency:', currency);
+    if (this.childSeatCount() > 1) {
+      const childSeatPricePerUnitInCurrentCurrency: number = this.currencyService.convert(
+        this.childSeatPriceInEuro, 
+        this.currencyService.getCurrencyByCode('EUR')!, 
+        currency
+      );
+      console.log('Child seat price per unit in current currency:', childSeatPricePerUnitInCurrentCurrency);
+      const newChildSeatPrice = (this.childSeatCount() -1) * childSeatPricePerUnitInCurrentCurrency;
+      return newChildSeatPrice;
+    }
+    return 0;
+   });
 
   isSaving = false;
   hasSubmitted = false;
@@ -79,6 +108,8 @@ export class BookingCompletionFormComponent implements OnInit {
         currency_code: newCurrency.code,
         amount: this.price,
       });
+      this.calculateChampagnePrice();
+      this.calculateFlowerPrice();
     });
 
   }
@@ -113,7 +144,12 @@ export class BookingCompletionFormComponent implements OnInit {
   // Handle form submission
   onSubmit(): void {
     this.hasSubmitted = true;
-    
+    this.bookingService.bookingCarTypeSelectionForm.patchValue({
+      amount: this.price + this.champagnePrice() + this.flowerPrice() + this.childSeatPrice(),
+    });
+    this.bookingService.bookingCompletionForm.patchValue({
+      return_trip_amount: this.price + this.childSeatPrice(),
+    });
     // add 2 other forms into this.bookingService.bookingCompletionForm
     this.bookingService.bookingForm.patchValue({
       ...this.bookingService.bookingInitialForm.value,
@@ -139,6 +175,39 @@ export class BookingCompletionFormComponent implements OnInit {
       // Send data to a backend API or navigate to a confirmation page
     } else {
       console.log('Form is invalid');
+    }
+  }
+
+  childSeatCountChanged(event: any): void {
+    console.log(event);
+    this.childSeatCount.set(event.value);
+  }
+
+  calculateChampagnePrice(): void {
+    console.log(this.bookingService.bookingCompletionForm.get('greet_with_champagne')?.value);
+    if (this.bookingService.bookingCompletionForm.get('greet_with_champagne')?.value) {
+      const champagnePriceInCurrentCurrency = this.currencyService.convert(
+        this.champagnePriceInEuro, 
+        this.currencyService.getCurrencyByCode('EUR')!, 
+        this.currencyService.currentCurrency()
+      );
+      this.champagnePrice.set(champagnePriceInCurrentCurrency);
+    } else {
+      this.champagnePrice.set(0);
+    }
+  }
+
+  calculateFlowerPrice(): void {
+    console.log(this.bookingService.bookingCompletionForm.get('greet_with_flower')?.value);
+    if (this.bookingService.bookingCompletionForm.get('greet_with_flower')?.value) {
+      const flowerPriceInCurrentCurrency = this.currencyService.convert(
+        this.flowerPriceInEuro, 
+        this.currencyService.getCurrencyByCode('EUR')!, 
+        this.currencyService.currentCurrency()
+      );
+      this.flowerPrice.set(flowerPriceInCurrentCurrency);
+    } else {
+      this.flowerPrice.set(0);
     }
   }
 

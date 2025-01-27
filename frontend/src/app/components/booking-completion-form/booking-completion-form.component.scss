@@ -177,42 +177,99 @@
 }
 
 
-
-/* Payment Information Styling */
+/* Payment Info Styling */
 .payment-info {
-  margin-bottom: 20px; /* Space below the payment info */
-  padding: 20px; /* Padding for comfortable spacing */
-  background-color: #f9fbff; /* Soft blue-tinted background for trustworthiness */
-  border: 1px solid #cfe2ff; /* Light blue border to emphasize importance */
-  border-radius: 10px; /* Smooth, rounded corners */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
-  font-size: 1em; /* Standard text size for readability */
-  color: #333; /* Neutral dark gray for clear text */
-  text-align: center; /* Center align for uniformity */
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f9fbff;
+  border: 1px solid #cfe2ff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-size: 1em;
+  color: #333;
+}
+
+/* Price Breakdown Styling */
+.payment-info .price-breakdown {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.payment-info .price-breakdown p {
+  font-size: 0.9em;
+  color: #555;
+  margin: 5px 0;
+  line-height: 1.4;
+}
+
+/* Note Styling */
+.payment-info .note {
+  margin-top: 10px;
+  font-size: 0.85em;
+  color: #666;
+  text-align: center;
+}
+
+/* Hover Effects */
+.payment-info:hover {
+  background-color: #f1f8ff;
+  border-color: #b8daff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Price Breakdown Styling */
+.price-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f9fbff;
+  border: 1px solid #cfe2ff;
+  border-radius: 5px;
+}
+
+.price-label {
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #555;
+}
+
+.price-value {
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #004085;
+}
+
+/* Hover Effect for Rows */
+.price-row:hover {
+  background-color: #eef6ff;
+  border-color: #b8daff;
 }
 
 /* Total Price Styling */
-.payment-info .total-price {
-  font-size: 1.5em; /* Larger font for price */
-  font-weight: bold; /* Emphasize the price */
-  color: #004085; /* Dark blue for trustworthiness */
-  margin-bottom: 10px; /* Space below the price */
+.total-price-container {
+  margin-top: 15px;
+  padding: 15px; /* Add more padding for a distinct section */
+  background: linear-gradient(90deg, #4571a0, #aeb0b2); /* Gradient background for emphasis */
+  border-radius: 8px; /* Smooth, rounded corners */
+  text-align: center;
+  color: #fff; /* White text for contrast */
 }
 
-/* Payment Info Text Styling */
-.payment-info p {
-  margin: 0;
-  line-height: 1.6; /* Improved readability */
-  font-size: 0.9em; /* Slightly smaller text for description */
-  color: #555; /* Subtle gray for secondary information */
+.total-price {
+  font-size: 1.8em; /* Large font size for importance */
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Subtle shadow for text readability */
 }
 
-/* Hover Effect */
-.payment-info:hover {
-  background-color: #f1f8ff; /* Slightly darker blue on hover */
-  border-color: #b8daff; /* Highlight border on hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
-}
+
 
 
 .custom-icon {
