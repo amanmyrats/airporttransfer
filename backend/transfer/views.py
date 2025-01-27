@@ -161,7 +161,26 @@ class BookingCreateAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = ReservationModelSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            reservation = serializer.save()
+            is_round_trip = serializer.validated_data.get("is_round_trip")
+            if is_round_trip:
+                round_trip_data = request.data.copy()
+                round_trip_data["transfer_date"] = serializer.validated_data.get(
+                    "return_transfer_date"
+                )
+                round_trip_data["transfer_time"] = serializer.validated_data.get(
+                    "return_transfer_time"
+                )
+                round_trip_serializer = ReservationModelSerializer(data=round_trip_data)
+                if round_trip_serializer.is_valid(raise_exception=True):
+                    round_trip_reservation = round_trip_serializer.save()
+                    return Response(
+                        {
+                            "departure": serializer.data,
+                            "return": round_trip_serializer.data,
+                        },
+                        status=status.HTTP_201_CREATED,
+                    )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

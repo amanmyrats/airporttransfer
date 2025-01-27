@@ -109,10 +109,10 @@ export class FooterComponent implements OnInit {
       ru: 'Все права защищены.',
     },
     allLanguages: {
-      en: 'All Languages',
-      de: 'Alle Sprachen',
-      tr: 'Tüm Diller',
-      ru: 'Все языки',
+      en: 'Languages',
+      de: 'Sprachen',
+      tr: 'Diller',
+      ru: 'Языки',
     }
   };
 }

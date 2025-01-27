@@ -1,6 +1,8 @@
 import datetime
 
-from rest_framework.serializers import ModelSerializer, TimeField, ValidationError
+from rest_framework.serializers import (
+    ModelSerializer, TimeField, ValidationError, DateField, 
+)
 
 from .models import ( Reservation, ContactUsMessage ) 
 
@@ -22,7 +24,15 @@ class Time24HourField(TimeField):
 class ReservationModelSerializer(ModelSerializer):
     transfer_time = Time24HourField(format='%H:%M')
     flight_time = Time24HourField(format='%H:%M', required=False)
+    return_transfer_date = DateField(required=False, allow_null=True)
+    return_transfer_time = Time24HourField(format='%H:%M', required=False, allow_null=True)
 
+    def create(self, validated_data):
+        # Extract the extra fields
+        return_transfer_date = validated_data.pop('return_transfer_date', None)
+        return_transfer_time = validated_data.pop('return_transfer_time', None)
+        reservation = super().create(validated_data)
+        return reservation
     class Meta:
         model = Reservation
         fields = '__all__'

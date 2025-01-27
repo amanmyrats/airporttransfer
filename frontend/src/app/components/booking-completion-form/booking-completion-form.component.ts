@@ -9,11 +9,10 @@ import { MessageModule } from 'primeng/message';
 import { CarTypeService } from '../../services/car-type.service';
 import { CurrencyService } from '../../services/currency.service';
 import { CheckboxModule } from 'primeng/checkbox';
-import { FloatLabel } from 'primeng/floatlabel';
-import { SelectButton } from 'primeng/selectbutton';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
+import { Currency } from '../../models/currency.model';
 
 @Component({
   selector: 'app-booking-completion-form',
@@ -65,6 +64,23 @@ export class BookingCompletionFormComponent implements OnInit {
     public languageService: LanguageService, 
     private route: ActivatedRoute, 
   ) {
+    effect(() => {
+      const existingCurrencyCode: string = this.bookingService.bookingCarTypeSelectionForm.get('currency_code')?.value;
+      const newCurrency: Currency = this.currencyService.currentCurrency();
+      const existingAmount: number = this.bookingService.bookingCarTypeSelectionForm.get('amount')?.value;
+
+      this.price = this.currencyService.convert(
+        existingAmount, 
+        this.currencyService.getCurrencyByCode(existingCurrencyCode)!, 
+        newCurrency
+      );
+      this.currency = newCurrency;
+      this.bookingService.bookingCarTypeSelectionForm.patchValue({
+        currency_code: newCurrency.code,
+        amount: this.price,
+      });
+    });
+
   }
 
   ngOnInit(): void {

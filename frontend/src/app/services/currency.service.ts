@@ -54,4 +54,37 @@ export class CurrencyService {
     const currencyCode = localStorage.getItem(this.storageKey);
     return SUPPORTED_CURRENCIES.find((currency) => currency.code === currencyCode);
   }
+
+//   export const SUPPORTED_CURRENCIES = [
+//     { 
+//         code: 'EUR', 
+//         sign: '€', 
+//         name: 'Euro',
+//         rate: 1,
+//     },
+//     { 
+//         code: 'USD', 
+//         sign: '$', 
+//         name: 'US Dollar',
+//         rate: 1.18,
+//     },
+//     { 
+//         code: 'GBP', 
+//         sign: '£', 
+//         name: 'British Pound',
+//         rate: 0.9,
+//     },
+// ];
+
+convert(amount: number, currency: Currency, toCurrency: Currency): number {
+    if (toCurrency.rate === undefined) {
+      throw new Error('toCurrency rate is undefined');
+    }
+    if (currency.rate === undefined) {
+      throw new Error('currency rate is undefined');
+    }
+    const euroEquivalent = amount / currency.rate;
+    return Math.round(euroEquivalent * toCurrency.rate);
+  }
+
 }
