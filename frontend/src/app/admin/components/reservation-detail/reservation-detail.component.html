@@ -54,13 +54,15 @@
             Yok
         }
     </p>
-    <p><strong>Karşılama İsteği:</strong> 
-        @if (reservation.need_greet_sign){
-            Var
-        } @else {
-            Yok
-        }
-    </p>
+  
+    <h2>Ekstra Hizmetler</h2>
+    @if (reservation.greet_with_flower){
+        <p><strong>Çiçek ile karşılanacak</strong></p>
+    }
+    @if (reservation.greet_with_champagne){
+        <p><strong>Şampanya ile karşılanacak</strong></p>
+    }
+    <hr>
 
     <p><strong>Not:</strong> {{ reservation.note }}</p>
     <hr>

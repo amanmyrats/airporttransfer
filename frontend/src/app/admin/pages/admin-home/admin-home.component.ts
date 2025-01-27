@@ -98,7 +98,7 @@ export class AdminHomeComponent implements OnInit {
         routerLink: '/admin/popularroutes/'
       },
       {
-        label: 'Kurler',
+        label: 'Kurlar',
         icon: 'pi pi-dollar',
         routerLink: '/admin/rates/'
       },

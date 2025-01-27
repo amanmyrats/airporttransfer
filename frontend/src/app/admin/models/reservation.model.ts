@@ -39,7 +39,8 @@ export class Reservation {
     need_child_seat?: string;
     child_seat_count?: string;
     
-    need_greet_sign?: string;
+    greet_with_flower?: string;
+    greet_with_champagne?: string;
     
     created_at?: string;
     updated_at?: string;

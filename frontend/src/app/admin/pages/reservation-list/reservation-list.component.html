@@ -77,7 +77,7 @@
                 <div *ngIf="col.field === 'amount'"
                 [style.width.px]="col.width * 0.80" 
                 style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
-                    {{reservation.amount | number:'1.2-2' }} {{reservation.currency_obj?.sign}}
+                    {{reservation.amount | number:'1.2-2' }} {{currencyService.getCurrencySign(reservation.currency_code)}}
                 </div>
                 
                 <div *ngIf="col.field === 'dest_short'"
@@ -115,6 +115,7 @@
                 @if (col.field === 'status') {
                     <div [style.width.px]="col.width * 0.80" 
                         style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
+                        <span *ngIf="reservation.status === 'pending'">Beklemede</span>
                         <span *ngIf="reservation.status === 'confirmed'">Onaylandı</span>
                         <span *ngIf="reservation.status === 'inoperation'">Operasyonda</span>
                         <span *ngIf="reservation.status === 'cancelled'">İptal Edildi</span>
@@ -154,8 +155,8 @@
                         [obj]="reservation" 
                         [editRole]="'company_rezervasyoncu'"
                         [deleteRole]="'company_rezervasyoncu'"
-                        [wantEdit]="reservation.status == 'confirmed'"
-                        [wantDelete]="reservation.status == 'confirmed'" 
+                        [wantEdit]="reservation.status !== 'confirmed'"
+                        [wantDelete]="reservation.status !== 'confirmed'" 
                         [wantDownloadPdf]="true" 
                         [wantDetail]="true"
                         (detailEmitter)="detailObj(reservation)"

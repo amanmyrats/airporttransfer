@@ -4,18 +4,16 @@
         <div class="p-col-12 p-md-3" style="display: flex; justify-content: center;align-items: center;">
             <span *ngIf="wantDateFilter">
                 <button class="next-prev-button" (click)="prevDay()">
-                    <i class="pi pi-chevron-left"></i>
-                </button>
+                <img src="images/icons/arrow-left.svg" alt="Search Icon" width="16" height="16" style="margin-right: 8px;" />
+            </button>
                 <p-datepicker formControlName="transfer_date" inputId="buttondisplay" dateFormat="yy-mm-dd"
                     (onSelect)="onFilterChange()" (onClear)="onFilterChange()" [inputStyle]="{'width': '170px'}"
                     [firstDayOfWeek]="1" [showButtonBar]="true" [variant]="'filled'" [showClear]="true">
-                    <ng-template pTemplate="clearicon">
-                        <i class="pi pi-times custom-clear-icon"></i>
-                    </ng-template>
+
                 </p-datepicker>
                 <button class="next-prev-button" (click)="nextDay()">
-                    <i class="pi pi-chevron-right"></i>
-                </button>
+                <img src="images/icons/arrow-right.svg" alt="Search Icon" width="16" height="16" style="margin-right: 8px;" />
+            </button>
             </span>
         </div>
 
@@ -99,11 +97,15 @@
                     </p-floatlabel>
                 </p-iconfield>
             </span>
-            <button *ngIf="wantSearchFilter" pButton type="submit" label="Ara" icon="pi pi-search"
+            <button *ngIf="wantSearchFilter" pButton type="submit"
                 class="p-button-raised p-button-rounded p-button-success item">
+                <img src="images/icons/search.svg" alt="Search Icon" width="16" height="16" style="margin-right: 8px;" />
+                Ara
             </button>
-            <button *ngIf="wantSearchFilter" pButton type="button" label="Temizle" icon="pi pi-times"
+            <button *ngIf="wantSearchFilter" pButton type="button" 
                 class="p-button-raised p-button-rounded p-button-danger item" (click)="clearSearch()">
+                <img src="images/icons/delete.svg" alt="Search Icon" width="16" height="16" style="margin-right: 8px;" />
+                Temizle
             </button>
         </div>
     </div>

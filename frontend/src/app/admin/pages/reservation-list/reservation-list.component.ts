@@ -26,6 +26,7 @@ import { UserColumnService } from '../../services/user-column.service';
 import { environment as env } from '../../../../environments/environment';
 import { PaginatedResponse } from '../../../models/paginated-response.model';
 import { FilterSearchComponent } from '../../components/filter-search/filter-search.component';
+import { CurrencyService } from '../../../services/currency.service';
 
 
 @Component({
@@ -85,7 +86,8 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
     private confirmationService: ConfirmationService, 
     private httpErrorPrinterService: HttpErrorPrinterService,
     private userColumnService: UserColumnService, 
-    private pdfService: PdfService
+    private pdfService: PdfService, 
+    public currencyService: CurrencyService, 
   ){
 
     this.cols = [

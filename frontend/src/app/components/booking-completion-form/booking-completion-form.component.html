@@ -41,7 +41,7 @@
                 <label for="transfer_date">          
                   {{ translations.transferDate[this.languageService.currentLang().code] }}
                 </label>
-                <input type="date" id="transfer_date" formControlName="transfer_date" required />
+                <input type="date" id="transfer_date" formControlName="transfer_date" />
                 <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_date')?.invalid" 
                 severity="error" variant="simple" size="small">
                 {{ translations.fieldRequired[this.languageService.currentLang().code] }}
@@ -300,7 +300,7 @@
       <div class="total-price-container">
         <strong class="total-price">
           {{ translations.total[this.languageService.currentLang().code] }}: 
-          {{ price * 2 + childSeatPrice() * 2 }} {{ currency?.sign }}
+          {{ price * 2 + childSeatPrice() * 2 + flowerPrice() + champagnePrice() }} {{ currency?.sign }}
         </strong>
       </div>
     </ng-template>
