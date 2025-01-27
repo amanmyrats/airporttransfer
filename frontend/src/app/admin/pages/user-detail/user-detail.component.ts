@@ -41,9 +41,7 @@ export class UserDetailComponent  implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log('userId:', this.userId)
     this.userId = this.getUserIdFromAccessToken();
-    console.log('userId:', this.userId)
     this.getUser();
   }
 

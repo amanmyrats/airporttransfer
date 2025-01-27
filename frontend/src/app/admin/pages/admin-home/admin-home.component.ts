@@ -115,13 +115,13 @@ export class AdminHomeComponent implements OnInit {
       {
         label: 'Profil',
         icon: 'pi pi-user',
-        command: () => this.onMenuItemClick('/admin/profile/')
+        command: () => this.onMenuItemClick('/admin/profile')
 
       },
       {
         label: 'Şifre değiştir',
         icon: 'pi pi-key',
-        command: () => this.onMenuItemClick('/admin/changepassword/')
+        command: () => this.onMenuItemClick('/admin/changepassword')
       },
       {
         label: 'Çıkış',
