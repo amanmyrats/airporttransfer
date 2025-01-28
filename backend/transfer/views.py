@@ -239,7 +239,7 @@ Message: {serializer.data.get('message')}
                 subject, 
                 message,
                 settings.EMAIL_HOST_USER, 
-                [settings.DEFAULT_FROM_EMAIL, 'amansarahs@gmail.com', 'deryamyrat899@gmail.com']
+                ['amansarahs@gmail.com', 'deryamyrat899@gmail.com']
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

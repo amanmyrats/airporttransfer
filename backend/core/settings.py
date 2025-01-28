@@ -190,16 +190,16 @@ SIMPLE_JWT = {
 JWT_AUTH_USER_SERIALIZER = 'authentication.serializers.CustomTokenUserSerializer'
 
 
-DEFAULT_FROM_EMAIL = 'info@transfertakip.com'
+DEFAULT_FROM_EMAIL = 'info@airporttransferhub.com'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST_TRANSFERTAKIP')
-EMAIL_PORT = os.getenv('EMAIL_PORT_TRANSFERTAKIP')
+EMAIL_HOST = os.getenv('EMAIL_HOST_AIRPORTTRANSFERHUB')
+EMAIL_PORT = os.getenv('EMAIL_PORT_AIRPORTTRANSFERHUB')
 # EMAIL_USE_TLS = True
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER_TRANSFERTAKIP')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD_TRANSFERTAKIP')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER_AIRPORTTRANSFERHUB')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD_AIRPORTTRANSFERHUB')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
