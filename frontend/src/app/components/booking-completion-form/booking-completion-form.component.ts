@@ -178,8 +178,16 @@ export class BookingCompletionFormComponent implements OnInit {
     }
   }
 
+  needChildSeatToggleChanged(event: any): void {
+    if (!event.checked) {
+      this.bookingService.bookingCompletionForm.patchValue({
+        child_seat_count: 0,
+      });
+      this.childSeatCount.set(0);
+    }
+  }
+
   childSeatCountChanged(event: any): void {
-    console.log(event);
     this.childSeatCount.set(event.value);
   }
 
@@ -439,6 +447,72 @@ export class BookingCompletionFormComponent implements OnInit {
       de: 'Gesamt',
       ru: 'Итого',
       tr: 'Toplam',
-    }
+    }, 
+    childSeatPricePerUnit: {
+      en: '1 free, then +5 €', 
+      de: '1 kostenlos, dann +5 €',
+      ru: '1 бесплатно, затем +5 €',
+      tr: '1 ücretsiz, sonra +5 €',
+    }, 
+    greetingWithFlower: {
+      en: 'Greeting with Flower', 
+      de: 'Begrüßung mit Blume',
+      ru: 'Приветствие с цветком',
+      tr: 'Çiçekle Karşılama',
+    }, 
+    greetingWithChampagne: {
+      en: 'Greeting with Champagne', 
+      de: 'Begrüßung mit Champagner',
+      ru: 'Приветствие с шампанским',
+      tr: 'Şampanya ile Karşılama',
+    }, 
+    basePrice: {
+      en: 'Base Price',
+      de: 'Grundpreis',
+      ru: 'Базовая цена',
+      tr: 'Taban Fiyat',
+    }, 
+    childSeatPrice: {
+      en: 'Child Seat Price', 
+      de: 'Kindersitzpreis',
+      ru: 'Цена детского кресла',
+      tr: 'Çocuk Koltuğu Fiyatı',
+    }, 
+    flowerPrice: {
+      en: 'Flower Price', 
+      de: 'Blumenpreis',
+      ru: 'Цена цветка',
+      tr: 'Çiçek Fiyatı',
+    }, 
+    champagnePrice: {
+      en: 'Champagne Price', 
+      de: 'Champagnerpreis',
+      ru: 'Цена шампанского',
+      tr: 'Şampanya Fiyatı',
+    }, 
+    firstTripBasePrice: {
+      en: '1st Trip Base Price', 
+      de: 'Grundpreis für die 1. Fahrt',
+      ru: 'Базовая цена за 1 поездку',
+      tr: '1. Yolculuk Taban Fiyatı',
+    }, 
+    firstTripChildSeatPrice: {
+      en: 'Child Seat Price (1st Trip)', 
+      de: 'Kindersitzpreis (1. Fahrt)',
+      ru: 'Цена детского кресла (1 поездка)',
+      tr: 'Çocuk Koltuğu Fiyatı (1. Yolculuk)',
+    }, 
+    secondTripBasePrice: {
+      en: '2nd Trip Base Price', 
+      de: 'Grundpreis für die 2. Fahrt',
+      ru: 'Базовая цена за 2 поездку',
+      tr: '2. Yolculuk Taban Fiyatı',
+    }, 
+    secondTripChildSeatPrice: {
+      en: 'Child Seat Price (2nd Trip)', 
+      de: 'Kindersitzpreis (2. Fahrt)',
+      ru: 'Цена детского кресла (2 поездка)',
+      tr: 'Çocuk Koltuğu Fiyatı (2. Yolculuk)',
+    },
   }
 }

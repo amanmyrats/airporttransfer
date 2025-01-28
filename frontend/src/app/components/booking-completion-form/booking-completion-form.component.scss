@@ -143,9 +143,10 @@
 
 /* Need Child Seat Section */
 .toggle-switch-container {
-  display: flex;
+  display: flex; 
+  flex-direction: column;
   align-items: center;
-  gap: 20px; /* Space between items */
+  // gap: 5px; /* Space between items */
   padding: 15px;
   background-color: #f9f9f9; /* Neutral light background */
   border: 1px solid #ddd; /* Subtle border */

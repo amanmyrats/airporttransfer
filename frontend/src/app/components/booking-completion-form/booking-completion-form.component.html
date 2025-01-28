@@ -185,7 +185,14 @@
               <span>
                 {{ translations.needChildSeat[this.languageService.currentLang().code] }}
               </span>
-              <p-toggleswitch formControlName="need_child_seat"></p-toggleswitch>
+            <div>
+              {{ translations.childSeatPricePerUnit[this.languageService.currentLang().code] }}
+            </div>
+
+              <p-toggleswitch 
+                formControlName="need_child_seat" 
+                (onChange)="needChildSeatToggleChanged($event)"
+                ></p-toggleswitch>
               <p-inputnumber 
                 *ngIf="this.bookingService.bookingCompletionForm.value.need_child_seat" 
                 formControlName="child_seat_count" 
@@ -208,7 +215,11 @@
             
           <!-- Greeting with Flower -->
           <div class="toggle-switch-container">
-            <span>Greeting with Flower</span>
+            <span>
+              {{ translations.greetingWithFlower[this.languageService.currentLang().code] }}
+            </span> 
+            <div>+15 €</div>
+
             <p-toggleswitch 
               formControlName="greet_with_flower" 
               (onChange)="calculateFlowerPrice()"
@@ -217,7 +228,10 @@
 
           <!-- Greeting with Champagne -->
           <div class="toggle-switch-container">
-            <span>Greeting with Champagne</span>
+            <span>
+              {{ translations.greetingWithChampagne[this.languageService.currentLang().code] }}
+            </span>
+            <div>+25 €</div>
             <p-toggleswitch 
               formControlName="greet_with_champagne" 
               (onChange)="calculateChampagnePrice()"
@@ -244,20 +258,26 @@
     <ng-container *ngIf="!bookingService.bookingCompletionForm.get('is_round_trip')?.value; else roundTrip">
       <div class="price-breakdown">
         <div class="price-row">
-          <span class="price-label">Base Price:</span>
+          <span class="price-label">
+            {{ translations.basePrice[this.languageService.currentLang().code] }}
+            :
+          </span>
           <span class="price-value">{{ price! }} {{ currency?.sign }}</span>
         </div>
         <div class="price-row" *ngIf="childSeatPrice() > 0">
-          <span class="price-label">Child Seat Price:</span>
+          <span class="price-label">
+            {{ translations.firstTripChildSeatPrice[this.languageService.currentLang().code] }}:</span>
           <span class="price-value">{{ childSeatPrice() }} {{ currency?.sign }}</span>
         </div>
-        <div class="price-row" *ngIf="champagnePrice() > 0">
-          <span class="price-label">Champagne Price:</span>
-          <span class="price-value">{{ champagnePrice() }} {{ currency?.sign }}</span>
-        </div>
         <div class="price-row" *ngIf="flowerPrice() > 0">
-          <span class="price-label">Flower Price:</span>
+          <span class="price-label">
+            {{ translations.flowerPrice[this.languageService.currentLang().code] }}:</span>
           <span class="price-value">{{ flowerPrice() }} {{ currency?.sign }}</span>
+        </div>
+        <div class="price-row" *ngIf="champagnePrice() > 0">
+          <span class="price-label">
+            {{ translations.champagnePrice[this.languageService.currentLang().code] }}:</span>
+          <span class="price-value">{{ champagnePrice() }} {{ currency?.sign }}</span>
         </div>
       </div>
       <div class="total-price-container">
@@ -272,27 +292,33 @@
     <ng-template #roundTrip>
       <div class="price-breakdown">
       <div class="price-row">
-        <span class="price-label">1st Trip Base Price:</span>
+        <span class="price-label">
+          {{ translations.firstTripBasePrice[this.languageService.currentLang().code] }}:</span>
         <span class="price-value">{{ price! }} {{ currency?.sign }}</span>
       </div>
       <div class="price-row" *ngIf="childSeatPrice() > 0">
-        <span class="price-label">Child Seat Price (1st Trip):</span>
+        <span class="price-label">
+          {{ translations.firstTripChildSeatPrice[this.languageService.currentLang().code] }}:</span>
         <span class="price-value">{{ childSeatPrice() }} {{ currency?.sign }}</span>
       </div>
-      <div class="price-row" *ngIf="champagnePrice() > 0">
-        <span class="price-label">Champagne Price:</span>
-        <span class="price-value">{{ champagnePrice() }} {{ currency?.sign }}</span>
-      </div>
       <div class="price-row" *ngIf="flowerPrice() > 0">
-        <span class="price-label">Flower Price:</span>
+        <span class="price-label">
+          {{ translations.flowerPrice[this.languageService.currentLang().code] }}:</span>
         <span class="price-value">{{ flowerPrice() }} {{ currency?.sign }}</span>
       </div>
+      <div class="price-row" *ngIf="champagnePrice() > 0">
+        <span class="price-label">
+          {{ translations.champagnePrice[this.languageService.currentLang().code] }}:</span>
+        <span class="price-value">{{ champagnePrice() }} {{ currency?.sign }}</span>
+      </div>
       <div class="price-row">
-        <span class="price-label">2nd Trip Base Price:</span>
+        <span class="price-label">
+          {{ translations.secondTripBasePrice[this.languageService.currentLang().code] }}:</span>
         <span class="price-value">{{ price! }} {{ currency?.sign }}</span>
       </div>
       <div class="price-row" *ngIf="childSeatPrice() > 0">
-        <span class="price-label">Child Seat Price (2nd Trip):</span>
+        <span class="price-label">
+          {{ translations.secondTripChildSeatPrice[this.languageService.currentLang().code] }}:</span>
         <span class="price-value">{{ childSeatPrice() }} {{ currency?.sign }}</span>
       </div>
     </div>

@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
@@ -23,6 +25,8 @@ from accounts.serializers import (
     UserColumnModelSerializer, 
 )
 
+
+logger = logging.getLogger("airporttransfer")
 
 class AccountModelViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()
@@ -130,7 +134,10 @@ class PublicAccountModelViewSet(viewsets.ModelViewSet):
         Şifrenizi sıfırlamak için aşağıdaki linke tıklayınız:
         {reset_link}
         """
-            send_mail(mail_subject, message, settings.EMAIL_HOST_USER, [user.email])
+            is_sent = send_mail(mail_subject, message, settings.EMAIL_HOST_USER, [user.email])
+            logger.debug('is_sent: ', is_sent)
+            logger.debug(f"Password reset email sent to {user.email}.")
+
             return Response({'detail': 'Password reset link sent.'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
