@@ -51,7 +51,11 @@
                 <label for="transfer_time">
                 {{ translations.transferTime[this.languageService.currentLang().code] }}
                 </label>
-                <input type="time" id="transfer_time" formControlName="transfer_time" required />
+                <p-datepicker inputId="calendar-timeonly" 
+                  id="transfer_time" formControlName="transfer_time"
+                  [timeOnly]="true"  dataType="string"/>
+
+                <!-- <input type="time" id="transfer_time" formControlName="transfer_time" required /> -->
                 <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_time')?.invalid" 
                 severity="error" variant="simple" size="small">
                 {{ translations.fieldRequired[this.languageService.currentLang().code] }}
@@ -84,7 +88,12 @@
                   <label for="return_transfer_time">
                 {{ translations.returnTransferTime[this.languageService.currentLang().code] }}
                   </label>
-                  <input type="time" id="return_transfer_time" formControlName="return_transfer_time" />
+
+                    <p-datepicker inputId="calendar-timeonly" 
+                    id="return_transfer_time" formControlName="return_transfer_time"
+                    [timeOnly]="true"  dataType="string"/>
+
+                  <!-- <input type="time" id="return_transfer_time" formControlName="return_transfer_time" /> -->
                 </div>
               </div>
             </div>

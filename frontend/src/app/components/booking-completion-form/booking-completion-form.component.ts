@@ -13,6 +13,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { Currency } from '../../models/currency.model';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-booking-completion-form',
@@ -23,6 +24,7 @@ import { Currency } from '../../models/currency.model';
     CheckboxModule, 
     ToggleSwitchModule, 
     InputNumberModule, 
+    DatePickerModule, 
   ],
   templateUrl: './booking-completion-form.component.html',
   styleUrl: './booking-completion-form.component.scss'
@@ -74,7 +76,6 @@ export class BookingCompletionFormComponent implements OnInit {
     {label: 'Lazım Değil', value: false},
   ];
 
-  // Mock data for reservation details (these would typically come from a service or state)
   selectedCar = this.carTypeService.getCarTypeByCode(
     this.bookingService.bookingCarTypeSelectionForm.get('car_type')?.value
   ) 
@@ -181,9 +182,9 @@ export class BookingCompletionFormComponent implements OnInit {
   needChildSeatToggleChanged(event: any): void {
     if (!event.checked) {
       this.bookingService.bookingCompletionForm.patchValue({
-        child_seat_count: 0,
+        child_seat_count: 1,
       });
-      this.childSeatCount.set(0);
+      this.childSeatCount.set(1);
     }
   }
 

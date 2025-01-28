@@ -27,6 +27,24 @@ export class BookingService {
   constructor(
     private http: HttpClient
   ) { 
+
+    // Get tomorrow's date (in YYYY-MM-DD format)
+    const tomorrow = new Date();
+    const dayAfterTomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // Add 1 day to current date
+    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2); // Add 2 day to current date
+    const formattedTomorrow = tomorrow.toISOString().split('T')[0]; // Get only the date part (YYYY-MM-DD)
+    const formattedDayAfterTomorrow = dayAfterTomorrow.toISOString().split('T')[0]; // Get only the date part (YYYY-MM-DD)
+
+
+    // Get current time (in HH:mm format)
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0'); // Ensure two-digit format
+    const minutes = now.getMinutes().toString().padStart(2, '0'); // Ensure two-digit format
+    const formattedTime = `${hours}:${minutes}`;
+
+        
+
     this.bookingInitialForm = this.fb.group({
       pickup_place: '',
       dest_place: '',
@@ -57,15 +75,15 @@ export class BookingService {
   });
 
     this.bookingCompletionForm = this.fb.group({
-      transfer_date: ['', Validators.required],
-      transfer_time: ['', Validators.required],
+      transfer_date: [formattedTomorrow, Validators.required],
+      transfer_time: [formattedTime, Validators.required],
       flight_number: '',
       is_round_trip: [false],
-      return_transfer_date: [''],
-      return_transfer_time: [''],
+      return_transfer_date: [formattedDayAfterTomorrow],
+      return_transfer_time: [formattedTime],
       return_trip_amount: 0,
       need_child_seat: [false],
-      child_seat_count: 0,
+      child_seat_count: 1,
       greet_with_champagne: [false],
       greet_with_flower: [false],
       note: [''],
