@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
   selector: 'app-cta',
@@ -11,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './cta.component.scss'
 })
 export class CtaComponent implements OnInit {
+  navbarMenu = NAVBAR_MENU;
   currentLanguage: any = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
 
   constructor(

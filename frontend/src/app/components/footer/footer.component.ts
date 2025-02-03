@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
+import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
   selector: 'app-footer',
@@ -9,6 +10,7 @@ import { LanguageService } from '../../services/language.service';
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent implements OnInit {
+  navbarMenu = NAVBAR_MENU;
   private languageService!: LanguageService;
   
   currentLanguage: any = {

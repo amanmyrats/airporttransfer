@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BLOGS } from '../../blog-content';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
   selector: 'app-blog-list',
@@ -12,6 +13,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './blog-list.component.scss'
 })
 export class BlogListComponent  implements OnInit {
+  navbarMenu = NAVBAR_MENU;
   currentLanguage: any = {
     code: 'en',
     name: 'English',

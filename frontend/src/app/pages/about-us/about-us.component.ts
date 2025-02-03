@@ -4,6 +4,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
   selector: 'app-about-us',
@@ -16,6 +17,7 @@ import { Meta, Title } from '@angular/platform-browser';
   styleUrl: './about-us.component.scss'
 })
 export class AboutUsComponent {
+  navbarMenu = NAVBAR_MENU;
 
   currentLanguage: any = {
     code: 'en',

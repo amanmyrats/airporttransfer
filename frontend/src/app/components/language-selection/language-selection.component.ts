@@ -77,7 +77,7 @@ export class LanguageSelectionComponent {
       }
       return segments.join('/'); // Reconstruct the URL
     }
-    return '/';
+    return '';
   }
 
   /**

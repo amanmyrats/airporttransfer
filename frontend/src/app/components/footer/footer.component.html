@@ -16,11 +16,11 @@
       <h4 class="footer-title">{{ getTranslation('quicklinks') }}</h4>
       <ul class="footer-links">
         <li><a href="{{currentLanguage.code}}/">{{ getTranslation('home') }}</a></li>
-        <li><a href="{{currentLanguage.code}}/aboutus/">{{ getTranslation('aboutus') }}</a></li>
-        <li><a href="{{currentLanguage.code}}/services/">{{ getTranslation('ourservices') }}</a></li>
-        <li><a href="{{currentLanguage.code}}/gallery/">{{ getTranslation('gallery') }}</a></li>
-        <li><a href="{{currentLanguage.code}}/contact/">{{ getTranslation('contact') }}</a></li>
-        <li><a href="{{currentLanguage.code}}/blog/">{{ getTranslation('blog') }}</a></li>
+        <li><a href="{{currentLanguage.code}}/{{navbarMenu.aboutUs.slug[currentLanguage.code]}}/">{{ getTranslation('aboutus') }}</a></li>
+        <li><a href="{{currentLanguage.code}}/{{navbarMenu.services.slug[currentLanguage.code]}}/">{{ getTranslation('ourservices') }}</a></li>
+        <li><a href="{{currentLanguage.code}}/{{navbarMenu.gallery.slug[currentLanguage.code]}}/">{{ getTranslation('gallery') }}</a></li>
+        <li><a href="{{currentLanguage.code}}/{{navbarMenu.contactUs.slug[currentLanguage.code]}}/">{{ getTranslation('contact') }}</a></li>
+        <li><a href="{{currentLanguage.code}}/{{navbarMenu.blogs.slug[currentLanguage.code]}}/">{{ getTranslation('blog') }}</a></li>
       </ul>
     </div>
 
@@ -55,8 +55,8 @@
   <div class="footer-bottom">
     <p>&copy; 2025 Airport Transfer. {{ getTranslation('allRightsReserved') }}</p>
     <p>
-      <a href="/privacy-policy/">{{ getTranslation('privacyPolicy') }}</a> | 
-      <a href="/terms-of-service/">{{ getTranslation('termsOfService') }}</a>
+        <a href="{{currentLanguage.code}}/{{navbarMenu.privacyPolicy.slug[currentLanguage.code]}}/">{{ navbarMenu.privacyPolicy.name[currentLanguage.code] }}</a> | 
+      <a href="{{currentLanguage.code}}/{{navbarMenu.termsOfService.slug[currentLanguage.code]}}/">{{ navbarMenu.termsOfService.name[currentLanguage.code] }}</a>
     </p>
   </div>
 </footer>

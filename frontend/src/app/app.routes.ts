@@ -1,21 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
-import { AboutUsComponent } from './pages/about-us/about-us.component';
-import { ContactUsComponent } from './pages/contact-us/contact-us.component';
-import { ServicesComponent } from './pages/services/services.component';
-import { PricesComponent } from './pages/prices/prices.component';
-import { AppComponent } from './app.component';
-import { GalleryComponent } from './pages/gallery/gallery.component';
 import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
-import { BookingComponent } from './pages/booking/booking.component';
-import { BookingReceivedComponent } from './pages/booking-received/booking-received.component';
-import { PasswordResetComponent } from './admin/pages/password-reset/password-reset.component';
-import { PasswordResetConfirmComponent } from './admin/pages/password-reset-confirm/password-reset-confirm.component';
-import { UnauthorizedComponent } from './admin/pages/unauthorized/unauthorized.component';
-import { BlogsComponent } from './pages/blogs/blogs.component';
-import { AntalyaAirportTransferComponent } from './pages/blogs/antalya-airport-transfer/antalya-airport-transfer.component';
-import { AlanyaGazipasaAirportTransferComponent } from './pages/blogs/alanya-gazipasa-airport-transfer/alanya-gazipasa-airport-transfer.component';
-import { IstanbulAirportTransferComponent } from './pages/blogs/istanbul-airport-transfer/istanbul-airport-transfer.component';
 
 export const routes: Routes = [
     {   path: '', component: HomeComponent, data: { language: 'en' }  },
@@ -166,6 +151,7 @@ export const routes: Routes = [
     { path: 'de/bezahlbare-preise-für-flughafentransfers-in-der-türkei', loadComponent: () => import('./pages/prices/prices.component').then(m => m.PricesComponent), data: { language: 'de' }   },
     { path: 'ru/доступные-цены-на-трансфер-из-аэропорта-в-турции', loadComponent: () => import('./pages/prices/prices.component').then(m => m.PricesComponent), data: { language: 'ru' }   },
     { path: 'tr/türkiye-de-havalimanı-transferleri-için-uygun-fiyatlar', loadComponent: () => import('./pages/prices/prices.component').then(m => m.PricesComponent), data: { language: 'tr' }   },
+    
     { path: 'en/book-now-airport-transfer-in-turkey', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'en' }   },
     { path: 'de/jetzt-buchen-flughafen-transfer-in-der-türkei', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'de' }   },
     { path: 'ru/забронировать-сейчас-трансфер-из-аэропорта-в-турции', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'ru' }   },
@@ -195,6 +181,57 @@ export const routes: Routes = [
         // component: BookingReceivedComponent, 
         loadComponent: () => import('./pages/booking-received/booking-received.component').then(m => m.BookingReceivedComponent),
         data: { language: 'tr' }  
+    },
+
+
+    // PRIVACY POLICY AND TERMS OF SERVICE
+    {
+        path: 'en/privacy-policy-for-airport-private-car-transfer-in-turkey',
+        // component: PrivacyPolicyComponent,
+        loadComponent: () => import('./pages/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
+        data: { language: 'en' }
+    }, 
+    {
+        path: 'de/datenschutzrichtlinie-für-flughafen-privatwagen-transfer-in-der-türkei',
+        // component: PrivacyPolicyComponent,
+        loadComponent: () => import('./pages/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
+        data: { language: 'de' }
+    }, 
+    {
+        path: 'ru/политика-конфиденциальности-для-трансфера-частного-автомобиля-из-аэропорта-в-турции',
+        // component: PrivacyPolicyComponent,
+        loadComponent: () => import('./pages/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
+        data: { language: 'ru' }
+    }, 
+    {
+        path: 'tr/türkiye-de-havalimanı-özel-araba-transferi-için-gizlilik-politikası',
+        // component: PrivacyPolicyComponent,
+        loadComponent: () => import('./pages/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
+        data: { language: 'tr' }
+    }, 
+    {
+        path: 'en/terms-of-service-for-airport-private-car-transfer-in-turkey',
+        // component: TermsOfServiceComponent,
+        loadComponent: () => import('./pages/terms-of-service/terms-of-service.component').then(m => m.TermsOfServiceComponent),
+        data: { language: 'en' }
+    }, 
+    {
+        path: 'de/nutzungsbedingungen-für-flughafen-privatwagen-transfer-in-der-türkei',
+        // component: TermsOfServiceComponent,
+        loadComponent: () => import('./pages/terms-of-service/terms-of-service.component').then(m => m.TermsOfServiceComponent),
+        data: { language: 'de' }
+    }, 
+    {
+        path: 'ru/условия-предоставления-услуг-для-трансфера-частного-автомобиля-из-аэропорта-в-турции',
+        // component: TermsOfServiceComponent,
+        loadComponent: () => import('./pages/terms-of-service/terms-of-service.component').then(m => m.TermsOfServiceComponent),
+        data: { language: 'ru' }
+    }, 
+    {
+        path: 'tr/türkiye-de-havalimanı-özel-araba-transferi-için-hizmet-şartları',
+        // component: TermsOfServiceComponent,
+        loadComponent: () => import('./pages/terms-of-service/terms-of-service.component').then(m => m.TermsOfServiceComponent),
+        data: { language: 'tr' }
     },
 
 

@@ -125,6 +125,36 @@ export const NAVBAR_MENU: any = {
             tr: 'türkiye-havalimanı-transferi-sss'
         }
     },
+
+    privacyPolicy: {
+        name: {
+            en: 'Privacy Policy',
+            de: 'Datenschutz-Bestimmungen',
+            ru: 'Политика конфиденциальности',
+            tr: 'Gizlilik Politikası'
+        },
+        slug: {
+            en: 'privacy-policy-for-airport-private-car-transfer-in-turkey',
+            de: 'datenschutzrichtlinie-für-flughafen-privatwagen-transfer-in-der-türkei',
+            ru: 'политика-конфиденциальности-для-трансфера-частного-автомобиля-из-аэропорта-в-турции',
+            tr: 'türkiye-de-havalimanı-özel-araba-transferi-için-gizlilik-politikası'
+        }
+    },
+    termsOfService: {
+        name: {
+            en: 'Terms of Service',
+            de: 'Nutzungsbedingungen',
+            ru: 'Условия обслуживания',
+            tr: 'Hizmet Şartları'
+        },
+        slug: {
+            en: 'terms-of-service-for-airport-private-car-transfer-in-turkey',
+            de: 'nutzungsbedingungen-für-flughafen-privatwagen-transfer-in-der-türkei',
+            ru: 'условия-предоставления-услуг-для-трансфера-частного-автомобиля-из-аэропорта-в-турции',
+            tr: 'türkiye-de-havalimanı-özel-araba-transferi-için-hizmet-şartları'
+        }
+    },
+
     logo: {
         name: {
             en: 'airport-transfer-in-istanbul.webp',

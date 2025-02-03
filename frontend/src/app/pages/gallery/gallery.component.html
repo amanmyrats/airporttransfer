@@ -41,7 +41,7 @@
       <!-- Gallery Item 1 -->
        
       <a *ngFor="let image of GALLERY_IMAGES" 
-        href="{{getLargeImagePath(image, currentLanguage.code)}}/" 
+        href="{{getLargeImagePath(image, currentLanguage.code)}}" 
         data-lightbox="gallery" 
         data-title="{{getImageDataTitle(image, currentLanguage.code)}}">
         <div class="gallery-item">
