@@ -43,59 +43,59 @@ export class CtaComponent implements OnInit {
   translations: any = {
     cta: {
       title: {
-        en: 'Travel Hassle-Free with Our Premium Airport Transfer Services in Turkey',
-        de: 'Reisen Sie stressfrei mit unseren Premium-Flughafentransferservices in der Türkei',
-        ru: 'Путешествуйте без стресса с нашими премиальными услугами трансфера из аэропорта в Турции',
-        tr: 'Türkiye\'de Premium Havalimanı Transfer Hizmetlerimiz ile Stresiz Seyahat Edin'
+        en: '24/7 Private Airport Transfers in Turkey – Hassle-Free & Premium Rides to Antalya, Istanbul, Alanya and more.', 
+        de: '24/7 Privatflughafentransfers in der Türkei – Stressfreie und Premium-Fahrten nach Antalya, Istanbul, Alanya und mehr.',
+        ru: '24/7 Частные трансферы из аэропорта в Турции – Беззаботные и премиальные поездки в Анталью, Стамбул, Аланию и другие.',
+        tr: 'Türkiye\'de 24/7 Özel Havalimanı Transferleri – Antalya, İstanbul, Alanya ve daha fazlasına Sorunsuz ve Premium Sürüşler.'
       }, 
       description: {
-        en: 'Reliable, comfortable, and on-time transfers from Turkey\'s major airports to your destination. Book now and enjoy a stress-free travel experience.', 
-        de: 'Zuverlässige, komfortable und pünktliche Transfers von den wichtigsten Flughäfen der Türkei zu Ihrem Zielort. Buchen Sie jetzt und genießen Sie eine stressfreie Reiseerfahrung.',
-        ru: 'Надежные, комфортабельные и своевременные трансферы из крупнейших аэропортов Турции в ваш пункт назначения. Забронируйте сейчас и наслаждайтесь беззаботным путешествием.',
-        tr: 'Türkiye\'nin önde gelen havalimanlarından varış noktanıza güvenilir, konforlu ve zamanında transferler. Şimdi rezervasyon yapın ve stresiz bir seyahat deneyiminin tadını çıkarın.'
+        en: 'Enjoy reliable, comfortable, and on-time 24/7 private airport transfers from Turkey’s major airports, including Istanbul, Antalya, and Alanya. Book now for a hassle-free and stress-free ride to your destination!', 
+        de: 'Genießen Sie zuverlässige, komfortable und pünktliche 24/7 Privatflughafentransfers von den wichtigsten Flughäfen der Türkei, darunter Istanbul, Antalya und Alanya. Buchen Sie jetzt für eine stressfreie und entspannte Fahrt zu Ihrem Ziel!',
+        ru: 'Наслаждайтесь надежными, комфортными и своевременными 24/7 частными трансферами из аэропортов Турции, включая Стамбул, Анталью и Аланию. Бронируйте сейчас для беззаботной и безстрессовой поездки к вашему пункту назначения!',
+        tr: 'Türkiye\'nin önde gelen havalimanlarından, İstanbul, Antalya ve Alanya dahil olmak üzere güvenilir, konforlu ve zamanında 24/7 özel havalimanı transferlerinin keyfini çıkarın. Hedefinize stresiz ve sorunsuz bir şekilde ulaşmak için şimdi rezervasyon yapın!'
       },
       button: {
-        en: 'Book Your Transfer Now',
-        de: 'Buchen Sie jetzt Ihren Transfer',
-        ru: 'Забронируйте свой трансфер сейчас',
-        tr: 'Transferinizi Şimdi Rezerve Edin'
+        en: 'Book Your 24/7 Airport Transfer', 
+        de: 'Buchen Sie Ihren 24/7 Flughafentransfer',
+        ru: 'Забронируйте ваш 24/7 аэропорт трансфер',
+        tr: '7/24 Havalimanı Transferinizi Rezerve Edin'
       }
     }, 
     usp: {
       header: {
-        en: 'Why Choose Us?',
-        de: 'Warum Uns Wählen?',
-        ru: 'Почему выбрать нас?',
-        tr: 'Neden Bizi Seçmelisiniz?'
+        en: 'Why Choose Our 24/7 Private Airport Transfers in Turkey?',
+        de: 'Warum sollten Sie sich für unsere 24/7 Privatflughafentransfers in der Türkei entscheiden?',
+        ru: 'Почему выбирать наши 24/7 частные трансферы из аэропорта в Турции?',
+        tr: 'Neden Türkiye\'deki 24/7 Özel Havalimanı Transferlerimizi Seçmelisiniz?'
       },
       items: [
         // Reliable Service
         {
           image: {
             name: {
-              en: 'reliable-airport-transfer-antalya.webp',
-              de: 'zuverlaessiger-flughafentransfer-antalya.webp',
-              ru: 'надежный-аэропорт-трансфер-анталья.webp',
-              tr: 'guvenilir-havalimani-transfer-antalya.webp'
+              en: 'reliable-24-7-private-airport-transfer-antalya.webp',
+              de: 'zuverlassiger-24-7-privater-flughafentransfer-antalya.webp',
+              ru: 'надежный-24-7-частный-трансфер-из-аэропорта-анталья.webp',
+              tr: 'guvenilir-7-24-ozel-havalimani-transfer-antalya.webp'
             }, 
             alt: {
-              en: 'Reliable Airport Transfer Antalya',
-              de: 'Zuverlässiger Flughafentransfer Antalya',
-              ru: 'Надежный аэропорт трансфер Анталья',
-              tr: 'Güvenilir Havalimanı Transfer Antalya'
+              en: 'Reliable 24/7 Private Airport Transfer Antalya',
+              de: 'Zuverlässiger 24/7 Privater Flughafentransfer Antalya',
+              ru: 'Надежный 24/7 Частный Трансфер из Аэропорта Анталья',
+              tr: 'Güvenilir 7/24 Özel Havalimanı Transfer Antalya'
             }
           }, 
           title: {
-            en: 'Reliable Service',
-            de: 'Zuverlässiger Service',
-            ru: 'Надежное обслуживание',
-            tr: 'Güvenilir Hizmet'
+            en: 'Reliable Private Airport Transfer Service',
+            de: 'Zuverlässiger Privater Flughafentransfer',
+            ru: 'Надежный частный трансфер из аэропорта',
+            tr: 'Güvenilir Özel Havalimanı Transfer Hizmeti'
           },
           description: {
-            en: 'We provide reliable airport transfer services in Turkey. Our professional drivers will ensure you reach your destination on time.',
-            de: 'Wir bieten zuverlässige Flughafentransferservices in der Türkei an. Unsere professionellen Fahrer sorgen dafür, dass Sie pünktlich Ihr Ziel erreichen.',
-            ru: 'Мы предоставляем надежные услуги трансфера из аэропорта в Турции. Наши профессиональные водители обеспечат своевременное достижение вашего пункта назначения.',
-            tr: 'Türkiye\'de güvenilir havalimanı transfer hizmetleri sunuyoruz. Profesyonel sürücülerimiz, varış noktanıza zamanında ulaşmanızı sağlayacaktır.'
+            en: 'Enjoy dependable and on-time private airport transfers across Turkey, including Istanbul, Antalya, and Alanya. Our professional drivers ensure a smooth journey from the airport to your destination.',
+            de: 'Genießen Sie zuverlässige und pünktliche private Flughafentransfers in der Türkei, einschließlich Istanbul, Antalya und Alanya. Unsere professionellen Fahrer sorgen für eine reibungslose Reise vom Flughafen zu Ihrem Ziel.',
+            ru: 'Наслаждайтесь надежными и своевременными частными трансферами из аэропорта по всей Турции, включая Стамбул, Анталью и Аланию. Наши профессиональные водители обеспечивают плавное путешествие от аэропорта до вашего пункта назначения.',
+            tr: 'İstanbul, Antalya ve Alanya dahil olmak üzere Türkiye genelinde güvenilir ve zamanında özel havalimanı transferlerinin keyfini çıkarın. Profesyonel sürücülerimiz, havalimanından varış noktanıza kadar sorunsuz bir yolculuk sağlar.'
           }
         },
 
@@ -103,29 +103,29 @@ export class CtaComponent implements OnInit {
         {
           image: {
             name: {
-              en: 'comfortable-airport-transfer-istanbul.webp',
-              de: 'komfortabler-flughafentransfer-istanbul.webp',
-              ru: 'комфортабельный-аэропорт-трансфер-истанбул.webp',
-              tr: 'konforlu-havalimani-transfer-istanbul.webp'
+              en: 'comfortable-24-7-private-airport-transfer-istanbul.webp',
+              de: 'komfortabler-24-7-privater-flughafentransfer-istanbul.webp',
+              ru: 'удобный-24-7-частный-трансфер-из-аэропорта-стамбул.webp',
+              tr: 'konforlu-7-24-ozel-havalimani-transfer-istanbul.webp'
             }, 
             alt: {
-              en: 'Comfortable Airport Transfer istanbul',
-              de: 'Komfortabler Flughafentransfer istanbul',
-              ru: 'Комфортабельный аэропорт трансфер истанбул',
-              tr: 'Konforlu Havalimanı Transfer istanbul'
+              en: 'Comfortable 24/7 Private Airport Transfer istanbul',
+              de: 'Komfortabler 24/7 Privater Flughafentransfer Istanbul',
+              ru: 'Удобный 24/7 Частный Трансфер из Аэропорта Стамбул',
+              tr: 'Konforlu 7/24 Özel Havalimanı Transfer İstanbul'
             }
           }, 
           title: {
-            en: 'Transparent Pricing',
-            de: 'Transparente Preisgestaltung',
-            ru: 'Прозрачная ценовая политика',
-            tr: 'Şeffaf Fiyatlandırma'
+            en: 'Transparent & Fixed Pricing',
+            de: 'Transparente und feste Preise',
+            ru: 'Прозрачная и фиксированная цена',
+            tr: 'Şeffaf ve Sabit Fiyatlar'
           },
           description: {
-            en: 'No hidden fees, fixed and fair prices for every trip.',
-            de: 'Keine versteckten Gebühren, feste und faire Preise für jede Fahrt.',
-            ru: 'Нет скрытых платежей, фиксированные и справедливые цены на каждую поездку.',
-            tr: 'Her seyahat için gizli ücretler yok, sabit ve adil fiyatlar.'
+            en: 'No hidden fees! We offer clear, fixed pricing for all private airport transfers in Turkey. Get affordable, hassle-free rides with no surprises.',
+            de: 'Keine versteckten Gebühren! Wir bieten klare, feste Preise für alle privaten Flughafentransfers in der Türkei. Erhalten Sie erschwingliche, stressfreie Fahrten ohne Überraschungen.',
+            ru: 'Нет скрытых платежей! Мы предлагаем четкие, фиксированные цены на все частные трансферы из аэропорта в Турции. Получите доступные, беззаботные поездки без сюрпризов.',
+            tr: 'Gizli ücret yok! Türkiye\'deki tüm özel havalimanı transferleri için net, sabit fiyatlar sunuyoruz. Sürpriz olmadan uygun fiyatlı, sorunsuz sürüşler alın.'
           }
         },
 
@@ -134,29 +134,29 @@ export class CtaComponent implements OnInit {
           image: {
             name: {
 
-              en: 'luxury-airport-transfer-alanya-gazipasa.webp',
-              de: 'luxus-flughafentransfer-alanya-gazipasa.webp',
-              ru: 'роскошный-аэропорт-трансфер-аланья-газипаша.webp',
-              tr: 'lüks-havalimani-transfer-alanya-gazipasa.webp'
+              en: 'luxury-24-7-private-airport-transfer-alanya-gazipasa.webp',
+              de: 'luxus-24-7-privater-flughafentransfer-alanya-gazipasa.webp',
+              ru: 'роскошный-24-7-частный-трансфер-из-аэропорта-аланья-газипаша.webp',
+              tr: 'lüks-7-24-ozel-havalimani-transfer-alanya-gazipasa.webp'
             }, 
             alt: {
-              en: 'Luxury Airport Transfer Alanya Gazipasa',
-              de: 'Luxus Flughafentransfer Alanya Gazipasa',
-              ru: 'Роскошный аэропорт трансфер Аланья Газипаша',
-              tr: 'Lüks Havalimanı Transfer Alanya Gazipasa'
+              en: 'Luxury 24/7 Private Airport Transfer Alanya Gazipasa',
+              de: 'Luxus 24/7 Privater Flughafentransfer Alanya Gazipasa',
+              ru: 'Роскошный 24/7 Частный Трансфер из Аэропорта Аланья Газипаша',
+              tr: 'Lüks 7/24 Özel Havalimanı Transfer Alanya Gazipasa'
             }
           },
           title: {
-            en: 'Luxury Vehicles',
+            en: 'Luxury & Comfortable Vehicles',
             de: 'Luxusfahrzeuge',
-            ru: 'Роскошные автомобили',
-            tr: 'Lüks Araçlar'
+            ru: 'Роскошные и комфортные автомобили',
+            tr: 'Lüks ve Konforlu Araçlar'
           }, 
           description: {
-            en: 'Travel in style with our modern and well-maintained fleet.',
-            de: 'Reisen Sie stilvoll mit unserer modernen und gepflegten Flotte.',
-            ru: 'Путешествуйте с комфортом на нашем современном и ухоженном автопарке.',
-            tr: 'Modern ve bakımlı filomuzla şıklık içinde seyahat edin.'
+            en: 'Travel in style and comfort with our modern, well-maintained fleet of private airport transfer vehicles. Choose from luxury sedans, spacious minivans, and VIP options.', 
+            de: 'Reisen Sie mit Stil und Komfort mit unserer modernen, gepflegten Flotte von privaten Flughafentransportfahrzeugen. Wählen Sie zwischen Luxuslimousinen, geräumigen Minivans und VIP-Optionen.',
+            ru: 'Путешествуйте с комфортом и стилем с нашим современным, ухоженным парком частных транспортных средств из аэропорта. Выбирайте из роскошных седанов, просторных минивэнов и VIP-вариантов.',
+            tr: 'Modern, bakımlı özel havalimanı transfer araç filomuzla stil ve konfor içinde seyahat edin. Lüks sedanlar, geniş minivanlar ve VIP seçenekler arasından seçim yapın.'
           }
         }, 
 
@@ -164,29 +164,29 @@ export class CtaComponent implements OnInit {
         {
           image: {
             name: {
-              en: 'professional-airport-transfer-bodrum-milas.webp',
-              de: 'professioneller-flughafentransfer-bodrum-milas.webp',
-              ru: 'профессиональный-аэропорт-трансфер-бодрум-милас.webp',
-              tr: 'profesyonel-havalimani-transfer-bodrum-milas.webp'
+              en: 'professional-24-7-private-airport-transfer-bodrum-milas.webp',
+              de: 'professioneller-24-7-privater-flughafentransfer-bodrum-milas.webp',
+              ru: 'профессиональный-24-7-частный-трансфер-из-аэропорта-бодрум-милас.webp',
+              tr: 'profesyonel-7-24-ozel-havalimani-transfer-bodrum-milas.webp'
             },
             alt: {
-              en: 'Professional Airport Transfer Bodrum Milas',
-              de: 'Professioneller Flughafentransfer Bodrum Milas',
-              ru: 'Профессиональный аэропорт трансфер Бодрум Милас',
-              tr: 'Profesyonel Havalimanı Transfer Bodrum Milas'
+              en: 'Professional 24/7 Private Airport Transfer Bodrum Milas',
+              de: 'Professioneller 24/7 Privater Flughafentransfer Bodrum Milas',
+              ru: 'Профессиональный 24/7 Частный Трансфер из Аэропорта Бодрум Милас',
+              tr: 'Profesyonel 7/24 Özel Havalimanı Transfer Bodrum Milas'
             }
           },
           title: {
-            en: 'Professional Drivers',
-            de: 'Professionelle Fahrer',
-            ru: 'Профессиональные водители',
-            tr: 'Profesyonel Sürücüler'
+            en: 'Professional & Experienced Drivers',
+            de: 'Professionelle und erfahrene Fahrer',
+            ru: 'Профессиональные и опытные водители',
+            tr: 'Profesyonel ve Deneyimli Sürücüler'
           },
           description: {
-            en: 'Our experienced drivers will ensure a safe and comfortable journey.',
-            de: 'Unsere erfahrenen Fahrer sorgen für eine sichere und komfortable Reise.',
-            ru: 'Наши опытные водители обеспечат безопасное и комфортное путешествие.',
-            tr: 'Deneyimli sürücülerimiz güvenli ve konforlu bir yolculuk sağlayacaktır.'
+            en: 'Our licensed and highly trained drivers provide a safe, smooth, and comfortable airport transfer experience in Turkey. Relax while we take care of your journey!',
+            de: 'Unsere lizenzierten und hochqualifizierten Fahrer bieten ein sicheres, reibungsloses und komfortables Flughafentransfererlebnis in der Türkei. Entspannen Sie sich, während wir uns um Ihre Reise kümmern!',
+            ru: 'Наши лицензированные и высококвалифицированные водители обеспечивают безопасный, плавный и комфортный опыт трансфера из аэропорта в Турции. Расслабьтесь, пока мы позаботимся о вашем путешествии!',
+            tr: 'Lisanslı ve yüksek eğitimli sürücülerimiz, Türkiye\'de güvenli, sorunsuz ve konforlu bir havalimanı transfer deneyimi sunar. Yolculuğunuzla biz ilgilenirken rahatlayın!'
           }
         }, 
 
@@ -194,29 +194,29 @@ export class CtaComponent implements OnInit {
         {
           image: {
             name: {
-              en: '24-7-airport-transfer-izmir-adnan-menderes.webp', 
-              de: '24-7-flughafentransfer-izmir-adnan-menderes.webp',
-              ru: '24-7-аэропорт-трансфер-измир-аднан-мендерес.webp',
-              tr: '24-7-havalimani-transfer-izmir-adnan-menderes.webp'
+              en: '24-7-private-airport-transfer-izmir-adnan-menderes.webp', 
+              de: '24-7-privater-flughafentransfer-izmir-adnan-menderes.webp',
+              ru: '24-7-частный-трансфер-из-аэропорта-измир-аднан-мендерес.webp',
+              tr: '7-24-ozel-havalimani-transfer-izmir-adnan-menderes.webp'
             }, 
             alt: {
-              en: '24/7 Airport Transfer Izmir Adnan Menderes',
-              de: '24/7 Flughafentransfer Izmir Adnan Menderes',
-              ru: '24/7 Аэропорт трансфер Измир Аднан Мендерес',
-              tr: '24/7 Havalimanı Transfer İzmir Adnan Menderes'
+              en: '24/7 Private Airport Transfer Izmir Adnan Menderes',
+              de: '24/7 Privater Flughafentransfer Izmir Adnan Menderes',
+              ru: '24/7 Частный Трансфер из Аэропорта Измир Аднан Мендерес',
+              tr: '7/24 Özel Havalimanı Transferi İzmir Adnan Menderes'
             }
           }, 
           title: {
-            en: '24/7 Support',
-            de: '24/7 Unterstützung',
-            ru: '24/7 Поддержка',
-            tr: '24/7 Destek'
+            en: '24/7 Customer Support',
+            de: '24/7 Kundensupport',
+            ru: 'Круглосуточная 24/7 поддержка клиентов',
+            tr: '7/24 Müşteri Desteği'
           },
           description: {
-            en: 'Our customer service team is available around the clock to assist you with any queries.',
-            de: 'Unser Kundenserviceteam steht rund um die Uhr zur Verfügung, um Ihnen bei Fragen behilflich zu sein.',
-            ru: 'Наша команда обслуживания клиентов доступна круглосуточно, чтобы помочь вам с любыми вопросами.',
-            tr: 'Müşteri hizmetleri ekibimiz, herhangi bir sorunuzda size yardımcı olmak için günün her saati mevcuttur.'
+            en: 'Need assistance? Our support team is available 24/7 to help with bookings, last-minute changes, and travel inquiries. Your seamless airport transfer experience is our priority!',
+            de: 'Benötigen Sie Hilfe? Unser Support-Team steht Ihnen rund um die Uhr zur Verfügung, um bei Buchungen, kurzfristigen Änderungen und Reiseanfragen zu helfen. Ihr reibungsloses Flughafentransfererlebnis hat für uns oberste Priorität!',
+            ru: 'Нужна помощь? Наша служба поддержки доступна круглосуточно для помощи в бронировании, внезапных изменений и запросов о поездке. Ваше бесперебойное аэропортовое трансферное впечатление является нашим приоритетом!',
+            tr: 'Yardıma mı ihtiyacınız var? Destek ekibimiz, rezervasyonlar, son dakika değişiklikleri ve seyahat soruları konusunda yardımcı olmak için 7/24 hizmetinizdedir. Sorunsuz havalimanı transfer deneyiminiz bizim önceliğimizdir!'
           }
         }
       ]

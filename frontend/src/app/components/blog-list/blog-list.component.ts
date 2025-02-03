@@ -33,7 +33,7 @@ export class BlogListComponent  implements OnInit {
     if (blog.image && blog.image.name && blog.image.name[lang.code]!) {
       return blog.image.name[lang.code];
     } else {
-      return 'airport-transfer-turkey.jpg';
+      return '24-7-private-airport-transfer-turkey.jpg';
     }
   }
 
@@ -41,7 +41,7 @@ export class BlogListComponent  implements OnInit {
     if (blog.image && blog.image.alt && blog.image.alt[lang.code]!) {
       return blog.image.alt[lang.code];
     } else {
-      return 'Airport Transfer Turkey';
+      return '24/7 Private Airport Transfer Turkey';
     }
   }
 
@@ -49,7 +49,7 @@ export class BlogListComponent  implements OnInit {
     if (blog.title && blog.title[lang.code]) {
       return blog.title[lang.code]
     } else {
-      return 'Airport Transfer in Turkey';
+      return '24/7 Private Airport Transfer in Turkey';
     }
   }
 
@@ -57,7 +57,7 @@ export class BlogListComponent  implements OnInit {
     if (blog.excerpt && blog.excerpt[lang.code]) {
       return blog.excerpt[lang.code];
     } else {
-      return 'Discover how to make your airport transfer in Turkey stress-free and efficient. Learn why choosing the right service is crucial for your travel experience.'
+      return 'Discover how to make your 24/7 private airport transfer in Turkey stress-free and efficient. Learn why choosing the right service is crucial for your travel experience.'
     }
   }
 
@@ -87,10 +87,10 @@ export class BlogListComponent  implements OnInit {
   translations: any = {
     blog: {
       title: {
-        en: 'Airport Transfers in Turkey, Istanbul, Antalya, Alanya',
-        de: 'Flughafentransfers in der Türkei, Istanbul, Antalya, Alanya',
-        tr: 'Türkiye, İstanbul, Antalya, Alanya Havalimanı Transferleri',
-        ru: 'Трансферы из аэропорта в Турции, Стамбул, Анталья, Аланья',
+        en: 'Blogs About: 24/7 Private Airport Transfers in Turkey, Istanbul, Antalya, Alanya',
+        de: 'Blogs Über: 24/7 Private Flughafentransfers in der Türkei, Istanbul, Antalya, Alanya',
+        ru: 'Блоги о: 24/7 Частные трансферы из аэропорта в Турции, Стамбуле, Анталии, Аланье',
+        tr: 'Türkiye, İstanbul, Antalya, Alanya\'da 7/24 Özel Havalimanı Transferleri Hakkında Bloglar',
       },
     },
   };

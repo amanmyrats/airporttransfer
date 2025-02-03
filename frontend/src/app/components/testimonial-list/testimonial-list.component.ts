@@ -14,35 +14,35 @@ export class TestimonialListComponent {
 
   testimonials: any[] = [
     {
-      text: 'Booking our airport transfer from Antalya Airport to our hotel in Alanya was a breeze. The driver was punctual, professional, and made the ride so comfortable. I\'ll definitely use this service again for stress-free transfers in Turkey!',
+      text: 'Stress-Free Private Airport Transfer from Antalya to Alanya. Booking our private airport transfer from Antalya Airport to Alanya was a breeze! The driver was punctual, professional, and the ride was incredibly comfortable. I’ll definitely use this service again for stress-free airport transfers in Turkey!',
       author: 'Sarah J., United Kingdom',
     },
     {
-      text: 'I needed a transfer from Istanbul Airport to Taksim late at night, and the service exceeded my expectations. The car was spotless, the driver was courteous, and everything felt premium. Highly recommend this company for Istanbul airport transfers!',
+      text: 'Premium 24/7 Private Airport Transfer in Istanbul. I needed a late-night transfer from Istanbul Airport to Taksim, and the service exceeded my expectations. The luxury car was spotless, the driver was courteous, and everything felt first-class. Highly recommend for Istanbul private airport transfers!',
       author: 'David L., United States',
     },
     {
-      text: 'Der Flughafentransfer vom Flughafen Antalya nach Side war einfach perfekt. Der Fahrer war freundlich, das Auto komfortabel, und wir haben den Strandurlaub stressfrei gestartet. Ich kann diesen Service nur empfehlen!',
+      text: 'Bequemer & Pünktlicher Flughafentransfer von Antalya nach Side. Unser privater Flughafentransfer vom Antalya Flughafen nach Side war einfach perfekt! Der Fahrer war freundlich, professionell, das Auto komfortabel, und wir konnten unseren Strandurlaub stressfrei beginnen. Sehr empfehlenswert für Antalya Flughafentransfers!',
       author: 'Lisa M., Deutschland',
     },
     {
-      text: 'Unser Transfer vom Flughafen Bodrum Milas nach Bodrum Zentrum verlief reibungslos. Es war ein sehr professioneller und bequemer Service, genau das, was man nach einem langen Flug braucht. Vielen Dank!',
+      text: 'Luxus-Flughafentransfer vom Bodrum Flughafen ins Zentrum. Unser Transfer vom Bodrum Milas Flughafen nach Bodrum Zentrum verlief reibungslos. Sehr professioneller und bequemer Service, genau das, was man nach einem langen Flug braucht. Danke für den besten Bodrum Flughafentransfer!',
       author: 'Markus W., Deutschland',
     },
     {
-      text: 'Заказывали трансфер из аэропорта Сабиха Гёкчен в район Султанахмет. Машина приехала вовремя, водитель был очень вежливый, а поездка комфортной. Рекомендую всем, кто ищет надёжный трансфер в Стамбуле!',
+      text: 'Лучший частный трансфер из аэропорта Сабиха Гёкчен в Султанахмет. Заказывали частный трансфер из аэропорта Сабиха Гёкчен в Султанахмет. Машина приехала вовремя, водитель был очень вежливый, а поездка комфортной. Рекомендую всем, кто ищет надежный и удобный трансфер в Стамбуле!',
       author: 'Ольга П., Россия',
     },
     {
-      text: 'Трансфер из аэропорта Анталии в Аланью превзошел все ожидания! Чистый автомобиль, удобное сидение и дружелюбный водитель. Идеальный выбор для путешествий по Турции.',
+      text: 'Премиальный трансфер из аэропорта Анталии в Аланью. Частный трансфер из аэропорта Анталии в Аланью превзошел все ожидания! Чистый автомобиль, удобные сиденья, дружелюбный водитель. Идеальный выбор для путешествий по Турции.',
       author: 'Иван С., Россия',
     },
     {
-      text: 'Antalya Havalimanı’ndan Alanya’daki otelimize transferimiz harikaydı. Araç tertemizdi, şoför tam zamanında geldi ve oldukça nazikti. Kesinlikle tekrar tercih edeceğim bir hizmet!',
+      text: 'Antalya Havalimanı’ndan Alanya’ya 24/7 Özel Transfer. Antalya Havalimanı’ndan Alanya’daki otelimize transferimiz harikaydı. Araç tertemizdi, şoför tam zamanında geldi ve oldukça nazikti. Kesinlikle tekrar tercih edeceğim bir hizmet!',
       author: 'Elif K., Türkiye',
     },
     {
-      text: 'Bodrum Milas Havalimanı’ndan Bodrum merkezine olan transferimiz çok keyifli geçti. Yolculuk boyunca çok rahat ettik ve hizmet mükemmeldi. Teşekkür ederiz!',
+      text: 'Bodrum Havalimanı’ndan Merkeze Konforlu ve Lüks Transfer. Bodrum Milas Havalimanı’ndan Bodrum merkezine olan transferimiz çok keyifli geçti. Yolculuk boyunca çok rahat ettik ve hizmet mükemmeldi. Teşekkür ederiz!',
       author: 'Ahmet D., Türkiye',
     },
   ];
