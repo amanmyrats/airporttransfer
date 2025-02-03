@@ -46,6 +46,7 @@ export class BannerComponent implements OnInit {
     return value[this.currentLanguage.code] || key;
   }
 
+  
   translations: any = {
     banner: {
       title: {
