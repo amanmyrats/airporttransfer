@@ -39,21 +39,21 @@ export class AntalyaAirportTransferComponent {
   setMetaTags(langCode: string): void {
     const metaTags: any = {
       en: {
-        title: 'Antalya Airport Transfer Guide',
-        description: 'How to go from Antalya Airport to your destination? Discover affordable and reliable transfers in Antalya.',
+        title: '24/7 Private Antalya Airport Transfer Guide',
+        description: 'How to go from Antalya Airport to your destination? Discover affordable and reliable 24/7 private transfers in Antalya.',
       },
       de: {
-        title: 'Antalya Flughafentransfer-Leitfaden',
-        description: 'Wie komme ich vom Antalya Flughafen zu meinem Ziel? Entdecken Sie günstige und zuverlässige Transfers in Antalya.',
+        title: "24/7 Privater Flughafentransfer-Guide für Antalya",
+        description: "Wie kommt man vom Flughafen Antalya zu Ihrem Ziel? Entdecken Sie erschwingliche und zuverlässige 24/7 private Transfers in Antalya."
       },
       ru: {
-        title: 'Гид по трансферам из аэропорта Анталии',
-        description: 'Как добраться из аэропорта Анталии до вашего места назначения? Узнайте о доступных и надежных трансферах в Анталии.',
+        title: "Гид по круглосуточным частным трансферам из аэропорта Анталия",
+        description: "Как добраться из аэропорта Анталии до вашего места назначения? Откройте для себя доступные и надежные круглосуточные частные трансферы в Анталии."
       },
       tr: {
-        title: 'Antalya Havalimanı Transfer Rehberi',
-        description: 'Antalya Havalimanı’ndan gideceğiniz yere nasıl ulaşacağınızı öğrenin. Uygun ve güvenilir transferler için keşfedin.',
-      },
+        title: "7/24 Özel Antalya Havalimanı Transfer Rehberi",
+        description: "Antalya Havalimanı'ndan varış noktanıza nasıl gidilir? Antalya'da uygun fiyatlı ve güvenilir 7/24 özel transferleri keşfedin."
+      }
     };
     
     const meta: any = metaTags[langCode] || metaTags['en'];

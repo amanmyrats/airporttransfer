@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
+import { SOCIAL_ICONS } from '../../constants/social.constants';
 
 @Component({
   selector: 'app-footer',
@@ -10,6 +11,7 @@ import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent implements OnInit {
+  socialIcons = SOCIAL_ICONS;
   navbarMenu = NAVBAR_MENU;
   private languageService!: LanguageService;
   

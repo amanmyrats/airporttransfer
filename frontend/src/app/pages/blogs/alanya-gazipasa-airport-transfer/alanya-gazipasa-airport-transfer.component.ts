@@ -40,21 +40,21 @@ export class AlanyaGazipasaAirportTransferComponent {
   setMetaTags(langCode: string): void {
     const metaTags: any = {
       en: {
-        title: 'Alanya Gazipasa Airport Transfer Guide',
-        description: 'How to go from Gazipasa Airport to Alanya? Affordable and reliable airport transfers for a seamless journey.',
+        title: 'Alanya Gazipasa 24/7 Private Airport Transfer Guide',
+        description: 'How to go from Gazipasa Airport to Alanya? Affordable and reliable 24/7 private airport transfers for a seamless journey.',
       },
       de: {
-        title: 'Alanya Gazipasa Flughafentransfer-Leitfaden',
-        description: 'Wie komme ich vom Gazipasa Flughafen nach Alanya? Günstige und zuverlässige Flughafentransfers für eine reibungslose Reise.',
+    title: "Alanya Gazipaşa 24/7 Privater Flughafentransfer-Leitfaden",
+    description: "Wie kommt man vom Flughafen Gazipaşa nach Alanya? Günstige und zuverlässige 24/7 private Flughafentransfers für eine reibungslose Reise."
       },
       ru: {
-        title: 'Гид по трансферам из аэропорта Газипаша в Аланью',
-        description: 'Как добраться из аэропорта Газипаша в Аланью? Доступные и надежные трансферы для комфортного путешествия.',
+        title: "Гид по круглосуточным частным трансферам из аэропорта Газипаша в Аланью",
+        description: "Как добраться из аэропорта Газипаша в Аланию? Доступные и надежные круглосуточные частные трансферы из аэропорта для комфортного путешествия."
       },
       tr: {
-        title: 'Alanya Gazipaşa Havalimanı Transfer Rehberi',
-        description: 'Gazipaşa Havalimanı’ndan Alanya’ya nasıl gidilir? Uygun ve güvenilir havalimanı transferleri için keşfedin.',
-      },
+        title: "Alanya Gazipaşa 7/24 Özel Havalimanı Transfer Rehberi",
+        description: "Gazipaşa Havalimanı'ndan Alanya'ya nasıl gidilir? Kesintisiz bir yolculuk için uygun fiyatlı ve güvenilir 7/24 özel havalimanı transferleri."
+      }
     };
     
     const meta: any = metaTags[langCode] || metaTags['en'];

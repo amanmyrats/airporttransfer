@@ -38,21 +38,21 @@ export class PrivacyPolicyComponent implements OnInit {
   setMetaTags(langCode: string): void {
     const metaTags: any = {
       en: {
-        title: 'Privacy Policy for Airport Private Car Transfers Antalya, Istanbul, Alanya',
-        description: 'Read our privacy policy for airport private car transfers in Antalya, Istanbul, and Alanya. Learn how we protect your data and information.',
+        title: 'Privacy Policy for 24/7 Private Private Car Airport Transfers Antalya, Istanbul, Alanya',
+        description: 'Read our privacy policy for 24/7 private car airport transfers in Antalya, Istanbul, and Alanya. Learn how we protect your data and information.',
       },
       de: {
-        title: 'Datenschutzrichtlinie für Flughafen-Privatwagen-Transfers Antalya, Istanbul, Alanya',
-        description: 'Lesen Sie unsere Datenschutzrichtlinie für Flughafen-Privatwagen-Transfers in Antalya, Istanbul und Alanya. Erfahren Sie, wie wir Ihre Daten und Informationen schützen.',
+        title: "Beste 24/7 private Flughafentransfers in der Türkei | Antalya, Istanbul & mehr",
+        description: "Erschwingliche und zuverlässige 24/7 private Flughafentransfers in der Türkei. Abdeckung von Antalya, Istanbul, Alanya, Izmir und mehr. Buchen Sie jetzt für eine reibungslose Reise!"
       },
       ru: {
-        title: 'Политика конфиденциальности для частных автомобильных трансферов из аэропорта Анталия, Стамбул, Аланья',
-        description: 'Ознакомьтесь с нашей политикой конфиденциальности для частных автомобильных трансферов из аэропорта в Анталии, Стамбуле и Аланье. Узнайте, как мы защищаем ваши данные и информацию.',
+        title: "Лучшие 24/7 частные трансферы из аэропорта в Турции | Анталия, Стамбул и другие",
+        description: "Доступные и надежные 24/7 частные трансферы из аэропорта в Турции. Охватываем Анталию, Стамбул, Аланью, Измир и другие города. Забронируйте сейчас для комфортного путешествия!"
       },
       tr: {
-        title: 'Antalya, İstanbul, Alanya Havalimanı Özel Araç Transferleri için Gizlilik Politikası',
-        description: 'Antalya, İstanbul ve Alanya havalimanı özel araç transferleri için gizlilik politikamızı okuyun. Verilerinizi ve bilgilerinizi nasıl koruduğumuzu öğrenin.',
-      },
+        title: "Türkiye'deki En İyi 7/24 Özel Havalimanı Transfer Hizmetleri | Antalya, İstanbul ve Daha Fazlası",
+        description: "Türkiye'de uygun fiyatlı ve güvenilir 7/24 özel havalimanı transfer hizmetleri. Antalya, İstanbul, Alanya, İzmir ve daha fazlasını kapsıyor. Sorunsuz bir yolculuk için hemen rezervasyon yapın!"
+      }
     };
 
     const meta: any = metaTags[langCode] || metaTags['en'];

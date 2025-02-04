@@ -38,20 +38,20 @@ export class TermsOfServiceComponent implements OnInit {
   setMetaTags(langCode: string): void {
     const metaTags: any = {
       en: {
-        title: 'Terms of Service for Airport Private Car Transfers in Turkey',
-        description: 'Read our terms of service for airport private car transfers in Turkey. Learn about our policies and conditions for booking with us.',
+        title: 'Terms of Service for 24/7 Airport Private Car Transfers in Turkey',
+        description: 'Read our terms of service for 24/7 airport private car transfers in Turkey. Learn about our policies and conditions for booking with us.',
       },
       de: {
-        title: 'Nutzungsbedingungen für Flughafen-Privatwagen-Transfers in der Türkei',
-        description: 'Lesen Sie unsere Nutzungsbedingungen für Flughafen-Privatwagen-Transfers in der Türkei. Erfahren Sie mehr über unsere Richtlinien und Bedingungen für die Buchung bei uns.',
+        title: 'Nutzungsbedingungen für 24/7 Flughafen-Privatwagen-Transfers in der Türkei',
+        description: 'Lesen Sie unsere Nutzungsbedingungen für 24/7 Flughafen-Privatwagen-Transfers in der Türkei. Erfahren Sie mehr über unsere Richtlinien und Bedingungen für die Buchung bei uns.',
       },
       ru: {
-        title: 'Условия обслуживания для частных автомобильных трансферов из аэропорта в Турции',
-        description: 'Ознакомьтесь с нашими условиями обслуживания для частных автомобильных трансферов из аэропорта в Турции. Узнайте о наших политиках и условиях бронирования у нас.',
+        title: 'Условия обслуживания для 24/7 частных автомобильных трансферов из аэропорта в Турции',
+        description: 'Ознакомьтесь с нашими условиями обслуживания для 24/7 частных автомобильных трансферов из аэропорта в Турции. Узнайте о наших политиках и условиях бронирования у нас.',
       },
       tr: {
-        title: 'Türkiye’de Havalimanı Özel Araç Transferleri için Hizmet Şartları',
-        description: 'Türkiye’de havalimanı özel araç transferleri için hizmet şartlarımızı okuyun. Bizimle rezervasyon yapma politikalarımız ve koşullarımız hakkında bilgi edinin.',
+        title: 'Türkiye’de 24/7 Havalimanı Özel Araç Transferleri için Hizmet Şartları',
+        description: 'Türkiye’de 24/7 havalimanı özel araç transferleri için hizmet şartlarımızı okuyun. Bizimle rezervasyon yapma politikalarımız ve koşullarımız hakkında bilgi edinin.',
       },
     };
 

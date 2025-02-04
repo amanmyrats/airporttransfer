@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
@@ -7,6 +7,7 @@ import { LanguageSelectionComponent } from '../language-selection/language-selec
 import { CurrencySelectionComponent } from '../currency-selection/currency-selection.component';
 import { ActivatedRoute } from '@angular/router';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-super-header',  
@@ -21,13 +22,16 @@ import { SOCIAL_ICONS } from '../../constants/social.constants';
 export class SuperHeaderComponent implements OnInit {
   socialIcons = SOCIAL_ICONS;
   currentLanguage: any = { code: 'en', name: 'English' };
+  private languageService!: LanguageService;
 
-  constructor(
-    private route: ActivatedRoute, 
-  ) { }
+
+  constructor(private route: ActivatedRoute) {
+      if (typeof window !== 'undefined') {
+        this.languageService = inject(LanguageService);}
+  }
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['languageCode'] || 'en';
+    const languageCode = this.route.snapshot.data['language'] || 'en';
     this.currentLanguage.code = languageCode;
   }
 

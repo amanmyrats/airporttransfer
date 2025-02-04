@@ -39,25 +39,26 @@ export class AboutUsComponent {
 setMetaTags(langCode: string): void {
   const metaTags: any = {
     en: {
-      title: 'About Airport Transfer Services in Turkey | Antalya, Istanbul & More',
-      description: 'Learn about affordable and reliable airport transfer services in Turkey. Covering Antalya, Istanbul, Alanya, and more. How to go with ease!',
+      title: 'About 24/7 Private Airport Transfer Services in Turkey | Antalya, Istanbul & More',
+      description: 'Learn about affordable and reliable 24/7 private airport transfer services in Turkey. Covering Antalya, Istanbul, Alanya, and more. How to go with ease!',
     },
     de: {
-      title: 'Über Flughafentransfers in der Türkei | Antalya, Istanbul & Mehr',
-      description: 'Erfahren Sie mehr über günstige und zuverlässige Flughafentransfers in der Türkei. Antalya, Istanbul, Alanya und mehr! Wie komme ich dorthin?',
+    title: "Über 24/7 private Flughafentransfers in der Türkei | Antalya, Istanbul & mehr",
+    description: "Erfahren Sie mehr über günstige und zuverlässige 24/7 private Flughafentransfers in der Türkei. Abdeckung von Antalya, Istanbul, Alanya und mehr. Reisen Sie stressfrei!"
     },
     ru: {
-      title: 'О трансферах из аэропорта в Турции | Анталия, Стамбул и другие',
-      description: 'Узнайте о доступных и надежных трансферах из аэропорта в Турции. Анталия, Стамбул, Аланья и другие. Как добраться легко и удобно!',
+      title: "О круглосуточных частных трансферах из аэропорта в Турции | Анталия, Стамбул и другие",
+      description: "Узнайте больше о доступных и надежных круглосуточных частных трансферах из аэропорта в Турции. Охватывает Анталию, Стамбул, Аланью и другие города. Путешествуйте с комфортом!"
     },
     tr: {
-      title: 'Türkiye Havalimanı Transfer Hizmetleri Hakkında | Antalya, İstanbul ve Daha Fazlası',
-      description: 'Türkiye’deki uygun ve güvenilir havalimanı transfer hizmetleri hakkında bilgi edinin. Antalya, İstanbul, Alanya ve daha fazlasına nasıl gidilir?',
-    },
+      title: "Türkiye'de 7/24 Özel Havalimanı Transfer Hizmetleri Hakkında | Antalya, İstanbul ve Daha Fazlası",
+      description: "Türkiye'de uygun fiyatlı ve güvenilir 7/24 özel havalimanı transfer hizmetleri hakkında bilgi edinin. Antalya, İstanbul, Alanya ve daha fazlasını kapsıyor. Kolayca ulaşım sağlayın!"
+    }
   };
   const meta: any = metaTags[langCode] || metaTags['en'];
   this.title.setTitle(meta.title);
   this.meta.updateTag({ name: 'description', content: meta.description });
 }
+
 
 }

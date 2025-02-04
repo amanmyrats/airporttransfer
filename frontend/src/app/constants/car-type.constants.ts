@@ -5,16 +5,16 @@ export const SUPPORTED_CAR_TYPES = [
         pax: '1-6', 
         image: {
             name: {
-                en: 'vito-airport-transfer-turkey.webp', 
-                de: 'vito-flughafentransfer-turkei.webp', 
-                ru: 'вито-трансфер-из-аэропорта-турция.webp', 
-                tr: 'vito-havalimanı-transferi-türkiye.webp'
+                en: 'vito-24-7-private-airport-transfer-turkey.webp', 
+                de: 'vito-24-7-private-flughafentransfer-turkei.webp',
+                ru: 'vito-24-7-частный-трансфер-из-аэропорта-турция.webp',
+                tr: 'vito-7-24-ozel-havalimani-transferi-türkiye.webp'
             }, 
             alt: {
-                en: 'Mercedes Vito Airport Transfer Turkey', 
-                de: 'Mercedes Vito Flughafentransfer Türkei', 
-                ru: 'Mercedes Vito Трансфер из аэропорта Турция', 
-                tr: 'Mercedes Vito Havalimanı Transferi Türkiye'
+                en: 'Mercedes Vito 24/7 Private Airport Transfer Turkey', 
+                de: 'Mercedes Vito 24/7 Privater Flughafentransfer Türkei',
+                ru: 'Mercedes Vito 24/7 Частный Трансфер из Аэропорта Турция',
+                tr: 'Mercedes Vito 7/24 Özel Havalimanı Transferi Türkiye'
             }
         },
         price: 0,
@@ -26,16 +26,16 @@ export const SUPPORTED_CAR_TYPES = [
         pax: '1-15', 
         image: {
             name: {
-                en: 'sprinter-airport-transfer-istanbul.webp', 
-                de: 'sprinter-flughafentransfer-istanbul.webp',
-                ru: 'sprinter-трансфер-из-аэропорта-стамбул.webp',
-                tr: 'sprinter-havalimanı-transfer-istanbul.webp'
+                en: 'sprinter-24-7-private-airport-transfer-istanbul.webp', 
+                de: 'sprinter-24-7-private-flughafentransfer-istanbul.webp',
+                ru: 'sprinter-24-7-частный-трансфер-из-аэропорта-стамбул.webp',
+                tr: 'sprinter-7-24-ozel-havalimani-transferi-istanbul.webp'
             }, 
             alt: {
-                en: 'Mercedes Sprinter Airport Transfer Istanbul', 
-                de: 'Mercedes Sprinter Flughafentransfer Istanbul',
-                ru: 'Mercedes Sprinter Трансфер из аэропорта Стамбул',
-                tr: 'Mercedes Sprinter Havalimanı Transferi Istanbul'
+                en: 'Mercedes Sprinter 24/7 Private Airport Transfer Istanbul', 
+                de: 'Mercedes Sprinter 24/7 Privater Flughafentransfer Istanbul',
+                ru: 'Mercedes Sprinter 24/7 Частный Трансфер из Аэропорта Стамбул',
+                tr: 'Mercedes Sprinter 7/24 Özel Havalimanı Transferi Istanbul'
             }
         },
         price: 0,
@@ -47,16 +47,16 @@ export const SUPPORTED_CAR_TYPES = [
         pax: '1-2', 
         image: {
             name: {
-                en: 'maybach-s-class-airport-transfer-antalya.webp', 
-                de: 'maybach-s-class-flughafentransfer-antalya.webp',
-                ru: 'maybach-s-class-трансфер-из-аэропорта-анталья.webp',
-                tr: 'maybach-s-class-havalimanı-transfer-antalya.webp'
+                en: 'maybach-s-class-24-7-private-airport-transfer-antalya.webp', 
+                de: 'maybach-s-class-24-7-private-flughafentransfer-antalya.webp',
+                ru: 'maybach-s-class-24-7-частный-трансфер-из-аэропорта-анталья.webp',
+                tr: 'maybach-s-class-7-24-ozel-havalimani-transferi-antalya.webp'
             }, 
             alt: {
-                en: 'Mercedes Maybach S class Airport Transfer Antalya', 
-                de: 'Mercedes Maybach S class Flughafentransfer Antalya',
-                ru: 'Mercedes Maybach S class Трансфер из аэропорта Анталья',
-                tr: 'Mercedes Maybach S class Havalimanı Transferi Antalya'
+                en: 'Mercedes Maybach S class 24/7 Private Airport Transfer Antalya',
+                de: 'Mercedes Maybach S class 24/7 Privater Flughafentransfer Antalya',
+                ru: 'Mercedes Maybach S class 24/7 Частный Трансфер из Аэропорта Анталья',
+                tr: 'Mercedes Maybach S class 7/24 Özel Havalimanı Transferi Antalya'
             }
         },
         price: 0,
@@ -68,16 +68,16 @@ export const SUPPORTED_CAR_TYPES = [
         pax: '1-28', 
         image: {
             name: {
-                en: 'minibus-airport-transfer-alanya-gazipasa.webp', 
-                de: 'minibus-flughafentransfer-alanya-gazipasa.webp',
-                ru: 'minibus-трансфер-из-аэропорта-аланья-газипаша.webp',
-                tr: 'minibus-havalimanı-transferi-alanya-gazipasa.webp'
+                en: 'minibus-24-7-private-airport-transfer-alanya-gazipasa.webp', 
+                de: 'minibus-24-7-private-flughafentransfer-alanya-gazipasa.webp',
+                ru: 'minibus-24-7-частный-трансфер-из-аэропорта-аланья-газипаша.webp',
+                tr: 'minibus-7-24-ozel-havalimani-transferi-alanya-gazipasa.webp'
             }, 
             alt: {
-                en: 'Minibus Airport Transfer Alanya Gazipasa', 
-                de: 'Minibus Flughafentransfer Alanya Gazipasa',
-                ru: 'Minibus Трансфер из аэропорта Аланья Газипаша',
-                tr: 'Minibus Havalimanı Transferi Alanya Gazipasa'
+                en: 'Minibus 24/7 Private Airport Transfer Alanya Gazipasa', 
+                de: 'Minibus 24/7 Privater Flughafentransfer Alanya Gazipasa',
+                ru: 'Minibus 24/7 Частный Трансфер из Аэропорта Аланья Газипаша',
+                tr: 'Minibus 7/24 Özel Havalimanı Transferi Alanya Gazipasa'
             }
         },
         price: 0,

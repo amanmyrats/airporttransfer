@@ -43,21 +43,21 @@ export class BlogsComponent implements OnInit {
   setMetaTags(langCode: string): void {
     const metaTags: any = {
       en: {
-        title: 'Tips for Airport Transfers in Turkey',
-        description: 'Learn how to go to Antalya, Istanbul, and other Turkish cities with our airport transfer tips.',
+        title: 'Tips for 24/7 Private Airport Transfers in Turkey',
+        description: 'Learn how to go to Antalya, Istanbul, and other Turkish cities with our 24/7 private airport transfer tips.',
       },
       de: {
-        title: 'Tipps für Flughafentransfers in der Türkei',
-        description: 'Erfahren Sie, wie Sie Antalya, Istanbul und andere Städte in der Türkei mit unseren Flughafentransfertipps erreichen.',
+        title: "Tipps für 24/7 private Flughafentransfers in der Türkei",
+        description: "Erfahren Sie, wie Sie mit unseren 24/7 privaten Flughafentransfer-Tipps nach Antalya, Istanbul und andere türkische Städte reisen können."
       },
       ru: {
-        title: 'Советы по трансферам из аэропорта в Турции',
-        description: 'Узнайте, как добраться до Анталии, Стамбула и других городов Турции с помощью наших советов по трансферам.',
+        title: "Советы по 24/7 частным трансферам из аэропорта в Турции",
+        description: "Узнайте, как добраться до Антальи, Стамбула и других городов Турции с помощью наших советов по 24/7 частным трансферам из аэропорта."
       },
       tr: {
-        title: 'Türkiye Havalimanı Transfer İpuçları',
-        description: 'Antalya, İstanbul ve diğer şehirler için havalimanı transfer ipuçlarımızı öğrenin.',
-      },
+        title: "Türkiye'de 7/24 Özel Havalimanı Transferleri İçin İpuçları",
+        description: "Antalya, İstanbul ve diğer Türk şehirlerine nasıl gideceğinizi 7/24 özel havalimanı transfer ipuçlarımızla öğrenin."
+      }
     };
     
     const meta: any = metaTags[langCode] || metaTags['en'];
@@ -97,7 +97,7 @@ export class BlogsComponent implements OnInit {
     if (blog.image && blog.image.name && blog.image.name[lang.code]!) {
       return blog.image.name[lang.code];
     } else {
-      return 'airport-transfer-turkey.jpg';
+      return '24-7-private-airport-transfer-turkey.jpg';
     }
   }
 
@@ -105,7 +105,7 @@ export class BlogsComponent implements OnInit {
     if (blog.image && blog.image.alt && blog.image.alt[lang.code]!) {
       return blog.image.alt[lang.code];
     } else {
-      return 'Airport Transfer Turkey';
+      return '24/7 Private Airport Transfer Turkey';
     }
   }
 
@@ -120,16 +120,16 @@ export class BlogsComponent implements OnInit {
   translations: any = {
     blog: {
       title: {
-        en: 'Our Blog',
-        de: 'Unser Blog',
-        tr: 'Blogumuz',
-        ru: 'Наш блог',
+        en: 'Our Blog about 24/7 Private Airport Transfer in Turkey',
+        de: 'Unser Blog über 24/7 Private Flughafentransfers in der Türkei',
+        tr: 'Türkiye\'de 7/24 Özel Havalimanı Transferi Hakkındaki Blogumuz',
+        ru: 'Наш блог о 24/7 частных трансферах из аэропорта в Турции',
       },
       subtitle: {
-        en: 'Stay updated with the latest travel tips, airport transfer insights, and guides to make your journey seamless and enjoyable.',
-        de: 'Bleiben Sie auf dem Laufenden mit den neuesten Reisetipps, Einblicken in Flughafentransfers und Anleitungen für eine reibungslose und angenehme Reise.',
-        tr: 'En son seyahat ipuçları, havalimanı transfer bilgileri ve yolculuğunuzu sorunsuz ve keyifli hale getirecek rehberlerle güncel kalın.',
-        ru: 'Будьте в курсе последних советов по путешествиям, информации о трансферах из аэропорта и руководств, которые сделают ваше путешествие плавным и приятным.',
+        en: 'Stay updated with the latest travel tips, 24/7 private airport transfer insights, and guides to make your journey seamless and enjoyable.',
+        de: 'Bleiben Sie auf dem Laufenden mit den neuesten Reisetipps, Einblicken in 24/7 private Flughafentransfers und Anleitungen, um Ihre Reise reibungslos und angenehm zu gestalten.',
+        ru: 'Будьте в курсе последних советов по путешествиям, идей о 24/7 частных трансферах из аэропорта и руководств, чтобы сделать ваше путешествие гладким и приятным.',
+        tr: 'Seyahatinizi sorunsuz ve keyifli hale getirmek için en son seyahat ipuçları, 24/7 özel havalimanı transferi bilgileri ve rehberlerle güncel kalın.',
       },
       readMore: {
         en: 'Read More',

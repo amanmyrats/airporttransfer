@@ -40,21 +40,21 @@ export class ServicesComponent implements OnInit {
   setMetaTags(langCode: string): void {
     const metaTags: any = {
       en: {
-        title: 'Private Transfers Antalya, Istanbul, Alanya',
-        description: 'Affordable private airport transfers in Antalya, Istanbul, and Alanya. Book now for reliable services in Turkey.',
+        title: '24/7 Private Transfers Antalya, Istanbul, Alanya',
+        description: 'Affordable 24/7 private airport transfers in Antalya, Istanbul, and Alanya. Book now for reliable services in Turkey.',
       },
       de: {
-        title: 'Privattransfers Antalya, Istanbul, Alanya',
-        description: 'Günstige private Flughafentransfers in Antalya, Istanbul und Alanya. Jetzt buchen für zuverlässige Dienste in der Türkei.',
+        title: "Beste 24/7 private Flughafentransfers in der Türkei | Antalya, Istanbul & mehr",
+        description: "Erschwingliche und zuverlässige 24/7 private Flughafentransfers in der Türkei. Abdeckung von Antalya, Istanbul, Alanya, Izmir und mehr. Buchen Sie jetzt für eine reibungslose Reise!"
       },
       ru: {
-        title: 'Частные трансферы Анталия, Стамбул, Аланья',
-        description: 'Доступные частные трансферы из аэропорта в Анталии, Стамбуле и Аланье. Забронируйте сейчас для надежных услуг в Турции.',
+        title: "Лучшие 24/7 частные трансферы из аэропорта в Турции | Анталия, Стамбул и другие",
+        description: "Доступные и надежные 24/7 частные трансферы из аэропорта в Турции. Охватываем Анталию, Стамбул, Аланью, Измир и другие города. Забронируйте сейчас для комфортного путешествия!"
       },
       tr: {
-        title: 'Özel Transfer Antalya, İstanbul, Alanya',
-        description: 'Antalya, İstanbul ve Alanya’da uygun özel havalimanı transferleri. Güvenilir hizmetler için şimdi rezervasyon yapın.',
-      },
+        title: "Türkiye'deki En İyi 7/24 Özel Havalimanı Transfer Hizmetleri | Antalya, İstanbul ve Daha Fazlası",
+        description: "Türkiye'de uygun fiyatlı ve güvenilir 7/24 özel havalimanı transfer hizmetleri. Antalya, İstanbul, Alanya, İzmir ve daha fazlasını kapsıyor. Sorunsuz bir yolculuk için hemen rezervasyon yapın!"
+      }
     };
 
     const meta: any = metaTags[langCode] || metaTags['en'];

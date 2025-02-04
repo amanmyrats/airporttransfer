@@ -21,10 +21,10 @@ export const NAVBAR_MENU: any = {
             tr: 'Fiyatlar'
         },
         slug: {
-            en: 'affordable-prices-for-airport-transfers-in-turkey',
-            de: 'bezahlbare-preise-für-flughafentransfers-in-der-türkei',
-            ru: 'доступные-цены-на-трансфер-из-аэропорта-в-турции',
-            tr: 'türkiye-de-havalimanı-transferleri-için-uygun-fiyatlar'
+            en: 'affordable-prices-for-24-7-private-airport-transfers-in-turkey',
+            de: 'bezahlbare-preise-für-24-7-privaten-flughafentransfer-in-der-türkei',
+            ru: 'доступные-цены-на-круглосуточные-частные-трансферы-из-аэропорта-в-турции',
+            tr: 'türkiye-de-7-24-özel-havalimanı-transferleri-için-uygun-fiyatlar'
         }
     },
     bookNow: {
@@ -35,10 +35,10 @@ export const NAVBAR_MENU: any = {
             tr: 'Şimdi rezervasyon yap'
         },
         slug: {
-            en: 'book-now-airport-transfer-in-turkey',
-            de: 'jetzt-buchen-flughafen-transfer-in-der-türkei',
-            ru: 'забронировать-сейчас-трансфер-из-аэропорта-в-турции',
-            tr: 'şimdi-rezervasyon-yap-türkiye-de-havalimanı-transferi'
+            en: 'book-now-24-7-private-airport-transfer-in-turkey',
+            de: 'jetzt-buchen-24-7-privater-flughafentransfer-in-der-türkei',
+            ru: 'забронировать-сейчас-24-7-частный-трансфер-из-аэропорта-в-турции',
+            tr: 'türkiye-de-7-24-özel-havalimanı-transferi-şimdi-rezervasyon-yap'
         }
     },
     blogs: {
@@ -49,10 +49,10 @@ export const NAVBAR_MENU: any = {
             tr: 'Bloglar'
         },
         slug: {
-            en: 'turkey-airport-transfer-blogs',
-            de: 'flughafen-transfer-blogs-in-der-türkei',
-            ru: 'блоги-о-трансфере-из-аэропорта-в-турции',
-            tr: 'türkiye-havalimanı-transfer-blogları'
+            en: 'turkey-24-7-private-airport-transfer-blogs',
+            de: 'türkei-24-7-privater-flughafentransfer-blogs',
+            ru: 'блоги-о-24-7-частном-трансфере-из-аэропорта-в-турции',
+            tr: 'türkiye-7-24-özel-havalimanı-transfer-blogları'
         }
     },
     contactUs: {
@@ -63,10 +63,10 @@ export const NAVBAR_MENU: any = {
             tr: 'Bizimle iletişime geçin'
         },
         slug: {
-            en: 'contact-of-airport-transfer-in-turkey',
-            de: 'kontakt-von-flughafen-transfer-in-der-türkei',
-            ru: 'контакт-трансфера-из-аэропорта-в-турции',
-            tr: 'türkiye-havalimanı-transferi-iletişim-bilgileri'
+            en: 'contact-of-24-7-private-airport-transfer-in-turkey',
+            de: 'kontakt-von-24-7-privatem-flughafentransfer-in-der-türkei',
+            ru: 'контакт-24-7-частного-трансфера-из-аэропорта-в-турции',
+            tr: 'türkiye-de-7-24-özel-havalimanı-transferi-iletişim'
         }
     },
     aboutUs: {
@@ -77,10 +77,10 @@ export const NAVBAR_MENU: any = {
             tr: 'Hakkımızda'
         },
         slug: {
-            en: 'about-airport-transfer-in-turkey',
-            de: 'über-flughafen-transfer-in-der-türkei',
-            ru: 'о-трансфере-из-аэропорта-в-турции',
-            tr: 'türkiye-havalimanı-transferi-hakkında'
+            en: 'about-24-7-private-airport-transfer-in-turkey',
+            de: 'über-24-7-privaten-flughafentransfer-in-der-türkei',
+            ru: 'о-24-7-частном-трансфере-из-аэропорта-в-турции',
+            tr: 'türkiye-de-7-24-özel-havalimanı-transferi-hakkında'
         }
     },
     services: {
@@ -91,10 +91,10 @@ export const NAVBAR_MENU: any = {
             tr: 'Hizmetler'
         },
         slug: {
-            en: 'services-of-airport-transfer-in-turkey',
-            de: 'dienstleistungen-von-flughafen-transfer-in-der-türkei',
-            ru: 'услуги-трансфера-из-аэропорта-в-турции',
-            tr: 'türkiye-havalimanı-transferi-hizmetleri'
+            en: 'services-of-24-7-private-airport-transfer-in-turkey',
+            de: 'dienstleistungen-von-24-7-privatem-flughafentransfer-in-der-türkei',
+            ru: 'услуги-24-7-частного-трансфера-из-аэропорта-в-турции',
+            tr: 'türkiye-de-7-24-özel-havalimanı-transferi-hizmetleri'
         }
     },
     gallery: {
@@ -105,10 +105,10 @@ export const NAVBAR_MENU: any = {
             tr: 'Galeri'
         },
         slug: {
-            en: 'gallery-of-airport-transfer-in-turkey',
-            de: 'galerie-von-flughafen-transfer-in-der-türkei',
-            ru: 'галерея-трансфера-из-аэропорта-в-турции',
-            tr: 'türkiye-havalimanı-transferi-galerisi'
+            en: 'gallery-of-24-7-private-airport-transfer-in-turkey',
+            de: 'galerie-von-24-7-privatem-flughafentransfer-in-der-türkei',
+            ru: 'галерея-24-7-частного-трансфера-из-аэропорта-в-турции',
+            tr: 'türkiye-de-7-24-özel-havalimanı-transferi-galerisi'
         }
     },
     faq: {
@@ -119,10 +119,10 @@ export const NAVBAR_MENU: any = {
             tr: 'SSS'
         },
         slug: {
-            en: 'faq-of-airport-transfer-in-turkey',
-            de: 'faq-von-flughafen-transfer-in-der-türkei',
-            ru: 'часто-задаваемые-вопросы-о-трансфере-из-аэропорта-в-турции',
-            tr: 'türkiye-havalimanı-transferi-sss'
+            en: 'faq-of-24-7-private-airport-transfer-in-turkey',
+            de: 'faq-von-24-7-privatem-flughafentransfer-in-der-türkei',
+            ru: 'часто-задаваемые-вопросы-о-24-7-частном-трансфере-из-аэропорта-в-турции',
+            tr: 'türkiye-de-7-24-özel-havalimanı-transferi-ile-sık-sorulan-sorular'
         }
     },
 
@@ -134,10 +134,10 @@ export const NAVBAR_MENU: any = {
             tr: 'Gizlilik Politikası'
         },
         slug: {
-            en: 'privacy-policy-for-airport-private-car-transfer-in-turkey',
-            de: 'datenschutzrichtlinie-für-flughafen-privatwagen-transfer-in-der-türkei',
-            ru: 'политика-конфиденциальности-для-трансфера-частного-автомобиля-из-аэропорта-в-турции',
-            tr: 'türkiye-de-havalimanı-özel-araba-transferi-için-gizlilik-politikası'
+            en: 'privacy-policy-for-24-7-private-airport-private-car-transfer-in-turkey',
+            de: 'datenschutz-bestimmungen-für-24-7-privaten-flughafen-privatwagen-transfer-in-der-türkei',
+            ru: 'политика-конфиденциальности-для-24-7-частного-трансфера-частного-автомобиля-из-аэропорта-в-турции',
+            tr: 'türkiye-de-7-24-havalimanı-özel-araba-transferi-için-gizlilik-politikası'
         }
     },
     termsOfService: {
@@ -148,31 +148,31 @@ export const NAVBAR_MENU: any = {
             tr: 'Hizmet Şartları'
         },
         slug: {
-            en: 'terms-of-service-for-airport-private-car-transfer-in-turkey',
-            de: 'nutzungsbedingungen-für-flughafen-privatwagen-transfer-in-der-türkei',
-            ru: 'условия-предоставления-услуг-для-трансфера-частного-автомобиля-из-аэропорта-в-турции',
-            tr: 'türkiye-de-havalimanı-özel-araba-transferi-için-hizmet-şartları'
+            en: 'terms-of-service-for-24-7-private-airport-private-car-transfer-in-turkey',
+            de: 'nutzungsbedingungen-für-24-7-privaten-flughafen-privatwagen-transfer-in-der-türkei',
+            ru: 'условия-обслуживания-для-24-7-частного-трансфера-частного-автомобиля-из-аэропорта-в-турции',
+            tr: 'türkiye-de-7-24-havalimanı-özel-araba-transferi-için-hizmet-şartları'
         }
     },
 
     logo: {
         name: {
-            en: 'airport-transfer-in-istanbul.webp',
-            de: 'flughafen-transfer-in-alanya.webp',
-            ru: 'трансфер-из-аэропорта-в-анталии.webp',
-            tr: 'istanbul-havalimanı-transferi.webp'
+            en: '24-7-private-airport-transfer-in-istanbul.webp',
+            de: '24-7-privater-flughafentransfer-in-istanbul.webp',
+            ru: '24-7-частный-трансфер-из-аэропорта-в-анталии.webp',
+            tr: '24-7-istanbul-da-özel-havalimanı-transferi.webp'
         },
         alt: {
-            en: 'Airport Transfer in Istanbul',
-            de: 'Flughafen Transfer in Alanya',
-            ru: 'Трансфер из аэропорта в Анталии',
-            tr: 'İstanbul Havalimanı Transferi'
+            en: '24/7 Private Airport Transfer in Istanbul',
+            de: '24/7 Privater Flughafentransfer in Istanbul',
+            ru: '24/7 Частный Трансфер из Аэропорта в Анталии',
+            tr: '24/7 İstanbul\'da Özel Havalimanı Transferi'
         },
         slug: {
-            en: 'airport-transfer-in-istanbul',
-            de: 'flughafen-transfer-in-alanya',
-            ru: 'трансфер-из-аэропорта-в-анталии',
-            tr: 'istanbul-havalimanı-transferi'
+            en: '24-7-private-airport-transfer-in-istanbul',
+            de: '24-7-privater-flughafentransfer-in-istanbul',
+            ru: '24-7-частный-трансфер-из-аэропорта-в-анталии',
+            tr: '24-7-istanbul-da-özel-havalimanı-transferi'
         }
     }
 };

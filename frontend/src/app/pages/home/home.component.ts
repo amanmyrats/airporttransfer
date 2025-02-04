@@ -63,21 +63,21 @@ export class HomeComponent implements OnInit {
   setMetaTags(langCode: string): void {
     const metaTags: any = {
       en: {
-        title: 'Best Airport Transfer Services in Turkey | Antalya, Istanbul & More',
-        description: 'Affordable and reliable airport transfer services in Turkey. Covering Antalya, Istanbul, Alanya, Izmir, and more. Book now for seamless travel!',
+        title: 'Best 24/7 Private Airport Transfer Services in Turkey | Antalya, Istanbul & More',
+        description: 'Affordable and reliable 24/7 private airport transfer services in Turkey. Covering Antalya, Istanbul, Alanya, Izmir, and more. Book now for seamless travel!',
       },
       de: {
-        title: 'Beste Flughafentransfers in der Türkei | Antalya, Istanbul & Mehr',
-        description: 'Bezahlbare und zuverlässige Flughafentransfers in der Türkei. Wir bedienen Antalya, Istanbul, Alanya, Izmir und mehr. Jetzt buchen für eine reibungslose Reise!',
+        title: "Beste 24/7 private Flughafentransfers in der Türkei | Antalya, Istanbul & mehr",
+        description: "Erschwingliche und zuverlässige 24/7 private Flughafentransfers in der Türkei. Abdeckung von Antalya, Istanbul, Alanya, Izmir und mehr. Buchen Sie jetzt für eine reibungslose Reise!"
       },
       ru: {
-        title: 'Лучшие трансферы из аэропорта в Турции | Анталия, Стамбул и другие',
-        description: 'Доступные и надежные трансферы из аэропорта в Турции. Обслуживаем Анталию, Стамбул, Аланью, Измир и другие. Забронируйте сейчас для комфортной поездки!',
+        title: "Лучшие 24/7 частные трансферы из аэропорта в Турции | Анталия, Стамбул и другие",
+        description: "Доступные и надежные 24/7 частные трансферы из аэропорта в Турции. Охватываем Анталию, Стамбул, Аланью, Измир и другие города. Забронируйте сейчас для комфортного путешествия!"
       },
       tr: {
-        title: 'Türkiye Havalimanı Transfer Hizmetleri | Antalya, İstanbul ve Daha Fazlası',
-        description: 'Türkiye’de uygun ve güvenilir havalimanı transfer hizmetleri. Antalya, İstanbul, Alanya, İzmir ve daha fazlası için hemen rezervasyon yapın!',
-      },
+        title: "Türkiye'deki En İyi 7/24 Özel Havalimanı Transfer Hizmetleri | Antalya, İstanbul ve Daha Fazlası",
+        description: "Türkiye'de uygun fiyatlı ve güvenilir 7/24 özel havalimanı transfer hizmetleri. Antalya, İstanbul, Alanya, İzmir ve daha fazlasını kapsıyor. Sorunsuz bir yolculuk için hemen rezervasyon yapın!"
+      }
     };
 
     const meta: any = metaTags[langCode] || metaTags['en'];

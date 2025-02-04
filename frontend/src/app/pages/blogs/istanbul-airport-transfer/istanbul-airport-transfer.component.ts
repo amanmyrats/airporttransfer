@@ -41,21 +41,21 @@ export class IstanbulAirportTransferComponent  {
   setMetaTags(langCode: string): void {
     const metaTags: any = {
       en: {
-        title: 'Istanbul Sabiha Gökçen Airport Transfer',
-        description: 'Affordable transfers from Istanbul Sabiha Gökçen Airport. Reliable transportation to your destination.',
+        title: 'Istanbul Sabiha Gökçen 24/7 Private Airport Transfer',
+        description: 'Affordable 24/7 Private transfers from Istanbul Sabiha Gökçen Airport. Reliable transportation to your destination.',
       },
       de: {
-        title: 'Flughafentransfer Istanbul Sabiha Gökçen',
-        description: 'Günstige Transfers vom Flughafen Istanbul Sabiha Gökçen. Zuverlässiger Transport zu Ihrem Ziel.',
+        title: "24/7 Privater Flughafentransfer von Istanbul Sabiha Gökçen",
+        description: "Erschwingliche 24/7 private Transfers vom Flughafen Istanbul Sabiha Gökçen. Zuverlässiger Transport zu Ihrem Ziel."
       },
       ru: {
-        title: 'Трансфер из аэропорта Стамбула Сабиха Гёкчен',
-        description: 'Доступные трансферы из аэропорта Стамбул Сабиха Гёкчен. Надежная доставка до вашего пункта назначения.',
+        title: "24/7 Частный трансфер из аэропорта Стамбула Сабиха Гекчен",
+        description: "Доступные круглосуточные частные трансферы из аэропорта Стамбула Сабиха Гекчен. Надежный транспорт до вашего места назначения."
       },
       tr: {
-        title: 'İstanbul Sabiha Gökçen Havalimanı Transferi',
-        description: 'İstanbul Sabiha Gökçen Havalimanı’ndan uygun ve güvenilir transferler.',
-      },
+        title: "İstanbul Sabiha Gökçen 7/24 Özel Havalimanı Transferi",
+        description: "İstanbul Sabiha Gökçen Havalimanı'ndan uygun fiyatlı 7/24 özel transferler. Hedefinize güvenilir ulaşım."
+      }
     };
     
     const meta: any = metaTags[langCode] || metaTags['en'];

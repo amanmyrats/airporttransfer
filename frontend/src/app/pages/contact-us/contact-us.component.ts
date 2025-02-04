@@ -93,21 +93,21 @@ export class ContactUsComponent implements OnInit {
   setMetaTags(langCode: string): void {
     const metaTags: any = {
       en: {
-        title: 'Contact for Antalya Airport Transfer',
-        description: 'Get in touch to arrange affordable and reliable airport transfers in Antalya, Istanbul, and more.',
+        title: 'Contact for 24/7 Private Antalya Airport Transfer',
+        description: 'Get in touch to arrange affordable and reliable 24/7 private airport transfers in Antalya, Istanbul, and more.',
       },
       de: {
-        title: 'Kontakt für Flughafentransfers in Antalya',
-        description: 'Kontaktieren Sie uns für günstige und zuverlässige Flughafentransfers in Antalya, Istanbul und anderen Städten.',
+        title: "Kontakt für 24/7 privaten Flughafentransfer in Antalya",
+        description: "Kontaktieren Sie uns, um günstige und zuverlässige 24/7 private Flughafentransfers in Antalya, Istanbul und weiteren Städten zu arrangieren."
       },
       ru: {
-        title: 'Связаться по трансферам из аэропорта Анталии',
-        description: 'Свяжитесь с нами, чтобы организовать доступные и надежные трансферы из аэропорта в Анталии, Стамбуле и других городах.',
+        title: "Свяжитесь с нами для 24/7 частного трансфера из аэропорта Анталии",
+        description: "Свяжитесь с нами, чтобы организовать доступные и надежные 24/7 частные трансферы из аэропорта в Анталии, Стамбуле и других городах."
       },
       tr: {
-        title: 'Antalya Havalimanı Transfer İletişim',
-        description: 'Antalya, İstanbul ve diğer şehirlerdeki uygun ve güvenilir havalimanı transferleri için bizimle iletişime geçin.',
-      },
+        title: "7/24 Özel Antalya Havalimanı Transferi İçin İletişim",
+        description: "Antalya, İstanbul ve diğer şehirlerde uygun fiyatlı ve güvenilir 7/24 özel havalimanı transferleri ayarlamak için bizimle iletişime geçin."
+      }
     };
     
     const meta: any = metaTags[langCode] || metaTags['en'];
@@ -117,8 +117,8 @@ export class ContactUsComponent implements OnInit {
 
   translations: any = {
     en: {
-      contactUs: 'Contact Us for Airport Transfers Across Turkey',
-      contactUsDescription: 'We are here to help! Contact us for bookings, inquiries, or any assistance with your airport transfer needs across Turkey. Contact us for airport transfers across Turkey, including the cities of Istanbul, Antalya, Alanya, Bodrum, Mugla, Ankara, and Izmir.',
+      contactUs: 'Contact Us for 24/7 Private Airport Transfers Across Turkey',
+      contactUsDescription: 'We are here to help! Contact us for bookings, inquiries, or any assistance with your 24/7 private airport transfer needs across Turkey. Contact us for airport transfers across Turkey, including the cities of Istanbul, Antalya, Alanya, Bodrum, Mugla, Ankara, and Izmir.',
       ourAddress: 'Our Address',
       callUs: 'Call Us',
       getInTouch: 'Get in Touch',
@@ -138,8 +138,8 @@ export class ContactUsComponent implements OnInit {
       },
     }, 
     de: {
-      contactUs: 'Kontaktieren Sie uns für Flughafentransfers in der gesamten Türkei',
-      contactUsDescription: 'Wir sind hier, um Ihnen zu helfen! Kontaktieren Sie uns für Buchungen, Anfragen oder jegliche Unterstützung bei Ihren Flughafentransfer-Bedürfnissen in der Türkei. Kontaktieren Sie uns für Flughafentransfers in ganz Türkei, einschließlich der Städte Istanbul, Antalya, Alanya, Bodrum, Mugla, Ankara und Izmir.',
+      contactUs: "Kontaktieren Sie uns für 24/7 private Flughafentransfers in der Türkei",
+      contactUsDescription: "Wir sind für Sie da! Kontaktieren Sie uns für Buchungen, Anfragen oder Unterstützung bei Ihren 24/7 privaten Flughafentransfer-Bedürfnissen in der Türkei. Wir bieten Flughafentransfers in ganz Türkei an, einschließlich der Städte Istanbul, Antalya, Alanya, Bodrum, Muğla, Ankara und Izmir.",
       ourAddress: 'Unsere Adresse',
       callUs: 'Rufen Sie uns an',
       getInTouch: 'Kontaktieren Sie uns',
@@ -159,8 +159,8 @@ export class ContactUsComponent implements OnInit {
       },
     },
     ru: {
-      contactUs: 'Свяжитесь с нами для трансферов из аэропорта по всей Турции',
-      contactUsDescription: 'Мы здесь, чтобы помочь! Свяжитесь с нами для бронирования, вопросов или любой помощи с вашими потребностями в трансфере из аэропорта по Турции.Свяжитесь с нами для трансфера из аэропорта по всей Турции, включая города Стамбул, Анталья, Аланья, Бодрум, Мугла, Анкара и Измир.',
+      contactUs: "Свяжитесь с нами для 24/7 частных трансферов из аэропорта по всей Турции",
+      contactUsDescription: "Мы здесь, чтобы помочь! Свяжитесь с нами для бронирования, запросов или любой помощи по вашим 24/7 частным трансферам из аэропорта в Турции. Мы предоставляем трансферы в аэропорты по всей Турции, включая Стамбул, Анталию, Аланью, Бодрум, Муглу, Анкару и Измир.", 
       ourAddress: 'Наш адрес',
       callUs: 'Позвоните нам',
       getInTouch: 'Связаться с нами',
@@ -180,8 +180,8 @@ export class ContactUsComponent implements OnInit {
     }
   }, 
     tr: {
-      contactUs: 'Türkiye genelindeki havalimanı transferleri için bizimle iletişime geçin',
-      contactUsDescription: 'Buradayız, size yardımcı olmak için! Türkiye’deki havalimanı transfer ihtiyaçlarınız için rezervasyon, sorular veya herhangi bir destek için bizimle iletişime geçin.İstanbul, Antalya, Alanya, Bodrum, Muğla, Ankara ve İzmir gibi şehirler dahil olmak üzere, Türkiye genelinde havalimanı transferi için bizimle iletişime geçin.',
+      contactUs: "Türkiye Genelinde 7/24 Özel Havalimanı Transferleri İçin Bize Ulaşın",
+      contactUsDescription: "Size yardımcı olmak için buradayız! Türkiye genelinde 7/24 özel havalimanı transferi rezervasyonu, bilgi talepleri veya herhangi bir konuda destek almak için bizimle iletişime geçin. İstanbul, Antalya, Alanya, Bodrum, Muğla, Ankara ve İzmir dahil olmak üzere Türkiye'nin birçok şehrinde havalimanı transfer hizmeti sunuyoruz.", 
       ourAddress: 'Adresimiz',
       callUs: 'Bizi Arayın',
       getInTouch: 'Bize Ulaşın',
