@@ -44,13 +44,13 @@ export class CtaComponent implements OnInit {
     cta: {
       title: {
         en: '24/7 Private Airport Transfers in Turkey – Hassle-Free & Premium Rides to Antalya, Istanbul, Alanya and more.', 
-        de: '24/7 Privatflughafentransfers in der Türkei – Stressfreie und Premium-Fahrten nach Antalya, Istanbul, Alanya und mehr.',
+        de: '24/7 Privat flughafen transfers in der Türkei – Stressfreie und Premium-Fahrten nach Antalya, Istanbul, Alanya und mehr.',
         ru: '24/7 Частные трансферы из аэропорта в Турции – Беззаботные и премиальные поездки в Анталью, Стамбул, Аланию и другие.',
         tr: 'Türkiye\'de 24/7 Özel Havalimanı Transferleri – Antalya, İstanbul, Alanya ve daha fazlasına Sorunsuz ve Premium Sürüşler.'
       }, 
       description: {
         en: 'Enjoy reliable, comfortable, and on-time 24/7 private airport transfers from Turkey’s major airports, including Istanbul, Antalya, and Alanya. Book now for a hassle-free and stress-free ride to your destination!', 
-        de: 'Genießen Sie zuverlässige, komfortable und pünktliche 24/7 Privatflughafentransfers von den wichtigsten Flughäfen der Türkei, darunter Istanbul, Antalya und Alanya. Buchen Sie jetzt für eine stressfreie und entspannte Fahrt zu Ihrem Ziel!',
+        de: 'Genießen Sie zuverlässige, komfortable und pünktliche 24/7 Privat flughafen transfers von den wichtigsten Flughäfen der Türkei, darunter Istanbul, Antalya und Alanya. Buchen Sie jetzt für eine stressfreie und entspannte Fahrt zu Ihrem Ziel!',
         ru: 'Наслаждайтесь надежными, комфортными и своевременными 24/7 частными трансферами из аэропортов Турции, включая Стамбул, Анталью и Аланию. Бронируйте сейчас для беззаботной и безстрессовой поездки к вашему пункту назначения!',
         tr: 'Türkiye\'nin önde gelen havalimanlarından, İstanbul, Antalya ve Alanya dahil olmak üzere güvenilir, konforlu ve zamanında 24/7 özel havalimanı transferlerinin keyfini çıkarın. Hedefinize stresiz ve sorunsuz bir şekilde ulaşmak için şimdi rezervasyon yapın!'
       },
@@ -64,7 +64,7 @@ export class CtaComponent implements OnInit {
     usp: {
       header: {
         en: 'Why Choose Our 24/7 Private Airport Transfers in Turkey?',
-        de: 'Warum sollten Sie sich für unsere 24/7 Privatflughafentransfers in der Türkei entscheiden?',
+        de: 'Warum sollten Sie sich für unsere 24/7 Privat flughafen transfers in der Türkei entscheiden?',
         ru: 'Почему выбирать наши 24/7 частные трансферы из аэропорта в Турции?',
         tr: 'Neden Türkiye\'deki 24/7 Özel Havalimanı Transferlerimizi Seçmelisiniz?'
       },

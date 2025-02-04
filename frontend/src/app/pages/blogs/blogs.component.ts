@@ -121,13 +121,13 @@ export class BlogsComponent implements OnInit {
     blog: {
       title: {
         en: 'Our Blog about 24/7 Private Airport Transfer in Turkey',
-        de: 'Unser Blog über 24/7 Private Flughafentransfers in der Türkei',
+        de: 'Unser Blog über 24/7 Private Flughafen transfers in der Türkei',
         tr: 'Türkiye\'de 7/24 Özel Havalimanı Transferi Hakkındaki Blogumuz',
         ru: 'Наш блог о 24/7 частных трансферах из аэропорта в Турции',
       },
       subtitle: {
         en: 'Stay updated with the latest travel tips, 24/7 private airport transfer insights, and guides to make your journey seamless and enjoyable.',
-        de: 'Bleiben Sie auf dem Laufenden mit den neuesten Reisetipps, Einblicken in 24/7 private Flughafentransfers und Anleitungen, um Ihre Reise reibungslos und angenehm zu gestalten.',
+        de: 'Bleiben Sie auf dem Laufenden mit den neuesten Reisetipps, Einblicken in 24/7 private Flughafen transfers und Anleitungen, um Ihre Reise reibungslos und angenehm zu gestalten.',
         ru: 'Будьте в курсе последних советов по путешествиям, идей о 24/7 частных трансферах из аэропорта и руководств, чтобы сделать ваше путешествие гладким и приятным.',
         tr: 'Seyahatinizi sorunsuz ve keyifli hale getirmek için en son seyahat ipuçları, 24/7 özel havalimanı transferi bilgileri ve rehberlerle güncel kalın.',
       },

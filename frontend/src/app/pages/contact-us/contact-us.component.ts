@@ -138,7 +138,7 @@ export class ContactUsComponent implements OnInit {
       },
     }, 
     de: {
-      contactUs: "Kontaktieren Sie uns für 24/7 private Flughafentransfers in der Türkei",
+      contactUs: "Kontaktieren Sie uns für 24/7 private Flughafen transfers in der Türkei",
       contactUsDescription: "Wir sind für Sie da! Kontaktieren Sie uns für Buchungen, Anfragen oder Unterstützung bei Ihren 24/7 privaten Flughafentransfer-Bedürfnissen in der Türkei. Wir bieten Flughafentransfers in ganz Türkei an, einschließlich der Städte Istanbul, Antalya, Alanya, Bodrum, Muğla, Ankara und Izmir.",
       ourAddress: 'Unsere Adresse',
       callUs: 'Rufen Sie uns an',

@@ -51,7 +51,7 @@ export class BannerComponent implements OnInit {
     banner: {
       title: {
         en: 'Hassle-Free 24/7 Private Airport Transfers in Turkey', 
-        de: 'Stressfreie 24/7 Privatflughafentransfers in der Türkei',
+        de: 'Stressfreie 24/7 Privat flughafen transfers in der Türkei',
         ru: 'Беззаботные круглосуточные 24/7 частные трансферы из аэропорта в Турции',
         tr: 'Türkiye\'de Sorunsuz 7/24 Özel Havalimanı Transferleri',
       }, 
