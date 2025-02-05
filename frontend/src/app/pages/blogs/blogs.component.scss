@@ -146,3 +146,30 @@
     color: #fff;
   }
   
+  // Mobile Responsive
+  @media screen and (max-width: 768px) {
+    .blogs {
+      padding: 5px;
+    }
+    .blog-item {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 5px;
+    }
+    .blog-title a {
+      font-size: 1em;
+    }
+    .read-more {
+      font-size: 0.8em;
+      font-weight: normal;
+    }
+    .blogs-title {
+      font-size: 1.6em;
+    }
+    
+    .blogs-subtitle {
+      font-size: 1.1em;
+    }
+  }

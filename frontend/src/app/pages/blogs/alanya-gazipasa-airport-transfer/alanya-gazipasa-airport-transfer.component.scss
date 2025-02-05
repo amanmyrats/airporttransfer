@@ -47,3 +47,12 @@ font-weight: bold;
 transition: background-color 0.3s, color 0.3s;
 
 }
+
+// Mobile
+@media (max-width: 768px) {
+    .book-now-button {
+        display: block;
+        margin: 20px auto;
+        text-align: center;
+    }
+}

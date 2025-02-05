@@ -75,3 +75,15 @@
     background-color: #0056b3;
   }
   
+
+  // Mobile
+  @media (max-width: 576px) {
+    .about-us {
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+      padding: 10px;
+    }
+    .about-title {
+      font-size: 2em;
+    }
+  }

@@ -43,10 +43,10 @@ export class CtaComponent implements OnInit {
   translations: any = {
     cta: {
       title: {
-        en: '24/7 Private Airport Transfers in Turkey – Hassle-Free & Premium Rides to Antalya, Istanbul, Alanya and more.', 
-        de: '24/7 Privat flughafen transfers in der Türkei – Stressfreie und Premium-Fahrten nach Antalya, Istanbul, Alanya und mehr.',
-        ru: '24/7 Частные трансферы из аэропорта в Турции – Беззаботные и премиальные поездки в Анталью, Стамбул, Аланию и другие.',
-        tr: 'Türkiye\'de 24/7 Özel Havalimanı Transferleri – Antalya, İstanbul, Alanya ve daha fazlasına Sorunsuz ve Premium Sürüşler.'
+        en: '24/7 Private Airport Transfers in Turkey', 
+        de: '24/7 Privat flughafen transfers in der Türkei',
+        ru: '24/7 Частные трансферы из аэропорта в Турции',
+        tr: 'Türkiye\'de 24/7 Özel Havalimanı Transferleri'
       }, 
       description: {
         en: 'Enjoy reliable, comfortable, and on-time 24/7 private airport transfers from Turkey’s major airports, including Istanbul, Antalya, and Alanya. Book now for a hassle-free and stress-free ride to your destination!', 

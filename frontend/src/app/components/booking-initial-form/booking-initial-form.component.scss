@@ -182,3 +182,14 @@ input:focus {
     font-size: 0.9rem;
   }
 }
+
+
+// Mobile width
+@media (max-width: 576px) {
+  /* Booking Page Styles */
+.booking {
+  padding: 5px;
+  line-height: 1.4;
+}
+
+}
