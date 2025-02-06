@@ -1,6 +1,9 @@
 
 export const SOCIAL_ICONS: any = {
     whatsapp: {
+      phone: '+905541398307',
+      url: 'https://wa.me/905541398307',
+      username: '905541398307',
       anchor: {
         ariaLabel: {
           en: '24/7 Private Turkey Airport Transfer Contact on WhatsApp', 
@@ -26,6 +29,9 @@ export const SOCIAL_ICONS: any = {
 
     }, 
     telegram: {
+      phone: '+905541398307', 
+      url: 'https://t.me/AirportTransferHub',
+      username: 'AirportTransferHub',
       anchor: {
         ariaLabel: {
           en: '24/7 Private Turkey Airport Transfer Contact on Telegram', 
@@ -50,6 +56,7 @@ export const SOCIAL_ICONS: any = {
       }
     },
     facebook: {
+      url: 'https://www.facebook.com/profile.php?id=61572994704926#',
       anchor: {
         ariaLabel: {
           en: '24/7 Private Turkey Airport Transfer Contact on Facebook', 
@@ -74,6 +81,9 @@ export const SOCIAL_ICONS: any = {
       }
     },
     instagram: {
+      phone: '+905541398307',
+      username: 'airporttransferhub',
+      url: 'https://www.instagram.com/airporttransferhub/',
       anchor: {
         ariaLabel: {
           en: '24/7 Private Turkey Airport Transfer Contact on Instagram', 
@@ -98,6 +108,8 @@ export const SOCIAL_ICONS: any = {
       }
     },
     twitter: {
+      username: 'AirTransferHub', 
+      url: 'https://x.com/AirTransferHub',
       anchor: {
         ariaLabel: {
           en: '24/7 Private Turkey Airport Transfer Contact on Twitter', 
@@ -122,6 +134,8 @@ export const SOCIAL_ICONS: any = {
       }
     },
     tiktok: {
+      username: 'airporttransferhub', 
+      url: 'https://www.tiktok.com/@AirportTransferHub', 
       anchor: {
         ariaLabel: {
           en: '24/7 Private Turkey Airport Transfer Contact on TikTok', 
@@ -146,6 +160,8 @@ export const SOCIAL_ICONS: any = {
       }
     }, 
     linkedin: {
+      username: 'AirportTransferHub',
+      url: 'https://www.linkedin.com/company/airporttransferhub',
       anchor: {
         ariaLabel: {
           en: '24/7 Private Turkey Airport Transfer Contact on LinkedIn', 
@@ -169,7 +185,64 @@ export const SOCIAL_ICONS: any = {
         },
       }
     }, 
+    vKontakte: {
+      phone: '+905541398307',
+      username: 'AirportTransferHub',
+      url: 'https://vk.com/AirportTransferHub',
+      anchor: {
+        ariaLabel: {
+          en: '24/7 Private Turkey Airport Transfer Contact on VKontakte', 
+          de: '24/7 Privater Türkei Flughafentransfer Kontakt auf VKontakte',
+          ru: '24/7 Частный Турецкий трансфер из аэропорта свяжитесь в VKontakte',
+          tr: '7/24 Özel Türkiye Havaalanı Transferi VKontakte üzerinden iletişime geçin',
+        },
+      },
+      image: {
+        name: {
+          en: '24-7-private-turkey-airport-transfer-vkontakte-contact.svg',
+          de: '24-7-privater-turkei-flughafentransfer-vkontakte-kontakt.svg',
+          ru: '24-7-частный-турецкий-трансфер-из-аэропорта-vkontakte-контакт.svg',
+          tr: '7-24-özel-turkiye-havaalani-transferi-vkontakte-ile-iletisim.svg',
+        }, 
+        alt: {
+          en: '24/7 Private Turkey Airport Transfer VKontakte Contact', 
+          de: '24/7 Privater Türkei Flughafentransfer VKontakte Kontakt',
+          ru: '24/7 Частный Турецкий трансфер из аэропорта VKontakte контакт',
+          tr: '7/24 Özel Türkiye Havaalanı Transferi VKontakte İletişim',
+        },
+      }
+    },
+    viber: {
+      phone: '+905541398307',
+      url: 'viber://chat?number=%2B905541398307',
+      username: '905541398307',
+      anchor: {
+        ariaLabel: {
+          en: '24/7 Private Turkey Airport Transfer Contact on Viber', 
+          de: '24/7 Privater Türkei Flughafentransfer Kontakt auf Viber',
+          ru: '24/7 Частный Турецкий трансфер из аэропорта свяжитесь в Viber',
+          tr: '7/24 Özel Türkiye Havaalanı Transferi Viber üzerinden iletişime geçin',
+        },
+      },
+      image: {
+        name: {
+          en: '24-7-private-turkey-airport-transfer-viber-contact.svg',
+          de: '24-7-privater-turkei-flughafentransfer-viber-kontakt.svg',
+          ru: '24-7-частный-турецкий-трансфер-из-аэропорта-viber-контакт.svg',
+          tr: '7-24-özel-turkiye-havaalani-transferi-viber-ile-iletisim.svg',
+        }, 
+        alt: {
+          en: '24/7 Private Turkey Airport Transfer Viber Contact', 
+          de: '24/7 Privater Türkei Flughafentransfer Viber Kontakt',
+          ru: '24/7 Частный Турецкий трансфер из аэропорта Viber контакт',
+          tr: '7/24 Özel Türkiye Havaalanı Transferi Viber İletişim',
+        },
+      }
+    },
     email: {
+      info: 'info@airporttransferhub.com', 
+      reservation: 'reservation@airporttransferhub.com', 
+      support: 'support@airporttransferhub.com', 
       anchor: {
         ariaLabel: {
           en: '24/7 Private Turkey Airport Transfer Contact via Email', 
@@ -194,6 +267,11 @@ export const SOCIAL_ICONS: any = {
       }
     },
     phone: {
+      number: '+905541398307',
+      formatted: '+90 554 139 8307',
+      numberWithOutPlus: '905541398307',
+      numberForInternalCall: '05541398307',
+      numberWithoutCountryCode: '5541398307',
       anchor: {
         ariaLabel: {
           en: '24/7 Private Turkey Airport Transfer Contact via Phone', 
@@ -217,6 +295,36 @@ export const SOCIAL_ICONS: any = {
         },
       }
     }, 
+    location: {
+      address: {
+        en: 'Altıntaş Mahallesi, Deniz Yıldızı Sitesi, C Blok, No:4, Aksu/Antalya, Turkey',
+        de: 'Altıntaş Mahallesi, Deniz Yıldızı Sitesi, C Blok, No:4, Aksu/Antalya, Türkei',
+        ru: 'Altıntaş Mahallesi, Deniz Yıldızı Sitesi, C Blok, No:4, Aksu/Antalya, Турция',
+        tr: 'Altıntaş Mahallesi, Deniz Yıldızı Sitesi, C Blok, No:4, Aksu/Antalya, Türkiye', 
+      }, 
+      anchor: {
+        ariaLabel: {
+          en: '24/7 Private Turkey Airport Transfer Location', 
+          de: '24/7 Privater Türkei Flughafentransfer Standort',
+          ru: '24/7 Частный Турецкий трансфер из аэропорта Местоположение',
+          tr: '7/24 Özel Türkiye Havaalanı Transferi Konum',
+        },
+      },
+      image: {
+        name: {
+          en: '24-7-private-turkey-airport-transfer-location.svg',
+          de: '24-7-privater-turkei-flughafentransfer-standort.svg',
+          ru: '24-7-частный-турецкий-трансфер-из-аэропорта-местоположение.svg',
+          tr: '7-24-özel-turkiye-havaalani-transferi-konum.svg',
+        }, 
+        alt: {
+          en: '24/7 Private Turkey Airport Transfer Location', 
+          de: '24/7 Privater Türkei Flughafentransfer Standort',
+          ru: '24/7 Частный Турецкий трансфер из аэропорта Местоположение',
+          tr: '7/24 Özel Türkiye Havaalanı Transferi Konum',
+        },
+      }
+    },
     logo: {
       image: {
         name: {

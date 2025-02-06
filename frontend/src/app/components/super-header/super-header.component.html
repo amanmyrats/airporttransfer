@@ -3,61 +3,70 @@
 
         <!-- Contact Info -->
         <div class="contact-info">
-            <a href="https://wa.me/99365493616"  
+            <a href="{{ socialIcons.whatsapp.url }}"  
                 [attr.aria-label]="socialIcons.whatsapp.anchor.ariaLabel[currentLanguage.code]" 
                 target="_blank" rel="noopener">
                 <img [src]="'images/socialicons/' + socialIcons.whatsapp.image.name[currentLanguage.code]" 
                     [alt]="socialIcons.whatsapp.image.alt[currentLanguage.code]" 
                     style="max-height: 20px; width: 20px; height: 20px;"/> 
-                +90 555 555 5555
+                {{ socialIcons.phone.formatted }}
             </a>
-            <a href="https://t.me/amanmyrats"  
+            <a href="{{ socialIcons.telegram.url }}"  
                 [attr.aria-label]="socialIcons.telegram.anchor.ariaLabel[currentLanguage.code]" 
                 target="_blank" rel="noopener">
                 <img [src]="'images/socialicons/' + socialIcons.telegram.image.name[currentLanguage.code]" 
                     [alt]="socialIcons.telegram.image.alt[currentLanguage.code]" 
                     style="max-height: 20px; width: 20px; height: 20px;"/> 
-                +90 555 555 5555
+                {{ socialIcons.phone.formatted }}
             </a>
         </div>
 
         <!-- Social Media Links -->
         <div class="social-media">
-            <a href="https://instagram.com/yourpage"  
+            <a href="{{ socialIcons.instagram.url }}"  
                 [attr.aria-label]="socialIcons.instagram.anchor.ariaLabel[currentLanguage.code]" 
                 target="_blank" rel="noopener">
                 <img [src]="'images/socialicons/' + socialIcons.instagram.image.name[currentLanguage.code]" 
                     [alt]="socialIcons.instagram.image.alt[currentLanguage.code]" 
                     style="max-height: 20px; width: 20px; height: 20px;"/> 
             </a>
-            <a href="https://facebook.com/yourpage"  
+            <a href="{{ socialIcons.facebook.url }}"  
                 [attr.aria-label]="socialIcons.facebook.anchor.ariaLabel[currentLanguage.code]" 
                 target="_blank" rel="noopener">
                 <img [src]="'images/socialicons/' + socialIcons.facebook.image.name[currentLanguage.code]" 
                     [alt]="socialIcons.facebook.image.alt[currentLanguage.code]" 
                     style="max-height: 20px; width: 20px; height: 20px;"/> 
             </a>
-            <a href="https://tiktok.com/yourpage"  
+            <a href="{{ socialIcons.tiktok.url }}"  
                 [attr.aria-label]="socialIcons.tiktok.anchor.ariaLabel[currentLanguage.code]" 
                 target="_blank" rel="noopener">
                 <img [src]="'images/socialicons/' + socialIcons.tiktok.image.name[currentLanguage.code]" 
                     [alt]="socialIcons.tiktok.image.alt[currentLanguage.code]" 
                     style="max-height: 20px; width: 20px; height: 20px;"/> 
             </a>
-            <a href="https://twitter.com/yourpage"  
+            <a href="{{ socialIcons.twitter.url }}"  
                 [attr.aria-label]="socialIcons.twitter.anchor.ariaLabel[currentLanguage.code]" 
                 target="_blank" rel="noopener">
                 <img [src]="'images/socialicons/' + socialIcons.twitter.image.name[currentLanguage.code]" 
                     [alt]="socialIcons.twitter.image.alt[currentLanguage.code]" 
                     style="max-height: 20px; width: 20px; height: 20px;"/> 
             </a>
-            <a href="https://linkedin.com/yourpage"  
+            <a href="{{ socialIcons.linkedin.url }}"  
                 [attr.aria-label]="socialIcons.linkedin.anchor.ariaLabel[currentLanguage.code]" 
                 target="_blank" rel="noopener">
                 <img [src]="'images/socialicons/' + socialIcons.linkedin.image.name[currentLanguage.code]" 
                     [alt]="socialIcons.linkedin.image.alt[currentLanguage.code]" 
                     style="max-height: 20px; width: 20px; height: 20px;"/> 
             </a>
+
+            <a href="{{ socialIcons.vKontakte.url }}"  
+                [attr.aria-label]="socialIcons.vKontakte.anchor.ariaLabel[currentLanguage.code]" 
+                target="_blank" rel="noopener">
+                <img [src]="'images/socialicons/' + socialIcons.vKontakte.image.name[currentLanguage.code]" 
+                    [alt]="socialIcons.vKontakte.image.alt[currentLanguage.code]" 
+                    style="max-height: 20px; width: 20px; height: 20px;"/> 
+            </a>
+
         </div>
 
         <div class="social-media">

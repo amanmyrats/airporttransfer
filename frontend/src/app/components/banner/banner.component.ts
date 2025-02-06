@@ -1,4 +1,4 @@
-import { Component, inject, Inject, input, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, inject, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingBannerFormComponent } from '../booking-banner-form/booking-banner-form.component';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
