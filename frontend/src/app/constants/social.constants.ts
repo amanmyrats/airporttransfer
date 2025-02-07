@@ -56,7 +56,7 @@ export const SOCIAL_ICONS: any = {
       }
     },
     facebook: {
-      url: 'https://www.facebook.com/profile.php?id=61572994704926#',
+      url: 'https://www.facebook.com/profile.php?id=61572994704926',
       anchor: {
         ariaLabel: {
           en: '24/7 Private Turkey Airport Transfer Contact on Facebook', 
