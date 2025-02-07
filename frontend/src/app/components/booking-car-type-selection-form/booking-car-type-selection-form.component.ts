@@ -7,6 +7,7 @@ import { PriceCalculatorService } from '../../services/price-calculator.service'
 import { CurrencyService } from '../../services/currency.service';
 import { ActivatedRoute } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
+import { SOCIAL_ICONS } from '../../constants/social.constants';
 
 @Component({
   selector: 'app-booking-car-type-selection-form',
@@ -17,6 +18,7 @@ import { LanguageService } from '../../services/language.service';
   styleUrl: './booking-car-type-selection-form.component.scss'
 })
 export class BookingCarTypeSelectionFormComponent implements OnInit {
+  socialIcons = SOCIAL_ICONS;
   maxDistance: number = 230;
 
   bookingService = inject(BookingService);
