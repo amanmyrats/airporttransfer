@@ -39,19 +39,19 @@
         </p>
         <ul class="contact-list">
             <li>
-                <a href="https://wa.me/123456789" target="_blank">
+                <a href="{{ socialIcons.whatsapp.url }}" target="_blank">
                 <img [src]="'images/socialicons/' + socialIcons.whatsapp.image.name[languageService.currentLang().code]" 
                 [alt]="socialIcons.whatsapp.image.alt[languageService.currentLang().code]" 
                 style="max-height: 20px; width: 20px; height: 20px;"/> 
-                    +123 456 789
+                    {{ socialIcons.whatsapp.phone }}
                 </a>
             </li>
             <li>
-                <a href="https://t.me/your_channel" target="_blank">
+                <a href="{{ socialIcons.telegram.url }}" target="_blank">
                     <img [src]="'images/socialicons/' + socialIcons.telegram.image.name[languageService.currentLang().code]" 
                     [alt]="socialIcons.telegram.image.alt[languageService.currentLang().code]" 
                     style="max-height: 20px; width: 20px; height: 20px;"/> 
-                    &#64;your_channel
+                    &#64;{{ socialIcons.telegram.username }}
                 </a>
             </li>
             <!-- <li>
