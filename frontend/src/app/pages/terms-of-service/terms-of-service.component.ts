@@ -4,6 +4,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { SOCIAL_ICONS } from '../../constants/social.constants';
 
 @Component({
   selector: 'app-terms-of-service',
@@ -16,6 +17,7 @@ import { Meta, Title } from '@angular/platform-browser';
   styleUrl: './terms-of-service.component.scss'
 })
 export class TermsOfServiceComponent implements OnInit {
+  socialIcons = SOCIAL_ICONS;
   currentLanguage: any = {
     code: 'en', 
     name: 'English',
