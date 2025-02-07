@@ -107,6 +107,32 @@ export const SOCIAL_ICONS: any = {
         },
       }
     },
+    youtube: {
+      username: 'airporttransferhub',
+      url: 'https://www.youtube.com/@airporttransferhub', 
+      anchor: {
+        ariaLabel: {
+          en: '24/7 Private Turkey Airport Transfer Contact on YouTube', 
+          de: '24/7 Privater Türkei Flughafentransfer Kontakt auf YouTube',
+          ru: '24/7 Частный Турецкий трансфер из аэропорта свяжитесь на YouTube',
+          tr: '7/24 Özel Türkiye Havaalanı Transferi YouTube üzerinden iletişime geçin',
+        },
+      },
+      image: {
+        name: {
+          en: '24-7-private-turkey-airport-transfer-youtube-contact.svg',
+          de: '24-7-privater-turkei-flughafentransfer-youtube-kontakt.svg',
+          ru: '24-7-частный-турецкий-трансфер-из-аэропорта-youtube-контакт.svg',
+          tr: '7-24-özel-turkiye-havaalani-transferi-youtube-ile-iletisim.svg',
+        }, 
+        alt: {
+          en: '24/7 Private Turkey Airport Transfer YouTube Contact', 
+          de: '24/7 Privater Türkei Flughafentransfer YouTube Kontakt',
+          ru: '24/7 Частный Турецкий трансфер из аэропорта YouTube контакт',
+          tr: '7/24 Özel Türkiye Havaalanı Transferi YouTube İletişim',
+        },
+      }
+    },
     twitter: {
       username: 'AirTransferHub', 
       url: 'https://x.com/AirTransferHub',
