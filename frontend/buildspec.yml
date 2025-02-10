@@ -14,16 +14,11 @@ phases:
   post_build:
     commands:
 
-      # - cd frontend
-      # - aws s3 sync ./dist/airporttransfer/browser s3://airporttransfer.com --delete
-      # - aws cloudfront create-invalidation --distribution-id E1MJNHUS0SC6E9 --paths "/*"
-      
-      # Copy HTML with short cache duration
-      - aws s3 cp ./dist/airporttransfer/browser/index.html s3://airporttransferhub.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
-      # - aws s3 cp ./dist/airporttransfer/browser/index.html s3://airporttransferhub.com/index.html --cache-control "max-age=86400, public"
-
       # Sync other files with longer cache duration
       - aws s3 sync ./dist/airporttransfer/browser s3://airporttransferhub.com --exclude "index.html" --delete --cache-control "max-age=86400,immutable"
+
+      # Copy HTML with short cache duration
+      - aws s3 cp ./dist/airporttransfer/browser/index.html s3://airporttransferhub.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
 
       # Copy sitemap.xml and robots.txt to the root of the bucket with 1 day cache
       - aws s3 cp ./sitemap.xml s3://airporttransferhub.com/sitemap.xml --cache-control "max-age=86400, public"
