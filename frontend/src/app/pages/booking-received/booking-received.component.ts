@@ -5,6 +5,7 @@ import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { SuperHeaderComponent } from '../../components/super-header/super-header.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from '../../components/footer/footer.component';
+import { SOCIAL_ICONS } from '../../constants/social.constants';
 
 @Component({
   selector: 'app-booking-received',
@@ -18,6 +19,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 })
 export class BookingReceivedComponent implements OnInit {
   navBarMenu: any = NAVBAR_MENU;
+  socialIcons: any = SOCIAL_ICONS;
   currentLanguage = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
     
   constructor(

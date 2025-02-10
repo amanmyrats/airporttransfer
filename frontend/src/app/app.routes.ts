@@ -158,25 +158,25 @@ export const routes: Routes = [
 
     // Booking received
     {
-        path: 'en/book-now-airport-transfer-in-turkey/received', 
+        path: 'en/book-now-24-7-private-airport-transfer-in-turkey/received', 
         // component: BookingReceivedComponent, 
         loadComponent: () => import('./pages/booking-received/booking-received.component').then(m => m.BookingReceivedComponent),
         data: { language: 'en' }  
     },
     {
-        path: 'de/jetzt-buchen-flughafen-transfer-in-der-türkei/received', 
+        path: 'de/jetzt-buchen-24-7-privater-flughafentransfer-in-der-türkei/received', 
         // component: BookingReceivedComponent, 
         loadComponent: () => import('./pages/booking-received/booking-received.component').then(m => m.BookingReceivedComponent),
         data: { language: 'de' }  
     },
     {
-        path: 'ru/забронировать-сейчас-трансфер-из-аэропорта-в-турции/received', 
+        path: 'ru/забронировать-сейчас-24-7-частный-трансфер-из-аэропорта-в-турции/received', 
         // component: BookingReceivedComponent, 
         loadComponent: () => import('./pages/booking-received/booking-received.component').then(m => m.BookingReceivedComponent),
         data: { language: 'ru' }  
     },
     {
-        path: 'tr/şimdi-rezervasyon-yap-türkiye-de-havalimanı-transferi/received', 
+        path: 'tr/türkiye-de-7-24-özel-havalimanı-transferi-şimdi-rezervasyon-yap/received', 
         // component: BookingReceivedComponent, 
         loadComponent: () => import('./pages/booking-received/booking-received.component').then(m => m.BookingReceivedComponent),
         data: { language: 'tr' }  
