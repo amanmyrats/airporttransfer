@@ -6,6 +6,7 @@ import { GmapsAutocompleteDirective } from '../../directives/gmaps-autocomplete.
 import { GoogleMapsService } from '../../services/google-maps.service';
 import { LanguageService } from '../../services/language.service';
 import { PriceCalculatorService } from '../../services/price-calculator.service';
+import { SOCIAL_ICONS } from '../../constants/social.constants';
 
 @Component({
   selector: 'app-booking-initial-form',
@@ -18,7 +19,7 @@ import { PriceCalculatorService } from '../../services/price-calculator.service'
   styleUrl: './booking-initial-form.component.scss'
 })
 export class BookingInitialFormComponent implements OnInit {
-  
+  socialIcon = SOCIAL_ICONS;
   bookingService = inject(BookingService);
   priceCalculatorService = inject(PriceCalculatorService);
   searchVehicle = output<any>();

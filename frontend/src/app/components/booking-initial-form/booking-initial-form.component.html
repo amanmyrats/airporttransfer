@@ -48,16 +48,16 @@
         </p>
         <ul class="contact-options">
           <li>
-            <strong>Email:</strong> <a href="mailto:support&#64;yourcompany.com">support&#64;yourcompany.com</a>
+            <strong>WhatsApp:</strong> <a href="{{ socialIcon.whatsapp.url }}" target="_blank">{{ socialIcon.phone.formatted }}</a>
           </li>
           <li>
-            <strong>Telefon:</strong> <a href="tel:+123456789">+123 456 789</a>
+            <strong>Telegram:</strong> <a href="{{ socialIcon.telegram.url }}" target="_blank">&#64;{{ socialIcon.telegram.username }}</a>
           </li>
           <li>
-            <strong>WhatsApp:</strong> <a href="https://wa.me/123456789" target="_blank">+123 456 789</a>
+            <strong>Telefon:</strong> <a href="tel:{{ socialIcon.phone.number }}">{{ socialIcon.phone.formatted }}</a>
           </li>
           <li>
-            <strong>Telegram:</strong> <a href="https://t.me/yourcompany" target="_blank">&#64;yourcompany</a>
+            <strong>Email:</strong> <a href="mailto:{{ socialIcon.email.support }}">{{ socialIcon.email.support }}</a>
           </li>
         </ul>
       } @else if (languageService.currentLang().code == 'ru') {
@@ -67,16 +67,16 @@
         </p>
         <ul class="contact-options">
           <li>
-            <strong>Email:</strong> <a href="mailto:support&#64;yourcompany.com">support&#64;yourcompany.com</a>
+            <strong>WhatsApp:</strong> <a href="{{ socialIcon.whatsapp.url }}" target="_blank">{{ socialIcon.phone.formatted }}</a>
           </li>
           <li>
-            <strong>Телефон:</strong> <a href="tel:+123456789">+123 456 789</a>
+            <strong>Telegram:</strong> <a href="{{ socialIcon.telegram.url }}" target="_blank">&#64;{{ socialIcon.telegram.username }}</a>
           </li>
           <li>
-            <strong>WhatsApp:</strong> <a href="https://wa.me/123456789" target="_blank">+123 456 789</a>
+            <strong>Телефон:</strong> <a href="tel:{{ socialIcon.phone.number }}">{{ socialIcon.phone.formatted }}</a>
           </li>
           <li>
-            <strong>Telegram:</strong> <a href="https://t.me/yourcompany" target="_blank">&#64;yourcompany</a>
+            <strong>Email:</strong> <a href="mailto:{{ socialIcon.email.support }}">{{ socialIcon.email.support }}</a>
           </li>
         </ul>
       } @else if (languageService.currentLang().code == 'tr') {
@@ -86,16 +86,16 @@
         </p>
         <ul class="contact-options">
           <li>
-            <strong>Email:</strong> <a href="mailto:support&#64;yourcompany.com">support&#64;yourcompany.com</a>
+            <strong>WhatsApp:</strong> <a href="{{ socialIcon.whatsapp.url }}" target="_blank">{{ socialIcon.phone.formatted }}</a>
           </li>
           <li>
-            <strong>Telefon:</strong> <a href="tel:+123456789">+123 456 789</a>
+            <strong>Telegram:</strong> <a href="{{ socialIcon.telegram.url }}" target="_blank">&#64;{{ socialIcon.telegram.username }}</a>
           </li>
           <li>
-            <strong>WhatsApp:</strong> <a href="https://wa.me/123456789" target="_blank">+123 456 789</a>
+            <strong>Telefon:</strong> <a href="tel:{{ socialIcon.phone.number }}">{{ socialIcon.phone.formatted }}</a>
           </li>
           <li>
-            <strong>Telegram:</strong> <a href="https://t.me/yourcompany" target="_blank">&#64;yourcompany</a>
+            <strong>Email:</strong> <a href="mailto:{{ socialIcon.email.support }}">{{ socialIcon.email.support }}</a>
           </li>
         </ul>
       } @else {
@@ -105,16 +105,16 @@
         </p>
         <ul class="contact-options">
           <li>
-            <strong>Email:</strong> <a href="mailto:support&#64;yourcompany.com">support&#64;yourcompany.com</a>
+            <strong>WhatsApp:</strong> <a href="{{ socialIcon.whatsapp.url }}" target="_blank">{{ socialIcon.phone.formatted }}</a>
           </li>
           <li>
-            <strong>Phone:</strong> <a href="tel:+123456789">+123 456 789</a>
+            <strong>Telegram:</strong> <a href="{{ socialIcon.telegram.url }}" target="_blank">&#64;{{ socialIcon.telegram.username }}</a>
           </li>
           <li>
-            <strong>WhatsApp:</strong> <a href="https://wa.me/123456789" target="_blank">+123 456 789</a>
+            <strong>Phone:</strong> <a href="tel:{{ socialIcon.phone.number }}">{{ socialIcon.phone.formatted }}</a>
           </li>
           <li>
-            <strong>Telegram:</strong> <a href="https://t.me/yourcompany" target="_blank">&#64;yourcompany</a>
+            <strong>Email:</strong> <a href="mailto:{{ socialIcon.email.support }}">{{ socialIcon.email.support }}</a>
           </li>
         </ul>
       }

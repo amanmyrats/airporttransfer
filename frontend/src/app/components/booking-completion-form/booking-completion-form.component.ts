@@ -15,6 +15,8 @@ import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { Currency } from '../../models/currency.model';
 import { DatePickerModule } from 'primeng/datepicker';
 
+declare var gtag: Function;
+
 @Component({
   selector: 'app-booking-completion-form',
   imports: [
@@ -158,7 +160,14 @@ export class BookingCompletionFormComponent implements OnInit {
       ...this.bookingService.bookingCompletionForm.value,
     });
     console.log('Booking Form:', this.bookingService.bookingForm.value);
+    console.log([`${this.languageService.currentLang().code}/${this.navbar.bookNow.slug[this.languageService.currentLang().code]}/received/`]);
     if (this.bookingService.bookingForm.valid) {
+      gtag('event', 'conversion', {
+        'send_to': 'AW-11545021785/bQeoCPKn_JsaENmajIEr',
+        'value': 1.0,
+        'currency': 'USD'
+      });
+
       this.isSaving = true;
       console.log('Form is valid');
       this.bookingService.createBooking(
