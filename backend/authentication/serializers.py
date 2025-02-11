@@ -1,7 +1,16 @@
+from datetime import timedelta
+
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token.set_exp(lifetime=timedelta(days=100))
+        return token
+
     def validate(self, attrs):
         data = super().validate(attrs)
 

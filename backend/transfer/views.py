@@ -3,6 +3,7 @@ import logging
 from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework import viewsets
@@ -98,6 +99,12 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
         ]:
             raise ValidationError("Onaylanmış rezervasyonlar silinemez.")
         return super().destroy(request, *args, **kwargs)
+
+    @action(detail=False, methods=['get'], url_path='number/(?P<reservation_number>[^/.]+)')
+    def get_by_reservation_number(self, request, reservation_number=None):
+        reservation = get_object_or_404(Reservation, number=reservation_number)
+        serializer = self.get_serializer(reservation)
+        return Response(serializer.data)
 
     @action(detail=False, methods=["get"])
     def export(self, request, *args, **kwargs):
