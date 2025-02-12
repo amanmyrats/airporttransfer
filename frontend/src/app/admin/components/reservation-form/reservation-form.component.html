@@ -40,15 +40,18 @@
                     </div>
                     <div class="money-currency">
                         <p-floatlabel variant="on">
-                            <p-select [fluid]="true" size="large" class="currency-select" [options]="currencies" formControlName="currency"
-                                optionLabel="code" optionValue="id" appendTo="body" id="currency">
-                                <ng-template let-currency pTemplate="item">
+                            <p-select [fluid]="true" size="large" 
+                                class="currency-select" [options]="supportedCurrencies" 
+                                formControlName="currency_code"
+                                optionLabel="code" optionValue="code" appendTo="body" 
+                                id="currency_code">
+                                <ng-template let-supportedCurrency pTemplate="item">
                                     <div class="flex align-items-center gap-2">
-                                        <div>{{ currency.code }}</div>
+                                        <div>{{ supportedCurrency.code }}</div>
                                     </div>
                                 </ng-template>
                             </p-select>
-                            <label for="currency">Birim</label>
+                            <label for="currency_code">Birim</label>
                         </p-floatlabel>
                     </div>
 

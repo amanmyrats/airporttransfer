@@ -21,6 +21,7 @@ import { ReservationService } from '../../services/reservation.service';
 import { CarType } from '../../../models/car-type.model';
 import { Currency } from '../../../models/currency.model';
 import { StepperModule } from 'primeng/stepper';
+import { SUPPORTED_CURRENCIES } from '../../../constants/currency.constants';
 
 @Component({
     selector: 'app-reservation-form',
@@ -46,6 +47,7 @@ import { StepperModule } from 'primeng/stepper';
     styleUrl: './reservation-form.component.scss'
 })
 export class ReservationFormComponent implements OnInit {
+  supportedCurrencies: any = SUPPORTED_CURRENCIES;
   currencies: Currency[] = [];
   carTypes: CarType[] = [];
   showMyDriver: boolean = false;
@@ -76,7 +78,7 @@ export class ReservationFormComponent implements OnInit {
   
       number: "",
       amount: null,
-      currency: "",
+      currency_code: "",
       
       reservation_date: new Date().toISOString().split('T')[0],
       car_type: "",
