@@ -17,8 +17,8 @@ export class RoleNameDirective implements OnChanges {
 
   private updateRoleValue(): void {
     if (this.roleKey && this.roleChoices) {
-      const role = this.roleChoices.find(role => role.key === this.roleKey);
-      this.elementRef.nativeElement.textContent = role ? role.value : 'İzın Yok';
+      const role = this.roleChoices.find(role => role.value === this.roleKey);
+      this.elementRef.nativeElement.textContent = role ? role.label : 'İzın Yok';
     } else {
       this.elementRef.nativeElement.textContent = '';
     }

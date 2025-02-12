@@ -16,7 +16,6 @@ import { SharedToolbarComponent } from '../../components/shared-toolbar/shared-t
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FilterSearchComponent } from '../../components/filter-search/filter-search.component';
 import { SharedPaginatorComponent } from '../../components/shared-paginator/shared-paginator.component';
-import { Role } from '../../models/role.model';
 import { RoleService } from '../../services/role.service';
 import { environment as env } from '../../../../environments/environment';
 import { HttpErrorPrinterService } from '../../../services/http-error-printer.service';
@@ -62,7 +61,6 @@ export class UserListComponent implements OnInit{
 
   constructor(
     private userService: UserService,
-    private roleService: RoleService,
     public dialogService: DialogService,
     public messageService: MessageService,
     private confirmationService: ConfirmationService,
