@@ -167,23 +167,6 @@ export class BookingCompletionFormComponent implements OnInit {
     if (this.bookingService.bookingForm.valid) {
 
 
-    // this.gtmService.pushTag({
-    //   event: 'button_click',
-    //   category: 'User Interaction',
-    //   label: 'Clicked CTA Button'
-    // });
-
-
-    //   gtag('event', 'conversion', {
-    //     'send_to': 'AW-11545021785/bQeoCPKn_JsaENmajIEr',
-    //     'value': 1.0,
-    //     'currency': 'USD'
-    //   });
-      dataLayer.push({
-        event: 'conversion_event',  // Must match the GTM trigger name
-        conversion_value: 1.0,
-        currency: 'USD'
-      });
       this.isSaving = true;
       console.log('Form is valid');
       this.bookingService.createBooking(
@@ -202,6 +185,26 @@ export class BookingCompletionFormComponent implements OnInit {
     } else {
       console.log('Form is invalid');
     }
+
+
+    // this.gtmService.pushTag({
+    //   event: 'button_click',
+    //   category: 'User Interaction',
+    //   label: 'Clicked CTA Button'
+    // });
+
+
+    //   gtag('event', 'conversion', {
+    //     'send_to': 'AW-11545021785/bQeoCPKn_JsaENmajIEr',
+    //     'value': 1.0,
+    //     'currency': 'USD'
+    //   });
+    dataLayer.push({
+      event: 'conversion_event',  // Must match the GTM trigger name
+      conversion_value: 1.0,
+      currency: 'USD'
+    });
+    
   }
 
   needChildSeatToggleChanged(event: any): void {
