@@ -194,16 +194,17 @@ export class BookingCompletionFormComponent implements OnInit {
     // });
 
 
-    //   gtag('event', 'conversion', {
-    //     'send_to': 'AW-11545021785/bQeoCPKn_JsaENmajIEr',
-    //     'value': 1.0,
-    //     'currency': 'USD'
-    //   });
-    dataLayer.push({
-      event: 'conversion_event',  // Must match the GTM trigger name
-      conversion_value: 1.0,
-      currency: 'USD'
-    });
+      gtag('event', 'conversion', {
+        'send_to': 'AW-11545021785/bQeoCPKn_JsaENmajIEr',
+        'value': 1.0,
+        'currency': 'USD'
+      });
+
+    // dataLayer.push({
+    //   event: 'conversion_event',  // Must match the GTM trigger name
+    //   conversion_value: 1.0,
+    //   currency: 'USD'
+    // });
     
   }
 
