@@ -28,7 +28,7 @@ export const appConfig: ApplicationConfig = {
             preset: Aura
         }
     }), 
+    provideGoogleTagManager({ id: 'GTM-WMWVRLJ4' }), // Replace with your GTM ID
 
-    provideGoogleTagManager({ id: 'GTM-WMWVRLJ4' })
   ]
 };
