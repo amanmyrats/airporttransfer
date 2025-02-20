@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Router, NavigationEnd } from '@angular/router';
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
@@ -11,14 +11,20 @@ import { GoogleTagManagerService } from 'angular-google-tag-manager';
 })
 export class AppComponent {
   title = 'airporttransfer';
-  constructor(private gtmService: GoogleTagManagerService, private router: Router) {
+
+  private gtmService = inject(GoogleTagManagerService);
+  private router = inject(Router);
+
+  constructor() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const gtmTag = {
-          event: 'page',
-          pageName: event.url
+          event: 'page_view',
+          pagePath: event.urlAfterRedirects
         };
+        console.log('before Pushing GTM Tag:', gtmTag);
         this.gtmService.pushTag(gtmTag);
+        console.log('after Pushing GTM Tag:', gtmTag);
       }
     });
   }
