@@ -9,6 +9,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideGoogleTagManager } from 'angular-google-tag-manager';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,6 +27,8 @@ export const appConfig: ApplicationConfig = {
         theme: {
             preset: Aura
         }
-    })
+    }), 
+
+    provideGoogleTagManager({ id: 'GTM-WMWVRLJ4' })
   ]
 };

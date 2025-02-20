@@ -14,8 +14,10 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { Currency } from '../../models/currency.model';
 import { DatePickerModule } from 'primeng/datepicker';
+import { GoogleTagManagerService } from 'angular-google-tag-manager';
 
 declare var gtag: Function;
+declare var dataLayer: any;
 
 @Component({
   selector: 'app-booking-completion-form',
@@ -95,6 +97,7 @@ export class BookingCompletionFormComponent implements OnInit {
     private router: Router,  
     public languageService: LanguageService, 
     private route: ActivatedRoute, 
+    private gtmService: GoogleTagManagerService, 
   ) {
     effect(() => {
       const existingCurrencyCode: string = this.bookingService.bookingCarTypeSelectionForm.get('currency_code')?.value;
@@ -162,12 +165,25 @@ export class BookingCompletionFormComponent implements OnInit {
     console.log('Booking Form:', this.bookingService.bookingForm.value);
     console.log([`${this.languageService.currentLang().code}/${this.navbar.bookNow.slug[this.languageService.currentLang().code]}/received/`]);
     if (this.bookingService.bookingForm.valid) {
-      gtag('event', 'conversion', {
-        'send_to': 'AW-11545021785/bQeoCPKn_JsaENmajIEr',
-        'value': 1.0,
-        'currency': 'USD'
-      });
 
+
+    // this.gtmService.pushTag({
+    //   event: 'button_click',
+    //   category: 'User Interaction',
+    //   label: 'Clicked CTA Button'
+    // });
+
+
+    //   gtag('event', 'conversion', {
+    //     'send_to': 'AW-11545021785/bQeoCPKn_JsaENmajIEr',
+    //     'value': 1.0,
+    //     'currency': 'USD'
+    //   });
+      dataLayer.push({
+        event: 'conversion_event',  // Must match the GTM trigger name
+        conversion_value: 1.0,
+        currency: 'USD'
+      });
       this.isSaving = true;
       console.log('Form is valid');
       this.bookingService.createBooking(
