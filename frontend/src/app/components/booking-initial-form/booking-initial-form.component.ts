@@ -7,6 +7,7 @@ import { GoogleMapsService } from '../../services/google-maps.service';
 import { LanguageService } from '../../services/language.service';
 import { PriceCalculatorService } from '../../services/price-calculator.service';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { GoogleTagManagerService } from 'angular-google-tag-manager';
 
 @Component({
   selector: 'app-booking-initial-form',
@@ -30,6 +31,7 @@ export class BookingInitialFormComponent implements OnInit {
     private fb: FormBuilder, 
     private googleMapsService: GoogleMapsService, 
     public languageService: LanguageService, 
+    private gtmService: GoogleTagManagerService, 
   ) {
   }
 
@@ -97,6 +99,14 @@ export class BookingInitialFormComponent implements OnInit {
     } else {
       console.log('bookingInitialForm is invalid');
     }
+
+    // Send event to GTM
+    this.gtmService.pushTag({
+      event: 'book_now_initialform_click',
+      category: 'Booking',
+      action: 'Click',
+      label: 'Book Now Button'
+    });
   }
 
   onPickupPlaceChanged(place: google.maps.places.PlaceResult): void {

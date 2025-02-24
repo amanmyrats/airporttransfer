@@ -11,6 +11,7 @@ import { BookingService } from '../../services/booking.service';
 import { LanguageService } from '../../services/language.service';
 import { Router } from '@angular/router';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
+import { GoogleTagManagerService } from 'angular-google-tag-manager';
 
 @Component({
   selector: 'app-price-list',
@@ -47,7 +48,8 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     private googleMapsService: GoogleMapsService, 
     private bookingService: BookingService, 
     public languageService: LanguageService, 
-    private router: Router,
+    private router: Router, 
+    private gtmService: GoogleTagManagerService, 
   ) {
     this.mainLocations = this.mainLocationService.getMainLocations();
     this.popularRouteService.updatePopularRoutesSignal();
@@ -102,6 +104,14 @@ export class PriceListComponent implements OnInit, AfterViewInit {
         amount: carTypeSelectionFormValue.amount,
         currency_code: carTypeSelectionFormValue.currency_code
       },
+    });
+
+    // Send event to GTM
+    this.gtmService.pushTag({
+      event: 'book_now_initialform_click',
+      category: 'Booking',
+      action: 'Click',
+      label: 'Book Now Button'
     });
   }
 
