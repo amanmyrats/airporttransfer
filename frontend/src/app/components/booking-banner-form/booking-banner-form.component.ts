@@ -92,7 +92,7 @@ export class BookingBannerFormComponent {
 
     // Send event to GTM
     this.gtmService.pushTag({
-      event: 'book_now_banner_click',
+      event: 'book_now_click',
       category: 'Booking',
       action: 'Click',
       label: 'Book Now Button'
