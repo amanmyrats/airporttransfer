@@ -53,17 +53,29 @@
           [alt]="carType.image.alt[languageService.currentLang().code]" class="car-type-image" />
         <div class="car-type-info">
           <h2 class="car-type-name">{{ carType.name }}</h2>
-          <p class="car-type-price">
-            {{ translations.price[this.languageService.currentLang().code] }}
-            : 
-            <span>{{ carType.price }} {{ this.currencyService.currentCurrency().sign }}</span></p>
-          <button class="select-button" (click)="onCarTypeSelection(
-            carType, 
-            carType.price, 
-            this.currencyService.currentCurrency().code!, 
-            this.bookingService.bookingCarTypeSelectionForm.value.distance)">
-              {{ translations.select[this.languageService.currentLang().code] }}
+          @if ( carType.specialPrice ) {
+            <h4>{{ translations.specialPrice[this.languageService.currentLang().code] }}</h4>
+            <div class="contact-options">
+              <p>WhatsApp: <a href="{{ socialIcons.whatsapp.url }}" target="_blank">{{ socialIcons.phone.formatted }}</a></p>
+              <p>Telegram: <a href="{{ socialIcons.telegram.url }}" target="_blank">&#64;{{ socialIcons.telegram.username }}</a></p>
+              <p>Email: <a href="mailto:{{ socialIcons.email.info }}">{{ socialIcons.email.info                                      }}</a></p>
+              <!-- <p>Phone: <a href="tel:+123456789">{{ socialIcons.phone.formatted }}</a></p> -->
+            </div>
+          } @else {
+              <p class="car-type-price">
+
+              {{ translations.price[this.languageService.currentLang().code] }}
+              : 
+              <span>{{ carType.price }} {{ this.currencyService.currentCurrency().sign }}</span>
+            </p>
+            <button class="select-button" (click)="onCarTypeSelection(
+              carType, 
+              carType.price,
+              this.currencyService.currentCurrency().code!, 
+              this.bookingService.bookingCarTypeSelectionForm.value.distance)">
+            {{ translations.select[this.languageService.currentLang().code] }}
           </button>
+            }
         </div>
       </div>
     </div>

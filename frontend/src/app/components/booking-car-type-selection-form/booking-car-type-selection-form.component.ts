@@ -135,6 +135,8 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
       de: 'Die Entfernung ist zu groß, um einen Standardtarif zu berechnen. Bitte kontaktieren Sie uns für einen günstigen Preis.',
       ru: 'Расстояние слишком велико для расчета стандартной ставки. Пожалуйста, свяжитесь с нами, чтобы получить доступную цену.',
       tr: 'Mesafe standart bir ücret hesaplamak için çok uzun. Uygun fiyat için lütfen bizimle iletişime geçin.',
-    }
+    }, 
   }
+
+
 }

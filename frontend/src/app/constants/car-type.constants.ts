@@ -3,6 +3,7 @@ export const SUPPORTED_CAR_TYPES = [
         code: 'VITO', 
         name: 'Mercedes Vito', 
         pax: '1-6', 
+        specialPrice: false,
         image: {
             name: {
                 en: 'vito-24-7-private-airport-transfer-turkey.webp', 
@@ -24,6 +25,7 @@ export const SUPPORTED_CAR_TYPES = [
         code: 'SPRINTER', 
         name: 'Mercedes Sprinter', 
         pax: '1-15', 
+        specialPrice: false,
         image: {
             name: {
                 en: 'sprinter-24-7-private-airport-transfer-istanbul.webp', 
@@ -45,6 +47,7 @@ export const SUPPORTED_CAR_TYPES = [
         code: 'MAYBACH', 
         name: 'Mercedes Maybach S class', 
         pax: '1-2', 
+        specialPrice: true,
         image: {
             name: {
                 en: 'maybach-s-class-24-7-private-airport-transfer-antalya.webp', 
@@ -66,6 +69,7 @@ export const SUPPORTED_CAR_TYPES = [
         code: 'MINIBUS', 
         name: 'Minibus', 
         pax: '1-28', 
+        specialPrice: true,
         image: {
             name: {
                 en: 'minibus-24-7-private-airport-transfer-alanya-gazipasa.webp', 
