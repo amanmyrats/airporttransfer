@@ -14,7 +14,7 @@ export const AIRPORTS: any = [
             east: 33.0249 + MARGIN, 
             west: 32.8827 - MARGIN, 
         },
-        coefficient: 1.7,
+        coefficient: 1.5,
     },
     {
         name: 'bodrumMilas', 
@@ -24,7 +24,7 @@ export const AIRPORTS: any = [
             east: 27.7126 + MARGIN,
             west: 27.6188 - MARGIN,
         },
-        coefficient: 1.7,
+        coefficient: 1.5,
     },
     {
         name: 'izmirAdnanMenderes',
@@ -44,7 +44,7 @@ export const AIRPORTS: any = [
             east: 28.8515 + MARGIN,
             west: 28.6473 - MARGIN,
         },
-        coefficient: 1.3,
+        coefficient: 1.2,
     },
     {
         name: 'istanbulSabihaGokcen',
@@ -64,7 +64,7 @@ export const AIRPORTS: any = [
             east: 28.8228 + MARGIN,
             west: 28.7352 - MARGIN,
         },
-        coefficient: 1.3,
+        coefficient: 1.5,
     },
     {
         name: 'antalya', 

@@ -18,7 +18,7 @@
 //   }
 .banner {
   position: relative;
-  height: 100vh; /* Keeps the same height as before */
+  height: 70vh; /* Keeps the same height as before */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,3 +93,16 @@
   //   background-color: #0056b3;
   // }
   
+  // Mobile
+  @media (max-width: 576px) {
+
+    .banner-title {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+    
+    .banner-subtitle {
+      font-size: 0.9em;
+      margin-bottom: 20px;
+    }
+  }

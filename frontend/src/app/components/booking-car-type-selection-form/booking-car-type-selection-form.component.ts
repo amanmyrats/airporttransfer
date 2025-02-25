@@ -62,11 +62,16 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
   // Dynamically calculate prices based on current currency and distance
   calculatedPrices = computed(() =>
     this.carTypes.map((carType) => {
-      const priceInEuros = this.priceCalculatorService.calculatePrice(
-        this.bookingService.distance(), 
-        carType.coefficient!, 
-        this.bookingService.airportCoefficient()!
-      );
+      // const priceInEuros = this.priceCalculatorService.calculatePrice(
+      //   this.bookingService.distance(), 
+      //   carType.coefficient!, 
+      //   this.bookingService.airportCoefficient()!
+      // );
+      const priceInEuros = this.priceCalculatorService.calculateFixedPrice(
+          this.bookingService.distance(), 
+          carType, 
+          this.bookingService.airportCoefficient()!
+        );
       return {
         ...carType,
         price: this.priceCalculatorService.getRoundedPrice(

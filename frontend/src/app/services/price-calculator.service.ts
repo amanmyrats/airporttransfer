@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AIRPORTS } from '../constants/airport.constans';
+import { CarType } from '../models/car-type.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,16 @@ export class PriceCalculatorService {
     const effectiveDistance = Math.max(distanceKm, this.minimumDistanceKm);
     const basePrice = effectiveDistance * this.baseRatePerKm;
     return basePrice * carCoefficient * cityCoefficient;
+  }
+
+  calculateFixedPrice(distanceKm: number, carType: CarType, cityCoefficient: number = 1): number {
+    if (carType.code == 'VITO') {
+      return this.getVitoPrice(distanceKm) * cityCoefficient;
+    } else if (carType.code == 'SPRINTER') {
+      return this.getSprinterPrice(distanceKm) * cityCoefficient;
+    } else {
+      return 0
+    }
   }
 
   convertCurrency(priceInEuros: number, currency: string, rate: number): number {
@@ -53,6 +64,52 @@ export class PriceCalculatorService {
       }
     }
     return 1.0;
+  }
+
+  getVitoPrice(distance: number): number {
+      const pricingTable = [
+          { min: 0, max: 30, price: 30 },
+          { min: 31, max: 37, price: 35 },
+          { min: 38, max: 45, price: 40 },
+          { min: 46, max: 71, price: 45 },
+          { min: 71, max: 90, price: 50 },
+          { min: 91, max: 119, price: 60 },
+          { min: 120, max: 135, price: 70 },
+          { min: 136, max: 150, price: 80 },
+          { min: 151, max: 175, price: 120 },
+          { min: 176, max: 225, price: 150 },
+      ];
+
+      for (const range of pricingTable) {
+          if (distance >= range.min && distance <= range.max) {
+              return range.price;
+          }
+      }
+
+      return 0; // Return null if distance is out of range
+  }
+
+  getSprinterPrice(distance: number): number {
+    const sprinterPricingTable = [
+        { min: 0, max: 30, price: 40 },
+        { min: 31, max: 37, price: 50 },
+        { min: 38, max: 45, price: 60 },
+        { min: 46, max: 71, price: 70 },
+        { min: 71, max: 90, price: 80 },
+        { min: 91, max: 119, price: 100 },
+        { min: 120, max: 135, price: 120 },
+        { min: 136, max: 150, price: 140 },
+        { min: 151, max: 175, price: 160 },
+        { min: 176, max: 225, price: 180 },
+    ];
+
+    for (const range of sprinterPricingTable) {
+        if (distance >= range.min && distance <= range.max) {
+            return range.price;
+        }
+    }
+
+    return 0; // Return null if distance is out of range
   }
 
 }
