@@ -8,6 +8,7 @@ import { CurrencyService } from '../../services/currency.service';
 import { ActivatedRoute } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { GoogleTagManagerService } from 'angular-google-tag-manager';
 
 @Component({
   selector: 'app-booking-car-type-selection-form',
@@ -32,6 +33,7 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
   constructor(
     private route: ActivatedRoute, 
     public languageService: LanguageService,
+    private gtmService: GoogleTagManagerService, 
   ) {
     this.carTypes = SUPPORTED_CAR_TYPES;
   }
@@ -57,6 +59,14 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
     } else {
       console.log('CarType selection form is invalid');
     }
+
+    // Send event to GTM
+    this.gtmService.pushTag({
+      event: 'add_to_cart',
+      category: 'Booking',
+      action: 'Click',
+      label: 'Add to cart'
+    });
   }
 
   // Dynamically calculate prices based on current currency and distance

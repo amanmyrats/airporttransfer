@@ -200,6 +200,14 @@ export class BookingCompletionFormComponent implements OnInit {
         'currency': 'USD'
       });
 
+
+    // Send event to GTM
+    this.gtmService.pushTag({
+      event: 'begin_checkout',
+      category: 'Booking',
+      action: 'Click',
+      label: 'Begin Checkout'
+    });
     // dataLayer.push({
     //   event: 'conversion_event',  // Must match the GTM trigger name
     //   conversion_value: 1.0,

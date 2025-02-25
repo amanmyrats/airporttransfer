@@ -102,10 +102,10 @@ export class BookingInitialFormComponent implements OnInit {
 
     // Send event to GTM
     this.gtmService.pushTag({
-      event: 'book_now_click',
+      event: 'view_item',
       category: 'Booking',
       action: 'Click',
-      label: 'Book Now Button'
+      label: 'View Item'
     });
   }
 
