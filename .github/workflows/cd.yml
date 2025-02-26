@@ -74,7 +74,9 @@ jobs:
           password: ${{ secrets.PWD }}
           key: ${{ secrets.SSH_PEM_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "./frontend/dist/airporttransfer/server/*"
+          # source: "./frontend/dist/airporttransfer/server/*"
+          source: "$GITHUB_WORKSPACE/frontend/dist/airporttransfer/server/*"  # Absolute path
+
           target: "/home/ubuntu/airporttransferhub-server"
 
       - name: Restart Node.js Server on EC2
