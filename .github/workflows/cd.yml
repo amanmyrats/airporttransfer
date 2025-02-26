@@ -70,7 +70,7 @@ jobs:
           password: ${{ secrets.PWD }}
           key: ${{ secrets.SSH_PEM_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "frontend/dist/airporttransfer/server/*"  # Copy contents only
+          source: "frontend/dist/airporttransfer/server"
           target: "/home/ubuntu/airporttransferhub-server"
 
       - name: Restart Node.js Server on EC2
