@@ -52,6 +52,9 @@ jobs:
           aws s3 cp ./sitemap.xml s3://airporttransferhub.com/sitemap.xml --cache-control "max-age=86400, public"
           aws s3 cp ./robots.txt s3://airporttransferhub.com/robots.txt --cache-control "max-age=86400, public"
 
+          aws s3 sync ./dist/airporttransfer/server s3://airporttransferhub.com/server
+
+
       # Invalidate CloudFront cache
       - name: CloudFront Invalidation
         env:
@@ -74,9 +77,7 @@ jobs:
           password: ${{ secrets.PWD }}
           key: ${{ secrets.SSH_PEM_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          # source: "./frontend/dist/airporttransfer/server/*"
-          source: "$GITHUB_WORKSPACE/frontend/dist/airporttransfer/server/*"  # Absolute path
-
+          source: "./frontend/dist/airporttransfer/server/*"
           target: "/home/ubuntu/airporttransferhub-server"
 
       - name: Restart Node.js Server on EC2
