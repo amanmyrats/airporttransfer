@@ -41,7 +41,7 @@
               "discoverRoutes": false, 
               "routesFile": "routes.txt"
             },
-            "ssr": false,
+            "ssr": true,
             "allowedCommonJsDependencies": [
               "pako", 
               "dom-to-image-more"
