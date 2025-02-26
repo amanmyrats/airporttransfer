@@ -61,7 +61,7 @@ jobs:
         run: |
           aws cloudfront create-invalidation --distribution-id EFE0BEJMOHTXL --paths "/*"
 
-      Copy SSR server files to EC2 and restart Node.js server
+      # Copy SSR server files to EC2 and restart Node.js server
       - name: Deploy SSR Server to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
