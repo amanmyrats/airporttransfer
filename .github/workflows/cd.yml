@@ -70,10 +70,10 @@ jobs:
           password: ${{ secrets.PWD }}
           key: ${{ secrets.SSH_PEM_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script: |
-            rsync -avz --delete frontend/dist/airporttransfer/server/ ubuntu@${{ secrets.EC2_HOST_IP }}:/home/ubuntu/airporttransferhub-server/
-          # source: "frontend/dist/airporttransfer/server/"
-          # target: "/home/ubuntu/airporttransferhub-server"
+          # script: |
+          #   rsync -avz --delete frontend/dist/airporttransfer/server/ ubuntu@${{ secrets.EC2_HOST_IP }}:/home/ubuntu/airporttransferhub-server/
+          source: "frontend/dist/airporttransfer/server/."
+          target: "/home/ubuntu/airporttransferhub-server"
 
       - name: Restart Node.js Server on EC2
         uses: appleboy/ssh-action@v1.0.3
