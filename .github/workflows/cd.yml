@@ -66,13 +66,15 @@ jobs:
       # Copy SSR server files to EC2 and restart Node.js server
       - name: Deploy SSR Server to EC2
         uses: appleboy/scp-action@v0.1.4
+        run: |
+          cd frontend/dist/airporttransfer/server
         with:
           host: ${{ secrets.EC2_HOST_IP }}
           username: ${{ secrets.EC2_USERNAME }}
           password: ${{ secrets.PWD }}
           key: ${{ secrets.SSH_PEM_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "frontend/dist/airporttransfer/server/"
+          source: "."
           target: "/home/ubuntu/airporttransferhub-server"
 
       - name: Restart Node.js Server on EC2
