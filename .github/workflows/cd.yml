@@ -72,6 +72,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           source: "frontend/dist/airporttransfer/server"
           target: "/home/ubuntu/airporttransferhub-server"
+          
       # - name: Deploy SSR Server to EC2 using rsync
       #   uses: appleboy/ssh-action@v1.0.3
       #   with:
