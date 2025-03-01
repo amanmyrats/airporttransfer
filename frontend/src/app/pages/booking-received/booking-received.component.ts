@@ -41,6 +41,7 @@ export class BookingReceivedComponent implements OnInit {
             status: navigation.extras.state['oneWayInfo']['status'],
           }
         }
+        console.log('One Way Data:', oneWaydata);
 
         this.callbackService.TtAthNewOrderCallback(oneWaydata).subscribe({
           next: data => {
@@ -60,6 +61,7 @@ export class BookingReceivedComponent implements OnInit {
               status: navigation.extras.state['returnInfo']['status'],
             }
           }
+          console.log('Return Data:', return_data);
           this.callbackService.TtAthNewOrderCallback(return_data).subscribe({
             next: data => {
               console.log('New Return Order Callback:', data);
