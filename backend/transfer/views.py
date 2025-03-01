@@ -198,12 +198,12 @@ class BookingCreateAPIView(APIView):
                     round_trip_reservation = round_trip_serializer.save()
                     return Response(
                         {
-                            "departure": serializer.data,
+                            "one_way": serializer.data,
                             "return": round_trip_serializer.data,
                         },
                         status=status.HTTP_201_CREATED,
                     )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({"one_way": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 

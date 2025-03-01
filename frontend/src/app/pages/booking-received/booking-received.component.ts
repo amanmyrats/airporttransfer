@@ -33,15 +33,16 @@ export class BookingReceivedComponent implements OnInit {
   ) {
       const navigation = this.router.getCurrentNavigation();
       if (navigation?.extras.state) {
-        console.log('Reservation Number:', navigation.extras.state['number']);
-        console.log('Status:', navigation.extras.state['status']);
-        const data = {
+        console.log('One Way Info:', navigation.extras.state['oneWayInfo']);
+        console.log('Return Info:', navigation.extras.state['returnInfo']);
+        const oneWaydata = {
           order: {
-            number: navigation.extras.state['number'],
-            status: navigation.extras.state['status'],
+            number: navigation.extras.state['oneWayInfo']['number'],
+            status: navigation.extras.state['oneWayInfo']['status'],
           }
         }
-        this.callbackService.TtAthNewOrderCallback(data).subscribe({
+
+        this.callbackService.TtAthNewOrderCallback(oneWaydata).subscribe({
           next: data => {
             console.log('New Order Callback:', data);
           },
@@ -49,6 +50,25 @@ export class BookingReceivedComponent implements OnInit {
             console.error('New Order Callback Error:', error);
           }
         });
+
+        // If there is a return reservation, send a callback for it as well
+        const return_number = navigation.extras.state['returnInfo']['number'];
+        if (return_number) {
+          const return_data = {
+            order: {
+              number: return_number,
+              status: navigation.extras.state['returnInfo']['status'],
+            }
+          }
+          this.callbackService.TtAthNewOrderCallback(return_data).subscribe({
+            next: data => {
+              console.log('New Return Order Callback:', data);
+            },
+            error: error => {
+              console.error('New Return Order Callback Error:', error);
+            }
+          });
+        }
       }
   }
   

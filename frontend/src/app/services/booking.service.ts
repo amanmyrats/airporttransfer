@@ -140,8 +140,8 @@ export class BookingService {
 
   }  
 
-  createBooking(reservation: Reservation): Observable<Reservation> {
-    return this.http.post<Reservation>(`${env.baseUrl}${env.apiV1}${this.endPoint}`, reservation);
+  createBooking(reservation: Reservation): Observable<any> {
+    return this.http.post<any>(`${env.baseUrl}${env.apiV1}${this.endPoint}`, reservation);
   }
 
   mergeForms(): void {

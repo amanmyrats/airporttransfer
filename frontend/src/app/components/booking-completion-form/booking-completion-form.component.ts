@@ -174,12 +174,27 @@ export class BookingCompletionFormComponent implements OnInit {
           next: (createdReservation) => {
             console.log('Reservation created successfully:', createdReservation);
             this.isSaving = false;
+            let oneWayInfo = {}
+            let returnInfo = {}
+            if (createdReservation.one_way) {
+              oneWayInfo = {
+                number: createdReservation.one_way.number,
+                status: createdReservation.one_way.status,
+              }
+            }
+            if (createdReservation.return) {
+              returnInfo = {
+                number: createdReservation.return.number,
+                status: createdReservation.return.status,
+              }
+            }
+
             this.router.navigate(
               [`${this.languageService.currentLang().code}/${this.navbar.bookNow.slug[this.languageService.currentLang().code]}/received/`],
               {
                 state: {
-                  number: createdReservation.number,
-                  status: createdReservation.status,
+                  oneWayInfo: oneWayInfo,
+                  returnInfo: returnInfo,
                 },
               }
             );
