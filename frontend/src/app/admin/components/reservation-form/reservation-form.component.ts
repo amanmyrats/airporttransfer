@@ -22,6 +22,7 @@ import { CarType } from '../../../models/car-type.model';
 import { Currency } from '../../../models/currency.model';
 import { StepperModule } from 'primeng/stepper';
 import { SUPPORTED_CURRENCIES } from '../../../constants/currency.constants';
+import { CallbackService } from '../../../services/callback.service';
 
 @Component({
     selector: 'app-reservation-form',
@@ -70,7 +71,8 @@ export class ReservationFormComponent implements OnInit {
     private fb: FormBuilder,
     private dialogRef: DynamicDialogRef,
     private config: DynamicDialogConfig,
-    private httpErrorPrinter: HttpErrorPrinterService
+    private httpErrorPrinter: HttpErrorPrinterService, 
+    private callbackService: CallbackService,
     
   ){
     this.reservationForm = this.fb.group({
@@ -134,12 +136,48 @@ export class ReservationFormComponent implements OnInit {
       next: (reservation: Reservation) => {
         console.log("Reservation updated successfully");
         console.log(reservation);
+        const data = {
+          order: {
+            number: reservation['number'],
+            status: reservation['status'],
+          }
+        }
+        this.callbackService.TtAthNewOrderCallback(data).subscribe({
+          next: data => {
+            console.log('New Order Callback:', data);
+          },
+          error: error => {
+            console.error('New Order Callback Error:', error);
+          }
+        });
+
         this.dialogRef.close(reservation);
       },
       error: (error: any) => {
         this.httpErrorPrinter.printHttpError(error);
       }
     });
+
+    // if (navigation?.extras.state) {
+    //   console.log('Reservation Number:', navigation.extras.state['number']);
+    //   console.log('Status:', navigation.extras.state['status']);
+    //   const data = {
+    //     order: {
+    //       number: navigation.extras.state['number'],
+    //       status: navigation.extras.state['status'],
+    //     }
+    //   }
+    //   this.callbackService.TtAthNewOrderCallback(data).subscribe({
+    //     next: data => {
+    //       console.log('New Order Callback:', data);
+    //     },
+    //     error: error => {
+    //       console.error('New Order Callback Error:', error);
+    //     }
+    //   });
+    // }
+
+
   }
 
   getCurrencies(queryString: string = ''){
