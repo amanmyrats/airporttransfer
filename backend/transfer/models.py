@@ -119,3 +119,20 @@ class ContactUsMessage(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.email}"
+    
+
+# class Callback(models.Model):
+#     CALLBACK_TYPE_CHOICES = [
+#         ('new_reservation', 'Yeni Rezervasyon'),
+#         ('change_reservation', 'Rezervasyon Değişikliği')
+#     ]
+#     callback_type = models.CharField(max_length=255, choices=CALLBACK_TYPE_CHOICES)
+#     url = models.URLField()
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+
+#     class Meta:
+#         ordering = ['-created_at']
+#         constraints = [
+#             models.UniqueConstraint(fields=['callback_type', 'url'], name='unique_callback')
+#         ]

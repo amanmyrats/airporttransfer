@@ -22,9 +22,9 @@ export class AppComponent {
           event: 'page_view',
           pagePath: event.urlAfterRedirects
         };
-        console.log('before Pushing GTM Tag:', gtmTag);
+        // console.log('before Pushing GTM Tag:', gtmTag);
         this.gtmService.pushTag(gtmTag);
-        console.log('after Pushing GTM Tag:', gtmTag);
+        // console.log('after Pushing GTM Tag:', gtmTag);
       }
     });
   }

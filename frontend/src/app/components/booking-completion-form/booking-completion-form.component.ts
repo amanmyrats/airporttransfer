@@ -171,10 +171,18 @@ export class BookingCompletionFormComponent implements OnInit {
       console.log('Form is valid');
       this.bookingService.createBooking(
         this.bookingService.bookingForm.value).subscribe({
-          next: (response) => {
-            console.log('Reservation created successfully:', response);
+          next: (createdReservation) => {
+            console.log('Reservation created successfully:', createdReservation);
             this.isSaving = false;
-            this.router.navigate([`${this.languageService.currentLang().code}/${this.navbar.bookNow.slug[this.languageService.currentLang().code]}/received/`]);
+            this.router.navigate(
+              [`${this.languageService.currentLang().code}/${this.navbar.bookNow.slug[this.languageService.currentLang().code]}/received/`],
+              {
+                state: {
+                  number: createdReservation.number,
+                  status: createdReservation.status,
+                },
+              }
+            );
           },
           error: (error) => {
             console.error('Error creating reservation:', error);

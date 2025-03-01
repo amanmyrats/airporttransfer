@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { SuperHeaderComponent } from '../../components/super-header/super-header.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { CallbackService } from '../../services/callback.service';
 
 @Component({
   selector: 'app-booking-received',
@@ -26,12 +27,36 @@ export class BookingReceivedComponent implements OnInit {
     private route: ActivatedRoute, 
     private title: Title, 
     private meta: Meta, 
-  ) {}
+    private router: Router, 
+    private callbackService: CallbackService, 
+    
+  ) {
+      const navigation = this.router.getCurrentNavigation();
+      if (navigation?.extras.state) {
+        console.log('Reservation Number:', navigation.extras.state['number']);
+        console.log('Status:', navigation.extras.state['status']);
+        const data = {
+          order: {
+            number: navigation.extras.state['number'],
+            status: navigation.extras.state['status'],
+          }
+        }
+        this.callbackService.TtAthNewOrderCallback(data).subscribe({
+          next: data => {
+            console.log('New Order Callback:', data);
+          },
+          error: error => {
+            console.error('New Order Callback Error:', error);
+          }
+        });
+      }
+  }
   
   ngOnInit(): void {
     const languageCode = this.route.snapshot.data['language'] || 'en';
     this.currentLanguage.code = languageCode;
     this.setMetaTags(this.currentLanguage.code);
+
   }
 
   setMetaTags(langCode: string): void {
