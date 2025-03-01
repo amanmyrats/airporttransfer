@@ -142,7 +142,7 @@ export class ReservationFormComponent implements OnInit {
             status: reservation['status'],
           }
         }
-        this.callbackService.TtAthNewOrderCallback(data).subscribe({
+        this.callbackService.TtAthOrderChangeCallback(data).subscribe({
           next: data => {
             console.log('New Order Callback:', data);
           },
