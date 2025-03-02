@@ -68,16 +68,16 @@ export class PriceCalculatorService {
 
   getVitoPrice(distance: number): number {
       const pricingTable = [
-          { min: 0, max: 30, price: 30 },
-          { min: 31, max: 37, price: 35 },
-          { min: 38, max: 45, price: 40 },
-          { min: 46, max: 71, price: 45 },
-          { min: 71, max: 90, price: 50 },
-          { min: 91, max: 119, price: 60 },
-          { min: 120, max: 135, price: 70 },
-          { min: 136, max: 150, price: 80 },
-          { min: 151, max: 175, price: 120 },
-          { min: 176, max: 225, price: 150 },
+          { min: 0, max: 30, price: 20 },
+          { min: 31, max: 37, price: 25 },
+          { min: 38, max: 45, price: 30 },
+          { min: 46, max: 71, price: 35 },
+          { min: 71, max: 90, price: 40 },
+          { min: 91, max: 119, price: 45 },
+          { min: 120, max: 135, price: 50 },
+          { min: 136, max: 150, price: 60 },
+          { min: 151, max: 175, price: 80 },
+          { min: 176, max: 225, price: 100 },
       ];
 
       for (const range of pricingTable) {
@@ -91,16 +91,16 @@ export class PriceCalculatorService {
 
   getSprinterPrice(distance: number): number {
     const sprinterPricingTable = [
-        { min: 0, max: 30, price: 40 },
-        { min: 31, max: 37, price: 50 },
-        { min: 38, max: 45, price: 60 },
-        { min: 46, max: 71, price: 70 },
-        { min: 71, max: 90, price: 80 },
-        { min: 91, max: 119, price: 100 },
-        { min: 120, max: 135, price: 120 },
-        { min: 136, max: 150, price: 140 },
-        { min: 151, max: 175, price: 160 },
-        { min: 176, max: 225, price: 180 },
+        { min: 0, max: 30, price: 35 },
+        { min: 31, max: 37, price: 40 },
+        { min: 38, max: 45, price: 50 },
+        { min: 46, max: 71, price: 60 },
+        { min: 71, max: 90, price: 70 },
+        { min: 91, max: 119, price: 80 },
+        { min: 120, max: 135, price: 100 },
+        { min: 136, max: 150, price: 120 },
+        { min: 151, max: 175, price: 140 },
+        { min: 176, max: 225, price: 160 },
     ];
 
     for (const range of sprinterPricingTable) {
