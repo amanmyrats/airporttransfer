@@ -118,7 +118,7 @@
           </span>
         </h2>
         <div class="car-routes">
-          <ul class="destination-list">
+          <ul class="route-list">
         @for (popularRoute of carTypePopularRoutes; track popularRoute.id){
           @let currency_code = currencyService.currentCurrency().code!;
           @let price = priceCalculatorService.getRoundedPrice(
@@ -127,9 +127,16 @@
             currencyService.currentCurrency().rate!
             );
               <li>
-                <span class="destination-name">
-                  {{selectedLocation.code}}<span class="arrow">→</span>
-                  {{popularRoute.destination}}</span>
+                <span class="routes-info">
+                  <div class="airport-name">
+                    {{selectedLocation[languageService.currentLang().code]}}
+                    <!-- <span class="arrow">→</span> -->
+                  </div>
+                  <div class="destination-name">
+                    {{popularRoute.destination}}
+                  </div>
+                </span>
+
                 <span class="price">
                   {{ price }}
                   {{ currency_code }}
