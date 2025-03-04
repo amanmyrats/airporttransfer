@@ -12,12 +12,15 @@ import { LanguageService } from '../../services/language.service';
 import { Router } from '@angular/router';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
+import { MainLocation } from '../../models/main-location.model';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-price-list',
   imports: [
     TabsModule, 
     CommonModule, 
+    ButtonModule, 
   ],
   templateUrl: './price-list.component.html',
   styleUrl: './price-list.component.scss'
@@ -34,6 +37,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   popularRoutesSignal = this.popularRouteService.popularRoutesSignal;
   
   mainLocations: any[] = this.mainLocationService.getMainLocations();
+  selectedLocation: any | null = null;
 
   // private router! : Router;
   // isBrowser: boolean;
@@ -66,6 +70,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   }
   
   ngOnInit(): void {
+    this.showTransferPrices(this.mainLocations[0]);
   }
 
   bookRoute(
@@ -139,15 +144,37 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     or_equivalent: {
       'en': 'or equivalent', 
       'de': 'oder gleichwertig',
-      'tr': 'veya eşdeğeri',
       'ru': 'или эквивалент',
+      'tr': 'veya eşdeğeri',
     }, 
     book_now: {
       'en': 'Book Now',
       'de': 'Jetzt buchen',
-      'tr': 'Rezervasyon yap',
       'ru': 'Забронировать сейчас',
+      'tr': 'Rezervasyon yap',
+    },
+    transfer_prices: {
+      'en': 'Transfer Prices',
+      'de': 'Transferpreise',
+      'ru': 'Цены на трансфер',
+      'tr': 'Transfer Fiyatları',
     },
   };
+
+
+
+  showTransferPrices(location: MainLocation) {
+    this.selectedLocation = location;
+  }
+
+  // getTranslation(key: string): string {
+  //   // Implement your translation logic here
+  //   return key;
+  // }
+
+  // bookRoute(mainLocationName: string, destination: string, carType: string, price: number, currencyCode: string) {
+  //   // Implement your booking logic here
+  //   console.log(`Booking route from ${mainLocationName} to ${destination} with ${carType} for ${price} ${currencyCode}`);
+  // }
 
 }

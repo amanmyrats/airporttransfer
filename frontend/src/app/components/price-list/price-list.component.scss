@@ -93,13 +93,13 @@
     color: #007bff;
   }
 
-  .tabs-container .p-tab-list-tab-list {
-    display: flex;
-    justify-content: center; /* Centers the tabs horizontally */
-    align-items: center; /* Centers the tabs vertically if necessary */
-    // flex-wrap: wrap; /* Ensures tabs wrap to the next line on small screens */
-    // padding: 10px; /* Optional: Add padding for better spacing */
-  }
+  // .tabs-container .p-tab-list-tab-list {
+  //   display: flex;
+  //   justify-content: center; /* Centers the tabs horizontally */
+  //   align-items: center; /* Centers the tabs vertically if necessary */
+  //   // flex-wrap: wrap; /* Ensures tabs wrap to the next line on small screens */
+  //   // padding: 10px; /* Optional: Add padding for better spacing */
+  // }
   
   // .tabs-container p-tablist {
   //   display: flex; /* Ensures tabs are in a row */
@@ -107,5 +107,59 @@
   //   gap: 10px; /* Add spacing between tabs */
   //   flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
   // }
+
+  .airport-button-group {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    flex-wrap: wrap;
+    gap: 12px; /* Increased gap for better spacing */
+    margin-top: 5px;
+    margin-bottom: 5px; /* Increased margin */
+  }
   
+  :host ::ng-deep .airport-button-group .p-button {
+    padding: 5px 15px; /* Increased padding for larger buttons */
+    font-size: 1.2rem;
+    border-radius: 8px; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
   
+  :host ::ng-deep .active-airport-button {
+    background-color: #28a745 !important;
+    color: white !important;
+    font-weight: 900 !important;
+  }
+
+  .transfer-prices-title {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    color: #333;
+    text-align: center;
+  }
+
+  // For mobile
+  @media (max-width: 768px) {
+    .airport-button-group {
+      gap: 7px; /* Increased gap for better spacing */
+      margin-top: 2px;
+      margin-bottom: 2px; /* Increased margin */
+    }
+
+    :host ::ng-deep .airport-button-group .p-button {
+      font-size: 1rem;
+      transition: background-color 0.3s ease; /* Smooth transition */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+
+    .price-list {
+      gap: 20px;
+      padding: 5px;
+    }
+      
+  .car-section {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  }
