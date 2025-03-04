@@ -2,6 +2,8 @@ import { Component, inject, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingBannerFormComponent } from '../booking-banner-form/booking-banner-form.component';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-banner',
@@ -13,12 +15,14 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
   styleUrl: './banner.component.scss'
 })
 export class BannerComponent implements OnInit {
+  socialIcons = SOCIAL_ICONS;
   private router! : Router;
   isBrowser: boolean;
   currentLanguage = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
 
   constructor(@Inject(PLATFORM_ID) private platformId: any, 
     private route: ActivatedRoute, 
+    
 ) {
     if (typeof window !== 'undefined') {
       this.router = inject(Router);

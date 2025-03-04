@@ -55,6 +55,25 @@
           Book Now
         </button>
       </form> -->
+      <div class="floating-buttons">
+        
+        <a href="{{ socialIcons.whatsapp.url }}" target="_blank">
+          <img [src]="'images/socialicons/' + socialIcons.whatsapp.image.name[currentLanguage.code]" 
+          [alt]="socialIcons.whatsapp.image.alt[currentLanguage.code]" 
+          class="floating-chat whatsapp"
+          /> 
+          <!-- {{ socialIcons.whatsapp.phone }} -->
+        </a>
+        
+        <a href="{{ socialIcons.telegram.url }}" target="_blank">
+          <img [src]="'images/socialicons/' + socialIcons.telegram.image.name[currentLanguage.code]" 
+          [alt]="socialIcons.telegram.image.alt[currentLanguage.code]" 
+          class="floating-chat telegram"
+          /> 
+          <!-- &#64;{{ socialIcons.telegram.username }} -->
+        </a>
+    </div>
+      
     </div>
 
   </div>

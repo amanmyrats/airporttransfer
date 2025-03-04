@@ -172,10 +172,10 @@ export class BookingBannerFormComponent {
       tr: 'Şimdi rezervasyon yap',
     },
     orWriteToUs: {
-      en: 'Or write to us directly for 24/7 support, and we’ll help you find the best private airport transfer options in Turkey.', 
-      de: 'Oder schreiben Sie uns direkt für 24/7 Unterstützung, und wir helfen Ihnen, die besten privaten Flughafentransferoptionen in der Türkei zu finden.',
-      ru: 'Или напишите нам напрямую для круглосуточной поддержки, и мы поможем вам найти лучшие варианты частных трансферов из аэропорта в Турции.',
-      tr: 'Veya 7/24 destek için doğrudan bize yazın ve size Türkiye\'deki en iyi özel havalimanı transfer seçeneklerini bulmanıza yardımcı olalım.',
+      en: 'Or write to us directly for 24/7 support and reservation assistance.',
+      de: 'Oder schreiben Sie uns direkt für 24/7 Unterstützung und Reservierungshilfe.',
+      ru: 'Или напишите нам напрямую для круглосуточной поддержки и помощи в бронировании.',
+      tr: 'Veya 24/7 destek ve rezervasyon yardımı için doğrudan bize yazın.',
     }
   };
 }
