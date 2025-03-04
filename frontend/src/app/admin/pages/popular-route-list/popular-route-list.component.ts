@@ -16,6 +16,7 @@ import { SharedPaginatorComponent } from '../../components/shared-paginator/shar
 import { PopularRoute } from '../../models/popular-route.model';
 import { PopularRouteService } from '../../services/popular-route.service';
 import { PopularRouteFormComponent } from '../../components/popular-route-form/popular-route-form.component';
+import { ImportFormComponent } from '../../../components/import-form/import-form.component';
 
 @Component({
   selector: 'app-popular-route-list',
@@ -46,6 +47,8 @@ export class PopularRouteListComponent implements OnInit {
   totalRecords: number = 0;
 
   loading: boolean = false;
+  isImporting: boolean = false;
+  isExporting: boolean = false;
   popularRoutes: PopularRoute[] = [];
   ref: DynamicDialogRef | undefined;
 
@@ -54,7 +57,7 @@ export class PopularRouteListComponent implements OnInit {
     public dialogService: DialogService,
     public messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private httpErrorPrinter: HttpErrorPrinterService
+    private httpErrorPrinterService: HttpErrorPrinterService
   ) { }
 
   ngOnInit(): void {
@@ -85,6 +88,51 @@ export class PopularRouteListComponent implements OnInit {
     this.showForm();
   }
 
+
+  export(): void {
+    this.isExporting = true;
+    this.popularRouteService.handleExport(this.filterSearch.getQueryParams());
+    this.isExporting = false;
+  }
+
+  import(): void {
+    this.isImporting = true;
+    this.ref = this.dialogService.open(ImportFormComponent, {
+      header: 'Meşhur Güzergahları Topluca Yükle',
+      styleClass: 'fit-content-dialog',
+      contentStyle: { "overflow": "auto" },
+      width: '90%',
+      height: '90%',
+      baseZIndex: 10000, 
+      maximizable: true,
+      resizable: true,
+      closable: true,
+      modal: true,
+    });
+
+    this.ref.onClose.subscribe((file: File) => {
+      if (file) {
+        console.log("File to import: ", file);
+        this.popularRouteService.import(file).subscribe({
+          next: () => {
+            this.messageService.add(
+              { severity: 'success', summary: 'Success', detail: 'Meşhur Güzergahlar başarıyla yüklendi!' });
+            this.filterSearch.search();
+            this.isImporting = false;
+
+          },
+          error: (error: any) => {
+            this.httpErrorPrinterService.printHttpError(error);
+            this.isImporting = false;
+          }
+        });
+      } else {
+        this.isImporting = false;
+      }
+    });
+  }
+
+
   deleteObj(id: string) {
     this.confirmationService.confirm({
       message: 'Silmek istediğinizden emin misiniz?',
@@ -106,7 +154,7 @@ export class PopularRouteListComponent implements OnInit {
             this.filterSearch.search();
           },
           error: (err: HttpErrorResponse) => {
-            this.httpErrorPrinter.printHttpError(err);
+            this.httpErrorPrinterService.printHttpError(err);
           }
         });
       }

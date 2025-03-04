@@ -61,6 +61,15 @@
         <div class="item-wrapper">
 
             <p-floatlabel variant="on">
+                <p-select class="item" *ngIf="wantMainLocationFilter" [options]="mainLocations" formControlName="main_location"
+                    optionLabel="code" optionValue="code" (onChange)="onFilterChange()" showClear="true"
+                    appendTo="body" 
+                    placeholder="Ana Lokasyon Seçiniz"
+                    />
+                <label for="buttondisplay">Ana Lokasyon</label>
+            </p-floatlabel>
+
+            <p-floatlabel variant="on">
                 <p-select class="item" *ngIf="wantCarTypeFilter" [options]="carTypes" formControlName="car_type"
                     optionLabel="name" optionValue="id" (onChange)="onFilterChange()" showClear="true"
                     appendTo="body" 

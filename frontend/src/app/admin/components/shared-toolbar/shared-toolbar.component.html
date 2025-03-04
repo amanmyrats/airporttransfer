@@ -2,19 +2,21 @@
     <div class="p-toolbar-group-start">
         <p-button *ngIf="hasPermission(createRole) && wantCreate" icon="pi pi-plus" class="mr-2" (click)="create()">
             <ng-template pTemplate="icon">
-                <img src="images/icons/plus.svg" alt="Delete Icon" width="16" height="16" />
+                <img src="images/icons/plus.svg" alt="Add Icon" width="16" height="16" />
             </ng-template>
         </p-button>
         <p-button *ngIf="wantPrint" icon="pi pi-print" class="mr-2">
             Print
         </p-button>
-        <p-button *ngIf="wantExport" [loading]="isExporting" icon="pi pi-download" (click)="export()">
+        <p-button *ngIf="wantExport" [loading]="isExporting" label="Export" icon="pi pi-download" (click)="export()">
             <ng-template pTemplate="icon">
-                <img src="images/icons/cloud-download.svg" alt="Delete Icon" width="16" height="16" />
+                <img src="images/icons/cloud-download.svg" alt="Download Icon" width="16" height="16" />
             </ng-template>
         </p-button>
-        <p-button *ngIf="wantImport" [loading]="isImporting" icon="pi pi-upload" (click)="import()">
-            Upload
+        <p-button *ngIf="wantImport" [loading]="isImporting" label="Import" icon="pi pi-upload" (click)="import()">
+            <ng-template pTemplate="icon">
+                <img src="images/icons/cloud-upload.svg" alt="Upload Icon" width="16" height="16" />
+            </ng-template>
         </p-button>
     </div>
     <div class="p-toolbar-group-end">

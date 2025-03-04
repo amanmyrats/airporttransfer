@@ -11,6 +11,7 @@ import { InputIcon } from 'primeng/inputicon';
 import { Select } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';
 import { CommonService } from '../../../services/common.service';
+import { SUPPORTED_MAIN_LOCATIONS } from '../../../constants/main-location.constants';
 
 @Component({
     selector: 'app-filter-search', 
@@ -42,6 +43,7 @@ export class FilterSearchComponent implements OnInit{
   @Input() wantCarTypeFilter: boolean = false;
   @Input() wantRoleFilter: boolean = false;
   @Input() wantStatusFilter: boolean = false;
+  @Input() wantMainLocationFilter: boolean = false;
   
   @Input() wantDateFilter: boolean = false;
   @Input() wantYearFilter: boolean = false;
@@ -60,12 +62,14 @@ export class FilterSearchComponent implements OnInit{
   @Input() first: number = 0;
   @Input() rows: number = 2;
   @Input() totalRecords: number = 0;
-
+  
   @Output() searchEmitter: EventEmitter<any> = new EventEmitter();
   @Output() getStatusesEmitter: EventEmitter<any> = new EventEmitter();
   
   filterSearchForm: FormGroup;
   event: LazyLoadEvent = {};
+  
+  mainLocations: any[] = SUPPORTED_MAIN_LOCATIONS;
 
   constructor(
     private fb: FormBuilder, 
@@ -86,6 +90,7 @@ export class FilterSearchComponent implements OnInit{
       role: [''],
       status: [''],
       search: [''], 
+      main_location: [''],
       // page: [''],
       // page_size: [''],
       // ordering: [''],

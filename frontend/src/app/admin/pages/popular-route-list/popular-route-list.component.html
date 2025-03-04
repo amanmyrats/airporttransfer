@@ -1,13 +1,18 @@
 <app-filter-search 
     [first]="first"
-    [rows]="rows"
+    [rows]="rows" 
+    [wantMainLocationFilter]="true"
     (searchEmitter)="search($event)"
     >
 </app-filter-search>
 
 <app-shared-toolbar 
-    [wantCreate]="true"
+    [wantCreate]="true" 
+    [wantExport]="true" 
+    [wantImport]="true"
     (createEmitter)="createObj()" 
+    (exportEmitter)="export()"
+    (importEmitter)="import()"
     (searchEmitter)="search()">
 </app-shared-toolbar>
 <p-table [value]="popularRoutes" styleClass="p-datatable-striped p-datatable-gridlines"

@@ -1,0 +1,20 @@
+<p-panel>
+    <div class="p-grid p-fluid">
+        <div class="p-col-12">
+            <p-toast />
+            <p-fileUpload 
+                chooseLabel="CSV Seçiniz" 
+                chooseIcon="pi pi-upload" 
+                accept=".csv" 
+                maxFileSize="1000000"
+                [showUploadButton]="true" 
+                [showCancelButton]="true" 
+                uploadLabel="Yükle" 
+                cancelLabel="Temizle"
+                chooseIcon="pi pi-file" 
+                [customUpload]="true" 
+                (uploadHandler)="uploadExcel($event)" 
+                />
+        </div>
+    </div>
+</p-panel>
