@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { TabsModule } from 'primeng/tabs';
 import { CommonModule } from '@angular/common';
 import { MainLocationService } from '../../services/main-location.service';
@@ -26,6 +26,8 @@ import { ButtonModule } from 'primeng/button';
   styleUrl: './price-list.component.scss'
 })
 export class PriceListComponent implements OnInit, AfterViewInit {
+  @ViewChild('transferPricesContainer') transferPricesContainer!: ElementRef;
+
   navbar = NAVBAR_MENU;
   activeIndex: number = 1;
   mainLocationService = inject(MainLocationService);
@@ -70,7 +72,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   }
   
   ngOnInit(): void {
-    this.showTransferPrices(this.mainLocations[0]);
+    this.showTransferPrices(this.mainLocations[0], true);
   }
 
   bookRoute(
@@ -163,8 +165,19 @@ export class PriceListComponent implements OnInit, AfterViewInit {
 
 
 
-  showTransferPrices(location: MainLocation) {
+  showTransferPrices(location: MainLocation, triggeredInOnInit: boolean = false): void {
     this.selectedLocation = location;
+    
+    if (!triggeredInOnInit) {
+
+      // Wait for the view to update, then scroll
+      setTimeout(() => {
+        this.transferPricesContainer?.nativeElement.scrollIntoView({
+          behavior: 'smooth', // Smooth scrolling
+          block: 'start' // Scroll to the top of the viewport
+        });
+      }, 100);
+    }
   }
 
   // getTranslation(key: string): string {

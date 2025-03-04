@@ -82,8 +82,9 @@
 </div> -->
 
 
-<div class="airport-button-group">
-  <p-button severity="secondary"
+<div #transferPricesContainer  class="airport-button-group">
+  <p-button 
+  severity="secondary"
   *ngFor="let mainLocation of mainLocations"
   [label]="mainLocation.short[languageService.currentLang().code]"
   (click)="showTransferPrices(mainLocation)"
