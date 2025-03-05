@@ -13,6 +13,7 @@ import { HttpErrorPrinterService } from '../../../services/http-error-printer.se
 import { FormErrorPrinterService } from '../../../services/form-error-printer.service';
 import { Reservation } from '../../models/reservation.model';
 import { ReservationService } from '../../services/reservation.service';
+import { CallbackService } from '../../../services/callback.service';
 
 @Component({
     selector: 'app-status-form',
@@ -45,6 +46,8 @@ export class StatusFormComponent implements OnInit {
     private reservationService: ReservationService,
     private httpErrorPrinter: HttpErrorPrinterService, 
     private formErrorPrinter: FormErrorPrinterService, 
+    private callbackService: CallbackService,
+    
   ) {
     this.statusForm = this.fb.group({
       id: [''],
@@ -70,6 +73,20 @@ export class StatusFormComponent implements OnInit {
         this.reservationService.updateStatus(this.reservation?.id!, this.statusForm.value).subscribe({
           next: (reservation: Reservation) => {
             console.log('Reservation status updated:', reservation);
+            const data = {
+              order: {
+                number: reservation['number'],
+                status: reservation['status'],
+              }
+            }
+            this.callbackService.TtAthOrderChangeCallback(data).subscribe({
+              next: data => {
+                console.log('New Order Callback:', data);
+              },
+              error: error => {
+                console.error('New Order Callback Error:', error);
+              }
+            });
             this.dialogRef.close(reservation);
           },
           error: (err: HttpErrorResponse) => {
