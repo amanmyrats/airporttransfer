@@ -9,18 +9,28 @@
   .car-section {
     border: 1px solid #ddd;
     border-radius: 10px;
-    overflow: hidden;
-    width: 320px;
+    // overflow: hidden;
+    // width: 320px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #f9f9f9;
-  }
-  
-  .car-image {
+
+    display: flex;
     width: 100%;
-    height: auto;
   }
   
+  .car-image-and-title {
+    // width: 100%;
+    // height: auto;
+    max-width: 320px;
+    min-width: 320px;
+    // max-height: 230px;
+  }
+  .car-image {
+
+    max-width: 320px;
+    max-height: 230px;
+  }
   .car-title {
     font-size: 1.8em;
     margin: 10px 0;
@@ -46,6 +56,8 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-wrap: wrap;
   }
 
   // .route-list hover
@@ -60,10 +72,15 @@
     padding: 10px 15px;
     border-bottom: 2px solid #ddd;
     border-top: 2px solid #ddd;
+    border-right: 2px solid #ddd;
+    border-left: 2px solid #ddd;
+    
+    max-width: 300px;
+    border-radius: 10px;
   }
   
   .route-list li:last-child {
-    border-bottom: none;
+    // border-bottom: none;
   }
   
   .routes-info {
@@ -75,6 +92,7 @@
     text-align: left;
     margin: 0;
     padding: 0;
+    color: #656565;
   }
 
   .destination-name {
@@ -83,6 +101,7 @@
     color: #5d5a5a;
     display: flex;
     align-items: start;
+    text-align: left;
   }
   
   .price {
@@ -161,6 +180,25 @@
 
   // For mobile
   @media (max-width: 768px) {
+    .car-section {
+      overflow: hidden;
+      max-width: 400px;
+      width: 100%;
+
+      display: flex;
+      flex-direction: column;
+  
+    }
+
+    .car-image-and-title {
+      width: 100%;
+      height: auto;
+    }
+    .car-image {
+  
+      width: 100%;
+      height: auto;
+    }
     .airport-button-group {
       gap: 7px; /* Increased gap for better spacing */
       margin-top: 2px;
@@ -178,9 +216,5 @@
       padding: 5px;
     }
       
-  .car-section {
-    width: 100%;
-    max-width: 400px;
-  }
   
   }

@@ -101,23 +101,27 @@
       @let carTypePopularRoutes = popularRouteService.getPopularRoutesByMainLocationCodeAndCarType(selectedLocation.code!, carType.code!);
       @if (carTypePopularRoutes.length > 0) {
       <div class="car-section">
-        <img src="images/cartypes/{{ carType.image.name[languageService.currentLang().code] }}"
-          alt="{{ carType.image.alt[languageService.currentLang().code] }}"
-            class="car-image"
-            style="width: 100%;"
-            />
-        <h2 class="car-title">{{carType.name}}
-          <br>
-          <span class="icon">
-            <i class="pi pi-user">
-            <img src="images/icons/user.svg" alt="user" style="width: 1rem; height: 1rem;">
-            {{carType.pax}},
-          </i>
-          </span>
-          <span>
-            {{getTranslation('or_equivalent')}}
-          </span>
-        </h2>
+        <div class="car-image-and-title">
+          
+          <img src="images/cartypes/{{ carType.image.name[languageService.currentLang().code] }}"
+            alt="{{ carType.image.alt[languageService.currentLang().code] }}"
+              class="car-image"
+              style="width: 100%;"
+              />
+          <h2 class="car-title">{{carType.name}}
+            <br>
+            <span class="icon">
+              <i class="pi pi-user">
+              <img src="images/icons/user.svg" alt="user" style="width: 1rem; height: 1rem;">
+              {{carType.pax}},
+            </i>
+            </span>
+            <span>
+              {{getTranslation('or_equivalent')}}
+            </span>
+          </h2>
+
+        </div>
         <div class="car-routes">
           <ul class="route-list">
         @for (popularRoute of carTypePopularRoutes; track popularRoute.id){
