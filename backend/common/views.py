@@ -50,7 +50,7 @@ class PopularRouteModelViewSet(viewsets.ModelViewSet):
     filterset_class = PopularRouteFilterSet
     search_fields = ('main_location', 'destination', 'car_type',)
     ordering_fields = ('main_location', 'destination', 'car_type',)
-    ordering = ('main_location', 'destination', 'car_type',)
+    ordering = ('main_location', 'car_type', 'euro_price', 'destination',)
 
     def get_authenticators(self):
         if self.request.resolver_match.view_name.endswith('list'):

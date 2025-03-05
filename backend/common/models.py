@@ -47,6 +47,7 @@ class PopularRoute(models.Model):
 
     class Meta:
         unique_together = ('main_location', 'destination', 'car_type')
+        ordering = ['main_location', 'car_type', 'euro_price', 'destination']
 
     def __str__(self):
         return f"{self.main_location} - {self.to} - {self.euro_price}"
