@@ -140,8 +140,9 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
             instance=self.get_object(), data=request.data, partial=True
         )
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            reservation = serializer.save()
+            serialized_data = ReservationModelSerializer(reservation).data
+            return Response(serialized_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=["get"])
