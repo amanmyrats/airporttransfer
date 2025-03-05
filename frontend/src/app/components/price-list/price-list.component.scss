@@ -87,7 +87,6 @@
     font-weight: bold;
     color: #555;
   }
-
   .airport-name {
     text-align: left;
     margin: 0;
@@ -133,21 +132,6 @@
     color: #007bff;
   }
 
-  // .tabs-container .p-tab-list-tab-list {
-  //   display: flex;
-  //   justify-content: center; /* Centers the tabs horizontally */
-  //   align-items: center; /* Centers the tabs vertically if necessary */
-  //   // flex-wrap: wrap; /* Ensures tabs wrap to the next line on small screens */
-  //   // padding: 10px; /* Optional: Add padding for better spacing */
-  // }
-  
-  // .tabs-container p-tablist {
-  //   display: flex; /* Ensures tabs are in a row */
-  //   justify-content: center; /* Centers the tabs */
-  //   gap: 10px; /* Add spacing between tabs */
-  //   flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
-  // }
-
   .airport-button-group {
     display: flex;
     justify-content: center; /* Center buttons horizontally */
@@ -189,9 +173,15 @@
       flex-direction: column;
   
     }
+    .route-list li {
+      width: 100%;
+      max-width: none;
+      border-radius: 10px;
+    }
 
     .car-image-and-title {
       width: 100%;
+      max-width: none;
       height: auto;
     }
     .car-image {
