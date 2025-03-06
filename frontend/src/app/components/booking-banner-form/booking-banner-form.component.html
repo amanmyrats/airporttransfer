@@ -29,7 +29,7 @@
     <label for="pickup-time" i18n="@@form.time">Pickup Time</label>
     <input type="time" id="pickup-time" name="pickup-time" />
     </div> -->
-    <button (click)="onSubmit()" type="submit" class="btn btn-primary" i18n="@@form.submit">
+    <button pButton [loading]="isBookNowLoading" (click)="onSubmit()" type="submit" class="btn btn-primary" i18n="@@form.submit">
         {{ getTranslation('bookNow') }}
     </button>
 

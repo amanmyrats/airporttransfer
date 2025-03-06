@@ -9,18 +9,21 @@ import { PriceCalculatorService } from '../../services/price-calculator.service'
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-booking-banner-form',
   imports: [
     GmapsAutocompleteDirective, 
     FormsModule, ReactiveFormsModule, 
+    ButtonModule, 
   ],
   templateUrl: './booking-banner-form.component.html',
   styleUrl: './booking-banner-form.component.scss'
 })
 export class BookingBannerFormComponent {
   socialIcons = SOCIAL_ICONS;
+  isBookNowLoading: boolean = false;
 
   constructor(
     public googleMapsService: GoogleMapsService, 
@@ -100,6 +103,7 @@ export class BookingBannerFormComponent {
   }
 
   onPickupPlaceChanged(place: google.maps.places.PlaceResult): void {
+    this.isBookNowLoading = true;
     console.log('Pickup place selected:', place);
     const pickup_full = this.googleMapsService.getFormattedAddress(place);
     const pickup_lat = this.googleMapsService.getLatitude(place);
@@ -107,9 +111,11 @@ export class BookingBannerFormComponent {
     this.bookingService.bookingInitialForm.patchValue({
       pickup_full: pickup_full, pickup_lat: pickup_lat, pickup_lng: pickup_lng
     });
+    this.isBookNowLoading = false;
   }
 
   onDestPlaceChanged(place: google.maps.places.PlaceResult): void {
+    this.isBookNowLoading = true;
     console.log('Destination place selected:', place);
     const dest_full = this.googleMapsService.getFormattedAddress(place);
     const dest_lat = this.googleMapsService.getLatitude(place);
@@ -117,6 +123,7 @@ export class BookingBannerFormComponent {
     this.bookingService.bookingInitialForm.patchValue({
       dest_full: dest_full, dest_lat: dest_lat, dest_lng: dest_lng
     });
+    this.isBookNowLoading = false;
   }
 
   preventFormSubmit(event: KeyboardEvent): void {
