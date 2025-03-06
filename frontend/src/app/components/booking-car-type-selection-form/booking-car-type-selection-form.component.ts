@@ -9,11 +9,13 @@ import { ActivatedRoute } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
+import { PriceListComponent } from '../price-list/price-list.component';
 
 @Component({
   selector: 'app-booking-car-type-selection-form',
   imports: [
     CommonModule, 
+    PriceListComponent,
   ],
   templateUrl: './booking-car-type-selection-form.component.html',
   styleUrl: './booking-car-type-selection-form.component.scss'
@@ -151,6 +153,12 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
       ru: 'Расстояние слишком велико для расчета стандартной ставки. Пожалуйста, свяжитесь с нами, чтобы получить доступную цену.',
       tr: 'Mesafe standart bir ücret hesaplamak için çok uzun. Uygun fiyat için lütfen bizimle iletişime geçin.',
     }, 
+    fixedPrices: {
+      en: 'Or You can choose from fixed prices...',
+      de: 'Oder Sie können aus Festpreisen wählen...',
+      ru: 'Или вы можете выбрать из фиксированных цен...',
+      tr: 'Ya da sabit fiyatlar arasından seçim yapabilirsiniz...',
+    }
   }
 
 

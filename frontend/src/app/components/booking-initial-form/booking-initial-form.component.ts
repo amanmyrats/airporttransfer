@@ -8,6 +8,7 @@ import { LanguageService } from '../../services/language.service';
 import { PriceCalculatorService } from '../../services/price-calculator.service';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
+import { PriceListComponent } from '../price-list/price-list.component';
 
 @Component({
   selector: 'app-booking-initial-form',
@@ -15,6 +16,7 @@ import { GoogleTagManagerService } from 'angular-google-tag-manager';
     CommonModule, 
     FormsModule, ReactiveFormsModule, 
     GmapsAutocompleteDirective, 
+    PriceListComponent, 
   ],
   templateUrl: './booking-initial-form.component.html',
   styleUrl: './booking-initial-form.component.scss'
@@ -190,6 +192,12 @@ export class BookingInitialFormComponent implements OnInit {
       de: 'Planen Sie Ihre Reise in nur wenigen Schritten. Wählen Sie Ihr Ziel, Datum und Uhrzeit und genießen Sie ein nahtloses Reiseerlebnis.',
       ru: 'Запланируйте свое путешествие всего в несколько шагов. Выберите ваш пункт назначения, дату и время и наслаждайтесь безупречным путешествием.',
       tr: 'Yolculuğunuzu sadece birkaç adımda planlayın. Gidilecek yerinizi, tarihinizi ve saatinizi seçin ve sorunsuz bir seyahat deneyiminin tadını çıkarın.',
-    },
+    }, 
+    fixedPrices: {
+      en: 'Or You can choose from fixed prices...',
+      de: 'Oder Sie können aus Festpreisen wählen...',
+      ru: 'Или вы можете выбрать из фиксированных цен...',
+      tr: 'Ya da sabit fiyatlar arasından seçim yapabilirsiniz...',
+    }
   }
 }

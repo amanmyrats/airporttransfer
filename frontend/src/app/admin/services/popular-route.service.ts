@@ -11,6 +11,7 @@ import { saveAs } from 'file-saver-es';
 })
 export class PopularRouteService {
   endPoint: string = "common/popularroutes/";
+  isLoadingPricesSignal = signal<boolean>(true);
 
   popularRoutesSignal = signal<PopularRoute[]>([]);
 
@@ -44,6 +45,7 @@ export class PopularRouteService {
         this.popularRoutesSignal.set(paginatedResponse.results!);
         console.log('Fetched popular places and set it to signal')
         console.log(paginatedResponse.results!)
+        this.isLoadingPricesSignal.set(false);
       }, 
       error: (err: any) => {
         console.log('Error while fething popuplar places');

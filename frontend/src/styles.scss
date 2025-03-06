@@ -4,3 +4,9 @@ body {
     padding: 0;
     box-sizing: border-box;
 }
+@media (prefers-color-scheme: dark) {
+    :root {
+      background-color: white !important;
+      color: black !important;
+    }
+  }

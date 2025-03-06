@@ -14,6 +14,7 @@ import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { MainLocation } from '../../models/main-location.model';
 import { ButtonModule } from 'primeng/button';
+import { PricesLoadingComponent } from '../prices-loading/prices-loading.component';
 
 @Component({
   selector: 'app-price-list',
@@ -21,6 +22,7 @@ import { ButtonModule } from 'primeng/button';
     TabsModule, 
     CommonModule, 
     ButtonModule, 
+    PricesLoadingComponent, 
   ],
   templateUrl: './price-list.component.html',
   styleUrl: './price-list.component.scss'
@@ -35,6 +37,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   carTypeService = inject(CarTypeService);
   priceCalculatorService = inject(PriceCalculatorService);
   currencyService = inject(CurrencyService);
+  isLoadingPricesSignal = this.popularRouteService.isLoadingPricesSignal;
 
   popularRoutesSignal = this.popularRouteService.popularRoutesSignal;
   

@@ -15,6 +15,7 @@ import { LanguageService } from '../../services/language.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SUPPORTED_MAIN_LOCATIONS } from '../../constants/main-location.constants';
 import { Meta, Title } from '@angular/platform-browser';
+import { PricesLoadingComponent } from '../../components/prices-loading/prices-loading.component';
 
 @Component({
   selector: 'app-home',
@@ -29,6 +30,7 @@ import { Meta, Title } from '@angular/platform-browser';
     TestimonialListComponent, 
     BlogListComponent, 
     FooterComponent, 
+    PricesLoadingComponent, 
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
