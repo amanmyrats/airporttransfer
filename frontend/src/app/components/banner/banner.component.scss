@@ -18,7 +18,8 @@
 //   }
 .banner {
   position: relative;
-  height: 70vh; /* Keeps the same height as before */
+  // height: 70vh; /* Keeps the same height as before */
+  height: fit-content; /* Keeps the same height as before */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,6 +46,7 @@
   background: rgba(0, 0, 0, 0.6); /* Same semi-transparent background */
   padding: 10px;
   border-radius: 10px;
+  margin: 20px 0;
 }
 
   .banner-title {
@@ -145,9 +147,12 @@
   // Mobile
   @media (max-width: 576px) {
     .banner {
-      height: 450px; /* Keeps the same height as before */
+      // height: 450px; /* Keeps the same height as before */
     }
-
+    .banner-content {
+      padding: 5px 0 10px 0;
+      margin: 5px 0 10px 0;
+    }
     .banner-title {
       font-size: 1.5em;
       margin-bottom: 10px;

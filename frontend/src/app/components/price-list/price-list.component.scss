@@ -3,7 +3,7 @@
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
-    padding: 20px;
+    padding: 5px 0;
   }
   
   .car-section {
@@ -24,7 +24,9 @@
     // height: auto;
     max-width: 320px;
     min-width: 320px;
-    // max-height: 230px;
+    max-height: 230px;
+
+    position: relative;
   }
   .car-image {
 
@@ -35,6 +37,20 @@
     font-size: 1.8em;
     margin: 10px 0;
     color: #333;
+
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    // background: rgba(0, 0, 0, 0.6); /* Dark semi-transparent background */
+    background: rgba(255, 255, 255, 0.8); /* Dark semi-transparent background */
+    // color: rgb(113, 113, 113);
+    font-weight: bolder;
+    padding: 10px;
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 0;
   }
 
   .car-title span {
@@ -183,12 +199,34 @@
       width: 100%;
       max-width: none;
       height: auto;
+      position: relative;
     }
     .car-image {
   
       width: 100%;
       height: auto;
     }
+
+    .car-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      // background: rgba(0, 0, 0, 0.6); /* Dark semi-transparent background */
+      background: rgba(255, 255, 255, 0.8); /* Dark semi-transparent background */
+      // color: rgb(113, 113, 113);
+      font-weight: bolder;
+      padding: 10px;
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 0;
+    }
+
+    .car-title .icon {
+      color: black;
+      font-weight: bolder;
+    }
+
     .airport-button-group {
       gap: 7px; /* Increased gap for better spacing */
       margin-top: 2px;
