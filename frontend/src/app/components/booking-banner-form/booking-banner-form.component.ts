@@ -172,11 +172,17 @@ export class BookingBannerFormComponent {
       ru: 'Введите место назначения',
       tr: 'İniş yerinizi girin',
     },
+    // bookNow: {
+    //   en: 'Book Now',
+    //   de: 'Jetzt buchen',
+    //   ru: 'Забронировать сейчас',
+    //   tr: 'Şimdi rezervasyon yap',
+    // },
     bookNow: {
-      en: 'Book Now',
-      de: 'Jetzt buchen',
-      ru: 'Забронировать сейчас',
-      tr: 'Şimdi rezervasyon yap',
+      en: 'See Price Options',
+      de: 'Preisoptionen anzeigen',
+      ru: 'Посмотреть варианты цен',
+      tr: 'Fiyat seçeneklerini gör',
     },
     orWriteToUs: {
       en: 'Or write to us directly for 24/7 support and reservation assistance.',
