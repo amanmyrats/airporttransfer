@@ -68,9 +68,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log('ngAfterViewInit');
-    console.log('this.banner', this.banner);
-    console.log('window.innerWidth', window.innerWidth);
+    // console.log('ngAfterViewInit');
+    // console.log('this.banner', this.banner);
+    // console.log('window.innerWidth', window.innerWidth);
     if (window.innerWidth <= 768) { // Check if mobile
       setTimeout(() => { // Delay execution to ensure element is available
         this.scrollToBanner();
@@ -79,9 +79,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   scrollToBanner() {
-    console.log('scrollToBanner');
-    console.log('this.banner', this.banner);
-    console.log('this.banner.nativeElement', this.banner.nativeElement);
+    // console.log('scrollToBanner');
+    // console.log('this.banner', this.banner);
+    // console.log('this.banner.nativeElement', this.banner.nativeElement);
     if (this.banner?.nativeElement) { // Ensure banner exists before scrolling
       this.banner.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
