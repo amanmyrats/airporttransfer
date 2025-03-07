@@ -43,6 +43,9 @@ export class BookingCompletionFormComponent implements OnInit {
   champagnePriceInEuro = 25;
   childSeatPriceInEuro = 5;
 
+  isSaving = false;
+  hasSubmitted = false;
+
   stepFromUrl: number | null = null;
 
   previousStep = output<any>();
@@ -71,9 +74,6 @@ export class BookingCompletionFormComponent implements OnInit {
     }
     return 0;
    });
-
-  isSaving = false;
-  hasSubmitted = false;
 
   needChildSeatOptions: any[] = [
     {label: 'Çocuk Koltuğu Lazım', value: true},
