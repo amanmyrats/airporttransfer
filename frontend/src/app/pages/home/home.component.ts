@@ -1,4 +1,4 @@
-import { Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, inject, OnInit, PLATFORM_ID, Renderer2, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
@@ -35,7 +35,11 @@ import { PricesLoadingComponent } from '../../components/prices-loading/prices-l
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
+  // @ViewChild('banner', { static: true }) banner!: ElementRef;
+  // @ViewChild('banner', { static: false }) banner!: ElementRef; // Use static: false
+  @ViewChild('banner', { static: false, read: ElementRef }) banner!: ElementRef;
+
   private router! : Router;
   private languageService!: LanguageService;
   currentLanguage = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
@@ -47,6 +51,7 @@ export class HomeComponent implements OnInit {
     private route: ActivatedRoute, 
     private title: Title, 
     private meta: Meta, 
+    private renderer: Renderer2, 
   ) {
     if (typeof window !== 'undefined') {
       this.router = inject(Router);
@@ -60,6 +65,26 @@ export class HomeComponent implements OnInit {
     this.currentLanguage.code = languageCode;
 
     this.setMetaTags(this.currentLanguage.code);
+  }
+
+  ngAfterViewInit() {
+    console.log('ngAfterViewInit');
+    console.log('this.banner', this.banner);
+    console.log('window.innerWidth', window.innerWidth);
+    if (window.innerWidth <= 768) { // Check if mobile
+      setTimeout(() => { // Delay execution to ensure element is available
+        this.scrollToBanner();
+      }, 100);
+    }
+  }
+
+  scrollToBanner() {
+    console.log('scrollToBanner');
+    console.log('this.banner', this.banner);
+    console.log('this.banner.nativeElement', this.banner.nativeElement);
+    if (this.banner?.nativeElement) { // Ensure banner exists before scrolling
+      this.banner.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   setMetaTags(langCode: string): void {
