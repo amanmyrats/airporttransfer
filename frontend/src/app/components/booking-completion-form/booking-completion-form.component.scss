@@ -290,6 +290,12 @@
     .reservation-detail-page {
       padding: 3px;
     }
+  
+    .reservation-details,
+    .reservation-form {
+      padding: 5px;
+      width: 100%;
+    }
 
     .container {
       flex-direction: column;
@@ -297,7 +303,27 @@
   
     .reservation-details,
     .reservation-form {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* Reservation Details */
+    .car-image {
       max-width: 100%;
+      max-height: 200px;
+      height: auto;
+      object-fit: contain; /* Ensures the entire image is visible */
+    }
+  
+    .reservation-details h2 {
+      font-size: 1.2em;
+      width: 100%;
+      text-align: center;
+      padding: 0;
+    }
+
+    .reservation-details p {
+      margin: 1px;
     }
     
     .form-actions {
@@ -305,6 +331,19 @@
       gap: 15px;
     }
     
+
+    /* Need Child Seat Section */
+    .toggle-switch-container {
+      padding: 5px;
+      margin-top: 5px;
+    }
+
+    /* Payment Info Styling */
+    .payment-info {
+      margin-bottom: 5px;
+      padding: 5px 20px;
+      font-size: 1em;
+    }
     .btn-back,
     .btn-complete {
       width: 100%;
