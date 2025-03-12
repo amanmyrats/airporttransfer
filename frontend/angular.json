@@ -37,13 +37,12 @@
             ],
             "scripts": [],
             "server": "src/main.server.ts",
-            "prerender": {
-              "discoverRoutes": false, 
-              "routesFile": "routes.txt"
+            "outputMode": "server", 
+            "ssr": {
+              "entry": "src/server.ts"
             },
-            "ssr": true,
             "allowedCommonJsDependencies": [
-              "pako", 
+              "pako",
               "dom-to-image-more"
             ]
           },

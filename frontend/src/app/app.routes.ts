@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
+import { SsrTestComponent } from './components/ssr-test/ssr-test.component';
 
 export const routes: Routes = [
     {   path: '', component: HomeComponent, data: { language: 'en' }  },
@@ -258,6 +259,11 @@ export const routes: Routes = [
         // component: UnauthorizedComponent,
         loadComponent: () => import('./admin/pages/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent), 
         data: { language: 'tr' }
+    },
+
+    {
+        path: 'prices', 
+        component: SsrTestComponent,
     },
 
     {   path: '**', redirectTo: '/en', pathMatch: 'full', data: { language: 'en' } }, // Redirect unknown paths
