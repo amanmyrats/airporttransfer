@@ -52,7 +52,7 @@ jobs:
           aws s3 cp ./sitemap.xml s3://airporttransferhub.com/sitemap.xml --cache-control "max-age=86400, public"
           aws s3 cp ./robots.txt s3://airporttransferhub.com/robots.txt --cache-control "max-age=86400, public"
 
-          aws s3 sync ./dist/airporttransfer/server s3://airporttransferhub.com/server
+          aws s3 sync ./dist/airporttransfer/server s3://airporttransferhub.com/server --delete
 
       # Invalidate CloudFront cache
       - name: CloudFront Invalidation
