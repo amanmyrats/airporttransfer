@@ -1,8 +1,8 @@
-import { Component, effect, inject } from '@angular/core';
+import { afterNextRender, afterRender, Component, effect, Inject, inject, PLATFORM_ID } from '@angular/core';
 import { LanguageService } from '../../services/language.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
@@ -24,16 +24,30 @@ export class LanguageSelectionComponent {
   private languageService!: LanguageService;
   private router!: Router;
 
-  constructor() {
+  constructor(
+    private route: ActivatedRoute, 
+    @Inject(PLATFORM_ID) private platformId: any,
+  ) {
     if (typeof window !== 'undefined') {
       this.languageService = inject(LanguageService);
       this.router = inject(Router);
 
-    //   effect(() => {
-    //     this.selectedLanguage = this.languageService.currentLang();
-    //     this.translatedUrlWithoutLang = this.getTranslatedUrlWithoutLang(this.selectedLanguage.code);
-    // });
+      //   effect(() => {
+      //     this.selectedLanguage = this.languageService.currentLang();
+      //     this.translatedUrlWithoutLang = this.getTranslatedUrlWithoutLang(this.selectedLanguage.code);
+      // });
     }
+    afterNextRender(() => {
+      console.log('afterRender in language selection');
+      console.log(this.route.snapshot);
+      const lang = this.languageService.detectLanguageFromRoute(this.route);
+      if (lang) {
+        if (lang.code !== this.selectedLanguage.code) {
+          this.selectedLanguage = lang;
+          this.onLanguageSelect(lang);
+        }
+      }
+    });
   }
 
   ngOnInit(): void {

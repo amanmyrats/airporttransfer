@@ -19,6 +19,8 @@ import { AuthService } from '../../../services/auth.service';
 import { ActiveRouteService } from '../../../services/active-route.service';
 import { LoginComponent } from '../login/login.component';
 import { SOCIAL_ICONS } from '../../../constants/social.constants';
+import { usePreset } from '@primeng/themes';
+import Aura from '@primeng/themes/aura';
 
 @Component({
   selector: 'app-admin-home',
@@ -64,6 +66,8 @@ export class AdminHomeComponent implements OnInit {
     this.activeRouteService.activeRoute$.subscribe(route => {
       this.activeRoute = route;
     });
+
+    usePreset(Aura);
   }
 
   setNavbarMenu(): void {

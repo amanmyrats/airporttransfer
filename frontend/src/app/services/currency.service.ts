@@ -1,7 +1,8 @@
-import { Injectable, signal } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SUPPORTED_CURRENCIES } from '../constants/currency.constants';
 import { Currency } from '../models/currency.model';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,11 @@ export class CurrencyService {
     this.getStoredCurrency() || SUPPORTED_CURRENCIES.find((currency) => currency.code === 'EUR')!
   );
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    @Inject(PLATFORM_ID) private platformId: Object,
+  ) {}
 
   setCurrency(currencyCode: string): void {
     const selectedCurrency = SUPPORTED_CURRENCIES.find((currency) => currency.code === currencyCode);
@@ -47,12 +52,17 @@ export class CurrencyService {
   }
 
   private storeCurrency(currencyCode: string): void {
-    localStorage.setItem(this.storageKey, currencyCode);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.storageKey, currencyCode);
+    }
   }
 
   private getStoredCurrency(): Currency | undefined {
-    const currencyCode = localStorage.getItem(this.storageKey);
-    return SUPPORTED_CURRENCIES.find((currency) => currency.code === currencyCode);
+    if (isPlatformBrowser(this.platformId)) {
+      const currencyCode = localStorage.getItem(this.storageKey);
+      return SUPPORTED_CURRENCIES.find((currency) => currency.code === currencyCode);
+    }
+    return undefined;
   }
 
 //   export const SUPPORTED_CURRENCIES = [

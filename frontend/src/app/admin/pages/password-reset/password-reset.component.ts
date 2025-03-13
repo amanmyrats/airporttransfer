@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
@@ -8,6 +8,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabel } from 'primeng/floatlabel';
 import { HttpErrorPrinterService } from '../../../services/http-error-printer.service';
 import { UserService } from '../../services/user.service';
+import { usePreset } from '@primeng/themes';
+import Aura from '@primeng/themes/aura';
 
 @Component({
     selector: 'app-password-reset',
@@ -22,7 +24,7 @@ import { UserService } from '../../services/user.service';
     templateUrl: './password-reset.component.html',
     styleUrl: './password-reset.component.scss'
 })
-export class PasswordResetComponent {
+export class PasswordResetComponent implements OnInit {
   passwordResetForm: FormGroup;
   loading: boolean = false;
 
@@ -35,6 +37,10 @@ export class PasswordResetComponent {
     this.passwordResetForm = this.fb.group({
       email: ['', Validators.required],
     });
+  }
+
+  ngOnInit(): void {
+    usePreset(Aura);
   }
 
   onSubmit() {

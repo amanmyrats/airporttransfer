@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabel } from 'primeng/floatlabel';
 import { UserService } from '../../services/user.service';
+import { usePreset } from '@primeng/themes';
+import Aura from '@primeng/themes/aura';
 
 @Component({
     selector: 'app-password-reset-confirm',
@@ -15,7 +17,7 @@ import { UserService } from '../../services/user.service';
     templateUrl: './password-reset-confirm.component.html',
     styleUrl: './password-reset-confirm.component.scss'
 })
-export class PasswordResetConfirmComponent {
+export class PasswordResetConfirmComponent implements OnInit {
     uid: string | null;
     token: string | null;
     passwordResetConfirmForm: FormGroup;
@@ -38,6 +40,9 @@ export class PasswordResetConfirmComponent {
         });
     }
 
+    ngOnInit(): void {
+        usePreset(Aura);
+    }
     onSubmit() {
       console.log(this.passwordResetConfirmForm.value);
         if (this.passwordResetConfirmForm.value.newPassword !== this.passwordResetConfirmForm.value.confirmPassword) {

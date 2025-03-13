@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, computed, effect, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, Inject, inject, OnInit, PLATFORM_ID, signal, ViewChild } from '@angular/core';
 import { TabsModule } from 'primeng/tabs';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MainLocationService } from '../../services/main-location.service';
 import { PopularRouteService } from '../../admin/services/popular-route.service';
 import { CarTypeService } from '../../services/car-type.service';
@@ -54,11 +54,11 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   //   this.isBrowser = isPlatformBrowser(this.platformId);
   // }
   constructor(
-    private googleMapsService: GoogleMapsService, 
     private bookingService: BookingService, 
     public languageService: LanguageService, 
     private router: Router, 
     private gtmService: GoogleTagManagerService, 
+    @Inject(PLATFORM_ID) private platformId: Object, 
   ) {
     this.mainLocations = this.mainLocationService.getMainLocations();
     this.popularRouteService.updatePopularRoutesSignal();
@@ -172,6 +172,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     this.selectedLocation = location;
     
     if (!triggeredInOnInit) {
+      if (isPlatformBrowser(this.platformId)) {
 
       // Wait for the view to update, then scroll
       setTimeout(() => {
@@ -180,6 +181,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
           block: 'start' // Scroll to the top of the viewport
         });
       }, 100);
+      }
     }
   }
 

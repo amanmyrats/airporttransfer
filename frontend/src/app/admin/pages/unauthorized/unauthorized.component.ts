@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { usePreset } from '@primeng/themes';
+import Aura from '@primeng/themes/aura';
 
 @Component({
     selector: 'app-unauthorized',
@@ -20,5 +22,7 @@ export class UnauthorizedComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
+    usePreset(Aura);
+
   }
 }

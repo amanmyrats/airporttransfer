@@ -25,7 +25,8 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
         theme: {
-            preset: Aura
+            preset: undefined,
+            // preset: Aura
         }
     }), 
     provideGoogleTagManager({ id: 'GTM-WMWVRLJ4' }),

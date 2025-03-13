@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, inject, OnInit, PLATFORM_ID, Renderer2, ViewChild } from '@angular/core';
+import { afterRender, AfterViewInit, Component, ElementRef, Inject, inject, OnInit, PLATFORM_ID, Renderer2, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
@@ -30,7 +30,7 @@ import { PricesLoadingComponent } from '../../components/prices-loading/prices-l
     TestimonialListComponent, 
     BlogListComponent, 
     FooterComponent, 
-    PricesLoadingComponent, 
+    // PricesLoadingComponent, 
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   currentLanguage = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
   mainLocations: any[] = SUPPORTED_MAIN_LOCATIONS;
   isBrowser: boolean;
-
+  
   constructor(
     @Inject(PLATFORM_ID) private platformId: any, 
     private route: ActivatedRoute, 
@@ -58,6 +58,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.languageService = inject(LanguageService);
     }
     this.isBrowser = isPlatformBrowser(this.platformId);
+    afterRender(() => {
+      if (window.innerWidth <= 768) { // Check if mobile
+        setTimeout(() => { // Delay execution to ensure element is available
+          this.scrollToBanner();
+        }, 100);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -71,11 +78,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     // console.log('ngAfterViewInit');
     // console.log('this.banner', this.banner);
     // console.log('window.innerWidth', window.innerWidth);
-    if (window.innerWidth <= 768) { // Check if mobile
-      setTimeout(() => { // Delay execution to ensure element is available
-        this.scrollToBanner();
-      }, 100);
-    }
   }
 
   scrollToBanner() {

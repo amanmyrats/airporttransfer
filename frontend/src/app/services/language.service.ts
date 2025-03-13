@@ -1,7 +1,8 @@
-import { effect, Injectable, signal } from '@angular/core';
+import { effect, Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SUPPORTED_LANGUAGES } from '../constants/language.contants';
 import { Language } from '../models/language.model';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -12,10 +13,16 @@ export class LanguageService {
 
   // Signal for the current language
   currentLang = signal<any>(
-    this.getStoredLanguage() || SUPPORTED_LANGUAGES.find((lang) => lang.code === 'en')!
+    this.getStoredLanguage() || 
+    // this.detectLanguageFromRoute() || 
+    SUPPORTED_LANGUAGES.find((lang) => lang.code === 'en')!
   );
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    @Inject(PLATFORM_ID) private platformId: Object, 
+  ) {
     // effect(() => {
     //   console.log('Triggered currentLang() effect in language service');
     //   console.log('new lang:', this.currentLang());
@@ -33,11 +40,7 @@ export class LanguageService {
     if (selectedLang) {
       // this.currentLang.set(selectedLang); // Update the signal value
       this.storeLanguage(langCode); // Persist the selected language
-      console.log('setLanguage was called: ', langCode);
-      console.log('alreadyNavigated: ', alreadyNavigated);
-      console.log('alreadyNavigated: ', alreadyNavigated);
-      console.log('alreadyNavigated: ', alreadyNavigated);
-      console.log('alreadyNavigated: ', alreadyNavigated);
+      // console.log('setLanguage was called: ', langCode);
       console.log('alreadyNavigated: ', alreadyNavigated);
       if (!alreadyNavigated) {
         console.log('Navigating to new language in language service');
@@ -56,19 +59,34 @@ export class LanguageService {
     }
   }
 
+  detectLanguageFromRoute(route: any): Language | undefined {
+    // console.log(route.snapshot)
+    // console.log(route.snapshot.url)
+    const firstSegment = route.snapshot.url[0]?.path; // Get first part of the URL
+    // console.log('detectLanguageFromRoute was called: ', firstSegment);
+    // console.log('returning: ', SUPPORTED_LANGUAGES.find((lang) => lang.code === firstSegment));
+    return SUPPORTED_LANGUAGES.find((lang) => lang.code === firstSegment);
+  }
+
   /**
    * Detect the language from the URL and update the signal
    */
   detectLanguage(): void {
     this.route.params.subscribe((params) => {
       const langCode = params['lang'];
-
+      console.log(params);
+      console.log('detectLanguage was called: ', langCode);
       if (langCode) {
         const detectedLang = SUPPORTED_LANGUAGES.find((lang) => lang.code === langCode);
-
+        console.log('detectedLang: ', detectedLang)
         if (detectedLang) {
           this.currentLang.set(detectedLang); // Update the signal value
           this.storeLanguage(langCode); // Persist the detected language
+          // if different than currentLang signal then assig
+          // if (this.currentLang().code !== detectedLang.code) {
+          //   this.currentLang.set(detectedLang);
+          // }
+          
         } else {
           console.warn(`Unsupported language code detected in URL: ${langCode}`);
           this.router.navigate(['en/']); // Fallback to default language
@@ -109,7 +127,10 @@ export class LanguageService {
    * @param langCode - The language code to store.
    */
   private storeLanguage(langCode: string): void {
-    localStorage.setItem(this.storageKey, langCode);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.storageKey, langCode);
+      console.log('Stored lang: ', langCode)
+    }
   }
 
   /**
@@ -117,7 +138,11 @@ export class LanguageService {
    * @returns The stored language or undefined.
    */
   private getStoredLanguage(): Language | undefined {
-    const langCode = localStorage.getItem(this.storageKey);
-    return SUPPORTED_LANGUAGES.find((lang) => lang.code === langCode);
-  }
+    if (isPlatformBrowser(this.platformId)) {
+      const langCode = localStorage.getItem(this.storageKey);
+      return SUPPORTED_LANGUAGES.find((lang) => lang.code === langCode);
+    }
+    return undefined; // Avoid accessing signal here during SSR
+  }    
+
 }

@@ -15,13 +15,25 @@
         class="dropdown-item" 
         (click)="onLanguageSelect(lang)"
       >
-      <a [href]="lang.code + getTranslatedUrlWithoutLang(lang.code) + '/'" [attr.aria-label]="'Switch to ' + lang.name">
-        <!-- <a [href]="lang.code" [attr.aria-label]="'Switch to ' + lang.name"> -->
-        <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" 
-        style="width: 20px; height: 15px;"
-        />
-        {{ lang.name }}
-      </a>
+      @if (lang.code) {
+        <a [href]="lang.code + getTranslatedUrlWithoutLang(lang.code)" [attr.aria-label]="'Switch to ' + lang.name">
+          <!-- <a [href]="lang.code" [attr.aria-label]="'Switch to ' + lang.name"> -->
+          <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" 
+          style="width: 20px; height: 15px;"
+          />
+          {{ lang.name }}
+        </a>
+
+      } @else {
+        <a [href]="lang.code + getTranslatedUrlWithoutLang(lang.code) + '/'" [attr.aria-label]="'Switch to ' + lang.name">
+          <!-- <a [href]="lang.code" [attr.aria-label]="'Switch to ' + lang.name"> -->
+          <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" 
+          style="width: 20px; height: 15px;"
+          />
+          {{ lang.name }}
+        </a>
+
+      }
       </li>
     </ul>
   </div>
