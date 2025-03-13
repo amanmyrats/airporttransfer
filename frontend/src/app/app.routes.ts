@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
 import { SsrTestComponent } from './components/ssr-test/ssr-test.component';
+import { AboutUsComponent } from './pages/about-us/about-us.component';
 
 export const routes: Routes = [
     {   path: '', component: HomeComponent, data: { language: 'en' }  },
@@ -18,22 +19,26 @@ export const routes: Routes = [
 
     {
         path: 'en/about-24-7-private-airport-transfer-in-turkey',
-        loadComponent: () => import('./pages/about-us/about-us.component').then(m => m.AboutUsComponent),
+        // loadComponent: () => import('./pages/about-us/about-us.component').then(m => m.AboutUsComponent),
+        component: AboutUsComponent,
         data: { language: 'en' }
       },
       {
         path: 'de/über-24-7-privaten-flughafentransfer-in-der-türkei',
-        loadComponent: () => import('./pages/about-us/about-us.component').then(m => m.AboutUsComponent),
+        // loadComponent: () => import('./pages/about-us/about-us.component').then(m => m.AboutUsComponent),
+        component: AboutUsComponent,
         data: { language: 'de' }
       },
       {
         path: 'ru/о-24-7-частном-трансфере-из-аэропорта-в-турции',
-        loadComponent: () => import('./pages/about-us/about-us.component').then(m => m.AboutUsComponent),
+        // loadComponent: () => import('./pages/about-us/about-us.component').then(m => m.AboutUsComponent),
+        component: AboutUsComponent,
         data: { language: 'ru' }
       },
       {
         path: 'tr/türkiye-de-7-24-özel-havalimanı-transferi-hakkında',
-        loadComponent: () => import('./pages/about-us/about-us.component').then(m => m.AboutUsComponent),
+        // loadComponent: () => import('./pages/about-us/about-us.component').then(m => m.AboutUsComponent),
+        component: AboutUsComponent,
         data: { language: 'tr' }
       },
 
