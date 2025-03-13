@@ -67,7 +67,6 @@ jobs:
         run: |
           aws cloudfront create-invalidation --distribution-id EFE0BEJMOHTXL --paths "/*"
 
-
       - name: Download from S3 to EC2
         uses: appleboy/ssh-action@v1.0.3
         env:
