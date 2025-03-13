@@ -7,19 +7,19 @@ import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.componen
 
 export const serverRoutes: ServerRoute[] = [
 
-    // {   path: '', 
-    // renderMode: RenderMode.Server,
+    {   path: '', 
+    renderMode: RenderMode.Prerender,
         
-    //  },
+     },
 
-    // {   path: 'en', 
-    //     renderMode: RenderMode.Server, },
-    // {   path: 'de', 
-    //     renderMode: RenderMode.Server,},
-    // {   path: 'ru',
-    //     renderMode: RenderMode.Server,},
-    // {   path: 'tr',    
-    //     renderMode: RenderMode.Server,},
+    {   path: 'en', 
+        renderMode: RenderMode.Prerender, },
+    {   path: 'de', 
+        renderMode: RenderMode.Prerender,},
+    {   path: 'ru',
+        renderMode: RenderMode.Prerender,},
+    {   path: 'tr',    
+        renderMode: RenderMode.Prerender,},
 
     // {
     //     path: 'en/about-24-7-private-airport-transfer-in-turkey', 
