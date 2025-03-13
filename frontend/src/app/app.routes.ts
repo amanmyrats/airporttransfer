@@ -5,13 +5,6 @@ import { SsrTestComponent } from './components/ssr-test/ssr-test.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
 
 export const routes: Routes = [
-    {   path: '', component: HomeComponent, data: { language: 'en' }  },
-
-    {   path: 'en', component: HomeComponent, data: { language: 'en' }  },
-    {   path: 'de', component: HomeComponent, data: { language: 'de' }  },
-    {   path: 'ru', component: HomeComponent, data: { language: 'ru' }  },
-    {   path: 'tr', component: HomeComponent, data: { language: 'tr' }  },
-
     // {   path: 'en/aboutus/',component: AboutUsComponent, data: { language: 'en' }  },
     // {   path: 'de/aboutus/',component: AboutUsComponent, data: { language: 'de' }  },
     // {   path: 'ru/aboutus/',component: AboutUsComponent, data: { language: 'ru' }  },
@@ -271,6 +264,14 @@ export const routes: Routes = [
         component: SsrTestComponent,
     },
 
+    
+    {   path: 'en', component: HomeComponent, data: { language: 'en' }  },
+    {   path: 'de', component: HomeComponent, data: { language: 'de' }  },
+    {   path: 'ru', component: HomeComponent, data: { language: 'ru' }  },
+    {   path: 'tr', component: HomeComponent, data: { language: 'tr' }  },
+    
+    {   path: '', component: HomeComponent, data: { language: 'en' }  },
+    
     {   path: '**', redirectTo: '/en', pathMatch: 'full', data: { language: 'en' } }, // Redirect unknown paths
 
 ];
