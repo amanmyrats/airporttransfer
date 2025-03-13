@@ -5,16 +5,16 @@
     <app-banner #banner></app-banner>
     
     <!-- Price List for Airport Transfer in Turkey -->
-    <!-- <ng-container *ngIf="isBrowser; else nonBrowserContent"> -->
+    <ng-container *ngIf="isBrowser; else nonBrowserContent">
       <app-price-list></app-price-list>
-    <!-- </ng-container> -->
+    </ng-container>
     
-    <!-- <ng-template #nonBrowserContent> -->
-      <!-- <app-prices-loading></app-prices-loading> -->
-      <!-- <h2 *ngFor="let mainLocation of mainLocations">
+    <ng-template #nonBrowserContent>
+      <app-prices-loading></app-prices-loading>
+      <h2 *ngFor="let mainLocation of mainLocations">
         {{ mainLocation.code }} - {{ mainLocation[currentLanguage.code] }}
       </h2> -->
-    <!-- </ng-template> -->
+    </ng-template>
     
     <app-cta></app-cta>
     <app-testimonial-list></app-testimonial-list>

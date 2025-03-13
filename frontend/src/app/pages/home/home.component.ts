@@ -1,4 +1,4 @@
-import { afterRender, AfterViewInit, Component, ElementRef, Inject, inject, OnInit, PLATFORM_ID, Renderer2, ViewChild } from '@angular/core';
+import { afterNextRender, afterRender, AfterViewInit, Component, ElementRef, Inject, inject, OnInit, PLATFORM_ID, Renderer2, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
@@ -30,7 +30,7 @@ import { PricesLoadingComponent } from '../../components/prices-loading/prices-l
     TestimonialListComponent, 
     BlogListComponent, 
     FooterComponent, 
-    // PricesLoadingComponent, 
+    PricesLoadingComponent, 
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.languageService = inject(LanguageService);
     }
     this.isBrowser = isPlatformBrowser(this.platformId);
-    afterRender(() => {
+    afterNextRender(() => {
       if (window.innerWidth <= 768) { // Check if mobile
         setTimeout(() => { // Delay execution to ensure element is available
           this.scrollToBanner();

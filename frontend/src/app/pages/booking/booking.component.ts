@@ -10,6 +10,9 @@ import { BookingCarTypeSelectionFormComponent } from '../../components/booking-c
 import { ActivatedRoute } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { LanguageService } from '../../services/language.service';
+import { usePreset } from '@primeng/themes';
+import Aura from '@primeng/themes/aura';
+
 
 @Component({
   selector: 'app-booking',
@@ -50,6 +53,7 @@ export class BookingComponent implements OnInit {
         this.activeStep = this.stepFromUrl; // Start from step 3
       }
     });
+    usePreset(Aura);
   }
 
   prefillStep1Data(params: any): void {
