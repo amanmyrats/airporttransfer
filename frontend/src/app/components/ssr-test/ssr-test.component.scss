@@ -116,10 +116,62 @@ body {
   /* Sidebar */
   .sidebar {
     width: 300px;
-    padding: 20px;
-    background-color: #ffffff;
+    padding: 10px;
     border-radius: 5px;
     margin-left: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    height: fit-content;
+
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+    top: 10px; /* Adjust this value as needed */
+  }
+  .booking-form-inline {
+    // display: none;
+    visibility: hidden;
+    display: none;
+  }
+/* Booking Form Section */
+.booking-form {
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .booking-form h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+/* Useful Links Section */
+.useful-links h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .useful-links ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .useful-links li {
+    margin-bottom: 10px;
+    padding: 3px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .useful-links a {
+    text-decoration: none;
+    color: #0066cc;
+    font-weight: bold;
+  }
+  
+  .useful-links a:hover {
+    text-decoration: underline;
   }
   .cta {
     background-color: #ff6600;
@@ -160,8 +212,7 @@ body {
     padding: 10px;
     width: 100%;
   }
-  
-/* FAQ */
+  /* FAQ Container */
 .faq-container {
     margin-top: 40px;
     padding: 20px;
@@ -177,19 +228,43 @@ body {
   
   .faq-item {
     margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
   }
   
   .faq-question {
     font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
+    position: relative;
+    padding-right: 20px;
+  }
+  
+  .faq-question::after {
+    content: '\02795'; /* Unicode character for "plus" sign (+) */
+    font-size: 1rem;
+    color: #777;
+    position: absolute;
+    right: 0;
+    transition: transform 0.3s ease;
   }
   
   .faq-answer {
-    display: none;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
     font-size: 1.1rem;
     color: #444;
-    margin-top: 5px;
+    padding: 0 10px;
+  }
+  
+  .faq-answer-visible {
+    max-height: 200px; /* Adjust based on content length */
+    padding: 10px;
+  }
+  
+  .faq-answer-visible + .faq-question::after {
+    transform: rotate(45deg); /* Rotates the plus sign to form an 'x' */
   }
   
 
@@ -204,5 +279,16 @@ body {
       margin-left: 0;
       margin-top: 20px;
     }
+
+/* Booking Form Section */
+.booking-form-inline {
+    visibility: visible;
+    display: block;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
   }
   

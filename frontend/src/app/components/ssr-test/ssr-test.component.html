@@ -2,12 +2,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog Post Title</title>
+  <title>
+    Istanbul Airport Transportation
+  </title>
 </head>
 <body>
     <header class="header">
-        <h1 class="header-title">Blog Post Title</h1>
-        <p class="header-description">A brief introduction to the blog post.</p>
+        <h1 class="header-title">
+            Istanbul Airport Transportation
+        </h1>
+        <p class="header-description">
+            Compare and Review all Public and Private Transfer Options    
+        </p>
     </header>
   
 
@@ -17,34 +23,98 @@
 
   <main class="content">
     <article class="post">
-      <h2>Section Title</h2>
-      <p>Content of the section goes here. This is a paragraph providing information to the reader.</p>
-      <h3>Subsection Title</h3>
+     
+        <h2>
+            Transportation to and from Istanbul Airport
+        </h2>
+        <p>
+            Have you just landed at Istanbul Airport and are wondering how to reach your final destination? You will find plenty of choices for your transfer from Istanbul Airport to your hotel or accommodation. Take into account your time and money availability as well as your need for comfort and quality, and make your pick between airport taxis, buses, subway, and car hire.    
+        </p>
+
+        <section class="booking-form-inline">
+            <h2>Book a Taxi</h2>
+            <app-booking-banner-form></app-booking-banner-form>
+        </section>
+
+        <h2>Taxi</h2>
+        <p>
+            Istanbul airport taxis will transfer you to your destination with ease and safety. Choose one out of the 3 categories (orange taxis – cheaper rides, economical vehicles, blue taxis – more expensive transfers, comfort cars, and black taxis – costly rides, luxurious vehicles) and travel to your hotel in Istanbul in about 40 minutes, paying around 950₺ (25.26€/27.89$). The usual high traffic levels, however, may affect the cost and duration of your trip.
+        </p>
+        <h2>Bus</h2>
+        <p>
+            Havaist and IETT buses handle the transportation from Istanbul Airport to downtown. With highly frequent routes and almost available 24/7, airport buses will transfer you to your destination in Istanbul at a price ranging from 40₺ (1.06€ / 1.17$) to 258₺ (6.86€ / 7.59$), depending on the chosen route.    
+        </p>
+        <h2>Subway</h2>
+        <p>
+            The new Istanbul Airport Metro Line M11 (M11 Gayrettepe – Istanbul New Airport) -planned to start its operation back in 2020- finally runs from Istanbul Airport. It connects IST to Gayrettepe Station in only 24 minutes. Thus, passengers opting for a fast, cheap, and rather comfortable airport transfer option can now settle on subway rides from and to Istanbul International Airport.
+        </p>
+        <h2>Private Airport Transfers</h2>
+        <p>
+            Many private airport transfer operators are present at Istanbul Airport, purveying top-rated services from and to IST Airport. Enjoy a hassle-free ride to your accommodation in Istanbul, having your personal driver waiting for you at the Arrivals area, handling your luggage, and transferring you to Istanbul city fast and comfortably.
+        </p>
+        <h2>Car Rentals</h2>
+        <p>
+            What’s best than having your own car and planning your travel schedule exactly as you desire? Various airport car rental companies providing a wide variety of car hire services are available at Istanbul Airport. Take a glimpse at them and find out all the useful tips to get the best Istanbul car rental deals at Istanbul Airport.
+        </p>
+        <h2>Istanbul Airport to Istanbul City Center</h2>
+        <p>
+            Traveling from Istanbul Airport to Istanbul city center (Sultanahmet) is possible via a number of transportation means. If you are interested in private transfers and car rentals, you will find a wide selection of companies present at IST Airport. Moreover, numerous taxis are available 24/7 at the airport. On the other hand, comfortable but indirect bus rides are another alternative while the new Istanbul airport metro line is also available for your transportation.
+        </p>
+        <h2>Istanbul Airport to Taksim</h2>
+        <p>
+            Taksim area is considered the center of modern Istanbul. Attracting both locals and tourists, Taksim is a lively and beautiful part of Istanbul. So, if your accommodation is located in that vibrant district, how will you get there after arriving at Istanbul International Airport? Luckily, there are multiple transportation options from the new Istanbul Airport to Taksim Square.
+        </p>
+        <h2>Istanbul Airport to Sabiha Gökçen Airport
+        </h2>
+        <p>
+            Transfers from Istanbul Airport to Sabiha Gökçen Airport, the “old” airfield of the town, are provided only via taxis and buses. However, in the future, travelers will also be able to use the new high-speed train which will connect the two airports, reducing travel time and hassle. On the other hand, airport car rentals are also available, valued by travelers who prefer autonomous rides.
+        </p>
+      <!-- <h3>Subsection Title</h3>
       <p>Details about the subsection. Additional information to elaborate on the topic.</p>
       <img src="https://picsum.photos/1200/400" alt="Descriptive Alt Text" class="post-image">
-      <p>Further content continues here, providing more insights and details.</p>
+      <p>Further content continues here, providing more insights and details.</p> -->
     </article>
     
     <aside class="sidebar">
-        <section class="cta">
-            <h2>Book Your Private Transfer Now!</h2>
-            <p>Experience comfort and convenience with our 24/7 private airport transfer services throughout Turkey.</p>
-            <a href="/booking" class="cta-button">Book Now</a>
+        <section class="booking-form">
+            <h2>Book a Taxi</h2>
+            <app-booking-banner-form></app-booking-banner-form>
         </section>
+        <section class="useful-links">
+            <h2>Useful Links</h2>
+            <ul>
+              <li><a href="#">Transfer to City Center (Sultanahmet)</a></li>
+              <li><a href="#">Transfer to Taksim Square</a></li>
+              <li><a href="#">Transfer to Sabiha Gökçen Airport</a></li>
+              <li><a href="#">Airport Taxi</a></li>
+              <li><a href="#">Airport Car Rentals</a></li>
+              <li><a href="#">Shuttles / Buses</a></li>
+            </ul>
+          </section>
     </aside>
 </main>
-  <!-- FAQ Section -->
-  <div class="faq-container">
+
+<!-- CTA Section -->
+
+<section class="cta">
+    <h2>Book Your Private Transfer Now!</h2>
+    <p>Experience comfort and convenience with our 24/7 private airport transfer services throughout Turkey.</p>
+    <a href="/booking" class="cta-button">Book Now</a>
+</section>
+
+<!-- FAQ Section -->
+<div class="faq-container">
     <h2 class="faq-title">Frequently Asked Questions</h2>
     <div *ngFor="let faq of faqs" class="faq-item">
       <div class="faq-question" (click)="faq.open = !faq.open">
         {{ faq.question }}
       </div>
-      <div *ngIf="faq.open" class="faq-answer">
+      <div [class.faq-answer-visible]="faq.open" class="faq-answer">
         {{ faq.answer }}
       </div>
     </div>
   </div>
+  
   <footer class="footer">
     <p>&copy; 2025 AirportTransferHub.com. All rights reserved.</p>
   </footer>
