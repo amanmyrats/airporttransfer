@@ -2,12 +2,18 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { BookingInitialFormComponent } from '../booking-initial-form/booking-initial-form.component';
 import { BookingBannerFormComponent } from '../booking-banner-form/booking-banner-form.component';
+import { SuperHeaderComponent } from '../super-header/super-header.component';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { FooterComponent } from '../footer/footer.component';
 
 @Component({
   selector: 'app-ssr-test',
   imports: [
     CommonModule, 
     BookingBannerFormComponent, 
+    SuperHeaderComponent,
+    NavbarComponent,
+    FooterComponent, 
   ],
   templateUrl: './ssr-test.component.html',
   styleUrl: './ssr-test.component.scss'
