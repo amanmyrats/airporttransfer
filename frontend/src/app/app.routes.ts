@@ -265,7 +265,7 @@ export const routes: Routes = [
     },
 
     {
-        path: 'ssr', 
+        path: 'blogs', 
         component: SsrTestComponent,
     },
     
