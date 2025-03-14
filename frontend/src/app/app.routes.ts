@@ -264,6 +264,10 @@ export const routes: Routes = [
         component: SsrTestComponent,
     },
 
+    {
+        path: 'ssr', 
+        component: SsrTestComponent,
+    },
     
     {   path: 'en', component: HomeComponent, data: { language: 'en' }  },
     {   path: 'de', component: HomeComponent, data: { language: 'de' }  },

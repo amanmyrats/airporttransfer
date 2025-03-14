@@ -1,18 +1,52 @@
-<h1>
-    this is a test 334455 for server side rendering
-</h1>
-<h1>
-    this is a test 334455 for server side rendering
-</h1>
-<h1>
-    this is a test 334455 for server side rendering
-</h1>
-<h1>
-    this is a test 334455 for server side rendering
-</h1>
-<h1>
-    this is a test 334455 for server side rendering
-</h1>
-<h1>
-    this is a test 334455 for server side rendering
-</h1>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Post Title</title>
+</head>
+<body>
+    <header class="header">
+        <h1 class="header-title">Blog Post Title</h1>
+        <p class="header-description">A brief introduction to the blog post.</p>
+    </header>
+  
+
+  <nav class="breadcrumb">
+    <a href="/">Home</a> &gt; <a href="/blog">Blog</a> &gt; <span>Current Post</span>
+  </nav>
+
+  <main class="content">
+    <article class="post">
+      <h2>Section Title</h2>
+      <p>Content of the section goes here. This is a paragraph providing information to the reader.</p>
+      <h3>Subsection Title</h3>
+      <p>Details about the subsection. Additional information to elaborate on the topic.</p>
+      <img src="https://picsum.photos/1200/400" alt="Descriptive Alt Text" class="post-image">
+      <p>Further content continues here, providing more insights and details.</p>
+    </article>
+    
+    <aside class="sidebar">
+        <section class="cta">
+            <h2>Book Your Private Transfer Now!</h2>
+            <p>Experience comfort and convenience with our 24/7 private airport transfer services throughout Turkey.</p>
+            <a href="/booking" class="cta-button">Book Now</a>
+        </section>
+    </aside>
+</main>
+  <!-- FAQ Section -->
+  <div class="faq-container">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <div *ngFor="let faq of faqs" class="faq-item">
+      <div class="faq-question" (click)="faq.open = !faq.open">
+        {{ faq.question }}
+      </div>
+      <div *ngIf="faq.open" class="faq-answer">
+        {{ faq.answer }}
+      </div>
+    </div>
+  </div>
+  <footer class="footer">
+    <p>&copy; 2025 AirportTransferHub.com. All rights reserved.</p>
+  </footer>
+</body>
+</html>
