@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { GmapsAutocompleteDirective } from '../../directives/gmaps-autocomplete.directive';
 import { GoogleMapsService } from '../../services/google-maps.service';
 import { BookingService } from '../../services/booking.service';
@@ -22,6 +22,7 @@ import { ButtonModule } from 'primeng/button';
   styleUrl: './booking-banner-form.component.scss'
 })
 export class BookingBannerFormComponent {
+  @Input() langInput: any | null = null; // Input property for language selection
   socialIcons = SOCIAL_ICONS;
   isBookNowLoading: boolean = false;
 
@@ -60,7 +61,7 @@ export class BookingBannerFormComponent {
     
     this.googleMapsService.calculateDrivingDistanceAndTime(origin, destination
     ).then(result => {
-        this.router.navigate([`${this.languageService.currentLang().code}/${NAVBAR_MENU.bookNow.slug[this.languageService.currentLang().code]}/`], {
+        this.router.navigate([`${this.langInput.code}/${NAVBAR_MENU.bookNow.slug[this.langInput.code]}/`], {
           queryParams: {
             step: 2,
             pickup_full: formValue.pickup_full,
@@ -76,7 +77,7 @@ export class BookingBannerFormComponent {
         });
     }).catch(error => {
       console.error('Error calculating distance:', error);
-      this.router.navigate([`${this.languageService.currentLang().code}/${NAVBAR_MENU.bookNow.slug[this.languageService.currentLang().code]}/`], {
+      this.router.navigate([`${this.langInput.code}/${NAVBAR_MENU.bookNow.slug[this.langInput.code]}/`], {
         queryParams: {
           step: 2,
           pickup_full: formValue.pickup_full,
@@ -144,7 +145,7 @@ export class BookingBannerFormComponent {
       value = value[k];
       if (!value) return key; // Return key if translation not found
     }
-    return value[this.languageService.currentLang().code] || key;
+    return value[this.langInput.code] || key;
   }
 
   translations: any = {

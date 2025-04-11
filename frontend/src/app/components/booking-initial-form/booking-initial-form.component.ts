@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, input, OnInit, output } from '@angular/core';
+import { Component, effect, inject, Input, input, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
 import { GmapsAutocompleteDirective } from '../../directives/gmaps-autocomplete.directive';
@@ -22,6 +22,8 @@ import { PriceListComponent } from '../price-list/price-list.component';
   styleUrl: './booking-initial-form.component.scss'
 })
 export class BookingInitialFormComponent implements OnInit {
+  @Input() langInput: any | null = null;
+  
   socialIcon = SOCIAL_ICONS;
   bookingService = inject(BookingService);
   priceCalculatorService = inject(PriceCalculatorService);

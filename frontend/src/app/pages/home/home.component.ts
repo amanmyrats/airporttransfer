@@ -1,4 +1,4 @@
-import { afterNextRender, afterRender, AfterViewInit, Component, ElementRef, Inject, inject, OnInit, PLATFORM_ID, Renderer2, ViewChild } from '@angular/core';
+import { afterNextRender, afterRender, AfterViewInit, Component, ElementRef, Inject, inject, Input, OnInit, PLATFORM_ID, Renderer2, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';

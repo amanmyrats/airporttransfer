@@ -2,7 +2,7 @@
   <!-- Title Section -->
   <div class="title-section">
     <h1>
-      {{ translations.cars[this.languageService.currentLang().code] }}
+      {{ translations.cars[langInput.code] }}
     </h1>
     <div class="route-info">
       <span class="from">{{ bookingService.bookingInitialForm.value.pickup_full }}</span>
@@ -11,7 +11,7 @@
     </div>
     <div class="distance-info">
       <span>
-      {{ translations.distance[this.languageService.currentLang().code] }}
+      {{ translations.distance[langInput.code] }}
       : 
       {{ this.bookingService.bookingCarTypeSelectionForm.value.distance | number: '1.0-0' }} km
         ({{ this.bookingService.bookingCarTypeSelectionForm.value.driving_duration | number: '1.0-0' }} mins)
@@ -24,8 +24,8 @@
 
     <!-- Distance Validation -->
     <div *ngIf="!isValidDistance()" class="contact-section">
-      <h2>{{ translations.contact[this.languageService.currentLang().code] }}</h2>
-      <p>{{ translations.invalidDistanceMessage[this.languageService.currentLang().code] }}</p>
+      <h2>{{ translations.contact[langInput.code] }}</h2>
+      <p>{{ translations.invalidDistanceMessage[langInput.code] }}</p>
       <div class="contact-options">
         <p>WhatsApp: <a href="{{ socialIcons.whatsapp.url }}" target="_blank">{{ socialIcons.phone.formatted }}</a></p>
         <p>Telegram: <a href="{{ socialIcons.telegram.url }}" target="_blank">&#64;{{ socialIcons.telegram.username }}</a></p>
@@ -36,8 +36,8 @@
 
     <!-- Special Price Section -->
     <div *ngIf="isLongDistance()" class="contact-section">
-      <h2>{{ translations.specialPrice[this.languageService.currentLang().code] }}</h2>
-      <p>{{ translations.longDistanceMessage[this.languageService.currentLang().code] }}</p>
+      <h2>{{ translations.specialPrice[langInput.code] }}</h2>
+      <p>{{ translations.longDistanceMessage[langInput.code] }}</p>
       <div class="contact-options">
         <p>WhatsApp: <a href="{{ socialIcons.whatsapp.url }}" target="_blank">{{ socialIcons.phone.formatted }}</a></p>
         <p>Telegram: <a href="{{ socialIcons.telegram.url }}" target="_blank">&#64;{{ socialIcons.telegram.username }}</a></p>
@@ -54,7 +54,7 @@
         <div class="car-type-info">
           <h2 class="car-type-name">{{ carType.name }}</h2>
           @if ( carType.specialPrice ) {
-            <h4>{{ translations.specialPrice[this.languageService.currentLang().code] }}</h4>
+            <h4>{{ translations.specialPrice[langInput.code] }}</h4>
             <div class="contact-options">
               <p>WhatsApp: <a href="{{ socialIcons.whatsapp.url }}" target="_blank">{{ socialIcons.phone.formatted }}</a></p>
               <p>Telegram: <a href="{{ socialIcons.telegram.url }}" target="_blank">&#64;{{ socialIcons.telegram.username }}</a></p>
@@ -64,7 +64,7 @@
           } @else {
               <p class="car-type-price">
 
-              {{ translations.price[this.languageService.currentLang().code] }}
+              {{ translations.price[langInput.code] }}
               : 
               <span>{{ carType.price }} {{ this.currencyService.currentCurrency().sign }}</span>
             </p>
@@ -73,7 +73,7 @@
               carType.price,
               this.currencyService.currentCurrency().code!, 
               this.bookingService.bookingCarTypeSelectionForm.value.distance)">
-            {{ translations.select[this.languageService.currentLang().code] }}
+            {{ translations.select[langInput.code] }}
           </button>
             }
         </div>
@@ -83,6 +83,6 @@
 </section>
 
 <h3 style="width: 100%; text-align: center; color: rgb(147, 66, 223); margin-top: 50px;">
-  {{ translations.fixedPrices[this.languageService.currentLang().code] }}
+  {{ translations.fixedPrices[langInput.code] }}
 </h3>
 <app-price-list></app-price-list>

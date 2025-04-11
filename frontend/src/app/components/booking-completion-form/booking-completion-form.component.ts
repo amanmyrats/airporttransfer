@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject, OnInit, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, Input, OnInit, output, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
 import { ButtonModule } from 'primeng/button';
@@ -34,6 +34,8 @@ declare var dataLayer: any;
   styleUrl: './booking-completion-form.component.scss'
 })
 export class BookingCompletionFormComponent implements OnInit {
+  @Input() langInput: any | null = null;
+  
   navbar = NAVBAR_MENU;
   bookingService = inject(BookingService);
   carTypeService = inject(CarTypeService);

@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, inject, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingBannerFormComponent } from '../booking-banner-form/booking-banner-form.component';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -17,6 +17,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   styleUrl: './banner.component.scss'
 })
 export class BannerComponent implements OnInit {
+  @Input() langInput: any | null = null; // Input property for language selection
   socialIcons = SOCIAL_ICONS;
   private router! : Router;
   isBrowser: boolean;

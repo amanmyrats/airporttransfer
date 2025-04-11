@@ -5,37 +5,37 @@
       <div class="form-row">
         <div class="form-group" [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid">
           <label for="pickup_full">
-            {{ translations.from[this.languageService.currentLang().code] }}
+            {{ translations.from[langInput.code] }}
           </label>
           <input
             type="text"
             id="pickup_full"
-            placeholder="{{ translations.from_placeholder[this.languageService.currentLang().code] }}"
+            placeholder="{{ translations.from_placeholder[langInput.code] }}"
             formControlName="pickup_full"
             appGmapsAutocomplete
             (placeChanged)="onPickupPlaceChanged($event)" 
             (keydown)="preventFormSubmit($event)"
           />
           <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid" class="field-error">
-            {{ translations.from_required[this.languageService.currentLang().code] }}
+            {{ translations.from_required[langInput.code] }}
           </p>
         </div>
         <div class="form-group" [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid">
           <label for="dest_full">
-            {{ translations.to[this.languageService.currentLang().code] }}
+            {{ translations.to[langInput.code] }}
             
           </label>
           <input
             type="text"
             id="dest_full"
-            placeholder="{{ translations.to_placeholder[this.languageService.currentLang().code] }}"
+            placeholder="{{ translations.to_placeholder[langInput.code] }}"
             formControlName="dest_full"
             appGmapsAutocomplete
             (placeChanged)="onDestPlaceChanged($event)" 
             (keydown)="preventFormSubmit($event)"
           />
           <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid" class="field-error">
-            {{ translations.to_required[this.languageService.currentLang().code] }}
+            {{ translations.to_required[langInput.code] }}
           </p>
         </div>
       </div>
@@ -123,7 +123,7 @@
       <div class="form-actions">
         <button type="submit" class="btn-submit" 
         >
-        {{ translations.search[this.languageService.currentLang().code] }}
+        {{ translations.search[langInput.code] }}
         
       </button>
       </div>
@@ -131,19 +131,19 @@
     
 
   <h3 style="width: 100%; text-align: center; color: rgb(147, 66, 223); margin-top: 50px;">
-    {{ translations.fixedPrices[this.languageService.currentLang().code] }}
+    {{ translations.fixedPrices[langInput.code] }}
   </h3>
-<app-price-list></app-price-list>
+<app-price-list [langInput]="langInput"></app-price-list>
 
 
     <!-- Hero Section -->
     <div class="booking-hero">
       <h1 class="booking-title">
-        {{ translations.book_your_transfer[this.languageService.currentLang().code] }}
+        {{ translations.book_your_transfer[langInput.code] }}
         
       </h1>
       <p class="booking-subtitle">
-        {{ translations.description[this.languageService.currentLang().code] }}
+        {{ translations.description[langInput.code] }}
 
       </p>
     </div>

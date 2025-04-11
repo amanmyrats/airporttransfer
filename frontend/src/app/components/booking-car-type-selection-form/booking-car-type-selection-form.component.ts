@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject, input, OnInit, output } from '@angular/core';
+import { Component, computed, effect, inject, Input, input, OnInit, output } from '@angular/core';
 import { BookingService } from '../../services/booking.service';
 import { CarType } from '../../models/car-type.model';
 import { SUPPORTED_CAR_TYPES } from '../../constants/car-type.constants';
@@ -21,6 +21,8 @@ import { PriceListComponent } from '../price-list/price-list.component';
   styleUrl: './booking-car-type-selection-form.component.scss'
 })
 export class BookingCarTypeSelectionFormComponent implements OnInit {
+  @Input() langInput: any | null = null;
+  
   socialIcons = SOCIAL_ICONS;
   maxDistance: number = 230;
 

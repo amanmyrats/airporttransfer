@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, computed, effect, ElementRef, Inject, inject, OnInit, PLATFORM_ID, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, Inject, inject, Input, OnInit, PLATFORM_ID, signal, ViewChild } from '@angular/core';
 import { TabsModule } from 'primeng/tabs';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MainLocationService } from '../../services/main-location.service';
@@ -29,6 +29,7 @@ import { PricesLoadingComponent } from '../prices-loading/prices-loading.compone
 })
 export class PriceListComponent implements OnInit, AfterViewInit {
   @ViewChild('transferPricesContainer') transferPricesContainer!: ElementRef;
+  @Input() langInput!: any;
 
   navbar = NAVBAR_MENU;
   activeIndex: number = 1;
@@ -99,7 +100,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     console.log('Booking Car Type Selection Form:', carTypeSelectionFormValue);
 
 
-    this.router.navigate([`${this.languageService.currentLang().code}/${this.navbar.bookNow.slug[this.languageService.currentLang().code]}/`], {
+    this.router.navigate([`${this.langInput.code}/${this.navbar.bookNow.slug[this.langInput.code]}/`], {
       queryParams: {
         step: 3,
         pickup_full: intialFormValue.pickup_full,
@@ -142,7 +143,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
       value = value[k];
       if (!value) return key; // Return key if translation not found
     }
-    return value[this.languageService.currentLang().code] || key;
+    return value[this.langInput?.code] || key;
   }
 
   translations: any = {

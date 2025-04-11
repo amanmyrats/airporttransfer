@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
@@ -20,6 +20,7 @@ import { LanguageService } from '../../services/language.service';
   styleUrl: './super-header.component.scss'
 })
 export class SuperHeaderComponent implements OnInit {
+  @Input() langInput: any | null = null; // Input property for language selection
   socialIcons = SOCIAL_ICONS;
   currentLanguage: any = { code: 'en', name: 'English' };
   private languageService!: LanguageService;

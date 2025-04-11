@@ -4,7 +4,7 @@
   <p-button 
   severity="secondary"
   *ngFor="let mainLocation of mainLocations"
-  [label]="mainLocation.short[languageService.currentLang().code]"
+  [label]="mainLocation.short[langInput?.code]"
   (click)="showTransferPrices(mainLocation)"
   [styleClass]="selectedLocation === mainLocation ? 'p-button-raised p-button-success  active-airport-button' : ''"
   
@@ -13,7 +13,7 @@
 </div>
 
 <div *ngIf="selectedLocation" class="transfer-prices">
-  <!-- <h2 class="transfer-prices-title">{{getTranslation('transfer_prices')}} - {{ selectedLocation[languageService.currentLang().code] }}</h2> -->
+  <!-- <h2 class="transfer-prices-title">{{getTranslation('transfer_prices')}} - {{ selectedLocation[langInput?.code] }}</h2> -->
   <div class="price-list">
     @for( carType of carTypeService.getCarTypes(); track carType.code){
       @let carTypePopularRoutes = popularRouteService.getPopularRoutesByMainLocationCodeAndCarType(selectedLocation.code!, carType.code!);
@@ -21,8 +21,8 @@
       <div class="car-section">
         <div class="car-image-and-title">
           
-          <img src="images/cartypes/{{ carType.image.name[languageService.currentLang().code] }}"
-            alt="{{ carType.image.alt[languageService.currentLang().code] }}"
+          <img src="images/cartypes/{{ carType.image.name[langInput?.code] }}"
+            alt="{{ carType.image.alt[langInput?.code] }}"
               class="car-image"
               style="width: 100%;"
               />
@@ -52,7 +52,7 @@
               <li>
                 <span class="routes-info">
                   <div class="airport-name">
-                    {{selectedLocation[languageService.currentLang().code]}}
+                    {{selectedLocation[langInput?.code]}}
                     <!-- <span class="arrow">→</span> -->
                   </div>
                   <div class="destination-name">

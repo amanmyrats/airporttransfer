@@ -1,17 +1,17 @@
 <div class="home-wrapper">
-    <app-super-header></app-super-header>
+    <app-super-header [langInput]="currentLanguage"></app-super-header>
     <app-navbar></app-navbar>
     <div class="card flex justify-center">
         <p-stepper [(value)]="activeStep" class="basis-[50rem]">
             <p-step-list>
                 <p-step [value]="1" [disabled]="activeStep !== 1">
-                    {{ translations.destination[languageService.currentLang().code] }}
+                    {{ translations.destination[currentLanguage.code] }}
                 </p-step>
                 <p-step [value]="2" [disabled]="activeStep !== 2">
-                    {{ translations.vehicle[languageService.currentLang().code] }}
+                    {{ translations.vehicle[currentLanguage.code] }}
                 </p-step>
                 <p-step [value]="3" [disabled]="activeStep !== 3">
-                    {{ translations.personal[languageService.currentLang().code] }}
+                    {{ translations.personal[currentLanguage.code] }}
                 </p-step>
             </p-step-list>
             <p-step-panels>
@@ -23,7 +23,11 @@
                             >
                                 <!-- Destination -->
 
-    <app-booking-initial-form (searchVehicle)="goToStep($event, 1, 2)"></app-booking-initial-form>
+    <app-booking-initial-form (searchVehicle)="goToStep($event, 1, 2)" 
+    [langInput]="currentLanguage"
+    >
+
+    </app-booking-initial-form>
 
                             </div>
                             <!-- <div class="flex pt-6 justify-end">
@@ -41,7 +45,11 @@
                             >
                                 <!-- Vehicle Selection -->
 
-    <app-booking-car-type-selection-form (carTypeSelectionOutput)="goToStep($event, 2, 3)"></app-booking-car-type-selection-form>
+    <app-booking-car-type-selection-form (carTypeSelectionOutput)="goToStep($event, 2, 3)"
+    [langInput]="currentLanguage"
+    >
+
+    </app-booking-car-type-selection-form>
 
                             </div>
                         </div>
@@ -61,7 +69,11 @@
                             >
                                 <!-- Personal Info -->
 
-    <app-booking-completion-form (previousStep)="goToStep($event, 3, 2)"></app-booking-completion-form>
+    <app-booking-completion-form (previousStep)="goToStep($event, 3, 2)"
+    [langInput]="currentLanguage"
+    >
+
+    </app-booking-completion-form>
 
                             </div>
                         </div>

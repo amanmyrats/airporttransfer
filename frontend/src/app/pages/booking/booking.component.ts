@@ -12,6 +12,7 @@ import { BookingService } from '../../services/booking.service';
 import { LanguageService } from '../../services/language.service';
 import { usePreset } from '@primeng/themes';
 import Aura from '@primeng/themes/aura';
+import { Meta, Title } from '@angular/platform-browser';
 
 
 @Component({
@@ -32,14 +33,23 @@ export class BookingComponent implements OnInit {
   bookingService = inject(BookingService);
   activeStep: number = 1;
   stepFromUrl: number | null = null;
+  currentLanguage = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
 
   constructor(
     private route: ActivatedRoute, 
     public languageService: LanguageService, 
+    private title: Title, 
+    private meta: Meta, 
   ) { }
 
   ngOnInit(): void {
     console.log('BookingComponent initialized');
+
+    const languageCode = this.route.snapshot.data['language'] || 'en';
+    this.currentLanguage.code = languageCode;
+  
+    this.setMetaTags(this.currentLanguage.code);
+
     this.route.queryParams.subscribe((params) => {
       if (params['step'] === '2') {
         this.prefillStep1Data(params);
@@ -55,6 +65,7 @@ export class BookingComponent implements OnInit {
     });
     usePreset(Aura);
   }
+
 
   prefillStep1Data(params: any): void {
     this.bookingService.bookingInitialForm.patchValue({
@@ -84,6 +95,37 @@ export class BookingComponent implements OnInit {
     console.log('Navigating toStep:', toStep);
     console.log('Event:', event);
     this.activeStep = toStep;
+  }
+
+  setMetaTags(langCode: string): void {
+    // { path: 'en/book-now-24-7-private-airport-transfer-in-turkey', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'en' }   },
+    // { path: 'de/jetzt-buchen-24-7-privater-flughafentransfer-in-der-türkei', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'de' }   },
+    // { path: 'ru/забронировать-сейчас-24-7-частный-трансфер-из-аэропорта-в-турции', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'ru' }   },
+    // { path: 'tr/türkiye-de-7-24-özel-havalimanı-transferi-şimdi-rezervasyon-yap', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'tr' }   },
+
+    const metaTags: any = {
+      en: {
+        title: 'Book Now - 24/7 Private Airport Transfer in Turkey',
+        description: 'Book your 24/7 private airport transfer in Turkey. Affordable and reliable services covering Antalya, Istanbul, Alanya, Izmir, and more.',
+      },
+      de: {
+        title: 'Buchen Sie jetzt - 24/7 privater Flughafentransfer in der Türkei',
+        description: 'Buchen Sie Ihren 24/7 privaten Flughafentransfer in der Türkei. Erschwingliche und zuverlässige Dienstleistungen in Antalya, Istanbul, Alanya, Izmir und mehr.',
+      },
+      ru: {
+        title: 'Забронировать сейчас - 24/7 частный трансфер из аэропорта в Турции',
+        description: 'Забронируйте свой 24/7 частный трансфер из аэропорта в Турции. Доступные и надежные услуги в Анталии, Стамбуле, Аланье, Измире и других городах.',
+      }, 
+      tr: {
+        title: 'Şimdi Rezervasyon Yap - Türkiye\'de 7/24 Özel Havalimanı Transferi',
+        description: 'Türkiye\'deki 7/24 özel havalimanı transferinizi şimdi rezerve edin. Antalya, İstanbul, Alanya, İzmir ve daha fazlasını kapsayan uygun fiyatlı ve güvenilir hizmetler.',
+      }
+
+    };
+
+    const meta: any = metaTags[langCode] || metaTags['en'];
+    this.title.setTitle(meta.title);
+    this.meta.updateTag({ name: 'description', content: meta.description });
   }
 
   translations: any = {
