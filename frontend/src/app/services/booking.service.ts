@@ -88,7 +88,7 @@ export class BookingService {
       greet_with_flower: [false],
       note: [''],
       passenger_name: ['', Validators.required],
-      passenger_email: '',
+      passenger_email: ['', Validators.email],
       // passenger_email: ['', [Validators.required, Validators.email]],
       passenger_phone: ['', Validators.required],
       passenger_additional_phone: [''], 

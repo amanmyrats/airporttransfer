@@ -120,6 +120,12 @@
                   {{ translations.email[langInput.code] }}
                 </label>
                 <input type="email" id="passenger_email" formControlName="passenger_email" placeholder="{{ translations.email[langInput.code] }}" />
+
+  <!-- Show warning only if user typed something and it's invalid -->
+  <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_email')?.value && bookingService.bookingCompletionForm.get('passenger_email')?.invalid"
+  severity="warn" variant="simple" size="small">
+{{ translations.invalidEmail[langInput.code] || 'Please enter a valid email address.' }}
+</p-message>
               </div>
               <div class="form-item">
                 <label for="passenger_phone">
@@ -127,6 +133,11 @@
                 </label>
                 <input type="tel" id="passenger_phone" 
                   formControlName="passenger_phone" placeholder="{{ translations.primaryPhone[langInput.code] }}" required />
+              <!-- Format hint -->
+              <small class="form-hint">
+                {{ translations.phoneFormatHint?.[langInput.code] || 'Please include country code, starting with + or 00 (e.g. +90 555 555 5555)' }}
+              </small>
+
                 <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_phone')?.invalid" 
                 severity="error" variant="simple" size="small">
                 {{ translations.fieldRequired[langInput.code] }}

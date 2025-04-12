@@ -482,7 +482,7 @@ export class BookingCompletionFormComponent implements OnInit {
       tr: 'yaşında',
     }, 
     completeReservation: {
-      en: 'Complete Reservation', 
+      en: 'Send Reservation Request', 
       de: 'Reservierung abschließen',
       ru: 'Завершить бронирование',
       tr: 'Rezervasyonu Tamamla',
@@ -577,5 +577,18 @@ export class BookingCompletionFormComponent implements OnInit {
       ru: 'Цена детского кресла (2 поездка)',
       tr: 'Çocuk Koltuğu Fiyatı (2. Yolculuk)',
     },
+    phoneFormatHint: {
+      en: 'Please include country code, starting with + or 00 (e.g. +90 555 555 5555)',
+      de: 'Bitte geben Sie die Vorwahl an, beginnend mit + oder 00 (z.B. +90 555 555 5555)',
+      ru: 'Пожалуйста, укажите код страны, начиная с + или 00 (например, +90 555 555 5555)',
+      tr: '+ veya 00 ile başlayan ülke kodunu içermelidir (örn. +90 555 555 5555)',
+    }, 
+    invalidEmail: {
+      en: 'Please enter a valid email address.',
+      de: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+      ru: 'Пожалуйста, введите действительный адрес электронной почты.',
+      tr: 'Lütfen geçerli bir e-posta adresi girin.',
+    }
+    
   }
 }
