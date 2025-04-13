@@ -113,6 +113,7 @@
   flex-direction: column;
   cursor: pointer;
   gap: 5px;
+
 }
 
 .hamburger-menu span {
@@ -139,6 +140,8 @@
     border-radius: 5px;
     /* Ensure the dropdown menu is on top */
     z-index: 1000;
+    right: 50px; /* Moves the menu 20px to the left */
+
 
   }
 
