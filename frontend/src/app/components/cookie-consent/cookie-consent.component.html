@@ -1,0 +1,10 @@
+<div *ngIf="showBanner()" class="cookie-banner">
+    
+    <p *ngIf="currentLang() === 'en'">We use cookies to enhance your experience.</p>
+    <p *ngIf="currentLang() === 'de'">Wir verwenden Cookies, um Ihre Erfahrung zu verbessern.</p>
+    <p *ngIf="currentLang() === 'ru'">Мы используем файлы cookie, чтобы улучшить ваш опыт.</p>
+    <p *ngIf="currentLang() === 'tr'">Deneyiminizi geliştirmek için çerezleri kullanıyoruz.</p>
+    
+    <button (click)="acceptCookies()">Accept</button>
+  </div>
+  

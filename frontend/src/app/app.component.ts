@@ -2,10 +2,14 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Router, NavigationEnd } from '@angular/router';
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
+import { CookieConsentComponent } from './components/cookie-consent/cookie-consent.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [
+    RouterOutlet, 
+    CookieConsentComponent, 
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
