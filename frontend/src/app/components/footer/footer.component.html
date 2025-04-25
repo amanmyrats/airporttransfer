@@ -8,12 +8,17 @@
                     style="max-height: 20px; width: 20px; height: 20px;"/> 
         {{ socialIcons.location.address[currentLanguage.code] }} 
       </p>
-      <p>
+      <p style="display: flex; align-items: center; gap: 8px;">
         
         <img [src]="'images/socialicons/' + socialIcons.phone.image.name[currentLanguage.code]" 
                     [alt]="socialIcons.phone.image.alt[currentLanguage.code]" 
                     style="max-height: 20px; width: 20px; height: 20px;"/> 
+                    <a href="tel:{{ socialIcons.phone.number }}"
+                    [attr.aria-label]="socialIcons.phone.anchor.ariaLabel[currentLanguage.code]"
+                    style="text-decoration: none; color: inherit;"
+                    >
         {{ socialIcons.phone.formatted }} 
+        </a>
       </p>
       <p>
         <img [src]="'images/socialicons/' + socialIcons.email.image.name[currentLanguage.code]" 
