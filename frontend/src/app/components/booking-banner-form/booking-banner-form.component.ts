@@ -37,6 +37,7 @@ export class BookingBannerFormComponent {
   }
 
   onSubmit(): void {
+    this.isBookNowLoading = true;
     const formValue = this.bookingService.bookingInitialForm.value;
     console.log('Booking Form:', formValue);
     const origin: google.maps.LatLngLiteral = { 
@@ -76,6 +77,7 @@ export class BookingBannerFormComponent {
           },
         });
     }).catch(error => {
+      this.isBookNowLoading = false;
       console.error('Error calculating distance:', error);
       this.router.navigate([`${this.langInput.code}/${NAVBAR_MENU.bookNow.slug[this.langInput.code]}/`], {
         queryParams: {

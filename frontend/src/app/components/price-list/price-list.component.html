@@ -69,9 +69,15 @@
                   popularRoute.destination!,
                   popularRoute.car_type!,
                   price,
-                  currency_code)"
-                  >
-                  {{getTranslation('book_now')}}
+                  currency_code)" 
+                  [disabled]="isBookNowLoading"
+                  > <ng-container *ngIf="!isBookNowLoading; else loadingTpl">
+                    {{ getTranslation('book_now') }}
+                  </ng-container>
+                  <ng-template #loadingTpl>
+                    <span class="spinner"></span> <!-- Optional custom spinner -->
+                    {{ getTranslation('loading') || 'Loading...' }}
+                  </ng-template>
                 </button>
               </li>
             }

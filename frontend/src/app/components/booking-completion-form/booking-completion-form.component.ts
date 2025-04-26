@@ -151,6 +151,12 @@ export class BookingCompletionFormComponent implements OnInit {
 
   // Handle form submission
   onSubmit(): void {
+    this.isSaving = true;
+    // wait for 2 seconds
+    setTimeout(() => {
+      this.isSaving = false;
+    }
+    , 5000);
     this.hasSubmitted = true;
     this.bookingService.bookingCarTypeSelectionForm.patchValue({
       amount: this.price + this.champagnePrice() + this.flowerPrice() + this.childSeatPrice(),
@@ -167,9 +173,6 @@ export class BookingCompletionFormComponent implements OnInit {
     console.log('Booking Form:', this.bookingService.bookingForm.value);
     console.log([`${this.languageService.currentLang().code}/${this.navbar.bookNow.slug[this.languageService.currentLang().code]}/received/`]);
     if (this.bookingService.bookingForm.valid) {
-
-
-      this.isSaving = true;
       console.log('Form is valid');
       this.bookingService.createBooking(
         this.bookingService.bookingForm.value).subscribe({
@@ -209,6 +212,7 @@ export class BookingCompletionFormComponent implements OnInit {
       // Send data to a backend API or navigate to a confirmation page
     } else {
       console.log('Form is invalid');
+      this.isSaving = false;
     }
 
 

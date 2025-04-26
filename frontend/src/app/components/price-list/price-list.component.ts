@@ -41,6 +41,8 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   isLoadingPricesSignal = this.popularRouteService.isLoadingPricesSignal;
 
   popularRoutesSignal = this.popularRouteService.popularRoutesSignal;
+
+  isBookNowLoading: boolean = false;
   
   mainLocations: any[] = this.mainLocationService.getMainLocations();
   selectedLocation: any | null = null;
@@ -84,6 +86,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     car_type: string, 
     price: number, currency_code: string  
   ): void {
+    this.isBookNowLoading = true;
     this.bookingService.bookingInitialForm.patchValue({
       pickup_full: pickup_full,
       dest_full: dest_full,
@@ -165,6 +168,12 @@ export class PriceListComponent implements OnInit, AfterViewInit {
       'ru': 'Цены на трансфер',
       'tr': 'Transfer Fiyatları',
     },
+    loading: {
+      'en': 'Loading...',
+      'de': 'Laden...',
+      'ru': 'Загрузка...',
+      'tr': 'Yükleniyor...',
+    }
   };
 
 
