@@ -42,6 +42,7 @@
 
         <ng-template pTemplate="header" let-columns>
             <tr>
+                <th></th>
                 <th *ngFor="let col of columns" 
                     pResizableColumn 
                     pReorderableColumn 
@@ -50,7 +51,6 @@
                     >
                     {{col.header}}
                 </th>
-                <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-reservation let-columns="columns">
@@ -161,6 +161,8 @@
                 || col.field === 'child_seat_count'
                 || col.field === 'note'
                 || col.field === 'number'
+                || col.field === 'transfer_type'
+                || col.field === 'direction_type'
                 "
                 [style.width.px]="col.width * 0.80" 
                 style="white-space: normal; word-break: normal; overflow-wrap: break-word;">

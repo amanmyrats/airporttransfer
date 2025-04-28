@@ -9,6 +9,9 @@ export class Reservation {
     
     reservation_date?: Date;
     car_type?: string; 
+    transfer_type?: string;
+    direction_type?: string;
+    
     transfer_date?: Date;
     transfer_time?: string;
     transfer_date_time?: string;

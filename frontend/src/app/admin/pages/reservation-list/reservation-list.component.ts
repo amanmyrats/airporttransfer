@@ -114,6 +114,16 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
       { id: '', index: 34, field: 'flight_number', header: 'Flight', 
         width: 200, min_width: 50, max_width: 500, 
         table_name:'reservation', is_visible:true },
+
+
+      { id: '', index: 35, field: 'direction_type', header: 'Yön Tipi', 
+        width: 200, min_width: 50, max_width: 500, 
+        table_name:'reservation', is_visible:true },
+
+
+      { id: '', index: 36, field: 'transfer_type', header: 'Transfer Tipi', 
+        width: 200, min_width: 50, max_width: 500, 
+        table_name:'reservation', is_visible:true },
   
       { id: '', index: 40, field: 'pickup_short', header: 'Pick up', 
         width: 200, min_width: 50, max_width: 500, 

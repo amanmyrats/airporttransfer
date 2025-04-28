@@ -19,6 +19,16 @@ class Reservation(models.Model):
         ('confirmed', 'Onaylandı'),
     ]
 
+    TRANSFER_TYPE_CHOICES = [
+        ('PRIVATE', 'Özel Transfer'),
+        ('SHUTTLE', 'Paylaşımlı Transfer'),
+    ]
+    DIRECTION_TYPE_CHOICES = [
+        ('ARR', 'Arrival'),
+        ('DEP', 'Departure'),
+        ('ARA', 'Round Trip'),
+    ]
+
     number = models.CharField(max_length=255, null=True, blank=True)
     
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -27,6 +37,8 @@ class Reservation(models.Model):
 
     reservation_date = models.DateField(default=timezone.now().date())
 
+    transfer_type = models.CharField(max_length=255, choices=TRANSFER_TYPE_CHOICES, default='PRIVATE', null=True, blank=True)
+    direction_type = models.CharField(max_length=255, choices=DIRECTION_TYPE_CHOICES, default='ARR', null=True, blank=True)
     car_type = models.CharField(max_length=255)
 
     transfer_date = models.DateField(default=timezone.now().date(), null=True, blank=True)

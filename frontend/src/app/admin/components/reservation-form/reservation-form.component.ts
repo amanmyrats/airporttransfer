@@ -61,6 +61,12 @@ export class ReservationFormComponent implements OnInit {
     {label: 'Lazım Değil', value: false},
   ];
 
+  directionTypes: any[] = [
+    {value: 'ARR', label: 'Arrival' },
+    {value: 'DEP', label: 'Departure' },
+    {value: 'ARA', label: 'Ara Transfer' },
+  ];
+
   reservation: Reservation | null = null;
   reservationForm: FormGroup;
 
@@ -84,6 +90,9 @@ export class ReservationFormComponent implements OnInit {
       
       reservation_date: new Date().toISOString().split('T')[0],
       car_type: "",
+
+      direction_type: "",
+
       transfer_date: new Date().toISOString().split('T')[0],
       transfer_time: "",
 

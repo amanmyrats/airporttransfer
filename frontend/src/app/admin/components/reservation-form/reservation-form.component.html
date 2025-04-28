@@ -76,6 +76,27 @@
                         <label for="transfer_time">Transfer Saati</label>
                     </p-floatlabel>
                 </div>
+
+
+    
+                <div class="horizontal-row-child">
+                    <p-floatlabel variant="on">
+                        <p-select [fluid]="true" size="large" [options]="directionTypes" 
+                            formControlName="direction_type" optionLabel="label"
+                            optionValue="value" [filter]="true" filterBy="label" 
+                            [showClear]="true" appendTo="body"
+                            placeholder="Transfer Yönü Seçiniz"
+                            >
+                            <ng-template let-directionType pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <div>{{ directionType.value }} - {{ directionType.label }}</div>
+                                </div>
+                            </ng-template>
+                        </p-select>
+                        <label for="direction_type">Transfer Yönü</label>
+                    </p-floatlabel>
+                </div>
+
             </div>
 
             <div class="horizontal-row">
