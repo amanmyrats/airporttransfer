@@ -1,6 +1,8 @@
 
   <div id="pdf-content" class="reservation-confirmation">
     <h1>Reservation Confirmation</h1>
+    <h1 style="font-size: medium;">Number: {{ reservation.number }}</h1>
+    <h1 style="font-size: small;">Creation Date: {{ reservation.reservation_date }}</h1>
     <hr>
   
     <h2>Personal Information</h2>
@@ -9,14 +11,33 @@
     <p><strong>Email:</strong> {{ reservation.passenger_email }}</p>
     
     <h2>Transfer Information</h2>
-    <p><strong>Message:</strong> {{ reservation.note }}</p>
     <p><strong>Vehicle Type:</strong> {{ reservation.car_type }}</p>
     <p><strong>Pickup:</strong> {{ reservation.pickup_full }}</p>
     <p><strong>Destination:</strong> {{ reservation.dest_full }}</p>
-    <p><strong>Number of Passengers:</strong> {{ reservation.passenger_count }} Adults / {{ reservation.passenger_count_children }} Children</p>
+    <p><strong>Number of Passengers:</strong> 
+      @if (+reservation.passenger_count! == 1) {
+        {{ reservation.passenger_count }} Adult
+      } @else {
+        {{ reservation.passenger_count }} Adults
+      }
+      @if (+reservation.passenger_count_child! > 0) {
+        @if (+reservation.passenger_count_child! == 1) {
+          / {{ reservation.passenger_count_child }} Child
+        } @else {
+          / {{ reservation.passenger_count_child }} Children
+        }
+      }
+    </p>
     <p><strong>Transfer Date:</strong> {{ reservation.transfer_date }}</p>
     <p><strong>Transfer Time:</strong> {{ reservation.transfer_time }}</p>
     <p><strong>Flight Number:</strong> {{ reservation.flight_number }}</p>
+    @if (+reservation.child_seat_count! > 0) {
+      <p><strong>Child Seat:</strong> {{ reservation.child_seat_count }} </p>
+    }
     <p><strong>Total Amount:</strong> {{ reservation.amount }} {{reservation.currency_code}} </p>
+    <p><strong>Payment Type:</strong> Cash Payment to the Driver </p>
+    <br>
+    <br>
+    <p><strong>Message:</strong> {{ reservation.note }}</p>
   </div>
   

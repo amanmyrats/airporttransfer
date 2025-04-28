@@ -4,7 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../../models/paginated-response.model';
 import { PopularRoute } from '../models/popular-route.model';
-import { saveAs } from 'file-saver-es';
+// import { saveAs } from 'file-saver-es';
+import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root'

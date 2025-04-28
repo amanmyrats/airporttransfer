@@ -190,6 +190,18 @@ class BookingCreateAPIView(APIView):
                     "return_transfer_time"
                 )
                 round_trip_data["amount"] = serializer.validated_data.get("return_trip_amount")
+                round_trip_data["pickup_short"] = serializer.validated_data.get(
+                    "dest_short"
+                )
+                round_trip_data["pickup_full"] = serializer.validated_data.get(
+                    "dest_full"
+                )
+                round_trip_data["dest_short"] = serializer.validated_data.get(
+                    "pickup_short"
+                )
+                round_trip_data["dest_full"] = serializer.validated_data.get(
+                    "pickup_full"
+                )
                 note = serializer.validated_data.get("note")
                 if greet_with_flower or greet_with_champagne:
                     round_trip_data["note"] = note

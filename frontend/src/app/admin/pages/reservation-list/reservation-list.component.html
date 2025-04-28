@@ -63,6 +63,25 @@
             <tr 
             class="{{reservation.status}}"
             >
+
+
+            <td class="action-column">
+                <app-action-buttons 
+                    [obj]="reservation" 
+                    [editRole]="'company_rezervasyoncu'"
+                    [deleteRole]="'company_rezervasyoncu'"
+                    [wantEdit]="reservation.status !== 'confirmed'"
+                    [wantDelete]="reservation.status !== 'confirmed'" 
+                    [wantDownloadPdf]="true" 
+                    [wantDetail]="true"
+                    (detailEmitter)="detailObj(reservation)"
+                    (updateEmitter)="updateObj($event)" 
+                    (deleteEmitter)="deleteObj($event)" 
+                    (downloadPdfEmitter)="downloadPdf($event)"
+                    >
+                </app-action-buttons>
+            </td>
+            
             <td *ngFor="let col of columns" 
                     [style.minWidth.px]="col.min_width"
                     [style.maxWidth.px]="col.width"
@@ -150,22 +169,6 @@
                 
             </td>
 
-                <td class="action-column">
-                    <app-action-buttons 
-                        [obj]="reservation" 
-                        [editRole]="'company_rezervasyoncu'"
-                        [deleteRole]="'company_rezervasyoncu'"
-                        [wantEdit]="reservation.status !== 'confirmed'"
-                        [wantDelete]="reservation.status !== 'confirmed'" 
-                        [wantDownloadPdf]="true" 
-                        [wantDetail]="true"
-                        (detailEmitter)="detailObj(reservation)"
-                        (updateEmitter)="updateObj($event)" 
-                        (deleteEmitter)="deleteObj($event)" 
-                        (downloadPdfEmitter)="downloadPdf($event)"
-                        >
-                    </app-action-buttons>
-                </td>
             </tr>
         </ng-template>
     </p-table>

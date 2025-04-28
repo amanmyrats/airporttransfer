@@ -4,7 +4,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Reservation } from '../models/reservation.model';
 import { PaginatedResponse } from '../../models/paginated-response.model';
-import { saveAs } from 'file-saver-es';
+// import { saveAs } from 'file-saver-es';
+import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root', 

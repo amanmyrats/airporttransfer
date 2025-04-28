@@ -448,7 +448,7 @@ downloadPdf(reservation: Reservation) {
         }
       });
     }
-  }, 0);
+  }, 1000);
 }
 
 }

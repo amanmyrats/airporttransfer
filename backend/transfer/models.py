@@ -23,6 +23,7 @@ class Reservation(models.Model):
     
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     currency_code = models.CharField(max_length=3)
+    is_nakit = models.BooleanField(default=True)
 
     reservation_date = models.DateField(default=timezone.now().date())
 

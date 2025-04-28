@@ -1,45 +1,47 @@
 
-<p-button *ngIf="wantEdit && hasPermission(editRole)" 
-    [rounded]="true" 
-    (click)="onUpdate()" 
-    >
-    <ng-template pTemplate="icon">
-        <img src="images/icons/pencil.svg" alt="Delete Icon" width="16" height="16" />
-      </ng-template>
-</p-button>
+<div class="actions-wrapper" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+  <p-button *ngIf="wantEdit && hasPermission(editRole)" 
+      [rounded]="true" 
+      (click)="onUpdate()" 
+      >
+      <ng-template pTemplate="icon">
+          <img src="images/icons/pencil.svg" alt="Edit Icon" width="16" height="16" />
+        </ng-template>
+  </p-button>
 
-<p-button *ngIf="wantDelete && hasPermission(deleteRole)" 
-    icon="pi pi-times" severity="danger" 
-    (click)="onDelete()" 
-    >
-    <ng-template pTemplate="icon">
-        <img src="images/icons/delete.svg" alt="Delete Icon" width="16" height="16" />
-      </ng-template>
-</p-button>
+  <p-button *ngIf="wantDelete && hasPermission(deleteRole)" 
+      icon="pi pi-times" severity="danger" 
+      (click)="onDelete()" 
+      >
+      <ng-template pTemplate="icon">
+          <img src="images/icons/delete.svg" alt="Delete Icon" width="16" height="16" />
+        </ng-template>
+  </p-button>
 
-<p-button *ngIf="wantDetail && hasPermission(detailRole)" 
-    icon="pi pi-list" severity="info" label="Detay"
-    (click)="onDetail()" 
-    >
-    <ng-template pTemplate="icon">
-        <img src="images/icons/paragraph-justify.svg" alt="Delete Icon" width="16" height="16" />
-      </ng-template>
-</p-button>
+  <p-button *ngIf="wantDetail && hasPermission(detailRole)" 
+      icon="pi pi-list" severity="info" label="Detay"
+      (click)="onDetail()" 
+      >
+      <ng-template pTemplate="icon">
+          <img src="images/icons/paragraph-justify.svg" alt="Detail Icon" width="16" height="16" />
+        </ng-template>
+  </p-button>
 
-<p-button *ngIf="wantAssignDriver && hasPermission(assignDriverRole)" 
-    icon="pi pi-car" [rounded]="true" [outlined]="true"
-    (click)="onAssignDriver()" 
-    >
-    <ng-template pTemplate="icon">
-        <img src="images/icons/man.svg" alt="Delete Icon" width="16" height="16" />
-      </ng-template>
-</p-button>
+  <p-button *ngIf="wantAssignDriver && hasPermission(assignDriverRole)" 
+      icon="pi pi-car" [rounded]="true" [outlined]="true"
+      (click)="onAssignDriver()" 
+      >
+      <ng-template pTemplate="icon">
+          <img src="images/icons/man.svg" alt="Delete Icon" width="16" height="16" />
+        </ng-template>
+  </p-button>
 
-<p-button *ngIf="wantDownloadPdf && hasPermission(downloadPdfRole)" 
-    icon="pi pi-file-pdf" 
-    (click)="downloadPdf()"
-    >
-    <ng-template pTemplate="icon">
-        <img src="images/icons/download.svg" alt="Delete Icon" width="16" height="16" />
-      </ng-template>
-</p-button>
+  <p-button *ngIf="wantDownloadPdf && hasPermission(downloadPdfRole)" 
+      icon="pi pi-file-pdf" 
+      (click)="downloadPdf()"
+      >
+      <ng-template pTemplate="icon">
+          <img src="images/icons/download.svg" alt="Download Icon" width="16" height="16" />
+        </ng-template>
+  </p-button>
+</div>

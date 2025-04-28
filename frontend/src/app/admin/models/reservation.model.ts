@@ -21,7 +21,7 @@ export class Reservation {
     passenger_phone?: string;
     passenger_email?: string;
     passenger_count?: string;
-    passenger_count_children?: string;
+    passenger_count_child?: string;
     note?: string; 
     
     is_round_trip?: boolean;
