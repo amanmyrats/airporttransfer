@@ -81,10 +81,10 @@ export class StatusFormComponent implements OnInit {
             }
             this.callbackService.TtAthOrderChangeCallback(data).subscribe({
               next: data => {
-                console.log('New Order Callback:', data);
+                console.log('Order Change Callback:', data);
               },
               error: error => {
-                console.error('New Order Callback Error:', error);
+                console.error('Order Change Callback Error:', error);
               }
             });
             this.dialogRef.close(reservation);
