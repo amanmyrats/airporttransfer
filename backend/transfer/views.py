@@ -51,6 +51,7 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
         "dest_full",
     )
     ordering_fields = (
+        "-reservation_date",
         "-transfer_date",
         "transfer_time",
         "number",
@@ -61,6 +62,7 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
         "dest_full",
     )
     ordering = (
+        "-reservation_date",
         "-transfer_date",
         "transfer_time",
         "number",
