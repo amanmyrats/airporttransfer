@@ -82,7 +82,7 @@ class Reservation(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-transfer_date', 'transfer_time']
+        ordering = ['reservation_date', '-transfer_date', 'transfer_time']
 
     def save(self, *args, **kwargs):
         logger.debug(f"Inside Reservation save: {self.id}")
