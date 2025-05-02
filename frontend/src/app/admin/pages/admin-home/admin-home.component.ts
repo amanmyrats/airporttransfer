@@ -21,6 +21,7 @@ import { LoginComponent } from '../login/login.component';
 import { SOCIAL_ICONS } from '../../../constants/social.constants';
 import { usePreset } from '@primeng/themes';
 import Aura from '@primeng/themes/aura';
+import { Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-admin-home',
@@ -57,6 +58,8 @@ export class AdminHomeComponent implements OnInit {
     private router: Router,
     public userService: UserService,
     public authService: AuthService,
+    private meta: Meta,
+
   ) {
     this.setNavbarMenu();
   }
@@ -68,6 +71,8 @@ export class AdminHomeComponent implements OnInit {
     });
 
     usePreset(Aura);
+    this.meta.updateTag({ name: 'robots', content: 'noindex, nofollow' });
+
   }
 
   setNavbarMenu(): void {

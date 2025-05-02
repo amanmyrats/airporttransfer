@@ -27,6 +27,7 @@ import { environment as env } from '../../../../environments/environment';
 import { PaginatedResponse } from '../../../models/paginated-response.model';
 import { FilterSearchComponent } from '../../components/filter-search/filter-search.component';
 import { CurrencyService } from '../../../services/currency.service';
+import { Meta } from '@angular/platform-browser';
 
 
 @Component({
@@ -88,6 +89,7 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
     private userColumnService: UserColumnService, 
     private pdfService: PdfService, 
     public currencyService: CurrencyService, 
+    private meta: Meta,
   ){
 
     this.cols = [
@@ -165,6 +167,7 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.rows = env.pagination.defaultPageSize;
     this.getUserColumns('?table_name=' + this.table_name);
+    this.meta.updateTag({ name: 'robots', content: 'noindex, nofollow' });
   }
 
   ngAfterViewInit(): void {
