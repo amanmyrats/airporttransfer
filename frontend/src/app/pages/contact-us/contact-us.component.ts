@@ -9,6 +9,7 @@ import { ContactUsMessageService } from '../../admin/services/contact-us-message
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { CommonModule } from '@angular/common';
+import { SOCIAL_ICONS } from '../../constants/social.constants';
 
 @Component({
   selector: 'app-contact-us',
@@ -24,6 +25,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './contact-us.component.scss'
 })
 export class ContactUsComponent implements OnInit {
+  socialIcons = SOCIAL_ICONS;
+  
   currentLanguage: any = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
   contactForm: FormGroup;
   isSending: boolean = false;

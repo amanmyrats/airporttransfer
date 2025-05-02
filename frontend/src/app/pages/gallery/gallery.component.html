@@ -40,11 +40,11 @@
     <div class="gallery-grid">
       <!-- Gallery Item 1 -->
        
-      <a *ngFor="let image of GALLERY_IMAGES" 
+      <!-- <a *ngFor="let image of GALLERY_IMAGES" 
         href="{{getLargeImagePath(image, currentLanguage.code)}}" 
         data-lightbox="gallery" 
-        data-title="{{getImageDataTitle(image, currentLanguage.code)}}">
-        <div class="gallery-item">
+        data-title="{{getImageDataTitle(image, currentLanguage.code)}}"> -->
+        <div *ngFor="let image of GALLERY_IMAGES" class="gallery-item">
           <picture>
             <source srcset="{{getSmallImagePath(image, currentLanguage.code)}}" media="(max-width: 600px)">
             <source srcset="{{getSmallImagePath(image, currentLanguage.code)}}" media="(min-width: 601px)">
@@ -58,7 +58,7 @@
             {{getImageDescription(image, currentLanguage.code)}}
           </p>
         </div>
-      </a>
+      <!-- </a> -->
   
     </div>
   </section>

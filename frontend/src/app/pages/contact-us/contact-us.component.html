@@ -20,14 +20,22 @@
             <h3>
               {{ translations[currentLanguage.code].ourAddress }}
             </h3>
-            <p>Konyaaltı Beach Road, No:8845, Antalya, Turkey</p>
+            <p>
+              {{ socialIcons.location.address[currentLanguage.code] }} 
+            </p>
+
           </div>
           <div class="contact-card">
             <i class="pi pi-phone"></i>
             <h3>
               {{ translations[currentLanguage.code].callUs }}
             </h3>
-            <p>+90 123 456 7890</p>
+            <a href="tel:{{ socialIcons.phone.number }}"
+            [attr.aria-label]="socialIcons.phone.anchor.ariaLabel[currentLanguage.code]"
+            style="text-decoration: none; color: inherit;"
+            >
+{{ socialIcons.phone.formatted }} 
+</a>
           </div>
           <div class="contact-card">
             <i class="pi pi-envelope"></i>
