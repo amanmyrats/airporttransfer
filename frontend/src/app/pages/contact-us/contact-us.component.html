@@ -42,7 +42,11 @@
             <h3>
               {{ translations[currentLanguage.code].email }}
             </h3>
-            <p>info&#64;airporttransferhub.com</p>
+            <a href="mailto:{{ socialIcons.email.info }}"
+            [attr.aria-label]="socialIcons.email.anchor.ariaLabel[currentLanguage.code]"
+            style="text-decoration: none; color: inherit;">
+           {{ socialIcons.email.info }}
+         </a>
           </div>
         </div>
         <!-- Contact Form -->

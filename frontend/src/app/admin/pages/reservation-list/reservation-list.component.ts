@@ -91,63 +91,66 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
   ){
 
     this.cols = [
-      { id: '', index: 1, field: 'number', header: 'Rezervasyon NO', 
-        width: 100, min_width: 50, max_width: 500, 
+      { id: '', index: 1, field: 'number', header: 'Rezervasyon', 
+        width: 150, min_width: 150, max_width: 500, 
         table_name:'reservation', is_visible:true },
       
-      { id: '', index: 22, field: 'car_type', header: 'Araç Tipi', 
-        width: 200, min_width: 50, max_width: 500, 
-        table_name:'reservation', is_visible:true },
-      { id: '', index: 23, field: 'child_seat_count', header: 'Çocuk Koltuğu', 
-        width: 200, min_width: 50, max_width: 500, 
-        table_name:'reservation', is_visible:true },
+      // { id: '', index: 22, field: 'car_type', header: 'Araç Tipi', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
+      // { id: '', index: 23, field: 'child_seat_count', header: 'Çocuk Koltuğu', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
       
-      { id: '', index: 31, field: 'reservation_date', header: 'Rezervasyon Tarihi', 
-        width: 200, min_width: 50, max_width: 500, 
-        table_name:'reservation', is_visible:true },
+      // { id: '', index: 31, field: 'reservation_date', header: 'Rezervasyon Tarihi', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
       { id: '', index: 32, field: 'transfer_date', header: 'Transfer Tarihi', 
         width: 200, min_width: 50, max_width: 500, 
         table_name:'reservation', is_visible:true },
-      { id: '', index: 33, field: 'transfer_time', header: 'Saat', 
-        width: 200, min_width: 50, max_width: 500, 
-        table_name:'reservation', is_visible:true },
-      { id: '', index: 34, field: 'flight_number', header: 'Flight', 
-        width: 200, min_width: 50, max_width: 500, 
-        table_name:'reservation', is_visible:true },
+      // { id: '', index: 33, field: 'transfer_time', header: 'Saat', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
+      // { id: '', index: 34, field: 'flight_number', header: 'Flight', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
 
 
-      { id: '', index: 35, field: 'direction_type', header: 'Yön Tipi', 
-        width: 200, min_width: 50, max_width: 500, 
-        table_name:'reservation', is_visible:true },
+      // { id: '', index: 35, field: 'direction_type', header: 'Yön Tipi', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
 
 
-      { id: '', index: 36, field: 'transfer_type', header: 'Transfer Tipi', 
-        width: 200, min_width: 50, max_width: 500, 
-        table_name:'reservation', is_visible:true },
+      // { id: '', index: 36, field: 'transfer_type', header: 'Transfer Tipi', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
   
-      { id: '', index: 40, field: 'pickup_short', header: 'Pick up', 
+      { id: '', index: 40, field: 'pickup_full', header: 'Nereden Nereye?', 
         width: 200, min_width: 50, max_width: 500, 
         table_name:'reservation', is_visible:true },
-      { id: '', index: 41, field: 'dest_short', header: 'Destination', 
-        width: 200, min_width: 50, max_width: 500, 
-        table_name:'reservation', is_visible:true },
+      // { id: '', index: 40, field: 'pickup_short', header: 'Nereden Nereye?', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
+      // { id: '', index: 41, field: 'dest_short', header: 'Destination', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
       { id: '', index: 42, field: 'passenger_name', header: 'Müşteri', 
         width: 200, min_width: 50, max_width: 500, 
         table_name:'reservation', is_visible:true },
-      { id: '', index: 43, field: 'passenger_phone', header: 'Telefonu', 
-        width: 200, min_width: 50, max_width: 500, 
-        table_name:'reservation', is_visible:true },
-      { id: '', index: 44, field: 'passenger_count', header: 'Kişi Sayısı', 
-        width: 200, min_width: 50, max_width: 500, 
-        table_name:'reservation', is_visible:true },
+      // { id: '', index: 43, field: 'passenger_phone', header: 'Telefonu', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
+      // { id: '', index: 44, field: 'passenger_count', header: 'Kişi Sayısı', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
   
       { id: '', index: 60, field: 'amount', header: 'Tutar', 
-        width: 200, min_width: 50, max_width: 500, 
+        width: 100, min_width: 50, max_width: 500, 
         table_name:'reservation', is_visible:true },
       
-      { id: '', index: 80, field: 'status', header: 'Durumu', 
-        width: 200, min_width: 50, max_width: 500, 
-        table_name:'reservation', is_visible:true },
+      // { id: '', index: 80, field: 'status', header: 'Durumu', 
+      //   width: 200, min_width: 50, max_width: 500, 
+      //   table_name:'reservation', is_visible:true },
       
       { id: '', index: 100, field: 'note', header: 'Not', 
         width: 200, min_width: 50, max_width: 500, 
@@ -311,6 +314,30 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
     });
   }
 
+  getStatusLabel(status: string): string {
+    const statusLabels: { [key: string]: string } = {
+        pending: 'Beklemede',
+        confirmed: 'Onaylandı',
+        inoperation: 'Operasyonda',
+        completed: 'Tamamlandı',
+        cancelled: 'İptal Edildi',
+        noshow: 'No Show'
+    };
+    return statusLabels[status] || status;
+  }
+  
+  getStatusSeverity(status: string): "info" | "success" | "warn" | "danger" | "help" | "primary" | "secondary" | "contrast" | null {
+    const severities: { [key: string]: "info" | "success" | "warn" | "danger" | "help" | "primary" | "secondary" | "contrast" | null } = {
+        pending: 'info',      // Green
+        confirmed: 'success',      // Green
+        inoperation: 'info',       // Blue
+        completed: 'secondary',     // Gray
+        cancelled: 'danger',       // Red
+        noshow: 'warn'             // Yellow
+    };
+    return severities[status] || 'secondary'; // Default value
+  }
+  
   onPageChange(event: any): void {
     this.filterSearch.event.first = event.first;
     this.filterSearch.event.rows = event.rows;
