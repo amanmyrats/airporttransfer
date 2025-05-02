@@ -20,8 +20,9 @@ export class GoogleMapsService {
    * @returns Object containing formatted address, latitude, and longitude.
    */
   getFormattedAddress(place: google.maps.places.PlaceResult): string {
-    return place.formatted_address || '';
-  }
+    const name = place.name || '';
+    const address = place.formatted_address || '';
+    return name + (address ? ', ' + address : '');  }
 
   getLatitude(place: google.maps.places.PlaceResult): number {
     if (!place.geometry || !place.geometry.location) {
