@@ -23,6 +23,7 @@ import { Currency } from '../../../models/currency.model';
 import { StepperModule } from 'primeng/stepper';
 import { SUPPORTED_CURRENCIES } from '../../../constants/currency.constants';
 import { CallbackService } from '../../../services/callback.service';
+import { SUPPORTED_CAR_TYPES } from '../../../constants/car-type.constants';
 
 @Component({
     selector: 'app-reservation-form',
@@ -66,6 +67,7 @@ export class ReservationFormComponent implements OnInit {
     {value: 'DEP', label: 'Departure' },
     {value: 'ARA', label: 'Ara Transfer' },
   ];
+
 
   reservation: Reservation | null = null;
   reservationForm: FormGroup;
@@ -120,6 +122,7 @@ export class ReservationFormComponent implements OnInit {
   ngOnInit(): void {
       this.getCurrencies();
       this.getCarTypes();
+      this.carTypes = SUPPORTED_CAR_TYPES;
 
       this.reservation = this.config.data.reservation;
       if (this.reservation) {

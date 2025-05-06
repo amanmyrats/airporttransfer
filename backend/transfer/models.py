@@ -35,13 +35,13 @@ class Reservation(models.Model):
     currency_code = models.CharField(max_length=3)
     is_nakit = models.BooleanField(default=True)
 
-    reservation_date = models.DateField(default=timezone.now().date())
+    reservation_date = models.DateField(default=timezone.localtime(timezone.now()).date())
 
     transfer_type = models.CharField(max_length=255, choices=TRANSFER_TYPE_CHOICES, default='PRIVATE', null=True, blank=True)
     direction_type = models.CharField(max_length=255, choices=DIRECTION_TYPE_CHOICES, default='ARR', null=True, blank=True)
     car_type = models.CharField(max_length=255)
 
-    transfer_date = models.DateField(default=timezone.now().date(), null=True, blank=True)
+    transfer_date = models.DateField(default=timezone.localtime(timezone.now()).date(), null=True, blank=True)
     transfer_time = models.TimeField(null=True, blank=True)
     transfer_date_time = models.DateTimeField(null=True, blank=True)
     flight_number = models.CharField(max_length=25, null=True, blank=True)

@@ -237,13 +237,13 @@
                 <div class="horizontal-row-child">
                     <p-floatlabel variant="on">
                         <p-select [fluid]="true" size="large" [options]="carTypes" 
-                        formControlName="car_type" optionLabel="name" optionValue="id"
-                        [filter]="true" filterBy="name" [showClear]="true" 
+                        formControlName="car_type" optionLabel="code" optionValue="code"
+                        [filter]="true" filterBy="code" [showClear]="true" 
                         placeholder="Araba Tipi Seçiniz"
                         appendTo="body">
                         <ng-template let-carType pTemplate="item">
                             <div class="flex align-items-center gap-2">
-                                <div>{{ carType.name }}</div>
+                                <div>{{ carType.code }}</div>
                             </div>
                         </ng-template>
                     </p-select><label for="carType">Arapa Tipi</label>

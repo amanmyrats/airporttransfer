@@ -28,14 +28,14 @@
         }
       }
     </p>
-    <p><strong>Transfer Date:</strong> {{ reservation.transfer_date }}</p>
-    <p><strong>Transfer Time:</strong> {{ reservation.transfer_time }}</p>
-    <p><strong>Flight Number:</strong> {{ reservation.flight_number }}</p>
     @if (+reservation.child_seat_count! > 0) {
       <p><strong>Child Seat:</strong> {{ reservation.child_seat_count }} </p>
     }
+    <p><strong>Transfer Date:</strong> {{ reservation.transfer_date }}</p>
+    <p><strong>Transfer Time:</strong> {{ reservation.transfer_time }}</p>
+    <p><strong>Flight Number:</strong> {{ reservation.flight_number }}</p>
+    <p><strong>Payment Method:</strong> Cash Payment to the Driver </p>
     <p><strong>Total Amount:</strong> {{ reservation.amount }} {{reservation.currency_code}} </p>
-    <p><strong>Payment Type:</strong> Cash Payment to the Driver </p>
     <br>
     <br>
     <p><strong>Message:</strong> {{ reservation.note }}</p>

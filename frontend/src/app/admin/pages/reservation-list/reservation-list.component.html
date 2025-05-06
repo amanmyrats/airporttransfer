@@ -19,6 +19,9 @@
 
     <ng-template pTemplate="header" let-columns>
         <tr>
+            <th style="width: 50px; text-align: center;">
+                #
+            </th>
             <th *ngFor="let col of columns" pResizableColumn pReorderableColumn [style.width.px]="col.width"
                 style="white-space: normal; word-break: normal; overflow-wrap: break-word;">
                 {{col.header}}
@@ -26,7 +29,7 @@
             <th></th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-reservation let-columns="columns">
+    <ng-template pTemplate="body" let-reservation let-columns="columns" let-rowIndex="rowIndex">
         <tr *ngIf="loading">
             <td><p-skeleton /></td>
             <td><p-skeleton /></td>
@@ -36,6 +39,14 @@
         <tr class="{{reservation.status}}">
 
 
+            <!-- Order Number Column -->
+            <td style="width: 50px; text-align: center;">
+                @if (filterSearch.event.first) {
+                    {{ filterSearch.event.first + rowIndex + 1 }}
+                } @else {
+                    {{ rowIndex + 1 }}
+                }
+            </td>
 
             <td *ngFor="let col of columns" [style.minWidth.px]="col.min_width" [style.maxWidth.px]="col.width"
                 [style.width.px]="col.width">
