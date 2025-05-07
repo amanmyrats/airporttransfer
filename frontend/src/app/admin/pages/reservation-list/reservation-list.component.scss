@@ -9,6 +9,23 @@
 :host ::ng-deep .p-progressbar {
     height:.5rem;
 }
+.pending {
+  background-color: #e2e3f3; /* Soft lavender/blue */
+  color: #383d56; /* Muted navy text */
+  border: 1px solid #cfd0e8;
+  border-radius: 4px;
+  padding: 10px;
+  font-weight: 500;
+}
+
+// .approved {
+//   background-color: #d4edda; /* Light green background */
+//   color: #155724; /* Dark green text */
+//   border: 1px solid #c3e6cb; /* Soft green border */
+//   border-radius: 4px;
+//   padding: 10px;
+//   font-weight: 500;
+// }
 
   .cancelled, .noshow {
     background: #ff0000; /* Pure red background */
