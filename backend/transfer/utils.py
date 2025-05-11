@@ -6,6 +6,9 @@ from django.utils import timezone
 
 logger = logging.getLogger('airporttransfer')
 
+def get_local_date():
+    return timezone.localtime(timezone.now()).date()
+
 def is_unique_reservation_number(reservation_number=None):
     from transfer.models import Reservation
     return not Reservation.objects.filter(number=reservation_number).exists()
