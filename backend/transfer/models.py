@@ -42,7 +42,7 @@ class Reservation(models.Model):
     direction_type = models.CharField(max_length=255, choices=DIRECTION_TYPE_CHOICES, default='ARR', null=True, blank=True)
     car_type = models.CharField(max_length=255)
 
-    transfer_date = models.DateField(default=timezone.localtime(timezone.now()).date(), null=True, blank=True)
+    transfer_date = models.DateField(default=get_local_date, null=True, blank=True)
     transfer_time = models.TimeField(null=True, blank=True)
     transfer_date_time = models.DateTimeField(null=True, blank=True)
     flight_number = models.CharField(max_length=25, null=True, blank=True)
@@ -83,7 +83,7 @@ class Reservation(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['reservation_date', '-transfer_date', 'transfer_time']
+        ordering = ['-reservation_date', '-transfer_date', 'transfer_time']
 
     def save(self, *args, **kwargs):
         logger.debug(f"Inside Reservation save: {self.id}")
