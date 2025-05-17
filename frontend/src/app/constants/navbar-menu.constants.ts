@@ -174,5 +174,48 @@ export const NAVBAR_MENU: any = {
             ru: '24-7-частный-трансфер-из-аэропорта-в-анталии',
             tr: '24-7-istanbul-da-özel-havalimanı-transferi'
         }
-    }
-};
+    },
+
+    simpleLanding1: {
+        name: {
+            en: 'Quick Reservation',
+            de: 'Schnelle Reservierung',
+            ru: 'Быстрая резервация',
+            tr: 'Hızlı Rezervasyon'
+        },
+        slug: {
+            en: 'quick-and-easy-airport-transfer-booking-in-turkey-step-1',
+            de: 'schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-1',
+            ru: 'быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-1',
+            tr: 'türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-1'
+        }
+    },
+    simpleLanding2: {
+        name: {
+            en: 'Quick Reservation',
+            de: 'Schnelle Reservierung',
+            ru: 'Быстрая резервация',
+            tr: 'Hızlı Rezervasyon'
+        },
+        slug: {
+            en: 'quick-and-easy-airport-transfer-booking-in-turkey-step-2',
+            de: 'schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-2',
+            ru: 'быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-2',
+            tr: 'türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-2'
+        }
+    },
+    simpleLanding3: {
+        name: {
+            en: 'Quick Reservation',
+            de: 'Schnelle Reservierung',
+            ru: 'Быстрая резервация',
+            tr: 'Hızlı Rezervasyon'
+        },
+        slug: {
+            en: 'quick-and-easy-airport-transfer-booking-in-turkey-step-3',
+            de: 'schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-3',
+            ru: 'быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-3',
+            tr: 'türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-3'
+        }
+    },
+}

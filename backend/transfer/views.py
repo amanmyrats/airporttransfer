@@ -220,7 +220,25 @@ class BookingCreateAPIView(APIView):
                     )
             return Response({"one_way": serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
+class BookingUpdateAPIView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def put(self, request, *args, **kwargs):
+        try:
+            reservation = get_object_or_404(Reservation, pk=kwargs["pk"])
+            serializer = ReservationModelSerializer(
+                instance=reservation, data=request.data, partial=True
+            )
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ContactUsModelViewSet(viewsets.ModelViewSet):
     queryset = ContactUsMessage.objects.all()

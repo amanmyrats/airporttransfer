@@ -3,7 +3,8 @@ from rest_framework import routers
 
 from .views import (
     ReservationModelViewSet, StatusChoicesAPIView, 
-    BookingCreateAPIView, 
+    BookingCreateAPIView,
+    BookingUpdateAPIView, 
     ContactUsModelViewSet, 
     SendMessageAPIView, 
 )
@@ -20,5 +21,6 @@ urlpatterns = [
     path('', include(router.urls)), 
     path('statuschoices/', StatusChoicesAPIView.as_view(), name='status-choices'), 
     path('bookingcreate/', BookingCreateAPIView.as_view(), name='booking-create'), 
+    path('bookingupdate/<int:pk>/', BookingUpdateAPIView.as_view(), name='booking-update'),
     path('sendmessage/', SendMessageAPIView.as_view(), name='send-message'),
 ]

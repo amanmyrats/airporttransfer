@@ -9,7 +9,7 @@ import { environment as env } from '../../environments/environment';
   providedIn: 'root'
 })
 export class BookingService {
-  endPoint: string = "transfer/bookingcreate/"
+  endPoint: string = "transfer/"
 
   distance = signal<number>(0);
   airportCoefficient = signal<number>(1);
@@ -141,8 +141,13 @@ export class BookingService {
   }  
 
   createBooking(reservation: Reservation): Observable<any> {
-    return this.http.post<any>(`${env.baseUrl}${env.apiV1}${this.endPoint}`, reservation);
+    return this.http.post<any>(`${env.baseUrl}${env.apiV1}${this.endPoint}bookingcreate/`, reservation);
   }
+
+  updateBooking(id: string, reservation: Reservation): Observable<any> {
+    return this.http.put<any>(`${env.baseUrl}${env.apiV1}${this.endPoint}bookingupdate/${id}/`, reservation);
+  }
+
 
   mergeForms(): void {
     // patch the form values

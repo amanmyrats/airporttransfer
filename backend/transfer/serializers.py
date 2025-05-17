@@ -23,7 +23,7 @@ class Time24HourField(TimeField):
         
 
 class ReservationModelSerializer(ModelSerializer):
-    transfer_time = Time24HourField(format='%H:%M')
+    transfer_time = Time24HourField(format='%H:%M', required=False, allow_null=True)
     flight_time = Time24HourField(format='%H:%M', required=False, allow_null=True)
     return_transfer_date = DateField(required=False, allow_null=True)
     return_transfer_time = Time24HourField(format='%H:%M', required=False, allow_null=True)

@@ -146,6 +146,46 @@ export const serverRoutes: ServerRoute[] = [
     },
 
 
+    // Simple Landing
+    {   path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-1', 
+        renderMode: RenderMode.Prerender,
+    },
+    {   path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-1', 
+        renderMode: RenderMode.Prerender,
+    },
+    {   path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-1', 
+        renderMode: RenderMode.Prerender,
+    },
+    {   path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-1', 
+        renderMode: RenderMode.Prerender,
+    },
+
+    {   path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-2', 
+        renderMode: RenderMode.Prerender,
+    },
+    {   path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-2', 
+        renderMode: RenderMode.Prerender,
+    },
+    {   path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-2', 
+        renderMode: RenderMode.Prerender,
+    },
+    {   path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-2', 
+        renderMode: RenderMode.Prerender,
+    },
+
+    {   path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-3', 
+        renderMode: RenderMode.Prerender,
+    },
+    {   path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-3', 
+        renderMode: RenderMode.Prerender,
+    },
+    {   path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-3', 
+        renderMode: RenderMode.Prerender,
+    },
+    {   path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-3', 
+        renderMode: RenderMode.Prerender,
+    },
+    
     // PRIVACY POLICY AND TERMS OF SERVICE
     {
         path: 'en/privacy-policy-for-24-7-private-airport-private-car-transfer-in-turkey',

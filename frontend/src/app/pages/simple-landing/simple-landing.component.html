@@ -1,0 +1,66 @@
+
+<app-super-header></app-super-header>
+<app-navbar></app-navbar>
+
+<div class="landing-wrapper">
+  <div class="info-section">
+    <h1>
+      {{ translations.h1[currentLanguage.code] }}
+    </h1>
+    <p>
+      {{ translations.p[currentLanguage.code] }}
+    </p>
+    <div class="hotline">
+      <strong>
+        WhatsApp:
+      </strong> 
+    <span>
+        <a href="{{ socialIcons.whatsapp.url }}" target="_blank">{{ socialIcons.phone.formatted }}</a>
+      </span>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <form [formGroup]="reservationForm" (ngSubmit)="submitForm()" autocomplete="on">
+      <div class="form-group">
+        <label for="passenger_name">
+          {{ translations.fullname[currentLanguage.code] }}
+        </label>
+        <input id="passenger_name" type="text" formControlName="passenger_name" required autocomplete="name" />
+        <div *ngIf="formSubmitted && reservationForm.get('passenger_name')?.invalid" class="error-message">
+          {{ translations.fullname_required[currentLanguage.code] }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="passenger_phone">
+          {{ translations.phone[currentLanguage.code] }}
+        </label>
+        <input id="passenger_phone" type="tel" formControlName="passenger_phone" required autocomplete="tel" />
+        <div *ngIf="formSubmitted && reservationForm.get('passenger_phone')?.invalid" class="error-message">
+          {{ translations.phone_required[currentLanguage.code] }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="passenger_email">
+          {{ translations.email[currentLanguage.code] }}
+        </label>
+        <input id="passenger_email" type="email" formControlName="passenger_email" autocomplete="email" />
+      </div>
+
+
+      <div *ngIf="formSubmitted && reservationForm.invalid" class="global-error">
+        <strong>
+          {{ translations.form_invalid[currentLanguage.code] }}
+        </strong>
+      </div>
+  
+      <button type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? translations.submitting[currentLanguage.code] : translations.makeReservationNow[currentLanguage.code] }}
+      </button>
+    </form>
+  </div>
+</div>
+
+<app-footer></app-footer>
