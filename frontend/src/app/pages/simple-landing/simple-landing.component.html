@@ -10,14 +10,55 @@
     <p>
       {{ translations.p[currentLanguage.code] }}
     </p>
-    <div class="hotline">
-      <strong>
-        WhatsApp:
-      </strong> 
-    <span>
-        <a href="{{ socialIcons.whatsapp.url }}" target="_blank">{{ socialIcons.phone.formatted }}</a>
-      </span>
-    </div>
+
+
+    <a class="cta-link" href="{{ socialIcons.whatsapp.url }}?text={{translations.initialMessage[currentLanguage.code]}}" target="_blank">
+    <div class="whatsapp-cta">
+      <img src="images/socialicons/{{socialIcons.whatsapp.image.name[currentLanguage.code]}}" 
+        alt="{{socialIcons.whatsapp.image.alt[currentLanguage.code]}}"/>
+      <div class="whatsapp-text">
+        <p class="cta-label">
+          {{ translations.whatsappCta[currentLanguage.code] }}
+        </p>
+          {{ socialIcons.phone.formatted }}
+        </div>
+      </div>
+    </a>
+
+
+<!-- Unified SEO block with image, visible on all screen sizes -->
+<div class="seo-image-content desktop-only">
+  <div class="seo-text" [innerHTML]="translations.seoContent[currentLanguage.code]"></div>
+  <div class="seo-image">
+    <!-- <img 
+      src="images/cartypes/{{vitoCarType.image.name[currentLanguage.code]}}" 
+      alt="Map showing private airport transfer service across Turkey including Antalya, Istanbul, Izmir, Alanya" 
+      loading="lazy"
+    /> -->
+
+    <picture>
+      <!-- Extra small screens -->
+      <source srcset="images/{{translations.mapImage.imageS.name[currentLanguage.code]}}" 
+        media="(max-width: 480px)">
+      <!-- Small screens -->
+      <source srcset="images/{{translations.mapImage.imageM.name[currentLanguage.code]}}" 
+        media="(max-width: 768px)">
+      <!-- Medium screens -->
+      <source srcset="images/{{translations.mapImage.image.name[currentLanguage.code]}}" 
+        media="(min-width: 1200px)">
+      <!-- Fallback img tag with alt -->
+      <img 
+        src="images/{{translations.mapImage.imageS.name[currentLanguage.code]}}" 
+        alt="{{translations.mapImage.imageJpg.alt[currentLanguage.code]}}" 
+        class="banner-image"
+        loading="lazy"
+        width="480" height="768"> <!-- Adjust to real image size -->
+    </picture>
+
+  </div>
+</div>
+
+
   </div>
 
   <div class="form-section">
@@ -60,6 +101,54 @@
         {{ isSubmitting ? translations.submitting[currentLanguage.code] : translations.makeReservationNow[currentLanguage.code] }}
       </button>
     </form>
+
+
+    <div class="car-showcase">
+      <img src="images/cartypes/{{vitoCarType.image.name[currentLanguage.code]}}" 
+        alt="{{vitoCarType.image.alt[currentLanguage.code]}}" loading="lazy" />
+      <div class="car-details">
+        <h2>Mercedes Vito</h2>
+        <p>
+          Perfect for <strong>up to 6 passengers</strong> and <strong>6 luggages</strong>. Ideal for <em>Antalya, Istanbul, Izmir, and Alanya airports</em>.
+        </p>
+        <ul>
+          <li>✅ VIP Comfort & Air Conditioning</li>
+          <li>✅ Professional English-speaking drivers</li>
+          <li>✅ 24/7 Availability across Turkey</li>
+        </ul>
+      </div>
+    </div>
+
+
+    <!-- <div 
+      class="mobile-only"
+      [innerHTML]="translations.seoContent[currentLanguage.code]">
+      
+    </div> -->
+    <div class="seo-image-content mobile-only">
+      <div class="seo-text" [innerHTML]="translations.seoContent[currentLanguage.code]"></div>
+      <div class="seo-image">
+        
+    <picture>
+      <!-- Extra small screens -->
+      <source srcset="images/{{translations.mapImage.imageS.name[currentLanguage.code]}}" 
+        media="(max-width: 480px)">
+      <!-- Small screens -->
+      <source srcset="images/{{translations.mapImage.imageM.name[currentLanguage.code]}}" 
+        media="(max-width: 768px)">
+      <!-- Medium screens -->
+      <source srcset="images/{{translations.mapImage.image.name[currentLanguage.code]}}" 
+        media="(min-width: 1200px)">
+      <!-- Fallback img tag with alt -->
+      <img 
+        src="images/{{translations.mapImage.imageS.name[currentLanguage.code]}}" 
+        alt="{{translations.mapImage.imageJpg.alt[currentLanguage.code]}}" 
+        class="banner-image"
+        loading="lazy"
+        width="480" height="768"> <!-- Adjust to real image size -->
+    </picture>
+      </div>
+    </div>
   </div>
 </div>
 
