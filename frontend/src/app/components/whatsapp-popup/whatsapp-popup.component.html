@@ -1,0 +1,42 @@
+<div class="popup-box" *ngIf="showPopup" [ngClass]="position">
+    <div class="popup-content">
+  
+      <!-- Close Button -->
+      <button class="close-btn" (click)="dismissToday()">×</button>
+  
+      <!-- Title & Message -->
+      <div class="popup-header">
+        <img 
+          [src]="'images/socialicons/' + socialIcons.whatsapp.image.name[currentLanguage.code]" 
+          [alt]="socialIcons.whatsapp.image.alt[currentLanguage.code]" 
+          class="popup-icon"
+        />
+        <div>
+          <h4>
+            {{ translations.startChat[currentLanguage.code] }}
+          </h4>
+          <p>
+            {{ translations.chatWithSupport[currentLanguage.code] }}
+          </p>
+        </div>
+      </div>
+  
+      <!-- Start Chat Button -->
+      <a [href]="getWhatsAppLink()" target="_blank" class="whatsapp-button">
+        <img 
+          [src]="'images/socialicons/' + socialIcons.whatsapp.image.name[currentLanguage.code]" 
+          [alt]="socialIcons.whatsapp.image.alt[currentLanguage.code]" 
+          class="button-icon"
+        />
+        {{ translations.startChat[currentLanguage.code] }}
+      </a>
+  
+      <!-- Reminder / Dismiss -->
+      <!-- <div class="actions">
+        <button (click)="remindLater()" class="remind-btn">Remind me later</button>
+        <button (click)="dismissToday()" class="dismiss-btn">Don't show today</button>
+      </div> -->
+  
+    </div>
+  </div>
+  

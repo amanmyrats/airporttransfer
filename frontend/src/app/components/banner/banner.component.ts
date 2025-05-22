@@ -5,6 +5,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
 import { LanguageService } from '../../services/language.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { WhatsappPopupComponent } from '../whatsapp-popup/whatsapp-popup.component';
 
 @Component({
   selector: 'app-banner',
@@ -12,6 +13,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     BookingBannerFormComponent, 
     CommonModule, 
     ProgressSpinnerModule, 
+    WhatsappPopupComponent, 
   ],
   templateUrl: './banner.component.html',
   styleUrl: './banner.component.scss'
