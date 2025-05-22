@@ -26,6 +26,22 @@
     </a>
 
 
+
+    <div class="car-showcase desktop-only">
+      <img src="images/cartypes/{{vitoCarType.image.name[currentLanguage.code]}}" 
+        alt="{{vitoCarType.image.alt[currentLanguage.code]}}" loading="lazy" />
+      <div class="car-details">
+        <h2>Mercedes Vito</h2>
+        <p>
+          Perfect for <strong>up to 6 passengers</strong> and <strong>6 luggages</strong>. Ideal for <em>Antalya, Istanbul, Izmir, and Alanya airports</em>.
+        </p>
+        <ul>
+          <li>✅ VIP Comfort & Air Conditioning</li>
+          <li>✅ Professional English-speaking drivers</li>
+          <li>✅ 24/7 Availability across Turkey</li>
+        </ul>
+      </div>
+    </div>
 <!-- Unified SEO block with image, visible on all screen sizes -->
 <div class="seo-image-content desktop-only">
   <div class="seo-text" [innerHTML]="translations.seoContent[currentLanguage.code]"></div>
@@ -103,7 +119,7 @@
     </form>
 
 
-    <div class="car-showcase">
+    <div class="car-showcase mobile-only">
       <img src="images/cartypes/{{vitoCarType.image.name[currentLanguage.code]}}" 
         alt="{{vitoCarType.image.alt[currentLanguage.code]}}" loading="lazy" />
       <div class="car-details">

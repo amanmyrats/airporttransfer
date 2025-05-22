@@ -53,6 +53,14 @@
           [alt]="carType.image.alt[languageService.currentLang().code]" class="car-type-image" />
         <div class="car-type-info">
           <h2 class="car-type-name">{{ carType.name }}</h2>
+
+          <!-- Passenger & Baggage Capacity -->
+          <p class="car-type-capacity">
+            👤 
+            {{ carType.pax }} 
+            <!-- &nbsp;&nbsp;🧳 {{ carType.pax }} -->
+          </p>
+
           @if ( carType.specialPrice ) {
             <h4>{{ translations.specialPrice[langInput.code] }}</h4>
             <div class="contact-options">

@@ -25,42 +25,9 @@
       <p i18n="@@banner.subtitle" class="banner-subtitle">
         {{ getTranslation('banner.subtitle') }}
       </p>
-    <!-- <ng-container *ngIf="isBrowser; else loadingTemplate" > -->
+      
       <app-booking-banner-form [langInput]="langInput"></app-booking-banner-form>
-    <!-- </ng-container> -->
 
-    <!-- <ng-template #loadingTemplate> -->
-      <!-- <p-progress-spinner strokeWidth="8" fill="transparent" animationDuration=".5s" [style]="{ width: '50px', height: '50px' }" /> -->
-    <!-- </ng-template> -->
-      <!-- <form class="reservation-form" (ngSubmit)="onSubmit()" 
-        [formGroup]="bookingService.bookingInitialForm">
-        <div class="form-group">
-          <label for="pickup-location" i18n="@@form.pickup">Pickup Location</label>
-          <input type="text" id="pickup-location" formControlName="pickup_full" placeholder="Enter your pickup location" 
-          appGmapsAutocomplete
-          (placeChanged)="onPickupPlaceChanged($event)" 
-          (keydown)="preventFormSubmit($event)"
-          />
-        </div>
-        <div class="form-group">
-          <label for="dropoff-location" i18n="@@form.dropoff">Dropoff Location</label>
-          <input type="text" id="dropoff-location" formControlName="dest_full" placeholder="Enter your dropoff location" 
-          appGmapsAutocomplete
-          (placeChanged)="onDestPlaceChanged($event)" 
-          (keydown)="preventFormSubmit($event)"/>
-        </div> -->
-        <!-- <div class="form-group">
-          <label for="pickup-date" i18n="@@form.date">Pickup Date</label>
-          <input type="date" id="pickup-date" name="pickup-date" />
-        </div>
-        <div class="form-group">
-          <label for="pickup-time" i18n="@@form.time">Pickup Time</label>
-          <input type="time" id="pickup-time" name="pickup-time" />
-        </div> -->
-        <!-- <button (click)="onSubmit()" type="submit" class="btn btn-primary" i18n="@@form.submit">
-          Book Now
-        </button>
-      </form> -->
       <div class="floating-buttons">
         
         <a href="{{ socialIcons.whatsapp.url }}" target="_blank">
