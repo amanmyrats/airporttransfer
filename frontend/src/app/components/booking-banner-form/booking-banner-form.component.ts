@@ -10,13 +10,14 @@ import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { ButtonModule } from 'primeng/button';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-booking-banner-form',
   imports: [
     GmapsAutocompleteDirective, 
     FormsModule, ReactiveFormsModule, 
-    ButtonModule, 
+    ButtonModule, CommonModule, 
   ],
   templateUrl: './booking-banner-form.component.html',
   styleUrl: './booking-banner-form.component.scss'
@@ -149,6 +150,11 @@ export class BookingBannerFormComponent {
     }
     return value[this.langInput.code] || key;
   }
+
+  clearField(controlName: string): void {
+    this.bookingService.bookingInitialForm.get(controlName)?.setValue('');
+  }
+  
 
   translations: any = {
     pickUp: {

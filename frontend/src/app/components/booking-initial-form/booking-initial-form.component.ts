@@ -139,6 +139,11 @@ export class BookingInitialFormComponent implements OnInit {
     }
   }
   
+  clearField(controlName: string): void {
+    this.bookingService.bookingInitialForm.get(controlName)?.setValue('');
+  }
+
+  
   // translations for from, to, from placeholder, to placeholder, search, book your transfer, description
   translations: any = {
     from: {

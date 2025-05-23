@@ -165,6 +165,34 @@ input:focus {
   text-decoration: underline;
 }
 
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-wrapper input[type="text"] {
+  width: 100%;
+  padding-right: 2.2rem; /* space for clear button */
+  box-sizing: border-box;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #888;
+  padding: 0;
+  line-height: 1;
+}
+
+
+
 /* Mobile Friendly Adjustments */
 @media (max-width: 768px) {
   .error-message {

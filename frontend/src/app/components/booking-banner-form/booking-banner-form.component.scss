@@ -71,6 +71,33 @@ input[type="text"] {
     align-items: center;
 }
 
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+  }
+  
+  .input-wrapper input[type="text"] {
+    width: 100%;
+    padding-right: 2.2rem; /* Add space for the clear button */
+    box-sizing: border-box; /* Ensure padding doesn't overflow */
+  }
+  
+  .clear-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #888;
+    padding: 0;
+    line-height: 1;
+  }
+  
+
 @keyframes pulse {
     0% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.1); opacity: 1; }

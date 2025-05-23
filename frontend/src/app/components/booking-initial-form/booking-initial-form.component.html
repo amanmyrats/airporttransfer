@@ -2,7 +2,57 @@
   
     <!-- Booking Form -->
     <form [formGroup]="bookingService.bookingInitialForm" (ngSubmit)="onSubmit()" class="booking-form">
-      <div class="form-row">
+      
+
+      <div class="form-group" 
+     [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid">
+  <label for="pickup_full">
+    {{ translations.from[langInput.code] }}
+  </label>
+  <div class="input-wrapper">
+    <input
+      type="text"
+      id="pickup_full"
+      placeholder="{{ translations.from_placeholder[langInput.code] }}"
+      formControlName="pickup_full"
+      appGmapsAutocomplete
+      (placeChanged)="onPickupPlaceChanged($event)" 
+      (keydown)="preventFormSubmit($event)"
+    />
+    <button *ngIf="bookingService.bookingInitialForm.get('pickup_full')?.value"
+      type="button" class="clear-btn" (click)="clearField('pickup_full')">×</button>
+  </div>
+  <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid" class="field-error">
+    {{ translations.from_required[langInput.code] }}
+  </p>
+</div>
+
+<div class="form-group" 
+     [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid">
+  <label for="dest_full">
+    {{ translations.to[langInput.code] }}
+  </label>
+  <div class="input-wrapper">
+    <input
+      type="text"
+      id="dest_full"
+      placeholder="{{ translations.to_placeholder[langInput.code] }}"
+      formControlName="dest_full"
+      appGmapsAutocomplete
+      (placeChanged)="onDestPlaceChanged($event)" 
+      (keydown)="preventFormSubmit($event)"
+    />
+    <button *ngIf="bookingService.bookingInitialForm.get('dest_full')?.value"
+      type="button" class="clear-btn" (click)="clearField('dest_full')">×</button>
+  </div>
+  <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid" class="field-error">
+    {{ translations.to_required[langInput.code] }}
+  </p>
+</div>
+
+
+
+      <!-- <div class="form-row">
         <div class="form-group" [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid">
           <label for="pickup_full">
             {{ translations.from[langInput.code] }}
@@ -38,7 +88,7 @@
             {{ translations.to_required[langInput.code] }}
           </p>
         </div>
-      </div>
+      </div> -->
 
       <div *ngIf="hasSubmitted && bookingService.bookingInitialForm.invalid" class="error-message">
       @if (languageService.currentLang().code == 'de') {
