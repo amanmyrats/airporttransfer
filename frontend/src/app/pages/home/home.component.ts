@@ -117,19 +117,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
   setMetaTags(langCode: string): void {
     const metaTags: any = {
       en: {
-        title: 'Best 24/7 Private Airport Transfer Services in Turkey | Antalya, Istanbul & More',
+        title: 'Best 24/7 Istanbul, Antalya Airport Transfer Services in Turkey & More',
         description: 'Affordable and reliable 24/7 private airport transfer services in Turkey. Covering Antalya, Istanbul, Alanya, Izmir, and more. Book now for seamless travel!',
       },
       de: {
-        title: "Beste 24/7 private Flughafentransfers in der Türkei | Antalya, Istanbul & mehr",
+        title: "Beste 24/7 Flughafen-Transferdienste in Istanbul, Antalya und ganz Türkei",
         description: "Erschwingliche und zuverlässige 24/7 private Flughafentransfers in der Türkei. Abdeckung von Antalya, Istanbul, Alanya, Izmir und mehr. Buchen Sie jetzt für eine reibungslose Reise!"
       },
       ru: {
-        title: "Лучшие 24/7 частные трансферы из аэропорта в Турции | Анталия, Стамбул и другие",
+        title: "Круглосуточный Стамбул, Анталья Аэропорт Трансфер, и по всей Турции",
         description: "Доступные и надежные 24/7 частные трансферы из аэропорта в Турции. Охватываем Анталию, Стамбул, Аланью, Измир и другие города. Забронируйте сейчас для комфортного путешествия!"
       },
       tr: {
-        title: "Türkiye'deki En İyi 7/24 Özel Havalimanı Transfer Hizmetleri | Antalya, İstanbul ve Daha Fazlası",
+        title: "Türkiye genelinde 7/24 İstanbul, Antalya Havalimanı Transfer Hizmetleri ve Daha Fazlası",
         description: "Türkiye'de uygun fiyatlı ve güvenilir 7/24 özel havalimanı transfer hizmetleri. Antalya, İstanbul, Alanya, İzmir ve daha fazlasını kapsıyor. Sorunsuz bir yolculuk için hemen rezervasyon yapın!"
       }
     };

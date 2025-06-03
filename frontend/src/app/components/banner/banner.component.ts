@@ -59,16 +59,24 @@ export class BannerComponent implements OnInit {
   translations: any = {
     banner: {
       title: {
-        en: 'Hassle-Free 24/7 Private Airport Transfers in Turkey', 
-        de: 'Stressfreie 24/7 Privat flughafen transfers in der Türkei',
-        ru: 'Беззаботные круглосуточные 24/7 частные трансферы из аэропорта в Турции',
-        tr: 'Türkiye\'de Sorunsuz 7/24 Özel Havalimanı Transferleri',
+        // en: 'Hassle-Free 24/7 Private Airport Transfers in Turkey', 
+        // de: 'Stressfreie 24/7 Privat flughafen transfers in der Türkei',
+        // ru: 'Беззаботные круглосуточные 24/7 частные трансферы из аэропорта в Турции',
+        // tr: 'Türkiye\'de Sorunsuz 7/24 Özel Havalimanı Transferleri',
+        en: '24/7 Istanbul, Antalya Airport VIP Transfers',
+        de: '24/7 Istanbul, Antalya Flughafen VIP Transfers',
+        ru: '24/7 Стамбул, Анталия Аэропорт VIP Трансферы',
+        tr: '7/24 İstanbul, Antalya Havalimanı VIP Transferleri',
       }, 
       subtitle: {
-        en: 'Reliable, affordable, and comfortable 24/7 private car rides to and from major Turkish airports.',
-        de: 'Zuverlässige, erschwingliche und komfortable 24/7 Privatfahrten zu und von den wichtigsten türkischen Flughäfen.',
-        ru: 'Надежные, доступные и комфортные 24/7 частные поездки на автомобиле крупных турецких аэропортов.',
-        tr: 'Önde gelen Türk havalimanlarından ve havalimanlarına güvenilir, uygun fiyatlı ve konforlu 7/24 özel araçlarla ulaşım.',
+        // en: 'Reliable, affordable, and comfortable 24/7 private car rides to and from major Turkish airports.',
+        // de: 'Zuverlässige, erschwingliche und komfortable 24/7 Privatfahrten zu und von den wichtigsten türkischen Flughäfen.',
+        // ru: 'Надежные, доступные и комфортные 24/7 частные поездки на автомобиле крупных турецких аэропортов.',
+        // tr: 'Önde gelen Türk havalimanlarından ve havalimanlarına güvenilir, uygun fiyatlı ve konforlu 7/24 özel araçlarla ulaşım.',
+        en: 'Reliable, affordable, and comfortable 24/7 VIP transfers to and from major Turkish airports.',
+        de: 'Zuverlässige, erschwingliche und komfortable 24/7 VIP-Transfers zu und von den wichtigsten türkischen Flughäfen.',
+        ru: 'Надежные, доступные и комфортные 24/7 VIP-трансферы в крупнейшие турецкие аэропорты.',
+        tr: 'Önde gelen Türk havalimanlarında güvenilir, uygun fiyatlı ve konforlu 7/24 VIP transferler.',
       }, 
       image: {
         name: {
