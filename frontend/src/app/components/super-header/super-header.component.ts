@@ -8,7 +8,6 @@ import { CurrencySelectionComponent } from '../currency-selection/currency-selec
 import { ActivatedRoute } from '@angular/router';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
 import { LanguageService } from '../../services/language.service';
-import { WhatsappPopupComponent } from '../whatsapp-popup/whatsapp-popup.component';
 
 @Component({
   selector: 'app-super-header',  
@@ -16,7 +15,6 @@ import { WhatsappPopupComponent } from '../whatsapp-popup/whatsapp-popup.compone
     CommonModule, 
     LanguageSelectionComponent, 
     CurrencySelectionComponent, 
-    WhatsappPopupComponent, 
   ],
   templateUrl: './super-header.component.html',
   styleUrl: './super-header.component.scss'
