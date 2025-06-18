@@ -191,6 +191,9 @@ class BookingCreateAPIView(APIView):
                 round_trip_data["transfer_time"] = serializer.validated_data.get(
                     "return_transfer_time"
                 )
+                round_trip_data["flight_number"] = serializer.validated_data.get(
+                    "return_flight_number"
+                )
                 round_trip_data["amount"] = serializer.validated_data.get("return_trip_amount")
                 round_trip_data["pickup_short"] = serializer.validated_data.get(
                     "dest_short"

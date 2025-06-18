@@ -135,6 +135,7 @@ export class BookingCompletionFormComponent implements OnInit {
   toggleReturnFields(): void {
     const returnDateControl = this.bookingService.bookingCompletionForm.get('return_transfer_date');
     const returnTimeControl = this.bookingService.bookingCompletionForm.get('return_transfer_time');
+    // const returnFlighNumber = this.bookingService.bookingCompletionForm.get('return_flight_number');
     const isReturnTrip = this.bookingService.bookingCompletionForm.get('is_round_trip')?.value;
 
     if (isReturnTrip) {
@@ -377,6 +378,12 @@ export class BookingCompletionFormComponent implements OnInit {
       ru: 'Время обратного трансфера',
       tr: 'Dönüş Transfer Zamanı',
     },
+    returnFlightNumber: {
+      en: 'Return Flight Number',
+      de: 'Rückflugnummer',
+      ru: 'Номер обратного рейса',
+      tr: 'Dönüş Uçuş Numarası',
+    }, 
     personalInfo: {
       en: 'Personal Information', 
       de: 'Persönliche Informationen',
