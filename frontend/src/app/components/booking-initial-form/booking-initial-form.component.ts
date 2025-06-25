@@ -7,7 +7,7 @@ import { GoogleMapsService } from '../../services/google-maps.service';
 import { LanguageService } from '../../services/language.service';
 import { PriceCalculatorService } from '../../services/price-calculator.service';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
-import { GoogleTagManagerService } from 'angular-google-tag-manager';
+// import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { PriceListComponent } from '../price-list/price-list.component';
 
 @Component({
@@ -35,7 +35,6 @@ export class BookingInitialFormComponent implements OnInit {
     private fb: FormBuilder, 
     private googleMapsService: GoogleMapsService, 
     public languageService: LanguageService, 
-    private gtmService: GoogleTagManagerService, 
   ) {
   }
 
@@ -105,12 +104,12 @@ export class BookingInitialFormComponent implements OnInit {
     }
 
     // Send event to GTM
-    this.gtmService.pushTag({
-      event: 'view_item',
-      category: 'Booking',
-      action: 'Click',
-      label: 'View Item'
-    });
+    // this.gtmService.pushTag({
+    //   event: 'view_item',
+    //   category: 'Booking',
+    //   action: 'Click',
+    //   label: 'View Item'
+    // });
   }
 
   onPickupPlaceChanged(place: google.maps.places.PlaceResult): void {

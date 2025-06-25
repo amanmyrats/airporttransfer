@@ -8,7 +8,7 @@ import { LanguageService } from '../../services/language.service';
 import { PriceCalculatorService } from '../../services/price-calculator.service';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
-import { GoogleTagManagerService } from 'angular-google-tag-manager';
+// import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 
@@ -33,7 +33,6 @@ export class BookingBannerFormComponent {
     private router: Router, 
     public languageService: LanguageService, 
     private priceCalculatorService: PriceCalculatorService, 
-    private gtmService: GoogleTagManagerService, 
   ) {
   }
 
@@ -98,12 +97,12 @@ export class BookingBannerFormComponent {
 
 
     // Send event to GTM
-    this.gtmService.pushTag({
-      event: 'book_now_click',
-      category: 'Booking',
-      action: 'Click',
-      label: 'Book Now Button'
-    });
+    // this.gtmService.pushTag({
+    //   event: 'book_now_click',
+    //   category: 'Booking',
+    //   action: 'Click',
+    //   label: 'Book Now Button'
+    // });
   }
 
   onPickupPlaceChanged(place: google.maps.places.PlaceResult): void {

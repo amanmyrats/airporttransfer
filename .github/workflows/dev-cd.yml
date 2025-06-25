@@ -1,0 +1,64 @@
+name: Deploy Airport Transfer to EC2 Dev Server
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Deploy to EC2 via SSH
+      - name: Deploy to EC2 Dev
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          password: ${{ secrets.PWD }}
+          key: ${{ secrets.SSH_PEM_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /home/ubuntu/dev/airporttransfer
+            ./deploy_script.sh ${{ secrets.GH_USERNAME }} ${{ secrets.GH_PAT }} ${{ secrets.GH_DEV_BRANCH }}
+
+      # Set up Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      # Install dependencies and build the project
+      - name: Install and Build
+        run: |
+          cd frontend
+          npm install
+          npm run build -- --configuration=development
+
+      # Sync files to Dev S3
+      - name: Upload to Dev S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-north-1
+        run: |
+          cd frontend
+          aws s3 sync ./dist/airporttransfer/browser s3://dev.airporttransferhub.com --exclude "index.html" --delete --cache-control "max-age=86400,immutable"
+          aws s3 cp ./dist/airporttransfer/browser/index.html s3://dev.airporttransferhub.com/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate"
+          aws s3 cp ./sitemap.xml s3://dev.airporttransferhub.com/sitemap.xml --cache-control "max-age=86400, public"
+          aws s3 cp ./robots.txt s3://dev.airporttransferhub.com/robots.txt --cache-control "max-age=86400, public"
+
+          aws s3 sync ./dist/airporttransfer/server s3://dev.airporttransferhub.com/server --delete
+
+      # Invalidate CloudFront cache
+      - name: CloudFront Invalidation
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-north-1
+        run: |
+          aws cloudfront create-invalidation --distribution-id E3SYGIQOKRTVAD --paths "/*"

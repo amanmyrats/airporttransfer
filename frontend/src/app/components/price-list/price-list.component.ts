@@ -6,12 +6,12 @@ import { PopularRouteService } from '../../admin/services/popular-route.service'
 import { CarTypeService } from '../../services/car-type.service';
 import { CurrencyService } from '../../services/currency.service';
 import { PriceCalculatorService } from '../../services/price-calculator.service';
-import { GoogleMapsService } from '../../services/google-maps.service';
+// import { GoogleMapsService } from '../../services/google-maps.service';
 import { BookingService } from '../../services/booking.service';
 import { LanguageService } from '../../services/language.service';
 import { Router } from '@angular/router';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
-import { GoogleTagManagerService } from 'angular-google-tag-manager';
+// import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { MainLocation } from '../../models/main-location.model';
 import { ButtonModule } from 'primeng/button';
 import { PricesLoadingComponent } from '../prices-loading/prices-loading.component';
@@ -60,7 +60,6 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     private bookingService: BookingService, 
     public languageService: LanguageService, 
     private router: Router, 
-    private gtmService: GoogleTagManagerService, 
     @Inject(PLATFORM_ID) private platformId: Object, 
   ) {
     this.mainLocations = this.mainLocationService.getMainLocations();
@@ -121,12 +120,12 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     });
 
     // Send event to GTM
-    this.gtmService.pushTag({
-      event: 'book_now_click',
-      category: 'Booking',
-      action: 'Click',
-      label: 'Book Now Button'
-    });
+    // this.gtmService.pushTag({
+    //   event: 'book_now_click',
+    //   category: 'Booking',
+    //   action: 'Click',
+    //   label: 'Book Now Button'
+    // });
   }
 
   ngAfterViewInit(): void {
