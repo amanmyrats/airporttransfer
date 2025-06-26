@@ -1,0 +1,26 @@
+
+
+.dev-warning {
+    background-color: #c0392b;
+    color: #fff;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 8px 12px;
+    font-weight: bold;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    animation: blink 2s infinite;
+    box-shadow: 0 0 10px rgba(192, 57, 43, 0.7);
+  }
+  
+  /* Blinking animation */
+  @keyframes blink {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+  
+  

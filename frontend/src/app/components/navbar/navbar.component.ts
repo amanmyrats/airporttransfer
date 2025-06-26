@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { WhatsappPopupComponent } from '../whatsapp-popup/whatsapp-popup.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   imports: [
     WhatsappPopupComponent, 
+    CommonModule, 
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
