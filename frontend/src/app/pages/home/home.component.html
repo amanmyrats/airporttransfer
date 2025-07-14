@@ -1,14 +1,22 @@
 <div class="home-wrapper">
-    <app-super-header [langInput]="currentLanguage"></app-super-header>
-    <app-navbar></app-navbar>
-    
-    <app-banner #banner [langInput]="currentLanguage"></app-banner>
-    
-    <!-- Price List for Airport Transfer in Turkey -->
-      <app-price-list [langInput]="currentLanguage"></app-price-list>
-    
-    <app-cta></app-cta>
-    <app-testimonial-list></app-testimonial-list>
-    <app-blog-list></app-blog-list>
-    <app-footer></app-footer>
+
+  <app-dev-env></app-dev-env>
+
+  <app-super-header [langInput]="currentLanguage"></app-super-header>
+
+  <app-navbar></app-navbar>
+
+  <app-banner #banner [langInput]="currentLanguage"></app-banner>
+
+  <!-- Price List for Airport Transfer in Turkey -->
+  <app-price-list [langInput]="currentLanguage"></app-price-list>
+
+  <app-cta></app-cta>
+
+  <app-testimonial-list></app-testimonial-list>
+
+  <app-blog-list></app-blog-list>
+  
+  <app-footer></app-footer>
+
 </div>
