@@ -139,6 +139,25 @@
 </p-message>
               </div>
               <div class="form-item">
+                
+                @defer {
+                  <ngx-intl-tel-input
+                    id="passenger_phone"
+                    class="ngx-intl-tel-input"
+                    [preferredCountries]="preferredCountries"
+                    [enableAutoCountrySelect]="false"
+                    [enablePlaceholder]="true"
+                    [searchCountryFlag]="true"
+                    [searchCountryField]="searchFields"
+                    [selectFirstCountry]="false"
+                    [selectedCountryISO]="defaultCountry"
+                    [phoneValidation]="false"
+                    [separateDialCode]="true"
+                    formControlName="passenger_phone"
+                  ></ngx-intl-tel-input>
+                }
+                
+
                 <label for="passenger_phone">
                   {{ translations.phone[langInput.code] }}
                 </label>

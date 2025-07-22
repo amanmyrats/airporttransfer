@@ -1,0 +1,9 @@
+<div class="phone-input-group">
+    <select [(ngModel)]="selectedCountry" (change)="onCountryChange()" class="country-select">
+      <option *ngFor="let country of countries" [value]="country.iso">
+        {{ country.iso.toUpperCase() }} (+{{ country.code }})
+      </option>
+    </select>
+    <input type="tel" [(ngModel)]="number" (blur)="formatNumber()" placeholder="Enter phone number" class="phone-input"/>
+  </div>
+  

@@ -356,3 +356,54 @@
       font-size: 1.1em;
     }
   }
+
+
+
+
+/* === Custom styling for ngx-intl-tel-input === */
+::ng-deep .ngx-intl-tel-input {
+  width: 100%;
+}
+
+::ng-deep .ngx-intl-tel-input .iti {
+  width: 100%;
+  font-family: var(--font-family);
+}
+
+::ng-deep .ngx-intl-tel-input input {
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 3.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background-color: #1f1f1f;
+  color: #f1f1f1;
+  outline: none;
+  box-shadow: none;
+  transition: border-color 0.2s ease-in-out;
+}
+
+::ng-deep .ngx-intl-tel-input input:focus {
+  border-color: #66afe9;
+}
+
+::ng-deep .ngx-intl-tel-input .iti__flag-container {
+  left: 10px;
+}
+
+::ng-deep .ngx-intl-tel-input .iti__selected-flag {
+  background-color: transparent;
+  padding-left: 4px;
+}
+
+::ng-deep .ngx-intl-tel-input .iti__country-list {
+  background-color: #2a2a2a;
+  color: #f1f1f1;
+  border: 1px solid #444;
+  z-index: 9999;
+  max-height: 250px;
+}
+
+::ng-deep .ngx-intl-tel-input .iti__country:hover {
+  background-color: #444;
+}
