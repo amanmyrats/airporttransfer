@@ -14,7 +14,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { Currency } from '../../models/currency.model';
 import { DatePickerModule } from 'primeng/datepicker';
-// import { GoogleTagManagerService } from 'angular-google-tag-manager';
+import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
+import { CountryISO } from 'ngx-intl-tel-input';
+import { SearchCountryField } from 'ngx-intl-tel-input';
 
 declare var gtag: Function;
 declare var dataLayer: any;
@@ -29,6 +31,7 @@ declare var dataLayer: any;
     ToggleSwitchModule, 
     InputNumberModule, 
     DatePickerModule, 
+    NgxIntlTelInputModule, 
   ],
   templateUrl: './booking-completion-form.component.html',
   styleUrl: './booking-completion-form.component.scss'
@@ -36,6 +39,23 @@ declare var dataLayer: any;
 export class BookingCompletionFormComponent implements OnInit {
   @Input() langInput: any | null = null;
   
+  defaultCountry: CountryISO = CountryISO.Turkey;  // default fallback
+  searchFields: SearchCountryField[] = [
+    SearchCountryField.All,
+    SearchCountryField.Iso2,
+    SearchCountryField.DialCode
+  ];
+  preferredCountries: CountryISO[] = [
+    CountryISO.Netherlands,
+    CountryISO.Germany,
+    CountryISO.Switzerland,
+    CountryISO.Russia,
+    CountryISO.UnitedKingdom,
+    CountryISO.Ukraine,
+    CountryISO.Kazakhstan,
+    CountryISO.UnitedStates
+  ];
+    
   navbar = NAVBAR_MENU;
   bookingService = inject(BookingService);
   carTypeService = inject(CarTypeService);
@@ -122,6 +142,16 @@ export class BookingCompletionFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    fetch('https://ipapi.co/json/')
+    .then(res => res.json())
+    .then(data => {
+      const iso = data.country_code?.toUpperCase();  // e.g., "TR", "DE"
+      if (iso && CountryISO[iso as keyof typeof CountryISO]) {
+        this.defaultCountry = CountryISO[iso as keyof typeof CountryISO];
+      }
+    });
+
     this.route.queryParams.subscribe((params) => {
       this.stepFromUrl = params['step'];
     });
@@ -157,6 +187,23 @@ export class BookingCompletionFormComponent implements OnInit {
       this.isSaving = false;
     }
     , 5000);
+
+    const phone = this.bookingService.bookingCompletionForm.get('passenger_phone')?.value;
+    if (phone) {
+      console.log(phone.internationalNumber);  // +90 532 123 4567
+      console.log(phone.nationalNumber);       // 5321234567
+      console.log(phone.countryCode);          // 90
+      console.log(phone.iso2);                 // 'tr'
+      this.bookingService.bookingCompletionForm.patchValue({
+        passenger_phone: phone.internationalNumber
+      });
+    } else {
+      this.bookingService.bookingCompletionForm.patchValue({
+        passenger_phone: this.bookingService.bookingCompletionForm.get('passenger_phone')?.value
+      });
+    }
+
+
     this.hasSubmitted = true;
     this.bookingService.bookingCarTypeSelectionForm.patchValue({
       amount: this.price + this.champagnePrice() + this.flowerPrice() + this.childSeatPrice(),

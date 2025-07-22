@@ -139,28 +139,50 @@
 </p-message>
               </div>
               <div class="form-item">
-                <label for="passenger_phone">
+                
+                @defer {
+                  <label for="passenger_phone" class="p-text-secondary" style="margin-bottom: 4px; display: block;">
+                  {{ translations.phone[langInput.code] }}
+                </label>
+                  <ngx-intl-tel-input
+                    id="passenger_phone"
+                    class="ngx-intl-tel-input"
+                    [preferredCountries]="preferredCountries"
+                    [enableAutoCountrySelect]="false"
+                    [enablePlaceholder]="true"
+                    [searchCountryFlag]="true"
+                    [searchCountryField]="searchFields"
+                    [selectFirstCountry]="false"
+                    [selectedCountryISO]="defaultCountry"
+                    [phoneValidation]="false"
+                    [separateDialCode]="true"
+                    formControlName="passenger_phone"
+                  ></ngx-intl-tel-input>
+                }
+                
+
+                <!-- <label for="passenger_phone">
                   {{ translations.phone[langInput.code] }}
                 </label>
                 <input type="tel" id="passenger_phone" 
-                  formControlName="passenger_phone" placeholder="{{ translations.primaryPhone[langInput.code] }}" required />
+                  formControlName="passenger_phone" placeholder="{{ translations.primaryPhone[langInput.code] }}" required /> -->
               <!-- Format hint -->
-              <small class="form-hint">
+              <!-- <small class="form-hint">
                 {{ translations.phoneFormatHint?.[langInput.code] || 'Please include country code, starting with + or 00 (e.g. +90 555 555 5555)' }}
-              </small>
+              </small> -->
 
                 <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_phone')?.invalid" 
                 severity="error" variant="simple" size="small">
                 {{ translations.fieldRequired[langInput.code] }}
               </p-message>
               </div>
-              <div class="form-item">
+              <!-- <div class="form-item">
                 <label for="passenger_additional_phone">
                 {{ translations.additionalPhone[langInput.code] }}
                 </label>
                 <input type="tel" id="passenger_additional_phone" 
                 formControlName="passenger_additional_phone" placeholder="{{ translations.additionalPhone[langInput.code] }}" />
-              </div>
+              </div> -->
               <div class="form-item">
                 <label for="passenger_count">
                   {{ translations.passengerCount[langInput.code] }}

@@ -7,7 +7,9 @@
     "types": [
       "node",
       "@angular/localize", 
-      "google.maps"
+      "google.maps",
+      "google-libphonenumber"
+
     ]
   },
   "files": [
