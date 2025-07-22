@@ -14,12 +14,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { Currency } from '../../models/currency.model';
 import { DatePickerModule } from 'primeng/datepicker';
-import { PhoneNumberInputComponent } from '../phone-number-input/phone-number-input.component';
-// import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { CountryISO } from 'ngx-intl-tel-input';
 import { SearchCountryField } from 'ngx-intl-tel-input';
-import { PhoneNormalizerService } from '../../services/phone-normalizer.service';
 
 declare var gtag: Function;
 declare var dataLayer: any;
@@ -34,7 +31,6 @@ declare var dataLayer: any;
     ToggleSwitchModule, 
     InputNumberModule, 
     DatePickerModule, 
-    PhoneNumberInputComponent, 
     NgxIntlTelInputModule, 
   ],
   templateUrl: './booking-completion-form.component.html',
@@ -191,6 +187,23 @@ export class BookingCompletionFormComponent implements OnInit {
       this.isSaving = false;
     }
     , 5000);
+
+    const phone = this.bookingService.bookingCompletionForm.get('passenger_phone')?.value;
+    if (phone) {
+      console.log(phone.internationalNumber);  // +90 532 123 4567
+      console.log(phone.nationalNumber);       // 5321234567
+      console.log(phone.countryCode);          // 90
+      console.log(phone.iso2);                 // 'tr'
+      this.bookingService.bookingCompletionForm.patchValue({
+        passenger_phone: phone.internationalNumber
+      });
+    } else {
+      this.bookingService.bookingCompletionForm.patchValue({
+        passenger_phone: this.bookingService.bookingCompletionForm.get('passenger_phone')?.value
+      });
+    }
+
+
     this.hasSubmitted = true;
     this.bookingService.bookingCarTypeSelectionForm.patchValue({
       amount: this.price + this.champagnePrice() + this.flowerPrice() + this.childSeatPrice(),
