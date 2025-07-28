@@ -63,8 +63,8 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
         "dest_full",
     )
     ordering = (
-        "status",
         "-reservation_date",
+        "-status",
         "-created_at",
         "-transfer_date",
         "transfer_time",
