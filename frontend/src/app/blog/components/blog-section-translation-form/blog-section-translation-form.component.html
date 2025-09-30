@@ -1,0 +1,60 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="translation-form">
+  <input type="text" hidden formControlName="id" />
+  <input type="text" hidden formControlName="section" />
+  <input type="text" hidden formControlName="language" />
+    <!-- <div class="p-field">
+      <label for="language">Language</label>
+      <p-dropdown
+        id="language"
+        [options]="languages"
+        formControlName="language"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select language"
+      ></p-dropdown>
+    </div> -->
+  
+    <div class="p-field">
+      <label for="heading">Heading - {{ language.toUpperCase() }}</label>
+      <input id="heading" type="text" pInputText formControlName="heading" />
+    </div>
+  
+    <div class="p-field">
+      <!-- <label for="body">Body - {{ language.toUpperCase() }}</label>
+      <textarea
+        id="body"
+        rows="20"
+        cols="100"
+        pInputTextarea
+        formControlName="body"
+      ></textarea> -->
+      
+      <app-rich-text-with-table formControlName="body"></app-rich-text-with-table>
+    </div>
+
+    <!-- <div class="p-field">
+      <label for="og_image">Open Graph Image</label>
+      <p-fileUpload
+        mode="basic"
+        name="og_image"
+        accept="image/*"
+        chooseLabel="Upload"
+        (onSelect)="onFileSelect($event)"
+      ></p-fileUpload>
+    </div> -->
+  
+    <div class="form-actions">
+
+  <div>
+    <p-messages />
+  </div>
+      <button
+        pButton
+        type="submit"
+        label="Save Translation"
+        [disabled]="form.invalid"
+        class="p-button-sm"
+      ></button>
+    </div>
+  </form>
+  

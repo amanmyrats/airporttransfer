@@ -1,0 +1,23 @@
+<section class="faq" aria-labelledby="faq-heading">
+    <h2 *ngIf="heading" id="faq-heading" class="faq-title">{{ heading }}</h2>
+  
+    <div class="faq-list" *ngIf="resolved_items?.length; else empty">
+      <details
+        *ngFor="let item of resolved_items; let i = index"
+        class="faq-item"
+        [attr.id]="anchorFor(i, item)"
+        [attr.open]="isOpen(i, item) ? true : null"
+      >
+        <summary class="faq-q">
+          <span class="q-text">{{ item.question }}</span>
+        </summary>
+  
+        <div class="faq-a" [innerHTML]="item.answer"></div>
+      </details>
+    </div>
+  
+    <ng-template #empty>
+      <p class="empty">No FAQs available.</p>
+    </ng-template>
+  </section>
+  

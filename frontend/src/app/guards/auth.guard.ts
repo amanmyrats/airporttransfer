@@ -29,3 +29,35 @@ export const AuthGuard: CanActivateFn = (
     // }
   
   }
+
+
+// auth.guard.ts
+// import { inject } from '@angular/core';
+// import { CanActivateFn, Router } from '@angular/router';
+// import { AuthService } from '../services/auth.service';
+
+// const RETURN_URL_KEY = 'auth.returnUrl';
+// const LOGIN_PATH = '/admin/login';
+
+// export const AuthGuard: CanActivateFn = (route, state) => {
+//   const router = inject(Router);
+//   const authService = inject(AuthService);
+
+//   if (authService.isLoggedIn()) {
+//     return true;
+//   }
+
+//   const target = state.url || '/';
+// console.log(`AuthGuard: redirecting to ${LOGIN_PATH} with returnUrl=${target}`);
+// console.log(`AuthGuard: redirecting to ${LOGIN_PATH} with returnUrl=${target}`);
+// console.log(`AuthGuard: redirecting to ${LOGIN_PATH} with returnUrl=${target}`);
+// console.log(`AuthGuard: redirecting to ${LOGIN_PATH} with returnUrl=${target}`);
+// console.log(`AuthGuard: redirecting to ${LOGIN_PATH} with returnUrl=${target}`);
+//   // Store returnUrl for this session (unless it's already the login page)
+//   if (!target.startsWith(LOGIN_PATH)) {
+//     try { sessionStorage.setItem(RETURN_URL_KEY, target); } catch {}
+//   }
+
+//   // IMPORTANT: return UrlTree, do NOT call router.navigate()
+//   return router.createUrlTree([LOGIN_PATH], { queryParams: { returnUrl: target } });
+// };

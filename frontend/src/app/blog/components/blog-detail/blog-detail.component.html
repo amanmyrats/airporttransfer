@@ -1,0 +1,142 @@
+<app-super-header
+[trailingMultilingualBlogSlug]="trailingMultilingualBlogSlug"
+></app-super-header>
+<app-navbar></app-navbar>
+
+<section class="blog-detail" *ngIf="blog && blog.translation">
+  <!-- Hero: use real <img> for LCP + CLS, keep overlay -->
+  <figure class="hero">
+    <img ngSrc="{{ blog.main_image }}" alt="{{ blog.translation.title }}" width="1200" height="630" priority
+      [attr.sizes]="'(max-width: 768px) 100vw, 1140px'" decoding="async" />
+    <figcaption class="overlay">
+      <h1>{{ blog.translation.title }}</h1>
+      <p class="short-description">{{ blog.translation.short_description }}</p>
+    </figcaption>
+  </figure>
+
+  <div class="container blog-content-grid">
+    <!-- Main blog content -->
+    <div class="main-content">
+      <div class="meta">
+        <span>
+          <time [attr.datetime]="blog.published_at">{{ blog.published_at | date: 'longDate' }}</time>
+        </span>
+        &nbsp;·&nbsp;
+        <span>{{ blog.reading_time }} min read</span>
+        &nbsp;·&nbsp;
+        <span>{{ blog.views_count }} views</span>
+
+        <div class="tags" *ngIf="blog.tags?.length">
+          <a *ngFor="let tag of blog.tags" class="tag"
+            [routerLink]="['/', currentLanguage.code, 'turkey-airport-transfer-blogs', 'tag', tag.slug || tag]"
+            [attr.aria-label]="'Tag ' + (tag.name || tag)">#{{ tag.name || tag }}</a>
+        </div>
+      </div>
+
+
+<app-table-of-contents
+[language]="currentLanguage.code"
+[sections]="blog.sections!"
+[includeTypes]="['text','faq','steps','table']"
+[requireHeading]="true"
+[maxHeight]="360">
+</app-table-of-contents>
+
+
+      <ng-container *ngFor="let section of blog.sections; let i = index">
+
+        <!-- Text section -->
+        <section *ngIf="section.section_type === 'text'" class="section text-section"
+          [attr.id]="buildSectionAnchor(section?.translations?.[0]?.heading, section.id!)"
+          [attr.name]="buildSectionAnchor(section?.translations?.[0]?.heading, section.id!)"
+        >
+          <h2>{{ section.translations?.[0]?.heading }}</h2>
+          <!-- <div [innerHTML]="section.translations?.[0]?.body"></div> -->
+          <div class="section-content" [innerHTML]="section.translations?.[0]?.body | decodeHtml">
+
+          </div>
+        </section>
+
+        <!-- Mobile booking box after first section -->
+        <section *ngIf="section.section_type === 'booking_form'">
+          <!-- <app-blog-booking-box *ngIf="i === 0" class="mobile-booking-box" -->
+          <app-blog-booking-box class="mobile-booking-box"
+            [langInput]="currentLanguage">
+          </app-blog-booking-box>
+        </section>
+
+        <!-- Image gallery section -->
+        <section *ngIf="section.section_type === 'image'" class="section image-section">
+          <app-image-section-public [images]="section.images!" mode="image"></app-image-section-public>
+        </section>
+
+        <!-- Image gallery section -->
+        <section *ngIf="section.section_type === 'gallery'" class="section image-section">
+          <app-image-section-public [images]="section.images!" [lang]="currentLanguage" [loop]="false"
+            [showIndicators]="true">
+          </app-image-section-public>
+        </section>
+
+        <!-- CTA section -->
+        <section *ngIf="section.section_type === 'cta_banner'" class="section cta-section">
+          <h3>Looking for a private airport transfer?</h3>
+          <a class="btn-cta" routerLink="/en/book-now-24-7-private-airport-transfer-in-turkey">Book Now</a>
+        </section>
+
+        <!-- FAQ Section -->
+        <section *ngIf="section.section_type === 'faq'" class="section">
+          <app-faq-section-public [heading]="section?.translations?.[0]?.heading || 'Frequently Asked Questions'"
+            [resolved_items]="blog.resolved_faqs || []" [openFirstByDefault]="true" [enableJsonLd]="true">
+          </app-faq-section-public>
+        </section>
+
+        <!-- Video Section -->
+        <section *ngIf="section.section_type === 'video'" class="section video-section">
+
+          
+                        
+<app-blog-video-public
+*ngIf="section.section_type === 'video'"
+[section]="section"
+[lang]="currentLanguage.code"
+[height]="480">
+</app-blog-video-public>
+        </section>
+
+        <!-- Map Section -->
+        <section *ngIf="section.section_type === 'map'" class="section map-section">
+          
+          <app-blog-section-map-public
+          
+            [section]="section"
+            [lang]="currentLanguage.code"
+            [height]="420">
+          </app-blog-section-map-public>
+        </section>
+        
+      </ng-container>
+
+
+      <app-related-posts
+      [postId]="blog.id!"
+      [language]="currentLanguage.code"
+      [limit]="4"
+      [title]="'You may also like'"
+      [showDates]="true">
+    </app-related-posts>
+    
+
+    </div>
+
+    <!-- Desktop sticky booking box -->
+    <aside class="sidebar-booking" aria-label="Booking box">
+      <app-blog-booking-box class="desktop-booking-box" [langInput]="currentLanguage"></app-blog-booking-box>
+    </aside>
+  </div>
+</section>
+
+@defer {
+<app-footer></app-footer>
+} @placeholder {
+<div style="height:120px"></div>
+}

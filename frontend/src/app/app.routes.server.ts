@@ -262,6 +262,28 @@ export const serverRoutes: ServerRoute[] = [
     },
     {
         path: '**',
-        renderMode: RenderMode.Server,
-    }
+        renderMode: RenderMode.Client,
+    }, 
+
+
+
+
+
+    // {
+    //     path: 'en/turkey-airport-transfer-blogs/:slug',
+    //     renderMode: RenderMode.Client
+    //   },
+    //   {
+    //     path: 'de/turkei-flughafentransfer-blogs/:slug',
+    //     renderMode: RenderMode.Client
+    //   },
+    //   {
+    //     path: 'ru/трансфер-аэропорт-турция-блог/:slug',
+    //     renderMode: RenderMode.Client
+    //   },
+    //   {
+    //     path: 'tr/turkiye-havalimani-transfer-bloglari/:slug',
+    //     renderMode: RenderMode.Client
+    //   },
+      
 ];

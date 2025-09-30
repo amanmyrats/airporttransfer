@@ -1,0 +1,30 @@
+<div class="category-list-wrapper">
+  <div class="toolbar">
+    <h2>Blog Categories</h2>
+    <button pButton label="Add New Category" icon="pi pi-plus" (click)="openCreate()"></button>
+  </div>
+
+  <p-table [value]="categories" responsiveLayout="scroll">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Slug</th>
+        <th style="width: 220px;">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-cat>
+      <tr>
+        <td>{{ cat.name }}</td>
+        <td>{{ cat.slug }}</td>
+        <td class="actions">
+          <button pButton icon="pi pi-pencil" label="Edit" class="p-button-sm p-button-text" (click)="openEdit(cat)"></button>
+          <button pButton icon="pi pi-trash" label="Delete" class="p-button-sm p-button-danger p-button-text" (click)="confirmDelete(cat)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast [life]="6000"></p-toast>

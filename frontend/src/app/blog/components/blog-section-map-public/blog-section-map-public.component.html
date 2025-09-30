@@ -1,0 +1,18 @@
+<!-- Simple, safe, SEO-friendly map embed -->
+<div class="map-wrap" [style.--h.px]="heightToUse" *ngIf="safeUrl as url; else noMap">
+  <iframe
+    class="map-frame"
+    [src]="url"
+    width="100%"
+    height="100%"
+    loading="lazy"
+    frameborder="0"
+    style="border:0;"
+    referrerpolicy="no-referrer-when-downgrade"
+    allowfullscreen>
+  </iframe>
+</div>
+
+<ng-template #noMap>
+  <div class="empty">No map for this language.</div>
+</ng-template>

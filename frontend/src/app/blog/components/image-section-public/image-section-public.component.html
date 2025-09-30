@@ -1,0 +1,67 @@
+<div
+  class="carousel"
+  tabindex="0"
+  aria-roledescription="carousel"
+  aria-live="polite"
+  [style.--h.px]="height"
+  (touchstart)="onTouchStart($event)"
+  (touchend)="onTouchEnd($event)"
+>
+  <ng-container *ngIf="images?.length; else empty">
+    <!-- viewport with constant height -->
+    <div class="viewport">
+      <div
+        class="track"
+        [style.transform]="'translateX(' + (-100 * currentIndex) + '%)'"
+      >
+        <figure class="slide" *ngFor="let img of images; let i = index">
+          <img
+            [src]="imgSrc(img)"
+            [alt]="img?.seo?.alt || ''"
+            [attr.title]="img?.seo?.title || null"
+            decoding="async"
+            loading="lazy"
+          />
+          <figcaption *ngIf="img?.seo?.caption as cap">{{ cap }}</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- arrows (always rendered; disabled at ends when loop=false) -->
+    <button
+      type="button"
+      class="nav prev"
+      (click)="go(-1)"
+      [disabled]="!canGoPrev"
+      aria-label="Previous image"
+    >
+      ‹
+    </button>
+
+    <button
+      type="button"
+      class="nav next"
+      (click)="go(1)"
+      [disabled]="!canGoNext"
+      aria-label="Next image"
+    >
+      ›
+    </button>
+
+    <!-- dots -->
+    <div class="dots" *ngIf="showIndicators && images.length > 1">
+      <button
+        *ngFor="let _ of images; let i = index"
+        type="button"
+        class="dot"
+        [class.active]="i === currentIndex"
+        (click)="jumpTo(i)"
+        [attr.aria-label]="'Go to slide ' + (i + 1)"
+      ></button>
+    </div>
+  </ng-container>
+
+  <ng-template #empty>
+    <div class="empty">No images</div>
+  </ng-template>
+</div>

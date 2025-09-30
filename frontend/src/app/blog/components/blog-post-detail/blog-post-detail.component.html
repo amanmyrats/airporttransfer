@@ -1,0 +1,153 @@
+<div class="blog-post-detail-wrapper" *ngIf="post">
+  <div class="header">
+    <h2>Blog Post Detail</h2>
+  </div>
+
+  <div class="card two-column">
+    <div class="info-column">
+      <div class="info-header">
+        <h3>General Info
+
+          <a [routerLink]="gotoPreview(this.postId)" style="text-decoration: none;" pButton
+          class="p-button-text p-button-md">
+    
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-journal-text" viewBox="0 0 16 16">
+            <path d="M5 8h6v1H5V8zm0 2h6v1H5v-1z" />
+            <path d="M3 0h10a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1zm0 1v13h10V1H3z" />
+          </svg>
+          Preview
+        </a>
+
+        <a [routerLink]="gotoSections(this.postId)" style="text-decoration: none;" pButton
+        class="p-button-text p-button-md">
+  
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+          class="bi bi-journal-text" viewBox="0 0 16 16">
+          <path d="M5 8h6v1H5V8zm0 2h6v1H5v-1z" />
+          <path d="M3 0h10a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1zm0 1v13h10V1H3z" />
+        </svg>
+        Goto Sections
+      </a>
+
+        </h3>
+        <button (click)="openBlogPostForm(post)" pButton label="Edit Post" class="p-button-sm ml-2" outlined="true">
+          <ng-template pTemplate="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil"
+              viewBox="0 0 16 16">
+              <path
+                d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zM10.5 3.207 2 11.707V14h2.293l8.5-8.5-2.293-2.293z" />
+            </svg>
+          </ng-template>
+
+        </button>
+      </div>
+
+      <p><strong>Internal Title:</strong> {{ post.internal_title }}</p>
+      <!-- <p><strong>Slug:</strong> {{ post.slug }}</p> -->
+      <p><strong>Slug Locked?:</strong> {{ post.slug_locked ? 'Yes' : 'No'  }}</p>
+      <p><strong>Published:</strong> {{ post.is_published ? 'Yes' : 'No' }}</p>
+      <p><strong>Featured:</strong> {{ post.featured ? 'Yes' : 'No' }}</p>
+      <p><strong>Priority:</strong> {{ post.priority }}</p>
+      <p><strong>Views:</strong> {{ post.views_count }}</p>
+      <p><strong>Category:</strong> {{ getCategoryName() }}</p>
+      <p><strong>Tags:</strong> {{ getTagNames() }}</p>
+      <p><strong>Published At:</strong> {{ post.published_at || '—' }}</p>
+      <p><strong>Fully Translated:</strong> {{ post.is_translated_fully ? 'Yes' : 'No' }}</p>
+      <p><strong>Author:</strong> {{ post.author }}</p>
+    </div>
+
+    <div class="image-column">
+      <div class="image-column-buttons">
+
+        <label>Main Image</label>
+        <div *ngIf="!isUploadingMainImage; else spinnerTpl">
+          <p-fileUpload mode="basic" name="main_image" accept="image/*" auto chooseLabel="Upload Main Image"
+            customUpload (uploadHandler)="onImageUpload($event)">
+          </p-fileUpload>
+        </div>
+
+        <ng-template #spinnerTpl>
+          <p-progressSpinner strokeWidth="10" [style]="{ width: '20px', height: '20px' }" styleClass="upload-spinner" />
+        </ng-template>
+        <div *ngIf="!isRemovingMainImage; else spinnerTpl">
+
+          <button *ngIf="post.main_image" pButton label="Remove" class="p-button-danger p-button-sm mt-2"
+            (click)="deleteMainImage()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-trash"
+              viewBox="0 0 16 16">
+              <path
+                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5.5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6zm3-.5a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+              <path fill-rule="evenodd"
+                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <img *ngIf="post.main_image" [src]="post.main_image" class="image-preview mt-2" />
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h3>Translations
+
+
+      <p-button class="p-button-primary" [label]="'Add New Translation'" [rounded]="true" size="small"
+        (click)="openBlogPostTranslationForm()">
+        <ng-template pTemplate="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-plus"
+            viewBox="0 0 16 16">
+            <path
+              d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+          </svg>
+
+        </ng-template>
+      </p-button>
+    </h3>
+
+
+    <div class="translation-grid">
+      <div *ngFor="let trans of post.translations" class="translation-card">
+        <div class="translation-header">
+          <h4>{{ getLanguageLabel(trans.language) }}
+            <p-button class="p-button-primary" [label]="'Edit Translation'" [rounded]="true" outlined="true"
+              size="small" (click)="openBlogPostTranslationForm(trans)">
+              <ng-template pTemplate="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zM10.5 3.207 2 11.707V14h2.293l8.5-8.5-2.293-2.293z" />
+                </svg>
+              </ng-template>
+            </p-button>
+            <p-button class="p-button-primary" [label]="'Delete'" [rounded]="true" severity="danger" size="small"
+              (click)="deleteBlogPostTranslation(trans.id)">
+              <ng-template pTemplate="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-trash"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5.5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6zm3-.5a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+                  <path fill-rule="evenodd"
+                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg>
+              </ng-template>
+            </p-button>
+          </h4>
+        </div>
+        <p><strong>Title:</strong> {{ trans.title }}</p>
+        <p><strong>Slug:</strong> {{ trans.slug }}</p>
+        <p><strong>Short Description:</strong> {{ trans.short_description || '—' }}</p>
+        <p><strong>SEO Title:</strong> {{ trans.seo_title || '—' }}</p>
+        <p><strong>SEO Description:</strong> {{ trans.seo_description || '—' }}</p>
+      </div>
+    </div>
+
+
+
+  </div>
+</div>
+
+<p-toast position="bottom-right" [life]="20000" />
+<p-confirmDialog />

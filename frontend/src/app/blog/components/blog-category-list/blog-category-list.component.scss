@@ -1,0 +1,18 @@
+.category-list-wrapper {
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-bottom: 1rem;
+  }
+
+  ::ng-deep .p-table {
+    font-size: .95rem;
+  }
+
+  .actions {
+    display: flex;
+    gap: .25rem;
+  }
+}

@@ -1,0 +1,306 @@
+.blog-detail {
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+  
+    .hero {
+      background-size: cover;
+      background-position: center;
+      height: 320px;
+      position: relative;
+      display: flex;
+      align-items: center;
+  
+      .overlay {
+        background: rgba(0, 0, 0, 0.5);
+        width: 100%;
+        height: 100%;
+        color: #fff;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+  
+        h1 {
+          font-size: 2.4rem;
+          margin-bottom: 0.5rem;
+        }
+  
+        .short-description {
+          font-size: 1.1rem;
+          max-width: 700px;
+          margin: 0 auto;
+          opacity: 0.9;
+        }
+      }
+    }
+  
+    .container {
+  
+    max-width: 1140px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    }
+  
+    .meta {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1rem;
+  
+      .tags {
+        margin-top: 0.5rem;
+  
+        .tag {
+          display: inline-block;
+          background: #f0f0f0;
+          border-radius: 4px;
+          padding: 3px 8px;
+          font-size: 0.8rem;
+          margin-right: 6px;
+          color: #444;
+        }
+      }
+    }
+  
+    .section {
+      margin-bottom: 2.5rem;
+  
+      h2 {
+        font-size: 1.6rem;
+        color: #222;
+        margin-bottom: 1rem;
+      }
+  
+      p, li {
+        line-height: 1.7;
+        font-size: 1.05rem;
+      }
+  
+      ul {
+        padding-left: 1.5rem;
+      }
+  
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+  
+        th, td {
+          border: 1px solid #ccc;
+          padding: 0.75rem;
+          text-align: left;
+        }
+  
+        th {
+          background-color: #f5f5f5;
+        }
+      }
+  
+      blockquote {
+        border-left: 4px solid #ccc;
+        padding-left: 1rem;
+        color: #666;
+        font-style: italic;
+        margin: 1.5rem 0;
+      }
+    }
+  
+    .image-section {
+      text-align: center;
+  
+      .blog-image {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+      }
+  
+      .caption {
+        font-size: 0.85rem;
+        color: #777;
+      }
+    }
+  
+    .cta-section {
+      background: #f1f6fb;
+      border: 1px solid #d3e3f1;
+      padding: 2rem;
+      text-align: center;
+      border-radius: 8px;
+  
+      h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+      }
+  
+      .btn-cta {
+        background-color: #0057a8;
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 500;
+  
+        &:hover {
+          background-color: #004080;
+        }
+      }
+    }
+  
+    .blog-content-grid {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+  
+    .main-content {
+      flex: 1 1 0;
+      align-items: center;
+    }
+  
+    .sidebar-booking {
+      width: 320px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 80px; // adjust based on your header height
+      height: fit-content;
+  
+      .desktop-booking-box {
+        display: block;
+      }
+    }
+  
+    .mobile-booking-box {
+      display: none;
+    }
+  
+    // Mobile responsive
+    @media (max-width: 768px) {
+      .hero {
+        height: 240px;
+  
+        .overlay h1 {
+          font-size: 1.8rem;
+        }
+  
+        .short-description {
+          font-size: 1rem;
+        }
+      }
+  
+      .blog-content-grid {
+        flex-direction: column;
+      }
+  
+      .sidebar-booking {
+        display: none;
+      }
+  
+      .mobile-booking-box {
+        display: block;
+        margin: 2rem 0;
+      }
+    }
+  }
+
+  
+
+/* Gallery grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+
+  @media (min-width: 992px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Responsive video embeds */
+.video-wrapper {
+  position: relative;
+  padding-top: 56.25%; /* 16:9 */
+  overflow: hidden;
+  border-radius: 8px;
+
+  iframe, video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+}
+
+/* FAQ tweaks if you use <details> */
+.faq-section details {
+  margin: 0.5rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+}
+.faq-section summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Keep mobile-only booking inline; desktop sidebar remains */
+.mobile-booking-box { display: none; }
+@media (max-width: 768px) {
+  .mobile-booking-box { display: block; margin: 2rem 0; }
+}
+
+
+  
+
+.section-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  
+    .lang-switch {
+      margin-right: 1rem;
+    }
+  
+    .btn-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+
+
+  .notice-warning {
+    background: #fff9e6;
+    border: 1px solid #ffe08a;
+    color: #8a6d3b;
+    padding: .75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+  .fallback-badge {
+    display: inline-block;
+    margin-left: .5rem;
+    font-size: .8rem;
+    color: #777;
+  }
+  
+  .missing-translation {
+    border: 1px dashed #dcdcdc;
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #666;
+  
+    .missing-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+  
+    .actions :where(button, a) + :where(button, a) {
+      margin-left: .5rem;
+    }
+  }
+  

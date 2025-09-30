@@ -1,0 +1,83 @@
+:host { display:block; margin-top:2rem; }
+
+.related-posts {
+  .sr-only {
+    position:absolute!important; height:1px; width:1px; overflow:hidden;
+    clip:rect(1px,1px,1px,1px); white-space:nowrap;
+  }
+
+  .header-row {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:.75rem;
+    .title { font-weight:700; font-size:1.25rem; }
+    .count { color:#6b7280; font-size:.9rem; }
+  }
+
+  .grid {
+    list-style:none; margin:0; padding:0;
+    display:grid; gap:1rem; grid-template-columns:repeat(12,1fr);
+  }
+
+  /* LIGHT default */
+  .card {
+    grid-column:span 12;
+    background:#ffffff;                  /* <- light */
+    border:1px solid #e5e7eb;            /* light gray */
+    border-radius:1rem; overflow:hidden;
+    display:grid; grid-template-columns:140px 1fr;
+    color:#111827;
+
+    @media (max-width:640px){ grid-template-columns:1fr; }
+
+    .thumb { display:block; aspect-ratio:16/10; background:#f3f4f6; /* light thumb bg */
+      img { width:100%; height:100%; object-fit:cover; display:block; }
+    }
+    article { padding:.75rem 1rem; }
+    .post-title { margin:0 0 .25rem 0; font-size:1rem; line-height:1.25;
+      a { color:inherit; text-decoration:none; }
+      a:hover { text-decoration:underline; }
+    }
+    .meta { margin:0 0 .25rem 0; color:#6b7280; font-size:.85rem; }
+    .tags { margin:0; color:#6b7280; font-size:.85rem;
+      .tag { margin-right:.5rem; }
+    }
+  }
+
+  /* Skeletons (light) */
+  .skeleton {
+    .thumb { background:#e5e7eb; }
+    .lines { padding:.75rem 1rem;
+      .line { height:10px; background:#e5e7eb; margin-bottom:8px; border-radius:6px; }
+      .w-80{ width:80%; } .w-60{ width:60%; }
+    }
+    .shimmer { position:relative; overflow:hidden;
+      &:before {
+        content:""; position:absolute; inset:0; transform:translateX(-100%);
+        background:linear-gradient(90deg,transparent,rgba(0,0,0,.06),transparent);
+        animation:shimmer 1.2s infinite;
+      }
+    }
+  }
+
+  /* DARK (auto, no globals) */
+  @media (prefers-color-scheme: dark) {
+    .header-row .count { color:#9ca3af; }
+    .card {
+      background:#0f1115;
+      border:1px solid rgba(255,255,255,.12);
+      color:#e5e7eb;
+
+      .thumb { background:#1b1f24; }
+      .meta, .tags { color:#9ca3af; }
+    }
+    .skeleton {
+      .thumb { background:#1b1f24; }
+      .lines .line { background:#1b1f24; }
+      .shimmer:before {
+        background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
+      }
+    }
+  }
+
+  @keyframes shimmer { 100% { transform:translateX(100%); } }
+}

@@ -1,0 +1,172 @@
+<div class="form-wrapper">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <input id="id" type="hidden" formControlName="id" />
+      <!-- Language -->
+      <!-- <div class="form-field">
+        <label for="language">Language *</label>
+        <p-dropdown
+          inputId="language"
+          [options]="languages"
+          optionLabel="label"
+          formControlName="language"
+          placeholder="Select language"
+          [showClear]="true"
+        />
+      </div> -->
+      <div class="form-field">
+        <label for="internal_title">Internal Title *</label>
+        <input id="internal_title" type="text" pInputText formControlName="internal_title" placeholder="Istanbul Airport To Sultanahmet" />
+        <p-message
+        *ngIf="f['internal_title'].touched && f['internal_title'].hasError('required')"
+        severity="error"
+        text="Internal Title is required."
+      ></p-message>
+      </div>
+      
+      <div class="form-field">
+        <label for="author">Author</label>
+        <input id="author" type="text" pInputText formControlName="author" placeholder="AirportTransferHub.com" />
+      </div>
+      <!-- Slug -->
+      <!-- <div class="form-field">
+        <label for="slug">Slug *</label>
+        <input id="slug" type="text" pInputText formControlName="slug" placeholder="e.g. istanbul-airport-guide" />
+        <p-message
+        *ngIf="f['slug'].touched && f['slug'].hasError('required')"
+        severity="error"
+        text="Slug is required."
+      ></p-message>
+      </div> -->
+  
+      <!-- Published At -->
+      <!-- <div class="form-field">
+        <label for="published_at">Published Date</label>
+        <p-calendar
+          inputId="published_at"
+          formControlName="published_at"
+          showIcon="true"
+          dateFormat="yy-mm-dd"
+          [showButtonBar]="true"
+          placeholder="Pick date"
+        />
+      </div> -->
+  
+      <!-- Category -->
+      <div class="form-field">
+        <label for="category">Category</label>
+        <!-- <p-dropdown
+          inputId="category"
+          [options]="categories"
+          optionLabel="name"
+          optionValue="id"
+          formControlName="category"
+          placeholder="Select category"
+        /> -->
+
+        <p-select
+  inputId="category"
+  [options]="categories"
+  bindLabel="name"
+  bindValue="id"
+  formControlName="category"
+  placeholder="Select category"
+  [showClear]="true"
+>
+<ng-template let-category pTemplate="item">
+  {{ category.name }}
+</ng-template>
+
+<ng-template let-category pTemplate="selectedItem">
+  {{ category?.name || 'Select category' }}
+</ng-template>
+</p-select>
+      </div>
+  
+      <!-- Tags -->
+      <div class="form-field">
+        <label for="tags">Tags</label>
+        <p-multiSelect
+          inputId="tags"
+          [options]="tags"
+          optionLabel="name"
+          optionValue="id" 
+          formControlName="tags"
+          placeholder="Select tags"
+          display="chip"
+          [filter]="true" 
+          filterBy="name" 
+          [showClear]="true"
+          appendTo="body"
+          (onFilter)="onTagSearchChange($event)"
+          [loading]="isTagLoading"
+        />
+
+
+      </div>
+  
+      <!-- SEO Title -->
+      <!-- <div class="form-field">
+        <label for="seo_title">SEO Title</label>
+        <input id="seo_title" type="text" pInputText formControlName="seo_title" />
+      </div> -->
+  
+      <!-- SEO Description -->
+      <!-- <div class="form-field">
+        <label for="seo_description">SEO Description</label>
+        <textarea
+          inputId="seo_description"
+          formControlName="seo_description"
+          placeholder="Enter SEO description"
+          rows="3"
+        ></textarea>
+      </div> -->
+  
+      <!-- Checkboxes -->
+      <div class="form-field checkboxes">
+        <div class="checkbox-wrapper">
+          <p-checkbox binary="true" formControlName="is_published" inputId="is_published"></p-checkbox>
+          <label for="is_published">Published</label>
+        </div>
+      
+        <div class="checkbox-wrapper">
+          <p-checkbox binary="true" formControlName="featured" inputId="featured"></p-checkbox>
+          <label for="featured">Featured</label>
+        </div>
+      
+        <div class="checkbox-wrapper">
+          <p-checkbox binary="true" formControlName="is_translated_fully" inputId="is_translated_fully"></p-checkbox>
+          <label for="is_translated_fully">Fully Translated</label>
+        </div>
+      </div>
+      
+      <div class="form-field checkboxes">
+        <div class="checkbox-wrapper">
+          <p-checkbox binary="true" formControlName="slug_locked" inputId="slug_locked"></p-checkbox>
+          <label for="slug_locked">Lock Slug</label>
+        </div>
+      </div>
+      
+  
+      <!-- Priority -->
+      <div class="form-field">
+        <label for="priority">Priority</label>
+        <p-inputNumber
+          inputId="priority"
+          formControlName="priority"
+          [min]="0"
+          [max]="100"
+          placeholder="0-100"
+        />
+      </div>
+
+  
+      <!-- Submit -->
+      <div class="form-actions">
+        <button pButton type="submit" label="Save Post" icon="pi pi-check"></button>
+      </div>
+    </form>
+<p-toast [life]="10000" ></p-toast>
+<p-message></p-message>
+
+
+  </div>

@@ -1,0 +1,30 @@
+<!-- Hide the whole widget when there is nothing to show -->
+<details
+  *ngIf="items.length"
+  class="toc"
+  [attr.open]="opened ? '' : null"
+  (toggle)="opened = !opened"
+  aria-label="Table of contents"
+>
+  <summary class="toc__summary">
+    <span class="toc__icon" aria-hidden="true">☰</span>
+    <span class="toc__title">{{ get_title(language) }}</span>
+    <span class="toc__chev" aria-hidden="true">▸</span>
+  </summary>
+
+  <div class="toc__body" [style.maxHeight.px]="maxHeight">
+    <ol class="toc__list">
+      <li class="toc__item" *ngFor="let item of items; trackBy: trackById">
+        <button
+          type="button"
+          class="toc__link"
+          (click)="scrollToSection(item)"
+          [attr.aria-label]="'Jump to ' + (item.label || 'section')"
+        >
+          <span class="toc__bullet" aria-hidden="true"></span>
+          <span class="toc__text">{{ item.label }}</span>
+        </button>
+      </li>
+    </ol>
+  </div>
+</details>

@@ -10,3 +10,4 @@ django-import-export>=4.3,<4.4
 python-dotenv>=1.0.1,<1.1
 psycopg2-binary>=2.9,<2.10
 boto3>=1.35,<1.36
+pillow==11.3.0

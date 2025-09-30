@@ -1,0 +1,155 @@
+:host {
+  display: block;
+}
+
+/* Card */
+.booking-box {
+  border: 1px solid #e6e8ec;
+  border-radius: 12px;
+  padding: 1.25rem;
+  background: #fff;
+  max-width: 340px;
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+
+  h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-align: center;
+    color: #111827;
+    letter-spacing: .2px;
+  }
+
+  .form-group {
+    margin-bottom: 0.9rem;
+  }
+
+  label {
+    display: block;
+    font-size: .88rem;
+    color: #374151;
+    margin: 0 0 .4rem 0;
+    font-weight: 600;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  /* Bigger, modern inputs — beat any global resets */
+  .input-wrapper input[type='text'] {
+    width: 100%;
+    height: 44px;                   /* <-- size */
+    padding: 0 12px;
+    font-size: .96rem;
+    line-height: 1.2;
+    color: #111827;
+    background: #fff;
+    border: 1px solid #cfd3d9;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+
+    &::placeholder { color: #9aa3b2; }
+    &:hover { border-color: #b8bec7; }
+    &:focus {
+      border-color: #0057a8;
+      box-shadow: 0 0 0 3px rgba(0, 87, 168, .15);
+    }
+  }
+
+  /* small clear button inside the input */
+  .clear-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 0;
+    background: #eef2f7;
+    color: #6b7280;
+    font-size: 16px;
+    line-height: 24px;
+    cursor: pointer;
+
+    &:hover { background: #e6ebf2; }
+  }
+
+  /* PrimeNG pButton override — ensure the CTA looks like your design */
+  :host ::ng-deep .submit-btn.p-button {
+    width: 100%;
+    height: 46px;
+    border-radius: 8px;
+    background: #0057a8;
+    border-color: #0057a8;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: .2px;
+
+    /* remove PrimeNG inner padding quirks */
+    .p-button-label { width: 100%; text-align: center; }
+  }
+  :host ::ng-deep .submit-btn.p-button:hover {
+    background: #003e7e;
+    border-color: #003e7e;
+  }
+
+  .footer-note {
+    margin-top: .8rem;
+    font-size: .78rem;
+    color: #6b7280;
+    text-align: center;
+  }
+}
+
+/* Optional: tighter version for very small screens */
+@media (max-width: 480px) {
+  .booking-box {
+    padding: 1rem;
+    max-width: 100%;
+  }
+}
+
+
+/* CTA button */
+:host ::ng-deep .submit-btn.p-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .25s ease-in-out;
+
+  /* Modern gradient */
+  background: linear-gradient(135deg, #0077ff, #0057a8);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 87, 168, 0.3);
+}
+
+:host ::ng-deep .submit-btn.p-button:hover {
+  background: linear-gradient(135deg, #0057a8, #004080);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 87, 168, 0.4);
+}
+
+:host ::ng-deep .submit-btn.p-button:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(0, 87, 168, 0.3);
+}
+
+/* Loading spinner alignment */
+:host ::ng-deep .submit-btn.p-button .p-button-label {
+  flex: 1;
+  text-align: center;
+}

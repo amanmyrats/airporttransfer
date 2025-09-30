@@ -15,9 +15,9 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-booking-banner-form',
   imports: [
-    GmapsAutocompleteDirective, 
     FormsModule, ReactiveFormsModule, 
     ButtonModule, CommonModule, 
+    GmapsAutocompleteDirective, 
   ],
   templateUrl: './booking-banner-form.component.html',
   styleUrl: './booking-banner-form.component.scss'
@@ -95,14 +95,6 @@ export class BookingBannerFormComponent {
       });
     });
 
-
-    // Send event to GTM
-    // this.gtmService.pushTag({
-    //   event: 'book_now_click',
-    //   category: 'Booking',
-    //   action: 'Click',
-    //   label: 'Book Now Button'
-    // });
   }
 
   onPickupPlaceChanged(place: google.maps.places.PlaceResult): void {

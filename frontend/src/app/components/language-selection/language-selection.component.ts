@@ -17,6 +17,7 @@ export class LanguageSelectionComponent {
   navbarMenu: any = NAVBAR_MENU;
   supportedLanguages = SUPPORTED_LANGUAGES;
   @Input() langInput: any | null = null; // Input property for language selection
+  @Input() trailingMultilingualBlogSlug: { [key: string]: string } | null = null; // e.g., 'blogs/turkey-airport-transfer-blogs/multilingual-slug'
   selectedLanguage: any = { name: 'English', code: 'en', flag: 'flags/gb.svg' };
 
   translatedUrlWithoutLang: string = '';
@@ -75,12 +76,16 @@ export class LanguageSelectionComponent {
   getTranslatedUrlWithoutLang(langCode: string): string {
     if (typeof window !== 'undefined') {
       const currentUrl = this.router.url; // Get the current URL
+      // ex: http://localhost:4200/en/turkey-airport-transfer-blogs/test-2
       const segments = currentUrl.split('/'); // Split URL into segments
+      // ex: ["", "en", "turkey-airport-transfer-blogs", "test-2"]
       let queryParam = '';
       let isFound: boolean = false;
       // console.log('segments[1]: ', segments[1]);
       if (this.supportedLanguages.map((lang) => lang.code).includes(segments[1])) {
         segments.splice(1, 1);
+        // ex: segments after splice:  ["", "turkey-airport-transfer-blogs", "test-2"]
+
         // split with ?
         // if (segments[segments.length - 1].includes('?')) {
         //   queryParam = segments[segments.length - 1].split('?')[1];
@@ -95,6 +100,7 @@ export class LanguageSelectionComponent {
             // console.log('slugLang: ', slugLang)
             if (encodeURIComponent(this.navbarMenu[key].slug[slugLang]) === segments[i]) {
               segments[i] = this.navbarMenu[key].slug[langCode];
+              // ex: segments[i] = "turkish-airport-transfer-blogs"
               break;
             }
           }
@@ -103,7 +109,14 @@ export class LanguageSelectionComponent {
           break;
         }
       }
+      if (this.trailingMultilingualBlogSlug) {
+        // change the last segment to this.trailingMultilingualBlogSlug
+        segments[segments.length - 1] = this.trailingMultilingualBlogSlug[langCode] || this.trailingMultilingualBlogSlug['en'];
+      }
+
       return segments.join('/'); // Reconstruct the URL
+      // segments = ["", "turkish-airport-transfer-blogs", "test-2"]
+      // return "/turkish-airport-transfer-blogs/test-2"
     }
     return '';
   }

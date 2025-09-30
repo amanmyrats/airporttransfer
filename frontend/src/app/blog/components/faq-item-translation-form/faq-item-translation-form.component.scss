@@ -1,0 +1,21 @@
+.form-wrapper {
+    .form-grid {
+      display: grid;
+      gap: .75rem;
+  
+      .form-field {
+        display: grid;
+        gap: .35rem;
+  
+        label {
+          font-weight: 600;
+          font-size: .9rem;
+        }
+      }
+  
+      .form-actions {
+        margin-top: .5rem;
+      }
+    }
+  }
+  

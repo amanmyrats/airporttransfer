@@ -82,6 +82,12 @@ export class FooterComponent implements OnInit {
       tr: 'Blog',
       ru: 'Блог',
     },
+    newBlog: {
+      en: 'New Blog',
+      de: 'Neuer Blog',
+      tr: 'Yeni Blog',
+      ru: 'Новый блог',
+    },
     contact: {
       en: 'Contact',
       de: 'Kontakt',

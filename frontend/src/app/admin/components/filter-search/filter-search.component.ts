@@ -57,6 +57,10 @@ export class FilterSearchComponent implements OnInit{
   @Input() roles: any[] = [];
   @Input() statuses: any[] = [];
   @Input() filterTodayByDefault: boolean = false;
+
+  // Blog specific inputs
+  @Input() blogCategories: any[] = [];
+  @Input() wantBlogCategoryFilter: boolean = false;
   
   // Pagination
   @Input() first: number = 0;
@@ -65,6 +69,7 @@ export class FilterSearchComponent implements OnInit{
   
   @Output() searchEmitter: EventEmitter<any> = new EventEmitter();
   @Output() getStatusesEmitter: EventEmitter<any> = new EventEmitter();
+  @Output() getBlogCategoryEmitter: EventEmitter<any> = new EventEmitter();
   
   filterSearchForm: FormGroup;
   event: LazyLoadEvent = {};
@@ -102,6 +107,7 @@ export class FilterSearchComponent implements OnInit{
     this.event.rows = this.rows;
     this.checkActiveUrlQueryParamsAndPatchFormValuesWithQueryParams();
     this.getStatusesEmitter.emit();
+    this.getBlogCategoryEmitter.emit();
     this.search();
     }
 

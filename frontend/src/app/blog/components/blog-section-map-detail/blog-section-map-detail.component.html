@@ -1,0 +1,145 @@
+<!-- If there is a map, show preview + translation panel; else "Add New Map" -->
+<ng-container *ngIf="map as m; else noMap">
+    <figure class="blog-map-item">
+      <div class="map-translation-row">
+        <!-- MAP SIDE -->
+        <div class="map-side">
+          <div class="map-side__actions">
+            <!-- Add/Edit Map -->
+            <button
+              pButton
+              class="p-button-success p-button-sm"
+              [label]="m?.section ? 'Edit Map' : 'Add Map'"
+              (click)="openMapForm(m)">
+              <ng-template pTemplate="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                     class="bi bi-pencil" viewBox="0 0 16 16">
+                  <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zM10.5 3.207 2 11.707V14h2.293l8.5-8.5-2.293-2.293z"/>
+                </svg>
+              </ng-template>
+            </button>
+  
+            <!-- Remove map -->
+            <div *ngIf="!isRemoving; else removeSpinnerTpl">
+              <button
+                pButton
+                label="Remove"
+                class="p-button-danger p-button-sm mt-2"
+                (click)="deleteMap(m.section!)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                     class="bi bi-trash" viewBox="0 0 16 16">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5.5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6zm3-.5a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+                  <path fill-rule="evenodd"
+                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg>
+              </button>
+            </div>
+            <ng-template #removeSpinnerTpl>
+              <p-progressSpinner strokeWidth="10" [style]="{ width: '20px', height: '20px' }" />
+            </ng-template>
+          </div>
+  
+          <!-- MAP PREVIEW -->
+          <div class="map-player" [style.height.px]="m.iframe_height || 420">
+
+      <iframe
+      *ngIf="getMapSrc(m) as safeUrl; else empty"
+      [src]="safeUrl"
+      width="100%" height="100%"
+      loading="lazy" frameborder="0" style="border:0;"
+      referrerpolicy="no-referrer-when-downgrade"
+      allowfullscreen>
+    </iframe>
+  <ng-template #empty>
+    <div class="map-empty" *ngIf="!getMapSrc(m)">No embed URL for this language</div>
+  </ng-template>
+          </div>
+  
+          <!-- Tiny meta -->
+          <div class="meta">
+            <div><strong>Provider:</strong> {{ m.provider }}</div>
+            <div><strong>Internal ID:</strong> {{ m.internal_identifier || '—' }}</div>
+            <div><strong>Active:</strong> {{ m.is_active ? 'Yes' : 'No' }}</div>
+          </div>
+        </div>
+  
+        <!-- TRANSLATION SIDE -->
+        <div class="translation-side">
+          <ng-container *ngIf="getSelectedTranslation(m) as tx; else noTx">
+            <section class="translation-card" [attr.lang]="tx.language">
+              <header class="translation-card__header">
+                <span class="lang-chip">{{ tx.language?.toUpperCase() }}</span>
+                <p-button
+                  class="edit-btn"
+                  [label]="'Edit'"
+                  [rounded]="true"
+                  outlined="true"
+                  size="small"
+                  (click)="openMapTranslationForm(m.section!, tx)">
+                  <ng-template pTemplate="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                         class="bi bi-pencil" viewBox="0 0 16 16">
+                      <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zM10.5 3.207 2 11.707V14h2.293l8.5-8.5-2.293-2.293z"/>
+                    </svg>
+                  </ng-template>
+                </p-button>
+              </header>
+  
+              <div class="translation-card__body">
+                <dl class="kv">
+                  <div class="kv__row">
+                    <dt>Embed URL</dt>
+                    <dd class="wrap">{{ tx.embed_url }}</dd>
+                  </div>
+                </dl>
+              </div>
+            </section>
+          </ng-container>
+  
+          <ng-template #noTx>
+            <section class="translation-empty">
+              <p class="empty-text">
+                No translation for <strong>{{ language.toUpperCase() }}</strong>.
+              </p>
+              <p-button
+                class="add-btn"
+                [label]="'Add Translation'"
+                [rounded]="true"
+                outlined="true"
+                size="small"
+                (click)="openMapTranslationForm(m.section!, null)">
+                <ng-template pTemplate="icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                       class="bi bi-plus" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                  </svg>
+                </ng-template>
+              </p-button>
+            </section>
+          </ng-template>
+        </div>
+      </div>
+    </figure>
+  </ng-container>
+  
+  <ng-template #noMap>
+    <div class="no-map">
+      No map available
+      <p-button
+        class="p-button-primary"
+        [label]="'Add New Map'"
+        [rounded]="true"
+        size="small"
+        (click)="openMapForm(null)">
+        <ng-template pTemplate="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+               class="bi bi-plus" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </ng-template>
+      </p-button>
+    </div>
+  </ng-template>
+  
+  <p-toast [life]="10000"></p-toast>
+  

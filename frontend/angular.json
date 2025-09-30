@@ -101,6 +101,18 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            }, 
+            "local": {
+              "optimization": false,
+              "sourceMap": true,
+              "extractLicenses": false,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -113,6 +125,9 @@
             },
             "development": {
               "buildTarget": "airporttransfer:build:development"
+            }, 
+            "local": {
+              "buildTarget": "airporttransfer:build:local"
             }
           },
           "defaultConfiguration": "development"

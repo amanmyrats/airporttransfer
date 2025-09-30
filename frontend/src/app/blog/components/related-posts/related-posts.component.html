@@ -1,0 +1,52 @@
+<section class="related-posts" aria-labelledby="related-title">
+    <!-- SSR-friendly structured data -->
+    <script type="application/ld+json">{{ jsonLd() }}</script>
+  
+    <h2 id="related-title" class="sr-only">{{ title }}</h2>
+  
+    <div class="header-row">
+      <span class="title">{{ title }}</span>
+      <span class="count" *ngIf="vm().length">{{ vm().length }}</span>
+    </div>
+  
+    <!-- Loading skeleton -->
+    <ul class="grid" *ngIf="loading(); else content">
+      <li class="card skeleton" *ngFor="let _ of [1,2,3,4]">
+        <div class="thumb shimmer"></div>
+        <div class="lines">
+          <div class="line w-80"></div>
+          <div class="line w-60"></div>
+        </div>
+      </li>
+    </ul>
+  
+    <ng-template #content>
+      <div *ngIf="error(); else ok" class="error">{{ error() }}</div>
+  
+      <ng-template #ok>
+        <ul class="grid" *ngIf="vm().length > 0; else empty">
+          <li class="card" *ngFor="let it of vm(); trackBy: trackById">
+            <a [routerLink]="it.url" class="thumb" [attr.aria-label]="it.title">
+              <img *ngIf="it.image" [src]="it.image" [alt]="it.title" loading="lazy" />
+            </a>
+            <article>
+              <h3 class="post-title">
+                <a [routerLink]="it.url">{{ it.title }}</a>
+              </h3>
+              <p class="meta" *ngIf="showDates && it.published as dt">
+                <time [attr.datetime]="dt">{{ dt | date:'mediumDate' }}</time>
+              </p>
+              <p class="tags" *ngIf="it.tags?.length">
+                <span class="tag" *ngFor="let t of it.tags; trackBy: trackByTagId">#{{ t.name }}</span>
+              </p>
+            </article>
+          </li>
+        </ul>
+  
+        <ng-template #empty>
+          <p class="muted">No related posts yet.</p>
+        </ng-template>
+      </ng-template>
+    </ng-template>
+  </section>
+  

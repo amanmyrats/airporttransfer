@@ -21,6 +21,7 @@ import { LanguageService } from '../../services/language.service';
 })
 export class SuperHeaderComponent implements OnInit {
   @Input() langInput: any | null = null; // Input property for language selection
+  @Input() trailingMultilingualBlogSlug: { [key: string]: string } | null = null; // e.g., 'blogs/turkey-airport-transfer-blogs/multilingual-slug'
   socialIcons = SOCIAL_ICONS;
   currentLanguage: any = { code: 'en', name: 'English' };
   private languageService!: LanguageService;

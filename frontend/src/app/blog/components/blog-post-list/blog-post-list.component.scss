@@ -1,0 +1,25 @@
+.blog-posts-wrapper {
+    padding: 1rem;
+  
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+  
+      h2 {
+        margin: 0;
+      }
+    }
+  
+    ::ng-deep .p-badge {
+      font-size: 0.75rem;
+      padding: 0.4em 0.6em;
+    }
+  }
+
+.action-buttons {
+    gap: 0.5rem;
+    font-size: xx-large;
+  }
+  

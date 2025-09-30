@@ -1,0 +1,118 @@
+<div class="form-wrapper">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <!-- Hidden ids / fks -->
+      <input id="id" type="hidden" formControlName="id" />
+      <input id="image" type="hidden" formControlName="image" />
+  
+      <!-- Language -->
+      <div *ngIf="!translation" class="form-field">
+        <label for="language">Language *</label>
+        <p-select
+          inputId="language"
+          [options]="languages"
+          bindLabel="label"
+          bindValue="value"
+          formControlName="language"
+          placeholder="Select language"
+          [showClear]="true"
+        >
+          <ng-template let-lang pTemplate="item">
+            {{ lang.label }}
+          </ng-template>
+          <ng-template let-lang pTemplate="selectedItem">
+            {{ lang?.label || 'Select language' }}
+          </ng-template>
+        </p-select>
+        <p-message
+          *ngIf="f['language']?.touched && f['language']?.hasError('required')"
+          severity="error"
+          text="Language is required."
+        ></p-message>
+      </div>
+  
+      <!-- Caption -->
+      <div class="form-field">
+        <label for="caption">Caption</label>
+        <input
+          id="caption"
+          type="text"
+          pInputText
+          formControlName="caption"
+          placeholder="Shown beneath the image"
+        />
+      </div>
+  
+      <!-- Alt text -->
+      <div class="form-field">
+        <label for="alt_text">Alt text</label>
+        <input
+          id="alt_text"
+          type="text"
+          pInputText
+          formControlName="alt_text"
+          placeholder="Describe the image for SEO/accessibility"
+        />
+        <p-message
+          severity="info"
+          text="Keep it short, specific, and natural (max ~120 chars)."
+        ></p-message>
+      </div>
+  
+      <!-- Title -->
+      <div class="form-field">
+        <label for="title_text">Title</label>
+        <input
+          id="title_text"
+          type="text"
+          pInputText
+          formControlName="title_text"
+          placeholder="Tooltip on hover (optional)"
+        />
+      </div>
+  
+      <!-- ARIA label -->
+      <div class="form-field">
+        <label for="aria_label">ARIA label</label>
+        <input
+          id="aria_label"
+          type="text"
+          pInputText
+          formControlName="aria_label"
+          placeholder="Screen reader label; defaults to Alt if blank"
+        />
+      </div>
+  
+      <!-- Long description -->
+      <div class="form-field">
+        <label for="long_description">Long description</label>
+        <textarea
+          inputId="long_description"
+          pTextarea
+          formControlName="long_description"
+          placeholder="Optional, detailed description for accessibility"
+          rows="4"
+        ></textarea>
+      </div>
+  
+      <!-- File name override -->
+      <div class="form-field">
+        <label for="file_name_override">File name override</label>
+        <input
+          id="file_name_override"
+          type="text"
+          pInputText
+          formControlName="file_name_override"
+          placeholder="Optional friendly filename (no extension)"
+        />
+      </div>
+  
+      <!-- Submit -->
+      <div class="form-actions">
+        <button pButton type="submit" label="Save Translation" icon="pi pi-check"></button>
+      </div>
+    </form>
+  
+    <p-toast [life]="10000"></p-toast>
+    <p-message></p-message>
+  </div>
+  

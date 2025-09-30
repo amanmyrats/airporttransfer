@@ -6,7 +6,8 @@ export const environment = {
   buildTimestamp: new Date().toISOString(),
 
   pagination: {
-    defaultPageSize: 10
+    defaultPageSize: 10,
+    defaultBlogPageSize: 9,
   }
 
   };

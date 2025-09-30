@@ -1,0 +1,70 @@
+<!-- anchor for JSON-LD (screen-reader hidden) -->
+<span #jsonLdHost class="sr-only" aria-hidden="true"></span>
+
+<div class="video-wrap" [style.--h.px]="height" *ngIf="v as video; else noVideo">
+  <!-- Optional visible/sr-only title -->
+  <h3 *ngIf="showTitle || titleSrOnly"
+      [class.sr-only]="titleSrOnly"
+      class="video-title">
+    {{ tx!.title || 'Video' }}
+  </h3>
+  <!-- EMBED -->
+  <iframe
+    *ngIf="video.embed_src as src; else nativeVideo"
+    class="player"
+    [src]="trustedEmbed(src)!"
+    loading="lazy"
+    [title]="tx?.title || 'Video'"
+    [attr.aria-label]="tx?.aria_label || tx?.title || null"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen>
+  </iframe>
+
+  <!-- NATIVE VIDEO -->
+  <ng-template #nativeVideo>
+    <video
+      class="player"
+      [poster]="video.poster_url || null"
+      [controls]="video.controls !== false"
+      [autoplay]="video.autoplay === true"
+      [muted]="(video.autoplay === true) ? true : (video.muted !== false)"
+      [attr.playsinline]="video.playsinline === false ? null : ''"
+      [attr.preload]="video.preload || 'metadata'"
+      [attr.title]="tx?.title || null"
+      [attr.aria-label]="tx?.aria_label || tx?.title || null"
+      [attr.aria-describedby]="(tx?.caption ? 'vid-cap' : null) || (showDescription && tx?.description ? 'vid-desc' : null)"
+    >
+      <source *ngIf="video.sources?.hls_url"  [src]="video.sources?.hls_url"  type="application/x-mpegURL" />
+      <source *ngIf="video.sources?.dash_url" [src]="video.sources?.dash_url" type="application/dash+xml" />
+      <source *ngIf="video.sources?.file_url" [src]="video.sources?.file_url" [attr.type]="video.sources?.mime_type || 'video/mp4'" />
+      <track *ngFor="let t of (video.tracks || [])"
+             [attr.kind]="t.kind || 'subtitles'"
+             [attr.srclang]="t.language"
+             [attr.label]="t.label || t.language?.toUpperCase()"
+             [attr.src]="t.src || null"
+             [attr.default]="t.is_default ? '' : null" />
+      Your browser does not support the video tag.
+    </video>
+  </ng-template>
+
+  <!-- Caption -->
+  <figcaption *ngIf="tx?.caption as cap" id="vid-cap" class="caption">
+    {{ cap }}
+  </figcaption>
+
+  <!-- Optional description -->
+  <p *ngIf="showDescription && tx?.description" id="vid-desc" class="description">
+    {{ tx?.description }}
+  </p>
+
+  <!-- Optional transcript -->
+  <details *ngIf="showTranscript && tx?.transcript" class="transcript">
+    <summary>Transcript</summary>
+    <div class="transcript__body" [attr.lang]="tx?.language">{{ tx?.transcript }}</div>
+  </details>
+</div>
+
+<ng-template #noVideo>
+  <div class="empty">No video</div>
+</ng-template>

@@ -1,0 +1,27 @@
+<div class="form-wrapper">
+  <h3 class="title">{{ category?.id ? 'Edit Category' : 'Create Category' }}</h3>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+    <input type="hidden" formControlName="id" />
+
+    <div class="form-field">
+      <label for="name">Category Name <span class="required">*</span></label>
+      <input id="name" type="text" pInputText formControlName="name" placeholder="e.g. Istanbul Airport Transfers" />
+      <small *ngIf="f['name'].touched && f['name'].invalid" class="error">Name is required.</small>
+    </div>
+
+    <div class="form-field">
+      <label for="slug">Slug</label>
+      <input id="slug" type="text" pInputText formControlName="slug" placeholder="e.g. istanbul-airport-transfers" />
+      <small>Leave empty to auto-generate from name (backend guarantees uniqueness).</small>
+      <small *ngIf="f['slug'].touched && f['slug'].invalid" class="error">Slug is invalid.</small>
+      <p-message *ngIf="!f['slug'].value" severity="info" text="Empty is okay — we will generate it."></p-message>
+    </div>
+
+    <div class="form-actions">
+      <button pButton type="submit" label="Save" icon="pi pi-check"></button>
+    </div>
+  </form>
+
+  <p-toast [life]="8000"></p-toast>
+</div>

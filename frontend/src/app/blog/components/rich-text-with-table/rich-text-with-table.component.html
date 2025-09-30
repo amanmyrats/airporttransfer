@@ -1,0 +1,14 @@
+<ng-container *ngIf="isBrowser">
+    <p-editor
+      [modules]="modules"
+      [(ngModel)]="value"
+      (ngModelChange)="onModelChange($event)" 
+      (onInit)="onEditorInit($event)"
+      [readonly]="disabled"
+      [style]="{height: '320px'}"
+    ></p-editor>
+  </ng-container>
+  <ng-container *ngIf="!isBrowser">
+    <div class="p-2 text-sm text-gray-500">Editor will load in the browser…</div>
+  </ng-container>
+  

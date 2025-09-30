@@ -1,0 +1,60 @@
+.form-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0.5rem auto;
+    padding: 0.5rem;
+    // background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  }
+  
+  h2 {
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+  }
+  
+  .form-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  
+  .form-field {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-field label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .checkboxes {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1rem;
+  
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+  
+      label {
+        font-size: 0.95rem;
+      }
+    }
+  }
+  
+  
+  .image-preview {
+    margin-top: 1rem;
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  .form-actions {
+    margin-top: 2rem;
+    text-align: right;
+  }
+  

@@ -1,0 +1,58 @@
+<div class="booking-box">
+  <h3>{{ translations.bookNowTitle[langInput.code] }}</h3>
+
+  <form class="reservation-form" 
+        (ngSubmit)="onSubmit()" 
+        [formGroup]="bookingService.bookingInitialForm">
+
+    <!-- Pickup -->
+    <div class="form-group input-with-clear">
+      <label for="pickup-location">
+        {{ translations.pickUp[langInput.code] }}
+      </label>
+      <div class="input-wrapper">
+        <input type="text"
+               id="pickup-location"
+               formControlName="pickup_full"
+               placeholder="{{ translations.pickUpPlaceHolder[langInput.code] }}"
+               appGmapsAutocomplete
+               (placeChanged)="onPickupPlaceChanged($event)"
+               (keydown)="preventFormSubmit($event)" />
+        <button *ngIf="bookingService.bookingInitialForm.get('pickup_full')?.value"
+                type="button"
+                class="clear-btn"
+                (click)="clearField('pickup_full')">×</button>
+      </div>
+    </div>
+
+    <!-- Dropoff -->
+    <div class="form-group input-with-clear">
+      <label for="dropoff-location">
+        {{ translations.dropOff[langInput.code] }}
+      </label>
+      <div class="input-wrapper">
+        <input type="text"
+               id="dropoff-location"
+               formControlName="dest_full"
+               placeholder="{{ translations.dropOffPlaceHolder[langInput.code] }}"
+               appGmapsAutocomplete
+               (placeChanged)="onDestPlaceChanged($event)"
+               (keydown)="preventFormSubmit($event)" />
+        <button *ngIf="bookingService.bookingInitialForm.get('dest_full')?.value"
+                type="button"
+                class="clear-btn"
+                (click)="clearField('dest_full')">×</button>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button pButton
+            type="submit"
+            [loading]="isBookNowLoading"
+            class="submit-btn">
+      {{ translations.bookNow[langInput.code] }}
+    </button>
+  </form>
+
+  <p class="footer-note">✓ Instant confirmation · Free cancellation</p>
+</div>

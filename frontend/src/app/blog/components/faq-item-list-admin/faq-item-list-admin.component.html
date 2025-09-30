@@ -1,0 +1,245 @@
+<!-- Toolbar like Blog Image -->
+<div class="faq-toolbar">
+    <div class="left">
+      <p-button
+        class="p-button-primary"
+        [label]="'Add New FAQ'"
+        [rounded]="true"
+        size="small"
+        (click)="addNewEmptyFaq(section.id!)">
+        <ng-template pTemplate="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+               class="bi bi-plus" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </ng-template>
+      </p-button>
+    </div>
+  
+    <div class="right">
+      <span class="lang-chip">{{ language.toUpperCase() }}</span>
+    </div>
+  </div>
+  
+  <!-- List (drag & drop container) -->
+  <div class="faq-list" cdkDropList (cdkDropListDropped)="drop($event)">
+    <ng-container *ngFor="let item of section.faqs; trackBy: trackById">
+      <figure class="faq-item">
+        <div class="faq-row" cdkDrag>
+  
+          <!-- LEFT SIDE (actions like your image-side) -->
+          <div class="item-side">
+            <div class="item-side__actions">
+              <button
+                pButton
+                label="Remove"
+                class="p-button-danger p-button-sm"
+                (click)="deleteFaq(item.id!)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                     class="bi bi-trash" viewBox="0 0 16 16">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5.5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6zm3-.5a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+                  <path fill-rule="evenodd"
+                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg>
+              </button>
+  
+              <p-button
+              class="edit-btn"
+              [label]="'Edit'"
+              [rounded]="true"
+              outlined="true"
+              size="small"
+              (click)="openFaqForm(item)">
+              <ng-template pTemplate="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                     class="bi bi-pencil" viewBox="0 0 16 16">
+                  <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zM10.5 3.207 2 11.707V14h2.293l8.5-8.5-2.293-2.293z"/>
+                </svg>
+              </ng-template>
+            </p-button>
+
+            <!-- METADATA (FaqItem fields) -->
+<div class="item-meta">
+    <dl class="kv">
+      <div class="kv__row">
+        <dt>Order</dt>
+        <dd class="mono">{{ item.order }}</dd>
+      </div>
+  
+      <div class="kv__row">
+        <dt>Anchor</dt>
+        <dd [class.muted]="!item.anchor">{{ item.anchor || '—' }}</dd>
+      </div>
+  
+      <div class="kv__row">
+        <dt>Featured</dt>
+        <dd>
+          <span class="badge" [class.on]="item.is_featured">{{ item.is_featured ? 'Yes' : 'No' }}</span>
+        </dd>
+      </div>
+  
+      <div class="kv__row">
+        <dt>Expanded</dt>
+        <dd>
+          <span class="badge" [class.on]="item.is_expanded_by_default">
+            {{ item.is_expanded_by_default ? 'Yes' : 'No' }}
+          </span>
+        </dd>
+      </div>
+  
+      <div class="kv__row" *ngIf="item.internal_note">
+        <dt>Note</dt>
+        <dd>{{ item.internal_note }}</dd>
+      </div>
+    </dl>
+  </div>
+
+  
+              <div class="move-buttons">
+                <button pButton icon="pi pi-arrow-up" class="p-button-rounded p-button-text" (click)="moveUp(item)"></button>
+                <button pButton icon="pi pi-arrow-down" class="p-button-rounded p-button-text" (click)="moveDown(item)"></button>
+              </div>
+  
+              <div class="drag-handle" cdkDragHandle pTooltip="Drag to reorder">☰</div>
+            </div>
+          </div>
+  
+          <!-- RIGHT SIDE (translation-only card like your translation-side) -->
+          <div class="translation-side">
+            <ng-container *ngIf="getSelectedTranslation(item) as translation">
+              <section class="translation-card" [attr.lang]="translation.language">
+                <header class="translation-card__header">
+                  <span class="lang-chip">{{ translation.language?.toUpperCase() }}</span>
+  
+                  <p-button
+                    class="edit-btn"
+                    [label]="'Edit'"
+                    [rounded]="true"
+                    outlined="true"
+                    size="small"
+                    (click)="openFaqTranslationForm(item.id!, translation)">
+                    <ng-template pTemplate="icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                           class="bi bi-pencil" viewBox="0 0 16 16">
+                        <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zM10.5 3.207 2 11.707V14h2.293l8.5-8.5-2.293-2.293z"/>
+                      </svg>
+                    </ng-template>
+                  </p-button>
+                </header>
+  
+                <div class="translation-card__body">
+                  <dl class="kv">
+                    <div class="kv__row">
+                      <dt>Question</dt>
+                      <dd [class.muted]="!translation.question">{{ translation.question || '—' }}</dd>
+                    </div>
+                    <div class="kv__row">
+                      <dt>Answer</dt>
+                      <dd [class.muted]="!translation.answer">
+                        {{ translation.answer || '—' }}
+                      </dd>
+                    </div>
+                    <div class="kv__row">
+                      <dt>ARIA</dt>
+                      <dd [class.muted]="!translation.aria_label">{{ translation.aria_label || '—' }}</dd>
+                    </div>
+                    <ng-container *ngIf="translation.summary">
+                      <div class="kv__row">
+                        <dt>Summary</dt>
+                        <dd>{{ translation.summary }}</dd>
+                      </div>
+                    </ng-container>
+                  </dl>
+                </div>
+              </section>
+            </ng-container>
+            <ng-container *ngIf="!getSelectedTranslation(item)">
+              <section class="translation-empty">
+                <p class="empty-text">
+                  No translation for <strong>{{ language.toUpperCase() }}</strong>.
+                </p>
+                <p-button
+                  class="add-btn"
+                  [label]="'Add Translation'"
+                  [rounded]="true"
+                  outlined="true"
+                  size="small"
+                  (click)="openFaqTranslationForm(item.id!, null)">
+                  <ng-template pTemplate="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                         class="bi bi-plus" viewBox="0 0 16 16">
+                      <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                    </svg>
+                  </ng-template>
+                </p-button>
+              </section>
+            </ng-container>
+          </div>
+        </div>
+      </figure>
+    </ng-container>
+    <ng-container *ngIf="section.faqs && section.faqs!.length === 0">
+      <div class="empty-state">
+        No FAQs available
+  
+        <p-button
+          class="p-button-primary"
+          [label]="'Add New FAQ'"
+          [rounded]="true"
+          size="small"
+          (click)="addNewEmptyFaq(section.id!)">
+          <ng-template pTemplate="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                 class="bi bi-plus" viewBox="0 0 16 16">
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+          </ng-template>
+        </p-button>
+      </div>
+    </ng-container>
+    <ng-container *ngFor="let faq_link of faq_links">
+
+
+      <div class="translation-side">
+        General FAQ Link:
+        <ng-container *ngIf="getSelectedTranslation(faq_link.faq_item_obj!) as translation">
+          <section class="translation-card" [attr.lang]="translation.language">
+            <header class="translation-card__header">
+              <span class="lang-chip">{{ translation.language?.toUpperCase() }}</span>
+            </header>
+
+            <div class="translation-card__body">
+              <dl class="kv">
+                <div class="kv__row">
+                  <dt>Question</dt>
+                  <dd [class.muted]="!translation.question">{{ translation.question || '—' }}</dd>
+                </div>
+                <div class="kv__row">
+                  <dt>Answer</dt>
+                  <dd [class.muted]="!translation.answer">
+                    {{ translation.answer || '—' }}
+                  </dd>
+                </div>
+                <div class="kv__row">
+                  <dt>ARIA</dt>
+                  <dd [class.muted]="!translation.aria_label">{{ translation.aria_label || '—' }}</dd>
+                </div>
+                <ng-container *ngIf="translation.summary">
+                  <div class="kv__row">
+                    <dt>Summary</dt>
+                    <dd>{{ translation.summary }}</dd>
+                  </div>
+                </ng-container>
+              </dl>
+            </div>
+          </section>
+        </ng-container>
+      </div>
+
+
+      
+    </ng-container>
+  </div>
+  
+  <p-toast [life]="8000"></p-toast>
+  

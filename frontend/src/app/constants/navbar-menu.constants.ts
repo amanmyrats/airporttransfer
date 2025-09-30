@@ -55,6 +55,20 @@ export const NAVBAR_MENU: any = {
             tr: 'türkiye-7-24-özel-havalimanı-transfer-blogları'
         }
     },
+    newBlogs: {
+        name: {
+            en: 'New Blogs',
+            de: 'Neue Blogs',
+            ru: 'Новые блоги',
+            tr: 'Yeni Bloglar'
+        },
+        slug: {
+            en: 'turkey-airport-transfer-blogs',
+            de: 'turkei-flughafentransfer-blogs',
+            ru: 'трансфер-аэропорт-турция-блог',
+            tr: 'turkiye-havalimani-transfer-bloglari'
+        }
+    },
     contactUs: {
         name: {
             en: 'Contact Us',
