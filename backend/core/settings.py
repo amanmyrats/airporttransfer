@@ -35,7 +35,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ['*', 'backend.airporttransfer.transfertakip.com']
+ALLOWED_HOSTS = [
+    '*', 
+    'backend.airporttransfer.transfertakip.com', 
+    'dev.backend.airporttransferhub.com',
+]
+
 
 AUTH_USER_MODEL = 'accounts.Account'
 
@@ -162,6 +167,11 @@ CORS_ALLOW_HEADERS = [
     "accept",
     "origin",
     "user-agent",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://dev.airporttransferhub.com",
+    # "https://admin.airporttransferhub.com",
 ]
 
 REST_FRAMEWORK = {
