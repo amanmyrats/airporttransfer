@@ -17,6 +17,7 @@ from datetime import timedelta
 from logging.handlers import RotatingFileHandler
 
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers, default_methods
 
 
 
@@ -160,15 +161,20 @@ CORS_ALLOW_METHODS = [
     "OPTIONS",
 ]
 
-CORS_ALLOW_HEADERS = [
-    "Content-type",
-    "Authorization",
+# CORS_ALLOW_HEADERS = [
+#     "Content-type",
+#     "Authorization",
+#     "x-csrftoken",
+#     "accept",
+#     "origin",
+#     "user-agent",
+# ]
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "authorization",     # lower-case
+    "x-language",        # you use this
+    "x-requested-with",
     "x-csrftoken",
-    "accept",
-    "origin",
-    "user-agent",
 ]
-
 CSRF_TRUSTED_ORIGINS = [
     "https://dev.airporttransferhub.com",
     # "https://admin.airporttransferhub.com",
