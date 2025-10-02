@@ -184,11 +184,15 @@ export class BlogPostSectionListComponent implements OnInit {
                 const index = this.sections.findIndex(section => section.id === blogPostSection.id);
                 if (index !== -1) {
                   this.sections[index] = blogPostSection;
+                  // add the section id to expandedSections to keep it open
+                  this.expandedSections.add(blogPostSection.id!);
                 }
               } else {
                 this.messageService.add(
                   { severity: 'success', summary: 'Success', detail: 'BlogSection başarıyla oluşturuldu!' });
                   this.sections.push(blogPostSection);
+                  // add the section id to expandedSections to keep it open
+                  this.expandedSections.add(blogPostSection.id!);
               }
             // Sort sections by order after adding or updating
             this.sections.sort((a, b) => a.order! - b.order!);
