@@ -86,7 +86,7 @@ export class BlogPostSectionListComponent implements OnInit {
       next: (sections: PaginatedResponse<BlogSection>) => {
         this.sections = sections.results!;
         console.log('Blog post sections fetched:', this.sections);
-        this.openAll();
+        this.closeAll();
       },
       error: (error) => {
         this.httpErrorPrinter.printHttpError(error);
