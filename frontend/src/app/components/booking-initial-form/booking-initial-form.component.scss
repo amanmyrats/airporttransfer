@@ -28,6 +28,8 @@
   background: var(--surface);
   box-shadow: var(--shadow);
   backdrop-filter: blur(12px);
+  align-items: start;
+  align-content: start;
 }
 
 .booking-form {
@@ -41,7 +43,8 @@
 @media (min-width: 960px) {
   .booking-shell {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: center;
+    align-items: start;
+    align-content: start;
     padding: clamp(2rem, 3vw, 3rem);
   }
 
