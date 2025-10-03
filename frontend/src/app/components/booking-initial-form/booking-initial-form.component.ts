@@ -171,10 +171,10 @@ export class BookingInitialFormComponent implements OnInit {
   // translations for from, to, from placeholder, to placeholder, search, book your transfer, description
   translations: any = {
     heroBadge: {
-      en: 'VIP Airport Transfers',
-      de: 'VIP Flughafentransfers',
-      ru: 'VIP трансферы из аэропорта',
-      tr: 'VIP Havalimanı Transferleri',
+      en: 'VIP Airport Transfers Antalya & Istanbul',
+      de: 'VIP Flughafentransfers Antalya & Istanbul',
+      ru: 'VIP трансферы из аэропорта Анталии и Стамбула',
+      tr: 'VIP Havalimanı Transferleri Antalya & İstanbul',
     },
     from: {
       en: 'From', 
