@@ -1,0 +1,28 @@
+.update-image-name-form {
+  display: block;
+  min-width: 320px;
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    margin-bottom: 1rem;
+
+    label {
+      font-weight: 600;
+      font-size: .9rem;
+      color: #1f2937;
+    }
+
+    .hint {
+      font-size: .75rem;
+      color: #6b7280;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: .5rem;
+    justify-content: flex-end;
+  }
+}

@@ -4,6 +4,7 @@ from django.db.models import UniqueConstraint
 from django.utils.text import slugify
 from typing import Optional
 from django.db import models, IntegrityError, transaction
+from uuid import uuid4
 
 
 from PIL import Image, ImageDraw, ImageFont
@@ -504,6 +505,7 @@ class FaqItemTranslation(models.Model):
 class FaqLibraryItem(models.Model):
     internal_identifier = models.CharField(max_length=120, unique=True, default="New FAQ")
     key = models.SlugField(max_length=120, help_text="Stable key, e.g. 'payment-methods'", null=True, blank=True)
+    slug_lock = models.BooleanField(default=False, help_text="Freeze the key from auto-regeneration")
     
     order = models.PositiveIntegerField(default=0)
     is_expanded_by_default = models.BooleanField(default=False)
@@ -517,12 +519,21 @@ class FaqLibraryItem(models.Model):
     # override save and create all translations if not exists
     def save(self, *args, **kwargs):
         if not self.key:
-            self.key = slugify(self.internal_identifier) or f"faq-{self.pk}"
+            self.key = self._generate_key(self.internal_identifier)
+        elif not self.slug_lock:
+            self.key = self._generate_key(self.internal_identifier)
         super().save(*args, **kwargs)
         existing_langs = set(self.translations.values_list('language', flat=True))
         for lang_code, _ in LANGUAGE_CHOICES:
             if lang_code not in existing_langs:
                 FaqLibraryItemTranslation.objects.create(item=self, language=lang_code)
+
+    def _generate_key(self, source: Optional[str]) -> str:
+        slug = (slugify(source or '') or '')[:120]
+        if slug:
+            return slug
+        fallback = f"faq-{(self.pk or uuid4().hex[:8])}"
+        return fallback[:120]
 
 
 class FaqLibraryItemTranslation(models.Model):
@@ -549,4 +560,3 @@ class BlogPostFaqLink(models.Model):
     class Meta:
         ordering = ['order']
         unique_together = ('blog_post', 'faq_item')
-

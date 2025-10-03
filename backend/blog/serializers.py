@@ -154,6 +154,7 @@ class FaqLibraryItemModelSerializer(serializers.ModelSerializer):
             "id",
             "internal_identifier",
             "key",
+            "slug_lock",
             "order",
             "links", 
             "created_at",

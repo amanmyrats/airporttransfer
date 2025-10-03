@@ -165,17 +165,16 @@ export class FaqLibraryListComponent implements OnInit {
       if (!saved) return;
       this.message.add({ severity: 'success', summary: 'Saved', detail: 'FAQ Library Item saved' });
 
-      // merge into local cache (same as your BlogImage detail)
-      const list = this.faqs()?.slice();
-      const idx = list?.findIndex(x => Number(x.id) === Number(faqToEdit?.id));
-      if (idx === -1) {
-        list?.push(saved);
-        return;
+      const current = [...(this.faqs() ?? [])];
+      const idx = current.findIndex(item => Number(item.id) === Number(saved.id));
+
+      if (idx > -1) {
+        current[idx] = { ...current[idx], ...saved };
+      } else {
+        current.push(saved);
       }
 
-      list![idx!] = { ...list![idx!]};
-      this.faqs.set(list);
-      // this.section.faqs = list;
+      this.faqs.set(current);
     });
   }
 

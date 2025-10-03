@@ -14,6 +14,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormBuilder } from '@angular/forms';
 import { BlogImageTranslationFormComponent } from '../blog-image-translation-form/blog-image-translation-form.component';
 import { BlogImageTranslation } from '../../models/blog-image-translation.model';
+import { UpdateImageNameFormComponent } from '../update-image-name-form/update-image-name-form.component';
 
 @Component({
   selector: 'app-blog-image-detail',
@@ -36,6 +37,7 @@ export class BlogImageDetailComponent implements OnInit {
 
   refBlogImage?: DynamicDialogRef;
   refBlogImageTranslation?: DynamicDialogRef;
+  refUpdateImageName?: DynamicDialogRef;
 
   isUploadingImage = false;
   isRemovingImage = false;
@@ -53,6 +55,25 @@ export class BlogImageDetailComponent implements OnInit {
     const list = blogImage?.translations ?? [];
     const exact = list.find(t => (t.language || '').toLowerCase() === lang);
     return exact || null;
+  }
+
+  getImageFileName(imageUrl?: string): string {
+    if (!imageUrl) return '';
+    const withoutQuery = imageUrl.split('?')[0] ?? '';
+    const segments = withoutQuery.split('/');
+    return segments[segments.length - 1] || '';
+  }
+
+  private getImageNameWithoutExtension(imageUrl?: string): string {
+    const fileName = this.getImageFileName(imageUrl);
+    const dotIndex = fileName.lastIndexOf('.');
+    return dotIndex > 0 ? fileName.substring(0, dotIndex) : fileName;
+  }
+
+  private getImageExtension(imageUrl?: string): string {
+    const fileName = this.getImageFileName(imageUrl);
+    const dotIndex = fileName.lastIndexOf('.');
+    return dotIndex > -1 ? fileName.substring(dotIndex) : '';
   }
 
   openBlogImageForm(blogImageToEdit: BlogImage | null = null): void {
@@ -116,6 +137,42 @@ export class BlogImageDetailComponent implements OnInit {
 
       imgs[imgIndex].translations = [...translations];
       this.section.images = [...imgs]; // trigger change detection (OnPush friendly)
+    });
+  }
+
+  openUpdateImageNameForm(blogImage: BlogImage): void {
+    if (!blogImage.id) return;
+
+    const fileName = this.getImageFileName(blogImage.image);
+    const ref = this.dialogService.open(UpdateImageNameFormComponent, {
+      header: 'Rename Image',
+      styleClass: 'fit-content-dialog',
+      contentStyle: { overflow: 'hidden' },
+      baseZIndex: 10000,
+      modal: true,
+      closable: true,
+      data: {
+        imageId: blogImage.id,
+        fileName,
+        suggestedName: this.getImageNameWithoutExtension(blogImage.image),
+        extension: this.getImageExtension(blogImage.image),
+      }
+    });
+
+    this.refUpdateImageName = ref;
+    ref.onClose.subscribe((result) => {
+      if (!result) return;
+
+      const imgs = this.section.images ?? [];
+      const idx = imgs.findIndex(img => img.id === blogImage.id);
+      if (idx === -1) return;
+
+      const updatedImageUrl = result?.image ?? blogImage.image;
+      const updated = { ...imgs[idx], image: updatedImageUrl };
+      imgs[idx] = updated;
+      this.section.images = [...imgs];
+
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Image name updated successfully.' });
     });
   }
 

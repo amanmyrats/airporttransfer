@@ -28,7 +28,7 @@
     </div>
 
     <!-- arrows (always rendered; disabled at ends when loop=false) -->
-    <button
+    <button  *ngIf="showIndicators && images.length > 1"
       type="button"
       class="nav prev"
       (click)="go(-1)"
@@ -38,7 +38,7 @@
       ‹
     </button>
 
-    <button
+    <button  *ngIf="showIndicators && images.length > 1"
       type="button"
       class="nav next"
       (click)="go(1)"

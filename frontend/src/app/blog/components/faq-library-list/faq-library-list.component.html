@@ -77,6 +77,12 @@
                     <dd class="mono">{{ item.key }}</dd>
                   </div>
                   <div class="kv__row">
+                    <dt>Slug lock</dt>
+                    <dd>
+                      <span class="badge" [class.on]="item.slug_lock">{{ item.slug_lock ? 'Locked' : 'Auto' }}</span>
+                    </dd>
+                  </div>
+                  <div class="kv__row">
                     <dt>Identifier</dt>
                     <dd class="mono">{{ item.internal_identifier }}</dd>
                   </div>

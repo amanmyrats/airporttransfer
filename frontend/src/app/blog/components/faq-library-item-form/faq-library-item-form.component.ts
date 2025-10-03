@@ -52,6 +52,7 @@ export class FaqLibraryItemFormComponent implements OnInit {
       order: [0, [Validators.required, Validators.min(0)]],
       is_expanded_by_default: [false],
       is_featured: [false],
+      slug_lock: [false],
     });
 
     this.item = this.config.data?.faqItem ?? null;
@@ -64,6 +65,7 @@ export class FaqLibraryItemFormComponent implements OnInit {
         order: Number(this.item.order ?? 0),
         is_expanded_by_default: !!this.item.is_expanded_by_default,
         is_featured: !!this.item.is_featured,
+        slug_lock: !!this.item.slug_lock,
       });
     }
   }
@@ -118,6 +120,7 @@ export class FaqLibraryItemFormComponent implements OnInit {
       order: raw.order ?? 0,
       is_expanded_by_default: String(!!raw.is_expanded_by_default),
       is_featured: String(!!raw.is_featured),
+      slug_lock: !!raw.slug_lock,
     };
 
     if (this.item?.id != null) {

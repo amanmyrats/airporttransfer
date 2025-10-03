@@ -1,0 +1,36 @@
+<p-toast></p-toast>
+<div class="update-image-name-form">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="new_name">Image Name</label>
+      <input
+        id="new_name"
+        type="text"
+        pInputText
+        placeholder="Enter new image name"
+        formControlName="new_name"
+        [disabled]="isSaving" />
+      <small class="hint" *ngIf="extension">Extension {{ extension }} will be kept automatically.</small>
+      <p-message
+        *ngIf="f['new_name'].invalid && f['new_name'].touched"
+        severity="error"
+        text="Image name is required." />
+    </div>
+
+    <div class="actions">
+      <button
+        pButton
+        type="submit"
+        label="Save"
+        class="p-button-sm"
+        [disabled]="form.invalid || isSaving"></button>
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        class="p-button-text p-button-sm"
+        (click)="cancel()"
+        [disabled]="isSaving"></button>
+    </div>
+  </form>
+</div>

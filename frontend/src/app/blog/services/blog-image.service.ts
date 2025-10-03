@@ -63,4 +63,8 @@ export class BlogImageService {
   deleteImage(id: number): Observable<any> {
     return this.http.delete<any>(`${this.endpoint}${id}/remove-image/`);
   }
+
+  changeImageName(id: number, newName: string): Observable<any> {
+    return this.http.post<any>(`${this.endpoint}${id}/change-image-name/`, { new_name: newName });
+  }
 }

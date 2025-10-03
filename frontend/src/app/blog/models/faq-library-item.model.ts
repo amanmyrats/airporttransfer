@@ -5,6 +5,7 @@ export class FaqLibraryItem {
     id?: string;
     internal_identifier?: string;
     key?: string;
+    slug_lock?: boolean;
     order?: string;
     links: BlogPostFaqLink[] = [];
     translations?: FaqLibraryItemTranslation[];

@@ -1,6 +1,8 @@
 import logging
 import os
 
+from django.utils.text import slugify
+from django.core.files.storage import default_storage
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.db import models
@@ -135,13 +137,7 @@ class BlogImageModelViewSet(viewsets.ModelViewSet):
         blog_image = self.get_object()
 
         # 👇 Add this for debug
-        print("FILES:", request.FILES)
-        from django.core.files.storage import default_storage
-        print("default_storage:", default_storage) 
-        print(blog_image.image)
-        from django.core.files.storage import default_storage
         blog_image.image.storage = default_storage
-        print(f"blog_image.image.storage: {blog_image.image.storage.__class__}")
         if 'image' not in request.FILES:
             return Response({"detail": "No image provided"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -186,6 +182,109 @@ class BlogImageModelViewSet(viewsets.ModelViewSet):
         blog_image.image_small.delete(save=True)
         return Response({"detail": "Image removed"})
     
+
+    @action(detail=True, methods=['post'], url_path='change-image-name')
+    def change_image_name(self, request, pk=None):
+        blog_image = self.get_object()
+        new_name_raw = (request.data.get('new_name') or '').strip()
+        if not new_name_raw:
+            return Response({"detail": "New name is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not blog_image.image:
+            return Response({"detail": "No image to rename"}, status=status.HTTP_400_BAD_REQUEST)
+
+        storage = blog_image.image.storage  # respects your configured default (e.g., S3Boto3Storage)
+        old_key = blog_image.image.name
+
+        # Build new key in the same directory, slugify the base, preserve extension
+        base_dir = os.path.dirname(old_key)
+        _, ext = os.path.splitext(old_key)
+        safe_base = slugify(new_name_raw) or "image"
+        new_key = os.path.join(base_dir, f"{safe_base}{ext}")
+
+        # Avoid collisions
+        i = 2
+        base_candidate = safe_base
+        while storage.exists(new_key):
+            new_key = os.path.join(base_dir, f"{base_candidate}-{i}{ext}")
+            i += 1
+
+        try:
+            # --- Rename main image (copy -> delete) ---
+            renamed = self._copy_then_delete(storage, old_key, new_key)
+
+            if not renamed:
+                return Response({"detail": "Failed to rename image"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            # (Optional) rename thumbnail similarly if present
+            if blog_image.image_small:
+                old_thumb_key = blog_image.image_small.name
+                thumb_dir = os.path.dirname(old_thumb_key)
+                thumb_base, thumb_ext = os.path.splitext(os.path.basename(old_thumb_key))
+                # keep your existing prefix if you like; here we ensure it mirrors the main name
+                new_thumb_key = os.path.join(thumb_dir, f"thumb_{os.path.basename(new_key)}")
+                if old_thumb_key != new_thumb_key:
+                    self._copy_then_delete(storage, old_thumb_key, new_thumb_key)
+                    blog_image.image_small.name = new_thumb_key
+
+            # Update model field paths (DB)
+            blog_image.image.name = new_key
+            blog_image.save(update_fields=['image', 'image_small'] if blog_image.image_small else ['image'])
+
+            return Response({
+                "detail": "Image name changed successfully",
+                "image": blog_image.image.url if blog_image.image else None,
+                "thumbnail": blog_image.image_small.url if blog_image.image_small else None
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"detail": f"Rename failed: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    def _copy_then_delete(self, storage, old_key: str, new_key: str) -> bool:
+        """
+        Copy object at old_key to new_key using the underlying storage.
+        For S3: server-side copy (no download). For local/other: read&save.
+        Returns True on success.
+        """
+        try:
+            # S3Boto3Storage branch (no download)
+            from storages.backends.s3boto3 import S3Boto3Storage  # type: ignore
+            if isinstance(storage, S3Boto3Storage):
+                bucket = storage.bucket
+                # Normalize keys (django-storages uses these helpers internally)
+                old_norm = storage._normalize_name(old_key)
+                new_norm = storage._normalize_name(new_key)
+
+                # Extra params (e.g., ContentType/ACL) from storage’s config
+                extra_args = storage.get_object_parameters(name=new_norm) or {}
+
+                # Use low-level client to copy within the same bucket
+                client = storage.connection.meta.client
+                client.copy(
+                    {'Bucket': bucket.name, 'Key': old_norm},
+                    bucket.name,
+                    new_norm,
+                    ExtraArgs=extra_args
+                )
+                # Delete old
+                storage.delete(old_key)
+                return True
+
+        except Exception:
+            # Fall back to generic approach below
+            pass
+
+        # Generic fallback (works for FileSystemStorage, etc.): download -> save -> delete
+        try:
+            with storage.open(old_key, 'rb') as f:
+                storage.save(new_key, f)
+            storage.delete(old_key)
+            return True
+        except Exception:
+            return False
+
+
 class BlogImageTranslationModelViewSet(viewsets.ModelViewSet):
     queryset = BlogImageTranslation.objects.all()
     serializer_class = BlogImageTranslationModelSerializer
@@ -350,13 +449,7 @@ class BlogPostModelViewSet(PublicReadMixin, viewsets.ModelViewSet):
         post = self.get_object()
 
         # 👇 Add this for debug
-        print("FILES:", request.FILES)
-        from django.core.files.storage import default_storage
-        print("default_storage:", default_storage) 
-        print(post.main_image)
-        from django.core.files.storage import default_storage
         post.main_image.storage = default_storage
-        print(f"post.main_image.storage: {post.main_image.storage.__class__}")
         if 'main_image' not in request.FILES:
             return Response({"detail": "No image provided"}, status=status.HTTP_400_BAD_REQUEST)
 
