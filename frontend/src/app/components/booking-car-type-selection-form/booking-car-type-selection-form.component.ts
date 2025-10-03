@@ -8,6 +8,7 @@ import { CurrencyService } from '../../services/currency.service';
 import { ActivatedRoute } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { GoogleMapsService } from '../../services/google-maps.service';
 // import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { PriceListComponent } from '../price-list/price-list.component';
 
@@ -29,6 +30,7 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
   bookingService = inject(BookingService);
   priceCalculatorService = inject(PriceCalculatorService);
   currencyService = inject(CurrencyService);
+  googleMapsService = inject(GoogleMapsService);
   carTypeSelectionOutput = output<any>();
 
 
@@ -105,6 +107,14 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
     return typeof distance && distance > this.maxDistance;
   }
 
+  getPrimaryLocation(fullAddress: string | null | undefined): string {
+    return this.googleMapsService.getAddressLines(fullAddress).primary;
+  }
+
+  getSecondaryLocation(fullAddress: string | null | undefined): string {
+    return this.googleMapsService.getAddressLines(fullAddress).secondary;
+  }
+
   translations: any = {
     cars: {
       en: 'Available Car Types', 
@@ -112,12 +122,24 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
       ru: 'Доступные типы автомобилей',
       tr: 'Mevcut Araç Tipleri',
     }, 
+    bookYourRide: {
+      en: 'Choose Your VIP Ride',
+      de: 'Wählen Sie Ihre VIP-Fahrt',
+      ru: 'Выберите свой VIP-трансфер',
+      tr: 'VIP Yolculuğunuzu Seçin',
+    },
     distance: {
       en: 'Distance', 
       de: 'Entfernung',
       ru: 'Расстояние',
       tr: 'Mesafe',
     }, 
+    duration: {
+      en: 'Duration',
+      de: 'Dauer',
+      ru: 'Время в пути',
+      tr: 'Süre',
+    },
     select: {
       en: 'Select', 
       de: 'Auswählen',
@@ -130,6 +152,18 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
       ru: 'Цена',
       tr: 'Fiyat',
     }, 
+    passengers: {
+      en: 'Passengers',
+      de: 'Personen',
+      ru: 'Пассажиров',
+      tr: 'Yolcu',
+    },
+    orEquivalent: {
+      en: 'or equivalent',
+      de: 'oder ähnlich',
+      ru: 'или аналогичный',
+      tr: 'veya dengi',
+    },
     contact: {
       en: 'Write to us, we’ll help you find the best option', 
       de: 'Schreiben Sie uns, wir helfen Ihnen, die beste Option zu finden',

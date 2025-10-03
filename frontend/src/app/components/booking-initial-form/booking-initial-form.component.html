@@ -1,201 +1,212 @@
-<section class="booking">
-  
-    <!-- Booking Form -->
-    <form [formGroup]="bookingService.bookingInitialForm" (ngSubmit)="onSubmit()" class="booking-form">
-      
-
-      <div class="form-group" 
-     [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid">
-  <label for="pickup_full">
-    {{ translations.from[langInput.code] }}
-  </label>
-  <div class="input-wrapper">
-    <input
-      type="text"
-      id="pickup_full"
-      placeholder="{{ translations.from_placeholder[langInput.code] }}"
-      formControlName="pickup_full"
-      appGmapsAutocomplete
-      (placeChanged)="onPickupPlaceChanged($event)" 
-      (keydown)="preventFormSubmit($event)"
-    />
-    <button *ngIf="bookingService.bookingInitialForm.get('pickup_full')?.value"
-      type="button" class="clear-btn" (click)="clearField('pickup_full')">×</button>
-  </div>
-  <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid" class="field-error">
-    {{ translations.from_required[langInput.code] }}
-  </p>
-</div>
-
-<div class="form-group" 
-     [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid">
-  <label for="dest_full">
-    {{ translations.to[langInput.code] }}
-  </label>
-  <div class="input-wrapper">
-    <input
-      type="text"
-      id="dest_full"
-      placeholder="{{ translations.to_placeholder[langInput.code] }}"
-      formControlName="dest_full"
-      appGmapsAutocomplete
-      (placeChanged)="onDestPlaceChanged($event)" 
-      (keydown)="preventFormSubmit($event)"
-    />
-    <button *ngIf="bookingService.bookingInitialForm.get('dest_full')?.value"
-      type="button" class="clear-btn" (click)="clearField('dest_full')">×</button>
-  </div>
-  <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid" class="field-error">
-    {{ translations.to_required[langInput.code] }}
-  </p>
-</div>
-
-
-
-      <!-- <div class="form-row">
-        <div class="form-group" [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid">
-          <label for="pickup_full">
-            {{ translations.from[langInput.code] }}
-          </label>
-          <input
-            type="text"
-            id="pickup_full"
-            placeholder="{{ translations.from_placeholder[langInput.code] }}"
-            formControlName="pickup_full"
-            appGmapsAutocomplete
-            (placeChanged)="onPickupPlaceChanged($event)" 
-            (keydown)="preventFormSubmit($event)"
-          />
-          <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid" class="field-error">
-            {{ translations.from_required[langInput.code] }}
-          </p>
-        </div>
-        <div class="form-group" [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid">
-          <label for="dest_full">
-            {{ translations.to[langInput.code] }}
-            
-          </label>
-          <input
-            type="text"
-            id="dest_full"
-            placeholder="{{ translations.to_placeholder[langInput.code] }}"
-            formControlName="dest_full"
-            appGmapsAutocomplete
-            (placeChanged)="onDestPlaceChanged($event)" 
-            (keydown)="preventFormSubmit($event)"
-          />
-          <p *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid" class="field-error">
-            {{ translations.to_required[langInput.code] }}
-          </p>
-        </div>
-      </div> -->
-
-      <div *ngIf="hasSubmitted && bookingService.bookingInitialForm.invalid" class="error-message">
-      @if (languageService.currentLang().code == 'de') {
-        <p class="error-title">Konnte Ihr gewünschtes Ziel nicht gefunden werden?</p>
-        <p class="error-text">
-          Kein Problem! Kontaktieren Sie uns, und wir helfen Ihnen, die beste Transferoption zu finden. Wählen Sie eine der unten stehenden Optionen, um uns zu erreichen:
-        </p>
-        <ul class="contact-options">
-          <li>
-            <strong>WhatsApp:</strong> <a href="{{ socialIcon.whatsapp.url }}" target="_blank">{{ socialIcon.phone.formatted }}</a>
-          </li>
-          <li>
-            <strong>Telegram:</strong> <a href="{{ socialIcon.telegram.url }}" target="_blank">&#64;{{ socialIcon.telegram.username }}</a>
-          </li>
-          <li>
-            <strong>Telefon:</strong> <a href="tel:{{ socialIcon.phone.number }}">{{ socialIcon.phone.formatted }}</a>
-          </li>
-          <li>
-            <strong>Email:</strong> <a href="mailto:{{ socialIcon.email.support }}">{{ socialIcon.email.support }}</a>
-          </li>
-        </ul>
-      } @else if (languageService.currentLang().code == 'ru') {
-        <p class="error-title">Не можете найти нужное направление?</p>
-        <p class="error-text">
-          Не проблема! Свяжитесь с нами, и мы поможем вам найти лучший вариант трансфера. Выберите любой из вариантов ниже, чтобы связаться с нами:
-        </p>
-        <ul class="contact-options">
-          <li>
-            <strong>WhatsApp:</strong> <a href="{{ socialIcon.whatsapp.url }}" target="_blank">{{ socialIcon.phone.formatted }}</a>
-          </li>
-          <li>
-            <strong>Telegram:</strong> <a href="{{ socialIcon.telegram.url }}" target="_blank">&#64;{{ socialIcon.telegram.username }}</a>
-          </li>
-          <li>
-            <strong>Телефон:</strong> <a href="tel:{{ socialIcon.phone.number }}">{{ socialIcon.phone.formatted }}</a>
-          </li>
-          <li>
-            <strong>Email:</strong> <a href="mailto:{{ socialIcon.email.support }}">{{ socialIcon.email.support }}</a>
-          </li>
-        </ul>
-      } @else if (languageService.currentLang().code == 'tr') {
-        <p class="error-title">Aradığınız konumu bulamadınız mı?</p>
-        <p class="error-text">
-          Sorun değil! Bize ulaşın, size en iyi transfer seçeneğini bulmanızda yardımcı olalım. Bize ulaşmak için aşağıdaki seçeneklerden birini tercih edebilirsiniz:
-        </p>
-        <ul class="contact-options">
-          <li>
-            <strong>WhatsApp:</strong> <a href="{{ socialIcon.whatsapp.url }}" target="_blank">{{ socialIcon.phone.formatted }}</a>
-          </li>
-          <li>
-            <strong>Telegram:</strong> <a href="{{ socialIcon.telegram.url }}" target="_blank">&#64;{{ socialIcon.telegram.username }}</a>
-          </li>
-          <li>
-            <strong>Telefon:</strong> <a href="tel:{{ socialIcon.phone.number }}">{{ socialIcon.phone.formatted }}</a>
-          </li>
-          <li>
-            <strong>Email:</strong> <a href="mailto:{{ socialIcon.email.support }}">{{ socialIcon.email.support }}</a>
-          </li>
-        </ul>
-      } @else {
-        <p class="error-title">Couldn't find your desired location?</p>
-        <p class="error-text">
-          No problem! Contact us, and we will assist you in finding the best transfer option. Choose any of the options below to reach us:
-        </p>
-        <ul class="contact-options">
-          <li>
-            <strong>WhatsApp:</strong> <a href="{{ socialIcon.whatsapp.url }}" target="_blank">{{ socialIcon.phone.formatted }}</a>
-          </li>
-          <li>
-            <strong>Telegram:</strong> <a href="{{ socialIcon.telegram.url }}" target="_blank">&#64;{{ socialIcon.telegram.username }}</a>
-          </li>
-          <li>
-            <strong>Phone:</strong> <a href="tel:{{ socialIcon.phone.number }}">{{ socialIcon.phone.formatted }}</a>
-          </li>
-          <li>
-            <strong>Email:</strong> <a href="mailto:{{ socialIcon.email.support }}">{{ socialIcon.email.support }}</a>
-          </li>
-        </ul>
-      }
-    </div>
-
-      <div class="form-actions">
-        <button type="submit" class="btn-submit" 
+<section class="booking-initial">
+  <div class="booking-shell">
+    <form
+      class="booking-form"
+      [formGroup]="bookingService.bookingInitialForm"
+      (ngSubmit)="onSubmit()"
+      novalidate
+    >
+      <div class="form-grid">
+        <div
+          class="form-group"
+          [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid"
         >
-        {{ translations.search[langInput.code] }}
-        
+          <label for="pickup_full">{{ translations.from[currentLangCode] }}</label>
+          <div class="input-wrapper">
+            <span class="input-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2C8.14 2 5 5.13 5 8.99c0 4.88 5.6 10.54 6.37 11.29.35.34.91.34 1.26 0 .76-.75 6.37-6.41 6.37-11.29C19 5.13 15.86 2 12 2Zm0 8.25a2.25 2.25 0 1 1 0-4.5 2.25 2.25 0 0 1 0 4.5Z" />
+              </svg>
+            </span>
+            <input
+              type="text"
+              id="pickup_full"
+              placeholder="{{ translations.from_placeholder[currentLangCode] }}"
+              formControlName="pickup_full"
+              appGmapsAutocomplete
+              (placeChanged)="onPickupPlaceChanged($event)"
+              (keydown)="preventFormSubmit($event)"
+              aria-describedby="form_note"
+            />
+            <button
+              *ngIf="bookingService.bookingInitialForm.get('pickup_full')?.value"
+              type="button"
+              class="clear-btn"
+              (click)="clearField('pickup_full')"
+              [attr.aria-label]="translations.clearPickup[currentLangCode]"
+            >
+              <span class="visually-hidden">{{ translations.clearPickup[currentLangCode] }}</span>
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <p
+            *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid"
+            class="field-error"
+            role="alert"
+          >
+            {{ translations.from_required[currentLangCode] }}
+          </p>
+        </div>
+
+        <div class="swap-action">
+          <button
+            type="button"
+            class="swap-button"
+            (click)="swapLocations()"
+            [disabled]="!bookingService.bookingInitialForm.get('pickup_full')?.value && !bookingService.bookingInitialForm.get('dest_full')?.value"
+            [attr.aria-label]="translations.swapLocations[currentLangCode]"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M7.41 8.59 9 10.17V4a1 1 0 0 1 2 0v6.17l1.59-1.58A1 1 0 0 1 14 10a1 1 0 0 1-.29.71l-3.3 3.3a1 1 0 0 1-1.42 0l-3.3-3.3A1 1 0 0 1 6 10a1 1 0 0 1 1.41-1.41ZM16.59 15.41 15 13.83V20a1 1 0 0 1-2 0v-6.17l-1.59 1.58A1 1 0 0 1 11 16a1 1 0 0 1 .29-.71l3.3-3.3a1 1 0 0 1 1.42 0l3.3 3.3A1 1 0 0 1 19 16a1 1 0 0 1-1.41-1.41Z" />
+            </svg>
+            <span>{{ translations.swapLocations[currentLangCode] }}</span>
+          </button>
+        </div>
+
+        <div
+          class="form-group"
+          [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid"
+        >
+          <label for="dest_full">{{ translations.to[currentLangCode] }}</label>
+          <div class="input-wrapper">
+            <span class="input-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M7 3a1 1 0 0 0-1 1v16a1 1 0 0 0 2 0v-6.2l2.17-.94a2 2 0 0 1 1.66 0l1.34.58a4 4 0 0 0 3.19 0l1.34-.58a2 2 0 0 1 1.66 0L21 14V6.67l-1.34-.58a4 4 0 0 0-3.19 0l-1.34.58a2 2 0 0 1-1.66 0l-1.34-.58a4 4 0 0 0-3.19 0L9 7V4a1 1 0 0 0-1-1Z" />
+              </svg>
+            </span>
+            <input
+              type="text"
+              id="dest_full"
+              placeholder="{{ translations.to_placeholder[currentLangCode] }}"
+              formControlName="dest_full"
+              appGmapsAutocomplete
+              (placeChanged)="onDestPlaceChanged($event)"
+              (keydown)="preventFormSubmit($event)"
+              aria-describedby="form_note"
+            />
+            <button
+              *ngIf="bookingService.bookingInitialForm.get('dest_full')?.value"
+              type="button"
+              class="clear-btn"
+              (click)="clearField('dest_full')"
+              [attr.aria-label]="translations.clearDropOff[currentLangCode]"
+            >
+              <span class="visually-hidden">{{ translations.clearDropOff[currentLangCode] }}</span>
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <p
+            *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid"
+            class="field-error"
+            role="alert"
+          >
+            {{ translations.to_required[currentLangCode] }}
+          </p>
+        </div>
+      </div>
+
+      <p class="form-note" id="form_note">
+        {{ translations.helperLine[currentLangCode] }}
+      </p>
+
+      <button type="submit" class="btn-submit">
+        <span>{{ translations.search[currentLangCode] }}</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m19.71 11.29-6-6a1 1 0 0 0-1.42 1.42L16.59 11H5a1 1 0 0 0 0 2h11.59l-4.29 4.29a1 1 0 1 0 1.42 1.42l6-6a1 1 0 0 0-.01-1.42Z" />
+        </svg>
       </button>
+
+      <div
+        class="error-banner"
+        *ngIf="hasSubmitted && bookingService.bookingInitialForm.invalid"
+        role="alert"
+      >
+        <h3 class="error-banner__title">
+          {{ translations.errorTitle[currentLangCode] }}
+        </h3>
+        <p class="error-banner__text">
+          {{ translations.errorText[currentLangCode] }}
+        </p>
+        <ul class="contact-options">
+          <li>
+            <span>{{ translations.contactWhatsapp[currentLangCode] }}</span>
+            <a href="{{ socialIcon.whatsapp.url }}" target="_blank" rel="noopener">
+              {{ socialIcon.phone.formatted }}
+            </a>
+          </li>
+          <li>
+            <span>{{ translations.contactTelegram[currentLangCode] }}</span>
+            <a href="{{ socialIcon.telegram.url }}" target="_blank" rel="noopener">
+              &#64;{{ socialIcon.telegram.username }}
+            </a>
+          </li>
+          <li>
+            <span>{{ translations.contactPhone[currentLangCode] }}</span>
+            <a href="tel:{{ socialIcon.phone.number }}">
+              {{ socialIcon.phone.formatted }}
+            </a>
+          </li>
+          <li>
+            <span>{{ translations.contactEmail[currentLangCode] }}</span>
+            <a href="mailto:{{ socialIcon.email.info }}">
+              {{ socialIcon.email.info }}
+            </a>
+          </li>
+        </ul>
       </div>
     </form>
-    
-
-  <h3 style="width: 100%; text-align: center; color: rgb(147, 66, 223); margin-top: 50px;">
-    {{ translations.fixedPrices[langInput.code] }}
-  </h3>
-<app-price-list [langInput]="langInput"></app-price-list>
-
-
-    <!-- Hero Section -->
-    <div class="booking-hero">
-      <h1 class="booking-title">
-        {{ translations.book_your_transfer[langInput.code] }}
-        
+    <div class="intro-panel">
+      <span class="intro-chip">{{ translations.heroBadge[currentLangCode] }}</span>
+      <h1 class="intro-title">
+        {{ translations.book_your_transfer[currentLangCode] }}
       </h1>
-      <p class="booking-subtitle">
-        {{ translations.description[langInput.code] }}
-
+      <p class="intro-subtitle">
+        {{ translations.description[currentLangCode] }}
       </p>
+      <ul class="intro-benefits">
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm-1 15-5-5 1.41-1.42L11 14.17l5.59-5.59L18 10Z" />
+          </svg>
+          <span>{{ translations.benefitMeetGreet[currentLangCode] }}</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3a9 9 0 1 0 6.36 2.64A9 9 0 0 0 12 3Zm1 9.59V7h-2v7h5v-2Z" />
+          </svg>
+          <span>{{ translations.benefitOnTime[currentLangCode] }}</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 7h-6V5a3 3 0 0 0-6 0v2H3a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1ZM11 5a1 1 0 0 1 2 0v2h-2Zm9 13H4V9h16Z" />
+          </svg>
+          <span>{{ translations.benefitSupport[currentLangCode] }}</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5a1 1 0 0 1 1-1h13.54a1 1 0 0 1 .98 1.2l-1.12 5.04A4 4 0 0 1 14.51 14H9.85l-.43 2H17a1 1 0 1 1 0 2H8.33a1 1 0 0 1-.98-1.2l.43-2L5 6.62V19a1 1 0 1 1-2 0V5Z" />
+          </svg>
+          <span>{{ translations.benefitFleet[currentLangCode] }}</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 3H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h5l2 3 2-3h5a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Zm0 12H5V5h14Z" />
+          </svg>
+          <span>{{ translations.benefitCoverage[currentLangCode] }}</span>
+        </li>
+      </ul>
+      <div class="intro-keywords">
+        <p>{{ translations.seoParagraphOne[currentLangCode] }}</p>
+        <p>{{ translations.seoParagraphTwo[currentLangCode] }}</p>
+      </div>
     </div>
-  </section>
+  </div>
+
+  <div class="fixed-prices">
+    <h3 class="fixed-prices__title">
+      {{ translations.fixedPrices[currentLangCode] }}
+    </h3>
+    <app-price-list [langInput]="langInput"></app-price-list>
+  </div>
+</section>
   

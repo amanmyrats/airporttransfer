@@ -22,7 +22,35 @@ export class GoogleMapsService {
   getFormattedAddress(place: google.maps.places.PlaceResult): string {
     const name = place.name || '';
     const address = place.formatted_address || '';
-    return name + (address ? ', ' + address : '');  }
+    return name + (address ? ', ' + address : '');
+  }
+
+  /**
+   * Split a formatted address string into a prominent primary line and a faded secondary line.
+   */
+  getAddressLines(address: string | null | undefined): { primary: string; secondary: string } {
+    if (!address) {
+      return { primary: '', secondary: '' };
+    }
+
+    const parts = address
+      .split(',')
+      .map((segment) => segment.trim())
+      .filter((segment) => segment.length > 0);
+
+    if (!parts.length) {
+      return { primary: address, secondary: '' };
+    }
+
+    const primary = parts[0];
+    const secondary = parts.slice(1).join(', ');
+
+    return { primary, secondary };
+  }
+
+  getAddressLinesFromPlace(place: google.maps.places.PlaceResult): { primary: string; secondary: string } {
+    return this.getAddressLines(this.getFormattedAddress(place));
+  }
 
   getLatitude(place: google.maps.places.PlaceResult): number {
     if (!place.geometry || !place.geometry.location) {
