@@ -278,6 +278,12 @@ export class BookingInitialFormComponent implements OnInit {
       ru: 'Укажите отель, виллу или круизный порт, чтобы открыть VIP-авто и тарифы для аэропорта Анталии.',
       tr: 'Antalya havalimanı VIP araç seçenekleri ve anlık fiyatlar için otel, villa veya liman bilgilerini ekleyin.',
     },
+    mobileFormTitle: {
+      en: 'Book Your Istanbul & Antalya Airport Transfer',
+      de: 'Buchen Sie Ihren Flughafentransfer Istanbul & Antalya',
+      ru: 'Забронируйте трансфер из аэропортов Стамбула и Анталии',
+      tr: 'İstanbul ve Antalya Havalimanı Transferinizi Ayırtın',
+    },
     seoParagraphOne: {
       en: 'Trusted Antalya airport transfer company for VIP rides to Belek resorts, Lara Beach hotels, Side villas, Kemer marinas, Alanya clubs, and Istanbul city breaks. We track every flight, assist with luggage, and seat you in a polished Mercedes within minutes.',
       de: 'Ihr vertrauenswürdiger Antalya Flughafentransfer für VIP-Fahrten zu Resorts in Belek, Lara Beach Hotels, Side Villen, Kemer Marinas, Alanya Clubs und Citytrips nach Istanbul. Wir verfolgen jeden Flug, helfen mit dem Gepäck und bringen Sie in wenigen Minuten in einen makellosen Mercedes.',

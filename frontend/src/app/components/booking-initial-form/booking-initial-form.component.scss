@@ -63,6 +63,10 @@
   position: relative;
 }
 
+.mobile-form-title {
+  display: none;
+}
+
 .intro-panel::after {
   content: '';
   position: absolute;
@@ -454,6 +458,18 @@
 
   .btn-submit {
     width: 100%;
+  }
+
+  .mobile-form-title {
+    display: block;
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .intro-panel {
+    display: none;
   }
 }
 
