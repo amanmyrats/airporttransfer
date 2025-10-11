@@ -1,167 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, Input, input, OnInit, output } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BookingService } from '../../services/booking.service';
-import { GmapsAutocompleteDirective } from '../../directives/gmaps-autocomplete.directive';
-import { GoogleMapsService } from '../../services/google-maps.service';
+import { Component, Input, output } from '@angular/core';
 import { LanguageService } from '../../services/language.service';
-import { PriceCalculatorService } from '../../services/price-calculator.service';
-import { SOCIAL_ICONS } from '../../constants/social.constants';
-// import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { PriceListComponent } from '../price-list/price-list.component';
+import { BookingFormComponent } from '../booking-form/booking-form.component';
 
 @Component({
   selector: 'app-booking-initial-form',
   imports: [
-    CommonModule, 
-    FormsModule, ReactiveFormsModule, 
-    GmapsAutocompleteDirective, 
+    CommonModule,
+    BookingFormComponent,
     PriceListComponent, 
   ],
   templateUrl: './booking-initial-form.component.html',
   styleUrl: './booking-initial-form.component.scss'
 })
-export class BookingInitialFormComponent implements OnInit {
+export class BookingInitialFormComponent {
   @Input() langInput: any | null = null;
-  
-  socialIcon = SOCIAL_ICONS;
-  bookingService = inject(BookingService);
-  priceCalculatorService = inject(PriceCalculatorService);
+
   searchVehicle = output<any>();
 
-  hasSubmitted = false;
-
-  constructor(
-    private fb: FormBuilder, 
-    private googleMapsService: GoogleMapsService, 
-    public languageService: LanguageService, 
-  ) {
-  }
-
-  ngOnInit(): void {
-    this.toggleReturnTrip(); // Ensure return fields are updated on initialization
-  }
-
-  toggleReturnTrip(): void {
-    const returnDateControl = this.bookingService.bookingInitialForm.get('returnDate');
-    const returnTimeControl = this.bookingService.bookingInitialForm.get('returnTime');
-    const isReturnTrip = this.bookingService.bookingInitialForm.get('returnTrip')?.value;
-
-    if (isReturnTrip) {
-      returnDateControl?.setValidators(Validators.required);
-      returnTimeControl?.setValidators(Validators.required);
-    } else {
-      returnDateControl?.clearValidators();
-      returnTimeControl?.clearValidators();
-    }
-
-    returnDateControl?.updateValueAndValidity();
-    returnTimeControl?.updateValueAndValidity();
-  }
-
-  onSubmit(): void {
-    this.hasSubmitted = true;
-    console.log('Booking Form:', this.bookingService.bookingInitialForm.value);
-    const pickupLat: number = this.bookingService.bookingInitialForm.get('pickup_lat')?.value;
-    const pickupLng: number = this.bookingService.bookingInitialForm.get('pickup_lng')?.value;
-    const destLat: number = this.bookingService.bookingInitialForm.get('dest_lat')?.value;
-    const destLng: number = this.bookingService.bookingInitialForm.get('dest_lng')?.value;
-  
-    const origin: google.maps.LatLngLiteral = { lat: pickupLat, lng: pickupLng };
-    const destination: google.maps.LatLngLiteral = { lat: destLat, lng: destLng };
-
-    const airportCoefficientPickUp = this.priceCalculatorService.getAirportCoefficient(pickupLat, pickupLng);
-    const airportCoefficientDest = this.priceCalculatorService.getAirportCoefficient(destLat, destLng);
-
-    console.log('Coefficients:', airportCoefficientPickUp, airportCoefficientDest);
-    // Assign bigger airport coefficient to booking form
-    this.bookingService.bookingInitialForm.get('airport_coefficient')!.setValue(
-      Math.max(airportCoefficientPickUp, airportCoefficientDest)
-    );
-    this.bookingService.airportCoefficient.set(
-      Math.max(airportCoefficientPickUp, airportCoefficientDest)
-    );
-    
-    this.googleMapsService.calculateDrivingDistanceAndTime(origin, destination
-    ).then(result => {
-      this.bookingService.distance.set(result.distance);
-      this.bookingService.drivingDuration.set(result.duration);
-      this.bookingService.bookingCarTypeSelectionForm.get('distance')!.setValue(
-        result.distance);
-      this.bookingService.bookingCarTypeSelectionForm.get('driving_duration')!.setValue(
-        result.duration);
-    }).catch(error => {
-      console.error('Error calculating distance:', error);
-    });
-
-    if (this.bookingService.bookingInitialForm.valid) {
-      console.log('Booking Details:', this.bookingService.bookingInitialForm.value);
-      // Handle booking submission logic here
-
-      this.searchVehicle.emit(this.bookingService.bookingInitialForm.value);
-    } else {
-      console.log('bookingInitialForm is invalid');
-    }
-
-    // Send event to GTM
-    // this.gtmService.pushTag({
-    //   event: 'view_item',
-    //   category: 'Booking',
-    //   action: 'Click',
-    //   label: 'View Item'
-    // });
-  }
-
-  onPickupPlaceChanged(place: google.maps.places.PlaceResult): void {
-    console.log('Pickup place selected:', place);
-    const pickup_full = this.googleMapsService.getFormattedAddress(place);
-    const pickup_lat = this.googleMapsService.getLatitude(place);
-    const pickup_lng = this.googleMapsService.getLongitude(place);
-    this.bookingService.bookingInitialForm.patchValue({
-      pickup_full: pickup_full, pickup_lat: pickup_lat, pickup_lng: pickup_lng
-    });
-  }
-
-  onDestPlaceChanged(place: google.maps.places.PlaceResult): void {
-    console.log('Destination place selected:', place);
-    const dest_full = this.googleMapsService.getFormattedAddress(place);
-    const dest_lat = this.googleMapsService.getLatitude(place);
-    const dest_lng = this.googleMapsService.getLongitude(place);
-    this.bookingService.bookingInitialForm.patchValue({
-      dest_full: dest_full, dest_lat: dest_lat, dest_lng: dest_lng
-    });
-  }
-
-  preventFormSubmit(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
-      event.preventDefault(); // Prevent the form from submitting
-    }
-  }
-  
-  clearField(controlName: string): void {
-    this.bookingService.bookingInitialForm.get(controlName)?.setValue('');
-  }
-
-  swapLocations(): void {
-    const form = this.bookingService.bookingInitialForm;
-    const pairs: [string, string][] = [
-      ['pickup_place', 'dest_place'],
-      ['pickup_full', 'dest_full'],
-      ['pickup_short', 'dest_short'],
-      ['pickup_lat', 'dest_lat'],
-      ['pickup_lng', 'dest_lng'],
-    ];
-
-    pairs.forEach(([fromKey, toKey]) => {
-      const fromControl = form.get(fromKey);
-      const toControl = form.get(toKey);
-      if (!fromControl || !toControl) return;
-
-      const fromValue = fromControl.value;
-      fromControl.setValue(toControl.value ?? '');
-      toControl.setValue(fromValue ?? '');
-    });
-  }
+  constructor(public languageService: LanguageService) {}
 
   get currentLangCode(): string {
     return this.langInput?.code ?? this.languageService.currentLang().code;
@@ -175,60 +33,6 @@ export class BookingInitialFormComponent implements OnInit {
       de: 'VIP Flughafentransfers Antalya & Istanbul',
       ru: 'VIP трансферы из аэропорта Анталии и Стамбула',
       tr: 'VIP Havalimanı Transferleri Antalya & İstanbul',
-    },
-    from: {
-      en: 'From', 
-      de: 'Von',
-      ru: 'От',
-      tr: 'Nereden',
-    }, 
-    from_required: {
-      en: 'Pickup location is required.',
-      de: 'Abholort ist erforderlich.',
-      ru: 'Место взятия обязательно.',
-      tr: 'Alınacak yer gereklidir.',
-    }, 
-    to: {
-      en: 'To', 
-      de: 'Nach',
-      ru: 'До',
-      tr: 'Nereye',
-    },
-    to_required: {
-      en: 'Destination location is required.', 
-      de: 'Zielort ist erforderlich.',
-      ru: 'Пункт назначения обязателен.',
-      tr: 'Gidilecek yer gereklidir.',
-    }, 
-    from_placeholder: {
-      en: 'Enter pickup location', 
-      de: 'Abholort eingeben',
-      ru: 'Введите место взятия',
-      tr: 'Alınacak yer',
-    },
-    to_placeholder: {
-      en: 'Enter destination', 
-      de: 'Ziel eingeben',
-      ru: 'Введите пункт назначения',
-      tr: 'Gidilecek yer',
-    },
-    clearPickup: {
-      en: 'Clear pickup field',
-      de: 'Abholort löschen',
-      ru: 'Очистить место отправления',
-      tr: 'Alış alanını temizle',
-    },
-    clearDropOff: {
-      en: 'Clear drop-off field',
-      de: 'Zielort löschen',
-      ru: 'Очистить пункт назначения',
-      tr: 'Varış alanını temizle',
-    },
-    search: {
-      en: 'Search', 
-      de: 'Suche',
-      ru: 'Поиск',
-      tr: 'Ara',
     },
     book_your_transfer: {
       en: 'Istanbul & Antalya Airport Transfer Service', 
@@ -272,12 +76,6 @@ export class BookingInitialFormComponent implements OnInit {
       ru: 'Прямые трансферы из аэропорта Анталии в Белек, Лару, Сиде, Кемер, Аланью и районы Стамбула',
       tr: 'Antalya havalimanından Belek, Lara, Side, Kemer, Alanya ve İstanbul otel bölgelerine direkt transfer',
     },
-    helperLine: {
-      en: 'Enter hotel, villa, or cruise port details to unlock Antalya airport VIP car options and instant fares.',
-      de: 'Geben Sie Hotel-, Villa- oder Kreuzfahrthafen-Daten ein, um Antalya VIP-Transferfahrzeuge und Sofortpreise zu sehen.',
-      ru: 'Укажите отель, виллу или круизный порт, чтобы открыть VIP-авто и тарифы для аэропорта Анталии.',
-      tr: 'Antalya havalimanı VIP araç seçenekleri ve anlık fiyatlar için otel, villa veya liman bilgilerini ekleyin.',
-    },
     mobileFormTitle: {
       en: 'Book Your Istanbul & Antalya Airport Transfer',
       de: 'Buchen Sie Ihren Flughafentransfer Istanbul & Antalya',
@@ -296,53 +94,11 @@ export class BookingInitialFormComponent implements OnInit {
       ru: 'Бронируйте трансфер из аэропорта Анталии в отель, VIP такси из аэропорта Стамбула в центр или индивидуальные туры с водителем и поддержкой 24/7 на английском, немецком, русском и турецком. Фиксированные цены включают воду, Wi‑Fi, детские кресла и оплату по приезду.',
       tr: 'Antalya havalimanından otele transferi, İstanbul havalimanından şehre VIP taksiyi veya özel çok duraklı turları 7/24 İngilizce, Almanca, Rusça ve Türkçe destekle rezerve edin. Sabit fiyatlar soğuk su, Wi-Fi, bebek koltuğu ve varışta ödeme seçeneğini içerir.',
     },
-    swapLocations: {
-      en: 'Switch locations',
-      de: 'Orte tauschen',
-      ru: 'Поменять местами',
-      tr: 'Konumları değiştir',
-    },
     fixedPrices: {
       en: 'Or You can choose from fixed prices...',
       de: 'Oder Sie können aus Festpreisen wählen...',
       ru: 'Или вы можете выбрать из фиксированных цен...',
       tr: 'Ya da sabit fiyatlar arasından seçim yapabilirsiniz...',
     },
-    errorTitle: {
-      en: 'Can’t find your destination?',
-      de: 'Sie finden Ihr Ziel nicht?',
-      ru: 'Не находите нужное направление?',
-      tr: 'Aradığınız destinasyonu bulamadınız mı?',
-    },
-    errorText: {
-      en: 'No worries — our concierge team will curate the perfect route. Choose any option below and we will handle the rest.',
-      de: 'Keine Sorge – unser Concierge-Team stellt die ideale Route für Sie zusammen. Wählen Sie eine Option unten, wir kümmern uns um den Rest.',
-      ru: 'Не переживайте — наш консьерж подберёт лучший маршрут. Выберите удобный способ связи ниже, и мы все организуем.',
-      tr: 'Endişelenmeyin — concierge ekibimiz sizin için en uygun rotayı planlar. Aşağıdaki seçeneklerden birini seçmeniz yeterli.',
-    },
-    contactWhatsapp: {
-      en: 'WhatsApp',
-      de: 'WhatsApp',
-      ru: 'WhatsApp',
-      tr: 'WhatsApp',
-    },
-    contactTelegram: {
-      en: 'Telegram',
-      de: 'Telegram',
-      ru: 'Telegram',
-      tr: 'Telegram',
-    },
-    contactPhone: {
-      en: 'Phone',
-      de: 'Telefon',
-      ru: 'Телефон',
-      tr: 'Telefon',
-    },
-    contactEmail: {
-      en: 'Email',
-      de: 'E-Mail',
-      ru: 'Email',
-      tr: 'E-posta',
-    }
   }
 }
