@@ -44,8 +44,8 @@ export class PopularRouteService {
     this.getPopularRoutes('').subscribe({
       next: (paginatedResponse: PaginatedResponse<PopularRoute>)=> {
         this.popularRoutesSignal.set(paginatedResponse.results!);
-        // console.log('Fetched popular places and set it to signal')
-        // console.log(paginatedResponse.results!)
+        console.log('Fetched popular places and set it to signal')
+        console.log(paginatedResponse.results!)
         this.isLoadingPricesSignal.set(false);
       }, 
       error: (err: any) => {

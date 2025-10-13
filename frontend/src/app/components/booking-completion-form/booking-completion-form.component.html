@@ -32,10 +32,31 @@
         </h2>
         <form [formGroup]="bookingService.bookingCompletionForm" (ngSubmit)="onSubmit()">
           <!-- Travel and Flight Info -->
-          <div class="form-group">
+            <div class="form-group">
             <h3>
           {{ translations.travelAndFlightInfo[langInput.code] }}
             </h3>
+            <div class="form-item" *ngIf="showCustomPickupFullInput">
+              <label for="popular_route_location">
+                {{ translations.customPickupLabel[langInput.code] }}
+              </label>
+              <input
+                type="text"
+                id="popular_route_location" 
+                formControlName="pickup_full"
+              />
+            </div>
+
+            <div class="form-item" *ngIf="showCustomDestinationFullInput">
+              <label for="popular_route_location">
+                {{ translations.customDestinationLabel[langInput.code] }}
+              </label>
+              <input
+                type="text"
+                id="popular_route_location" 
+                formControlName="dest_full"
+              />
+            </div>
             <div class="form-row">
               <div class="form-item">
                 <label for="transfer_date">          

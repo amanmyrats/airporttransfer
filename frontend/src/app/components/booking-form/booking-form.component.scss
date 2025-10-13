@@ -13,6 +13,53 @@
     --form-shadow,
     0 30px 55px -40px rgba(37, 99, 235, 0.5)
   );
+  position: relative;
+}
+
+.maps-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(2px);
+  border-radius: inherit;
+  z-index: 5;
+  text-align: center;
+}
+
+.maps-overlay__content {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.2rem 1.5rem;
+  border-radius: 20px;
+  background: rgba(226, 232, 240, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  color: var(--text-muted, #475569);
+  max-width: 320px;
+  box-shadow: 0 24px 48px -30px rgba(15, 23, 42, 0.25);
+}
+
+.maps-overlay__content p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.maps-overlay__spinner {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  border: 3px solid rgba(37, 99, 235, 0.25);
+  border-top-color: rgba(37, 99, 235, 0.85);
+  animation: maps-spin 0.9s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes maps-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .form-grid {
@@ -160,6 +207,13 @@
   transform: translateY(-1px);
 }
 
+.clear-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: rgba(226, 232, 240, 0.65);
+  transform: none;
+}
+
 .form-group.invalid .input-wrapper {
   border-color: rgba(239, 68, 68, 0.75);
   box-shadow: 0 20px 45px -35px rgba(239, 68, 68, 0.6);
@@ -210,6 +264,15 @@
   transition: transform 0.25s ease;
 }
 
+.btn-submit__spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  border: 2px solid rgba(241, 245, 249, 0.6);
+  border-top-color: #ffffff;
+  animation: maps-spin 0.8s linear infinite;
+}
+
 .btn-submit:hover {
   transform: translateY(-2px);
   box-shadow: 0 32px 60px -26px rgba(37, 99, 235, 0.75);
@@ -217,6 +280,17 @@
 
 .btn-submit:hover svg {
   transform: translateX(4px);
+}
+
+.btn-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-submit:disabled svg {
+  transform: none;
 }
 
 .error-banner {

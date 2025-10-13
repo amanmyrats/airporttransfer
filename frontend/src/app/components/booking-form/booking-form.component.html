@@ -4,6 +4,23 @@
   (ngSubmit)="onSubmit()"
   novalidate
 >
+  <div
+    *ngIf="mapsStatus.status !== 'ready'"
+    class="maps-overlay"
+    [attr.aria-live]="mapsStatus.status === 'loading' ? 'polite' : 'assertive'"
+    role="status"
+  >
+    <div class="maps-overlay__content">
+      <div class="maps-overlay__spinner" aria-hidden="true"></div>
+      <p *ngIf="mapsStatus.status === 'loading'">
+        {{ translations.mapsLoading[currentLangCode] }}
+      </p>
+      <p *ngIf="mapsStatus.status === 'failed'">
+        {{ translations.mapsError[currentLangCode] }}
+      </p>
+    </div>
+  </div>
+
   <div class="form-grid">
     <div
       class="form-group"
@@ -22,16 +39,19 @@
           placeholder="{{ translations.from_placeholder[currentLangCode] }}"
           formControlName="pickup_full"
           appGmapsAutocomplete
+          (placeResolving)="onPlaceResolving()"
+          (placeResolved)="onPlaceResolved()"
           (placeChanged)="onPickupPlaceChanged($event)"
           (keydown)="preventFormSubmit($event)"
           aria-describedby="form_note"
         />
         <button
-          *ngIf="bookingService.bookingInitialForm.get('pickup_full')?.value"
+          *ngIf="isMapsReady && bookingService.bookingInitialForm.get('pickup_full')?.value"
           type="button"
           class="clear-btn"
           (click)="clearField('pickup_full')"
           [attr.aria-label]="translations.clearPickup[currentLangCode]"
+          [disabled]="!isMapsReady"
         >
           <span class="visually-hidden">{{ translations.clearPickup[currentLangCode] }}</span>
           <span aria-hidden="true">×</span>
@@ -51,7 +71,7 @@
         type="button"
         class="swap-button"
         (click)="swapLocations()"
-        [disabled]="!bookingService.bookingInitialForm.get('pickup_full')?.value && !bookingService.bookingInitialForm.get('dest_full')?.value"
+        [disabled]="(!bookingService.bookingInitialForm.get('pickup_full')?.value && !bookingService.bookingInitialForm.get('dest_full')?.value) || !isMapsReady"
         [attr.aria-label]="translations.swapLocations[currentLangCode]"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -78,16 +98,19 @@
           placeholder="{{ translations.to_placeholder[currentLangCode] }}"
           formControlName="dest_full"
           appGmapsAutocomplete
+          (placeResolving)="onPlaceResolving()"
+          (placeResolved)="onPlaceResolved()"
           (placeChanged)="onDestPlaceChanged($event)"
           (keydown)="preventFormSubmit($event)"
           aria-describedby="form_note"
         />
         <button
-          *ngIf="bookingService.bookingInitialForm.get('dest_full')?.value"
+          *ngIf="isMapsReady && bookingService.bookingInitialForm.get('dest_full')?.value"
           type="button"
           class="clear-btn"
           (click)="clearField('dest_full')"
           [attr.aria-label]="translations.clearDropOff[currentLangCode]"
+          [disabled]="!isMapsReady"
         >
           <span class="visually-hidden">{{ translations.clearDropOff[currentLangCode] }}</span>
           <span aria-hidden="true">×</span>
@@ -107,23 +130,29 @@
     {{ translations.helperLine[currentLangCode] }}
   </p>
 
-  <button type="submit" class="btn-submit">
+  <button
+    type="submit"
+    class="btn-submit"
+    [disabled]="!canSubmit"
+    [attr.aria-busy]="isSubmitting"
+  >
+    <span class="btn-submit__spinner" *ngIf="isSubmitting" aria-hidden="true"></span>
     <span>{{ translations.search[currentLangCode] }}</span>
-    <svg viewBox="0 0 24 24" aria-hidden="true">
+    <svg *ngIf="!isSubmitting" viewBox="0 0 24 24" aria-hidden="true">
       <path d="m19.71 11.29-6-6a1 1 0 0 0-1.42 1.42L16.59 11H5a1 1 0 0 0 0 2h11.59l-4.29 4.29a1 1 0 1 0 1.42 1.42l6-6a1 1 0 0 0-.01-1.42Z" />
     </svg>
   </button>
 
   <div
     class="error-banner"
-    *ngIf="hasSubmitted && bookingService.bookingInitialForm.invalid"
+    *ngIf="hasSubmitted && (submissionError || bookingService.bookingInitialForm.invalid)"
     role="alert"
   >
     <h3 class="error-banner__title">
       {{ translations.errorTitle[currentLangCode] }}
     </h3>
     <p class="error-banner__text">
-      {{ translations.errorText[currentLangCode] }}
+      {{ getErrorMessage(submissionErrorMessageKey) }}
     </p>
     <ul class="contact-options">
       <li>

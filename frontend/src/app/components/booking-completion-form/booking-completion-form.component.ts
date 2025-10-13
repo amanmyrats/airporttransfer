@@ -1,5 +1,6 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject, Input, OnInit, output, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component, Inject, PLATFORM_ID, computed, effect, inject, Input, OnInit, output, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
 import { ButtonModule } from 'primeng/button';
@@ -38,14 +39,16 @@ declare var dataLayer: any;
 })
 export class BookingCompletionFormComponent implements OnInit {
   @Input() langInput: any | null = null;
-  
   defaultCountry: CountryISO = CountryISO.Turkey;  // default fallback
+  showCustomPickupFullInput = false;
+  showCustomDestinationFullInput = false;
   searchFields: SearchCountryField[] = [
     SearchCountryField.All,
     SearchCountryField.Iso2,
     SearchCountryField.DialCode
   ];
   preferredCountries: CountryISO[] = [
+    CountryISO.Turkey,
     CountryISO.Netherlands,
     CountryISO.Germany,
     CountryISO.Switzerland,
@@ -53,7 +56,15 @@ export class BookingCompletionFormComponent implements OnInit {
     CountryISO.UnitedKingdom,
     CountryISO.Ukraine,
     CountryISO.Kazakhstan,
-    CountryISO.UnitedStates
+    CountryISO.UnitedStates, 
+    CountryISO.Austria, 
+    CountryISO.France,
+    CountryISO.Italy,
+    CountryISO.Spain,
+    CountryISO.Poland,
+    CountryISO.Romania,
+    CountryISO.Bulgaria,
+    CountryISO.CzechRepublic,
   ];
     
   navbar = NAVBAR_MENU;
@@ -119,6 +130,8 @@ export class BookingCompletionFormComponent implements OnInit {
     private router: Router,  
     public languageService: LanguageService, 
     private route: ActivatedRoute, 
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private readonly platformId: object,
   ) {
     effect(() => {
       const existingCurrencyCode: string = this.bookingService.bookingCarTypeSelectionForm.get('currency_code')?.value;
@@ -143,22 +156,147 @@ export class BookingCompletionFormComponent implements OnInit {
 
   ngOnInit(): void {
 
-    fetch('https://ipapi.co/json/')
-    .then(res => res.json())
-    .then(data => {
-      const iso = data.country_code?.toUpperCase();  // e.g., "TR", "DE"
-      if (iso && CountryISO[iso as keyof typeof CountryISO]) {
-        this.defaultCountry = CountryISO[iso as keyof typeof CountryISO];
-      }
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.detectUserCountry();
+    }
 
     this.route.queryParams.subscribe((params) => {
       this.stepFromUrl = params['step'];
+      console.log('bookingInitialForm:', this.bookingService.bookingInitialForm.value);
+      this.bookingService.bookingCompletionForm.patchValue({
+        pickup_short: this.bookingService.bookingInitialForm.get('pickup_short')?.value,
+        dest_short: this.bookingService.bookingInitialForm.get('dest_short')?.value,
+        pickup_full: this.bookingService.bookingInitialForm.get('pickup_full')?.value,
+        dest_full: this.bookingService.bookingInitialForm.get('dest_full')?.value,
+      });
+
+      if (params['is_from_popular_routes']) {
+        this.handlePopularRoute(params);
+      }
     });
 
     // Ensure the return fields are updated based on the "returnTrip" checkbox
     this.toggleReturnFields();
   }
+private detectUserCountry(): void {
+  this.http
+    .get<{ country_code?: string; country_calling_code?: string }>('https://ipapi.co/json/')
+    .subscribe({
+      next: (data) => {
+        console.log('Geo API response:', data);
+
+        // 1) Try IP country
+        const mappedFromIP = this.resolveCountryISO(data.country_code);
+        if (mappedFromIP) {
+          this.defaultCountry = mappedFromIP;
+          console.log('Detected country from IP:', this.defaultCountry);
+        } else if (typeof navigator !== 'undefined' && navigator.language) {
+          // 2) Fallback to browser language region (e.g. "de-DE" -> "DE")
+          const langIso = navigator.language.split('-')[1];
+          const mappedFromLang = this.resolveCountryISO(langIso);
+          if (mappedFromLang) {
+            this.defaultCountry = mappedFromLang;
+            console.log('Fallback country from language:', this.defaultCountry);
+          }
+        }
+
+        console.log('Default country set to:', this.defaultCountry);
+
+        // Optionally set calling code into your form
+        const callingCode = data.country_calling_code; // usually like "+49"
+        console.log('Detected country calling code:', callingCode);
+        if (callingCode) {
+          this.bookingService.bookingCompletionForm.patchValue(
+            { passenger_country_code: callingCode },
+            { emitEvent: false },
+          );
+        } else if (data.country_code) {
+          this.bookingService.bookingCompletionForm.patchValue(
+            { passenger_country_code: data.country_code.toUpperCase() },
+            { emitEvent: false },
+          );
+        }
+      },
+      error: (err) => {
+        console.warn('Failed to resolve country from Geo API:', err);
+
+        // Fallback to browser language region if available
+        if (typeof navigator !== 'undefined' && navigator.language) {
+          const langIso = navigator.language.split('-')[1];
+          const mappedFromLang = this.resolveCountryISO(langIso);
+          if (mappedFromLang) {
+            this.defaultCountry = mappedFromLang;
+            this.bookingService.bookingCompletionForm.patchValue(
+              { passenger_country_code: (langIso ?? '').toUpperCase() },
+              { emitEvent: false },
+            );
+          }
+        }
+      },
+    });
+}
+
+  private handlePopularRoute(params: Record<string, string>): void {
+    let pickup_short = params['pickup_short'] ?? '';
+    let dest_short = params['dest_short'] ?? '';
+    let pickup_full = params['pickup_full'] ?? '';
+    let dest_full = params['dest_full'] ?? '';
+    // const is_switched_route = params['is_switched_route'] === '1' ? 1 : 0;
+    // if (is_switched_route) {
+    //   // swap pickup and destination
+    //   [pickup_short, dest_short] = [dest_short, pickup_short];
+    //   [pickup_full, dest_full] = [dest_full, pickup_full];
+    // }
+
+    const pickupIsAirport = this.isAirport(pickup_full) || this.isAirport(pickup_short);
+    const destinationIsAirport = this.isAirport(dest_full) || this.isAirport(dest_short);
+    
+
+    if (!pickupIsAirport && pickup_full) {
+      this.bookingService.bookingCompletionForm.patchValue({
+        pickup_full: '',
+      });
+      this.showCustomPickupFullInput = true;
+    } else if (!destinationIsAirport && dest_full) {
+      this.bookingService.bookingCompletionForm.patchValue({
+        dest_full: '',
+      });
+      this.showCustomDestinationFullInput = true;
+    } else {
+      this.showCustomPickupFullInput = false;
+      this.showCustomDestinationFullInput = false;
+    }
+  }
+
+  private isAirport(value: string): boolean {
+    const normalized = value.toLowerCase();
+    // include airport word in en, tr, de, ru, holland, and somre popular languages
+    // and include some popular airport codes in turkey: AYT, GZP, DLM, SAW with lower case
+    return (
+      normalized.includes('airport') ||
+      normalized.includes('havaalan') ||
+      normalized.includes('havaalanı') ||
+      normalized.includes('havaalani') || 
+      normalized.includes('ayt') ||
+      normalized.includes('gzp') || 
+      normalized.includes('dlm') || 
+      normalized.includes('saw') || 
+      normalized.includes('flughafen') || 
+      normalized.includes('flugahfen') || 
+      normalized.includes('аэропорт') || 
+      normalized.includes('аэропрта') || 
+      normalized.includes('аэропррт') || 
+      normalized.includes('аэропррт') || 
+      normalized.includes('luchthaven') || 
+      normalized.includes('vliegveld') || 
+      normalized.includes('vliegvel') || 
+      normalized.includes('vlvgel') || 
+      normalized.includes('vlgel') || 
+      normalized.includes('vgel')
+
+    );
+  }
+
 
   // Toggle the validators for return trip fields
   toggleReturnFields(): void {
@@ -187,6 +325,21 @@ export class BookingCompletionFormComponent implements OnInit {
       this.isSaving = false;
     }
     , 5000);
+
+    // Decide direction_type, ARR, DEP, ARA
+    if (this.isAirport(this.bookingService.bookingCompletionForm.get('pickup_full')?.value)) {
+      this.bookingService.bookingCompletionForm.patchValue({
+        direction_type: 'ARR'
+      });
+    } else if (this.isAirport(this.bookingService.bookingCompletionForm.get('dest_full')?.value)) {
+      this.bookingService.bookingCompletionForm.patchValue({
+        direction_type: 'DEP'
+      });
+    } else {
+      this.bookingService.bookingCompletionForm.patchValue({
+        direction_type: 'ARA'
+      });
+    }
 
     const phone = this.bookingService.bookingCompletionForm.get('passenger_phone')?.value;
     if (phone) {
@@ -259,6 +412,7 @@ export class BookingCompletionFormComponent implements OnInit {
       // Send data to a backend API or navigate to a confirmation page
     } else {
       console.log('Form is invalid');
+      console.log(this.bookingService.bookingCompletionForm.errors);
       this.isSaving = false;
     }
 
@@ -346,6 +500,18 @@ export class BookingCompletionFormComponent implements OnInit {
       ru: 'Детали бронирования',
       tr: 'Rezervasyon Detayları',
     }, 
+    customPickupLabel: {
+      en: 'Pickup Hotel/Location',
+      de: 'Abholhotel/-ort',
+      ru: 'Отель/Место встречи',
+      tr: 'Alış Oteli/Mekanı',
+    },
+    customDestinationLabel: {
+      en: 'Destination Hotel/Address',
+      de: 'Ziel Hotel/Adresse',
+      ru: 'Отель/Адрес назначения',
+      tr: 'Varış Oteli/Adresi',
+    },
     car: {
       en: 'Car', 
       de: 'Auto',
@@ -648,4 +814,14 @@ export class BookingCompletionFormComponent implements OnInit {
     }
     
   }
+
+  // Put this inside the component class
+private resolveCountryISO(alpha2?: string): CountryISO | undefined {
+  if (!alpha2) return undefined;
+  const upper = alpha2.toUpperCase();
+  const match = Object.entries(CountryISO)
+    .find(([, v]) => (v as string).toUpperCase() === upper);
+  return (match?.[1] as CountryISO) ?? undefined;
+}
+
 }

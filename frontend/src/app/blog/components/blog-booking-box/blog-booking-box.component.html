@@ -5,6 +5,23 @@
         (ngSubmit)="onSubmit()" 
         [formGroup]="bookingService.bookingInitialForm">
 
+    <div
+      *ngIf="mapsStatus.status !== 'ready'"
+      class="maps-overlay"
+      role="status"
+      [attr.aria-live]="mapsStatus.status === 'loading' ? 'polite' : 'assertive'"
+    >
+      <div class="maps-overlay__content">
+        <div class="maps-overlay__spinner" aria-hidden="true"></div>
+        <p *ngIf="mapsStatus.status === 'loading'">
+          {{ translations.mapsLoading[langInput.code] }}
+        </p>
+        <p *ngIf="mapsStatus.status === 'failed'">
+          {{ translations.mapsError[langInput.code] }}
+        </p>
+      </div>
+    </div>
+
     <!-- Pickup -->
     <div class="form-group input-with-clear">
       <label for="pickup-location">
@@ -18,10 +35,11 @@
                appGmapsAutocomplete
                (placeChanged)="onPickupPlaceChanged($event)"
                (keydown)="preventFormSubmit($event)" />
-        <button *ngIf="bookingService.bookingInitialForm.get('pickup_full')?.value"
+        <button *ngIf="isMapsReady && bookingService.bookingInitialForm.get('pickup_full')?.value"
                 type="button"
                 class="clear-btn"
-                (click)="clearField('pickup_full')">×</button>
+                (click)="clearField('pickup_full')"
+                [disabled]="!isMapsReady">×</button>
       </div>
     </div>
 
@@ -38,10 +56,11 @@
                appGmapsAutocomplete
                (placeChanged)="onDestPlaceChanged($event)"
                (keydown)="preventFormSubmit($event)" />
-        <button *ngIf="bookingService.bookingInitialForm.get('dest_full')?.value"
+        <button *ngIf="isMapsReady && bookingService.bookingInitialForm.get('dest_full')?.value"
                 type="button"
                 class="clear-btn"
-                (click)="clearField('dest_full')">×</button>
+                (click)="clearField('dest_full')"
+                [disabled]="!isMapsReady">×</button>
       </div>
     </div>
 
@@ -49,7 +68,8 @@
     <button pButton
             type="submit"
             [loading]="isBookNowLoading"
-            class="submit-btn">
+            class="submit-btn"
+            [disabled]="!isMapsReady">
       {{ translations.bookNow[langInput.code] }}
     </button>
   </form>

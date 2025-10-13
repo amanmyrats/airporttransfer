@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, DestroyRef, Input, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -9,6 +9,8 @@ import { BookingService } from '../../../services/booking.service';
 import { LanguageService } from '../../../services/language.service';
 import { PriceCalculatorService } from '../../../services/price-calculator.service';
 import { NAVBAR_MENU } from '../../../constants/navbar-menu.constants';
+import { GoogleMapsLoaderService, GoogleMapsLoaderState } from '../../../services/google-maps-loader.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -27,16 +29,32 @@ import { NAVBAR_MENU } from '../../../constants/navbar-menu.constants';
 export class BlogBookingBoxComponent {
   @Input() langInput: any | null = null;
   isBookNowLoading = false;
+  mapsStatus: GoogleMapsLoaderState = { status: 'loading' };
+  private readonly destroyRef = inject(DestroyRef);
+
+  get isMapsReady(): boolean {
+    return this.mapsStatus.status === 'ready';
+  }
 
   constructor(
     public googleMapsService: GoogleMapsService,
     public bookingService: BookingService,
     private router: Router,
     private languageService: LanguageService,
-    private priceCalculatorService: PriceCalculatorService
-  ) {}
+    private priceCalculatorService: PriceCalculatorService,
+    private mapsLoaderService: GoogleMapsLoaderService,
+  ) {
+    this.mapsLoaderService.state$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((status) => {
+        this.mapsStatus = status;
+      });
+  }
 
   onSubmit(): void {
+    if (!this.isMapsReady) {
+      return;
+    }
     this.isBookNowLoading = true;
     const formValue = this.bookingService.bookingInitialForm.value;
 
@@ -103,6 +121,9 @@ export class BlogBookingBoxComponent {
   }
 
   clearField(controlName: string): void {
+    if (!this.isMapsReady) {
+      return;
+    }
     this.bookingService.bookingInitialForm.get(controlName)?.setValue('');
   }
 
@@ -142,6 +163,18 @@ export class BlogBookingBoxComponent {
       de: 'Preisoptionen anzeigen',
       ru: 'Посмотреть варианты цен',
       tr: 'Fiyat seçeneklerini gör'
-    }
+    },
+    mapsLoading: {
+      en: 'Loading place suggestions…',
+      de: 'Lade Ortsvorschläge…',
+      ru: 'Загружаем подсказки адресов…',
+      tr: 'Konum önerileri yükleniyor…',
+    },
+    mapsError: {
+      en: 'We couldn’t reach Google Places. Please refresh the page or chat with us on WhatsApp.',
+      de: 'Google Places konnte nicht geladen werden. Bitte Seite neu laden oder uns über WhatsApp kontaktieren.',
+      ru: 'Не удалось загрузить Google Places. Обновите страницу или напишите нам в WhatsApp.',
+      tr: 'Google Places yüklenemedi. Lütfen sayfayı yenileyin veya WhatsApp üzerinden bize yazın.',
+    },
   };
 }

@@ -10,6 +10,7 @@ import { BookingCarTypeSelectionFormComponent } from '../../components/booking-c
 import { ActivatedRoute } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { LanguageService } from '../../services/language.service';
+import { BookingSearchEvent } from '../../components/booking-form/booking-form.component';
 import { usePreset } from '@primeng/themes';
 import Aura from '@primeng/themes/aura';
 import { Meta, Title } from '@angular/platform-browser';
@@ -69,12 +70,15 @@ export class BookingComponent implements OnInit {
 
   prefillStep1Data(params: any): void {
     this.bookingService.bookingInitialForm.patchValue({
+      pickup_short: params['pickup_short'],
+      dest_short: params['dest_short'],
       pickup_full: params['pickup_full'],
       pickup_lat: params['pickup_lat'],
       pickup_lng: params['pickup_lng'],
       dest_full: params['dest_full'],
       dest_lat: params['dest_lat'],
       dest_lng: params['dest_lng'],
+      is_popular_route: params['is_popular_route'] === '1' ? true : false,
     });
     this.bookingService.bookingCarTypeSelectionForm.patchValue({
       distance: params['distance'],
@@ -94,6 +98,14 @@ export class BookingComponent implements OnInit {
     console.log('Navigating fromStep:', fromStep);
     console.log('Navigating toStep:', toStep);
     console.log('Event:', event);
+
+    if (event && typeof event === 'object' && 'complete' in event && typeof event.complete === 'function') {
+      const bookingEvent = event as BookingSearchEvent;
+      this.activeStep = toStep;
+      bookingEvent.complete();
+      return;
+    }
+
     this.activeStep = toStep;
   }
 

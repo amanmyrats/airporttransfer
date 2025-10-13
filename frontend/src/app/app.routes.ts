@@ -156,21 +156,21 @@ export const routes: Routes = [
     { path: 'tr/türkiye-de-7-24-özel-havalimanı-transferi-şimdi-rezervasyon-yap', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'tr' }   },
 
 
-    // Simple Landing
-    {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'en' } },
-    {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'de' } },
-    {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'ru' } },
-    {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'tr' } },
+    // // Simple Landing
+    // {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'en' } },
+    // {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'de' } },
+    // {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'ru' } },
+    // {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'tr' } },
 
-    {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'en' } },
-    {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'de' } },
-    {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'ru' } },
-    {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'tr' } },
+    // {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'en' } },
+    // {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'de' } },
+    // {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'ru' } },
+    // {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'tr' } },
 
-    {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'en' } },
-    {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'de' } },
-    {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'ru' } },
-    {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'tr' } },
+    // {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'en' } },
+    // {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'de' } },
+    // {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'ru' } },
+    // {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'tr' } },
     
     // Booking received
     {

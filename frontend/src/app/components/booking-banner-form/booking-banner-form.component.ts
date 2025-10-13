@@ -6,7 +6,7 @@ import { BookingService } from '../../services/booking.service';
 import { GoogleMapsService } from '../../services/google-maps.service';
 import { LanguageService } from '../../services/language.service';
 import { PriceCalculatorService } from '../../services/price-calculator.service';
-import { BookingFormComponent } from '../booking-form/booking-form.component';
+import { BookingFormComponent, BookingSearchEvent } from '../booking-form/booking-form.component';
 
 @Component({
   selector: 'app-booking-banner-form',
@@ -28,7 +28,8 @@ export class BookingBannerFormComponent {
     private priceCalculatorService: PriceCalculatorService,
   ) {}
 
-  onSearchVehicle(formValue: any): void {
+  onSearchVehicle(event: BookingSearchEvent): void {
+    const { formValue, complete, fail } = event;
     const origin: google.maps.LatLngLiteral = {
       lat: formValue.pickup_lat || 0,
       lng: formValue.pickup_lng || 0,
@@ -56,11 +57,13 @@ export class BookingBannerFormComponent {
     this.googleMapsService
       .calculateDrivingDistanceAndTime(origin, destination)
       .then(result => {
-        this.router.navigate(
+        return this.router.navigate(
           [`${this.languageCode}/${NAVBAR_MENU.bookNow.slug[this.languageCode]}/`],
           {
             queryParams: {
               step: 2,
+              pickup_short: formValue.pickup_short,
+              dest_short: formValue.dest_short,
               pickup_full: formValue.pickup_full,
               dest_full: formValue.dest_full,
               pickup_lat: formValue.pickup_lat,
@@ -76,11 +79,13 @@ export class BookingBannerFormComponent {
       })
       .catch(error => {
         console.error('Error calculating distance:', error);
-        this.router.navigate(
+        return this.router.navigate(
           [`${this.languageCode}/${NAVBAR_MENU.bookNow.slug[this.languageCode]}/`],
           {
             queryParams: {
               step: 2,
+              pickup_short: formValue.pickup_short,
+              dest_short: formValue.dest_short,
               pickup_full: formValue.pickup_full,
               dest_full: formValue.dest_full,
               pickup_lat: formValue.pickup_lat,
@@ -93,6 +98,11 @@ export class BookingBannerFormComponent {
             },
           },
         );
+      })
+      .then(() => complete())
+      .catch((navigationError) => {
+        console.error('Navigation error after search submission:', navigationError);
+        fail(navigationError);
       });
   }
 

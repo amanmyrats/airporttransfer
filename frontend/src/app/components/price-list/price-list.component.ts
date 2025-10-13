@@ -81,14 +81,23 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   }
 
   bookRoute(
-    pickup_full: string, dest_full: string, 
+    pickup_short: string, 
+    dest_short: string,
+    pickup_full: string, 
+    dest_full: string, 
     car_type: string, 
-    price: number, currency_code: string  
+    price: number, 
+    currency_code: string, 
+    is_switched_route: number = 0,  
   ): void {
     this.isBookNowLoading = true;
     this.bookingService.bookingInitialForm.patchValue({
+      pickup_short: pickup_short,
+      dest_short: dest_short, 
       pickup_full: pickup_full,
-      dest_full: dest_full,
+      dest_full: dest_full, 
+      is_from_popular_routes: 1,
+      is_switched_route: is_switched_route,
     });
     this.bookingService.bookingCarTypeSelectionForm.patchValue({
       car_type: car_type,
@@ -96,26 +105,30 @@ export class PriceListComponent implements OnInit, AfterViewInit {
       currency_code: currency_code,
     });
 
-    const intialFormValue = this.bookingService.bookingInitialForm.value;
+    const initialFormValue = this.bookingService.bookingInitialForm.value;
     const carTypeSelectionFormValue = this.bookingService.bookingCarTypeSelectionForm.value;
-    console.log('Booking Initial Form:', intialFormValue);
+    console.log('Booking Initial Form:', initialFormValue);
     console.log('Booking Car Type Selection Form:', carTypeSelectionFormValue);
 
 
     this.router.navigate([`${this.langInput.code}/${this.navbar.bookNow.slug[this.langInput.code]}/`], {
       queryParams: {
         step: 3,
-        pickup_full: intialFormValue.pickup_full,
-        dest_full: intialFormValue.dest_full,
-        pickup_lat: intialFormValue.pickup_lat,
-        pickup_lng: intialFormValue.pickup_lng,
-        dest_lat: intialFormValue.dest_lat,
-        dest_lng: intialFormValue.dest_lng, 
+        is_from_popular_routes: initialFormValue.is_from_popular_routes,
+        pickup_short: initialFormValue.pickup_short,
+        dest_short: initialFormValue.dest_short,
+        pickup_full: initialFormValue.pickup_full,
+        dest_full: initialFormValue.dest_full,
+        pickup_lat: initialFormValue.pickup_lat,
+        pickup_lng: initialFormValue.pickup_lng,
+        dest_lat: initialFormValue.dest_lat,
+        dest_lng: initialFormValue.dest_lng, 
         distance: 0,
         driving_duration: 0,
         car_type: carTypeSelectionFormValue.car_type,
         amount: carTypeSelectionFormValue.amount,
-        currency_code: carTypeSelectionFormValue.currency_code
+        currency_code: carTypeSelectionFormValue.currency_code, 
+        is_switched_route: initialFormValue.is_switched_route,
       },
     });
 

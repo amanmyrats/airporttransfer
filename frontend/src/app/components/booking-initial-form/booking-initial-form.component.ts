@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, output } from '@angular/core';
 import { LanguageService } from '../../services/language.service';
 import { PriceListComponent } from '../price-list/price-list.component';
-import { BookingFormComponent } from '../booking-form/booking-form.component';
+import { BookingFormComponent, BookingSearchEvent } from '../booking-form/booking-form.component';
 
 @Component({
   selector: 'app-booking-initial-form',
@@ -17,7 +17,7 @@ import { BookingFormComponent } from '../booking-form/booking-form.component';
 export class BookingInitialFormComponent {
   @Input() langInput: any | null = null;
 
-  searchVehicle = output<any>();
+  searchVehicle = output<BookingSearchEvent>();
 
   constructor(public languageService: LanguageService) {}
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, output, inject } from '@angular/core';
+import { Component, DestroyRef, Input, OnInit, output, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GmapsAutocompleteDirective } from '../../directives/gmaps-autocomplete.directive';
 import { BookingService } from '../../services/booking.service';
@@ -7,9 +7,17 @@ import { GoogleMapsService } from '../../services/google-maps.service';
 import { LanguageService } from '../../services/language.service';
 import { PriceCalculatorService } from '../../services/price-calculator.service';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { GoogleMapsLoaderService, GoogleMapsLoaderState } from '../../services/google-maps-loader.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 const SUPPORTED_LANGUAGE_CODES = ['en', 'de', 'ru', 'tr'] as const;
 type LanguageCode = typeof SUPPORTED_LANGUAGE_CODES[number];
+
+export interface BookingSearchEvent {
+  formValue: any;
+  complete: () => void;
+  fail: (error?: unknown) => void;
+}
 
 @Component({
   selector: 'app-booking-form',
@@ -28,9 +36,39 @@ export class BookingFormComponent implements OnInit {
 
   bookingService = inject(BookingService);
   priceCalculatorService = inject(PriceCalculatorService);
-  searchVehicle = output<any>();
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly mapsLoader = inject(GoogleMapsLoaderService);
+  searchVehicle = output<BookingSearchEvent>();
   hasSubmitted = false;
+  isSubmitting = false;
   readonly socialIcon = SOCIAL_ICONS;
+  mapsStatus: GoogleMapsLoaderState = { status: 'loading' };
+  private pendingPlaceResolutions = 0;
+  submissionError = false;
+  submissionErrorMessageKey: string | null = null;
+
+  get canSubmit(): boolean {
+    return (
+      this.isMapsReady &&
+      !this.isSubmitting &&
+      this.pendingPlaceResolutions === 0
+    );
+  }
+
+  get isMapsReady(): boolean {
+    return this.mapsStatus.status === 'ready';
+  }
+
+  getErrorMessage(messageKey: string | null): string {
+    if (!messageKey) {
+      return this.translations.errorText[this.currentLangCode];
+    }
+    const entry = (this.translations as Record<string, Record<LanguageCode, string>>)[messageKey];
+    if (entry && entry[this.currentLangCode]) {
+      return entry[this.currentLangCode];
+    }
+    return this.translations.errorText[this.currentLangCode];
+  }
 
   readonly translations = {
     from: {
@@ -105,6 +143,18 @@ export class BookingFormComponent implements OnInit {
       ru: 'Не переживайте — наш консьерж подберёт лучший маршрут. Выберите удобный способ связи ниже, и мы все организуем.',
       tr: 'Endişelenmeyin — concierge ekibimiz sizin için en uygun rotayı planlar. Aşağıdaki seçeneklerden birini seçmeniz yeterli.',
     },
+    coordinateError: {
+      en: 'Please choose both pickup and destination from the suggestions before searching.',
+      de: 'Bitte wählen Sie sowohl Abhol- als auch Zielort aus den Vorschlägen aus, bevor Sie suchen.',
+      ru: 'Пожалуйста, выберите адрес отправления и назначения из подсказок перед поиском.',
+      tr: 'Lütfen arama yapmadan önce hem alınacak hem de bırakılacak yeri önerilerden seçin.',
+    },
+    distanceError: {
+      en: "We couldn't reach Google Maps to calculate the distance. Please try again.",
+      de: 'Die Entfernung konnte über Google Maps nicht berechnet werden. Bitte versuchen Sie es erneut.',
+      ru: 'Не удалось получить расстояние через Google Maps. Попробуйте ещё раз.',
+      tr: 'Google Maps üzerinden mesafe hesaplanamadı. Lütfen tekrar deneyin.',
+    },
     contactWhatsapp: {
       en: 'WhatsApp',
       de: 'WhatsApp',
@@ -129,6 +179,18 @@ export class BookingFormComponent implements OnInit {
       ru: 'Email',
       tr: 'E-posta',
     },
+    mapsLoading: {
+      en: 'Loading place suggestions…',
+      de: 'Lade Ortsvorschläge…',
+      ru: 'Загружаем подсказки адресов…',
+      tr: 'Konum önerileri yükleniyor…',
+    },
+    mapsError: {
+      en: 'We couldn’t reach Google Places. Please refresh the page or reach us via WhatsApp for help.',
+      de: 'Google Places konnte nicht geladen werden. Bitte Seite neu laden oder uns über WhatsApp kontaktieren.',
+      ru: 'Не удалось загрузить Google Places. Обновите страницу или свяжитесь с нами через WhatsApp.',
+      tr: 'Google Places yüklenemedi. Lütfen sayfayı yenileyin veya WhatsApp üzerinden bize ulaşın.',
+    },
     swapLocations: {
       en: 'Switch locations',
       de: 'Orte tauschen',
@@ -143,6 +205,12 @@ export class BookingFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.mapsLoader.state$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((status) => {
+        this.mapsStatus = status;
+      });
+
     this.toggleReturnTrip();
   }
 
@@ -163,12 +231,31 @@ export class BookingFormComponent implements OnInit {
     returnTimeControl?.updateValueAndValidity();
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
+    if (!this.isMapsReady) {
+      return;
+    }
     this.hasSubmitted = true;
-    const pickupLat: number = this.bookingService.bookingInitialForm.get('pickup_lat')?.value;
-    const pickupLng: number = this.bookingService.bookingInitialForm.get('pickup_lng')?.value;
-    const destLat: number = this.bookingService.bookingInitialForm.get('dest_lat')?.value;
-    const destLng: number = this.bookingService.bookingInitialForm.get('dest_lng')?.value;
+    this.isSubmitting = true;
+    this.submissionError = false;
+    this.submissionErrorMessageKey = null;
+    const pickupLat = this.parseCoordinate(this.bookingService.bookingInitialForm.get('pickup_lat')?.value);
+    const pickupLng = this.parseCoordinate(this.bookingService.bookingInitialForm.get('pickup_lng')?.value);
+    const destLat = this.parseCoordinate(this.bookingService.bookingInitialForm.get('dest_lat')?.value);
+    const destLng = this.parseCoordinate(this.bookingService.bookingInitialForm.get('dest_lng')?.value);
+
+    if (pickupLat === null || pickupLng === null || destLat === null || destLng === null) {
+      console.warn('Cannot submit booking: coordinates are not resolved yet.', {
+        pickupLat,
+        pickupLng,
+        destLat,
+        destLng,
+      });
+      this.submissionError = true;
+      this.submissionErrorMessageKey = 'coordinateError';
+      this.isSubmitting = false;
+      return;
+    }
 
     const origin: google.maps.LatLngLiteral = { lat: pickupLat, lng: pickupLng };
     const destination: google.maps.LatLngLiteral = { lat: destLat, lng: destLng };
@@ -183,29 +270,49 @@ export class BookingFormComponent implements OnInit {
       Math.max(airportCoefficientPickUp, airportCoefficientDest)
     );
 
-    this.googleMapsService.calculateDrivingDistanceAndTime(origin, destination
-    ).then(result => {
+    try {
+      const result = await this.googleMapsService.calculateDrivingDistanceAndTime(origin, destination);
       this.bookingService.distance.set(result.distance);
       this.bookingService.drivingDuration.set(result.duration);
-      this.bookingService.bookingCarTypeSelectionForm.get('distance')!.setValue(
-        result.distance);
-      this.bookingService.bookingCarTypeSelectionForm.get('driving_duration')!.setValue(
-        result.duration);
-    }).catch(error => {
+      this.bookingService.bookingCarTypeSelectionForm.get('distance')!.setValue(result.distance);
+      this.bookingService.bookingCarTypeSelectionForm.get('driving_duration')!.setValue(result.duration);
+    } catch (error) {
       console.error('Error calculating distance:', error);
-    });
-
-    if (this.bookingService.bookingInitialForm.valid) {
-      this.searchVehicle.emit(this.bookingService.bookingInitialForm.value);
+      this.submissionError = true;
+      this.submissionErrorMessageKey = 'distanceError';
+      this.isSubmitting = false;
+      return;
     }
+
+    if (!this.bookingService.bookingInitialForm.valid) {
+      this.isSubmitting = false;
+      return;
+    }
+
+    const resolveSubmission = () => {
+      if (this.isSubmitting) {
+        this.isSubmitting = false;
+      }
+    };
+
+    this.searchVehicle.emit({
+      formValue: this.bookingService.bookingInitialForm.value,
+      complete: resolveSubmission,
+      fail: (_error?: unknown) => resolveSubmission(),
+    });
   }
 
   onPickupPlaceChanged(place: google.maps.places.PlaceResult): void {
     const pickup_full = this.googleMapsService.getFormattedAddress(place);
     const pickup_lat = this.googleMapsService.getLatitude(place);
     const pickup_lng = this.googleMapsService.getLongitude(place);
+    const pickup_short = this.buildShortArea(place) ?? pickup_full; // graceful fallback
+    console.log('Pickup short area:', pickup_short);
+
+
     this.bookingService.bookingInitialForm.patchValue({
-      pickup_full: pickup_full, pickup_lat: pickup_lat, pickup_lng: pickup_lng
+      pickup_full: pickup_full, pickup_lat: pickup_lat, pickup_lng: pickup_lng,
+      pickup_short: pickup_short
     });
   }
 
@@ -213,8 +320,12 @@ export class BookingFormComponent implements OnInit {
     const dest_full = this.googleMapsService.getFormattedAddress(place);
     const dest_lat = this.googleMapsService.getLatitude(place);
     const dest_lng = this.googleMapsService.getLongitude(place);
+    const dest_short = this.buildShortArea(place) ?? dest_full; // graceful fallback
+    console.log('Destination short area:', dest_short);
+    
     this.bookingService.bookingInitialForm.patchValue({
-      dest_full: dest_full, dest_lat: dest_lat, dest_lng: dest_lng
+      dest_full: dest_full, dest_lat: dest_lat, dest_lng: dest_lng, 
+      dest_short: dest_short
     });
   }
 
@@ -225,10 +336,32 @@ export class BookingFormComponent implements OnInit {
   }
 
   clearField(controlName: string): void {
-    this.bookingService.bookingInitialForm.get(controlName)?.setValue('');
+    if (!this.isMapsReady) {
+      return;
+    }
+    const form = this.bookingService.bookingInitialForm;
+    switch (controlName) {
+      case 'pickup_full':
+        form.patchValue(
+          { pickup_full: '', pickup_lat: '', pickup_lng: '', pickup_short: '' },
+          { emitEvent: false }
+        );
+        break;
+      case 'dest_full':
+        form.patchValue(
+          { dest_full: '', dest_lat: '', dest_lng: '', dest_short: '' },
+          { emitEvent: false }
+        );
+        break;
+      default:
+        form.get(controlName)?.setValue('');
+    }
   }
 
   swapLocations(): void {
+    if (!this.isMapsReady) {
+      return;
+    }
     const form = this.bookingService.bookingInitialForm;
     const pairs: [string, string][] = [
       ['pickup_place', 'dest_place'],
@@ -257,4 +390,93 @@ export class BookingFormComponent implements OnInit {
   private isSupportedLanguage(code: unknown): code is LanguageCode {
     return typeof code === 'string' && SUPPORTED_LANGUAGE_CODES.includes(code as LanguageCode);
   }
+
+  onPlaceResolving(): void {
+    this.pendingPlaceResolutions += 1;
+  }
+
+  onPlaceResolved(): void {
+    this.pendingPlaceResolutions = Math.max(0, this.pendingPlaceResolutions - 1);
+  }
+
+  private parseCoordinate(value: unknown): number | null {
+    if (value === null || value === undefined) {
+      return null;
+    }
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      return value;
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (!trimmed) {
+        return null;
+      }
+      const parsed = Number(trimmed);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+    return null;
+  }
+
+  
+  /** Find first address component whose type matches any in `types`. */
+private pickComponent(
+  place: google.maps.places.PlaceResult,
+  types: string[]
+): string | undefined {
+  const c = place.address_components?.find(ac =>
+    ac.types?.some(t => types.includes(t))
+  );
+  return c?.long_name || c?.short_name || undefined;
+}
+
+/** Build a short area label like "Binbirdirek / Fatih" or "Tekirova / Kemer".
+ *  Includes smallest → district, excludes province (admin_area_level_1) and country.
+ */
+private buildShortArea(place: google.maps.places.PlaceResult): string | undefined {
+  // Airports → leave short empty
+  const isAirport =
+    (place.types ?? []).includes('airport') ||
+    /(?:\bairport\b|havaliman[ıi])/i.test(
+      `${place.name ?? ''} ${place.formatted_address ?? ''}`
+    );
+  if (isAirport) return '';
+
+  // Most granular
+  const neighborhood =
+    this.pickComponent(place, ['neighborhood']) ??
+    undefined;
+
+  // Sub-locality (mahallesi/mezra…); pick highest available level
+  const sublocality =
+    this.pickComponent(place, ['sublocality_level_1']) ??
+    this.pickComponent(place, ['sublocality_level_2']) ??
+    this.pickComponent(place, ['sublocality']) ??
+    undefined;
+
+  // District / ilçe (often locality or admin_area_level_2/3)
+  const district =
+    this.pickComponent(place, ['administrative_area_level_3']) ??
+    this.pickComponent(place, ['locality']) ??
+    this.pickComponent(place, ['administrative_area_level_2']) ??
+    undefined;
+
+  // Build list in order, drop empties, dedupe (case-insensitive)
+  const parts = [neighborhood, sublocality, district]
+    .filter(Boolean) as string[];
+
+  const seen = new Set<string>();
+  const unique = parts.filter(p => {
+    const k = p.trim().toLowerCase();
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+
+  // Join with a slash for readability
+  return unique.length ? unique.join(', ') : undefined;
+}
+
+
+
+
 }

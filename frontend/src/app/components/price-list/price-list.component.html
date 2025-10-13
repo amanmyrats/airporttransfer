@@ -65,11 +65,15 @@
                   {{ currency_code }}
                 </span>
                 <button class="btn-book" (click)="bookRoute(
+                  selectedLocation.code!,
+                  popularRoute.destination!,
                   selectedLocation.name!,
                   popularRoute.destination!,
                   popularRoute.car_type!,
                   price,
-                  currency_code)" 
+                  currency_code,
+                  0
+                  )" 
                   [disabled]="isBookNowLoading"
                   > <ng-container *ngIf="!isBookNowLoading; else loadingTpl">
                     {{ getTranslation('book_now') }}

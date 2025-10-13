@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Reservation } from '../admin/models/reservation.model';
 import { Observable } from 'rxjs';
 import { environment as env } from '../../environments/environment';
+import { GoogleMapsLoaderService } from './google-maps-loader.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,8 @@ export class BookingService {
 
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private googleMapsLoader: GoogleMapsLoaderService,
   ) { 
 
     // Get tomorrow's date (in YYYY-MM-DD format)
@@ -48,8 +50,8 @@ export class BookingService {
     this.bookingInitialForm = this.fb.group({
       pickup_place: '',
       dest_place: '',
-      pickup_full: ['', Validators.required],
-      dest_full: ['', Validators.required],
+      pickup_full: [{ value: '', disabled: true }, Validators.required],
+      dest_full: [{ value: '', disabled: true }, Validators.required],
       pickup_short: '',
       dest_short: '',
       pickup_lat: '',
@@ -63,6 +65,8 @@ export class BookingService {
       // returnTrip: [false],
       // returnDate: [''],
       // returnTime: [''],
+      is_switched_route: 0,
+      is_from_popular_routes: 0,
     });
     
     this.bookingCarTypeSelectionForm = this.fb.group({
@@ -75,6 +79,8 @@ export class BookingService {
   });
 
     this.bookingCompletionForm = this.fb.group({
+      pickup_full: '', 
+      dest_full: '',
       transfer_date: [formattedToday, Validators.required],
       transfer_time: [formattedTime, Validators.required],
       flight_number: '',
@@ -95,7 +101,8 @@ export class BookingService {
       passenger_additional_phone: [''], 
       passenger_count: 1,
       passenger_count_child: 0,
-      airport_coefficient: 1,
+      airport_coefficient: 1, 
+      direction_type: 'ARR'
     });
 
   this.bookingForm = this.fb.group({
@@ -138,9 +145,40 @@ export class BookingService {
     passenger_count_child: 0,
     note: [''],
     airport_coefficient: 1,
+    direction_type: 'ARR'
   });
 
+    // this.googleMapsLoader.state$.subscribe((state) => {
+      // this.toggleInitialFormControls(state.status === 'ready');
+    // });
+      this.toggleInitialFormControls(true);
+
   }  
+
+  private toggleInitialFormControls(enable: boolean): void {
+    const pickupControl = this.bookingInitialForm.get('pickup_full');
+    const destControl = this.bookingInitialForm.get('dest_full');
+
+    if (!pickupControl || !destControl) {
+      return;
+    }
+
+    if (enable) {
+      if (pickupControl.disabled) {
+        pickupControl.enable({ emitEvent: false });
+      }
+      if (destControl.disabled) {
+        destControl.enable({ emitEvent: false });
+      }
+    } else {
+      if (pickupControl.enabled) {
+        pickupControl.disable({ emitEvent: false });
+      }
+      if (destControl.enabled) {
+        destControl.disable({ emitEvent: false });
+      }
+    }
+  }
 
   createBooking(reservation: Reservation): Observable<any> {
     return this.http.post<any>(`${env.baseUrl}${env.apiV1}${this.endPoint}bookingcreate/`, reservation);
