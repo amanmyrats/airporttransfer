@@ -1,95 +1,188 @@
 <app-prices-loading [hidden]="!isLoadingPricesSignal()"></app-prices-loading>
 
-<div #transferPricesContainer  class="airport-button-group">
-  <p-button 
-  severity="secondary"
-  *ngFor="let mainLocation of mainLocations"
-  [label]="mainLocation.short[langInput?.code]"
-  (click)="showTransferPrices(mainLocation)"
-  [styleClass]="selectedLocation === mainLocation ? 'p-button-raised p-button-success  active-airport-button' : ''"
-  
+<div #transferPricesContainer class="airport-button-group">
+  <p-button
+    severity="secondary"
+    *ngFor="let mainLocation of mainLocations"
+    [label]="mainLocation.short[langInput?.code]"
+    (click)="showTransferPrices(mainLocation)"
+    [styleClass]="
+      selectedLocation === mainLocation
+        ? 'p-button-raised p-button-success  active-airport-button'
+        : ''
+    "
   ></p-button>
-  
 </div>
 
 <div *ngIf="selectedLocation" class="transfer-prices">
-  <!-- <h2 class="transfer-prices-title">{{getTranslation('transfer_prices')}} - {{ selectedLocation[langInput?.code] }}</h2> -->
   <div class="price-list">
-    @for( carType of carTypeService.getCarTypes(); track carType.code){
-      @let carTypePopularRoutes = popularRouteService.getPopularRoutesByMainLocationCodeAndCarType(selectedLocation.code!, carType.code!);
+    @for (carType of carTypeService.getCarTypes(); track carType.code) {
+      @let carTypePopularRoutes =
+        popularRouteService.getPopularRoutesByMainLocationCodeAndCarType(
+          selectedLocation.code!,
+          carType.code!
+        );
       @if (carTypePopularRoutes.length > 0) {
-      <div class="car-section">
-        <div class="car-image-and-title">
-          
-          <img src="images/cartypes/{{ carType.image.name[langInput?.code] }}"
-            alt="{{ carType.image.alt[langInput?.code] }}"
-              class="car-image"
-              style="width: 100%;"
-              />
-          <h2 class="car-title">{{carType.name}}
-            <br>
-            <span class="icon">
-              <i class="pi pi-user">
-              <img src="images/icons/user.svg" alt="user" style="width: 1rem; height: 1rem;">
-              {{carType.pax}},
-            </i>
-            </span>
-            <span>
-              {{getTranslation('or_equivalent')}}
-            </span>
-          </h2>
-
-        </div>
-        <div class="car-routes">
-          <ul class="route-list">
-        @for (popularRoute of carTypePopularRoutes; track popularRoute.id){
-          @let currency_code = currencyService.currentCurrency().code!;
-          @let price = priceCalculatorService.getRoundedPrice(
-            popularRoute.euro_price!,
-            currency_code,
-            currencyService.currentCurrency().rate!
-            );
-              <li>
-                <span class="routes-info">
-                  <div class="airport-name">
-                    {{selectedLocation[langInput?.code]}}
-                    <!-- <span class="arrow">→</span> -->
-                  </div>
-                  <div class="destination-name">
-                    {{popularRoute.destination}}
-                  </div>
+        <section class="car-section">
+          <div class="car-visual">
+            <img
+              src="images/cartypes/{{ carType.image.name[langInput?.code] }}"
+              alt="{{ carType.image.alt[langInput?.code] }}"
+              class="car-visual__image"
+            />
+            <div class="car-visual__overlay">
+              <h2 class="car-visual__title">{{ carType.name }}</h2>
+              <div class="car-visual__meta">
+                <span class="car-visual__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M9 12a3 3 0 1 0-3-3 3 3 0 0 0 3 3Zm0-4a1 1 0 1 1-1 1 1 1 0 0 1 1-1Zm7 1a3 3 0 1 0-3-3 3 3 0 0 0 3 3Zm0-4a1 1 0 1 1-1 1 1 1 0 0 1 1-1Zm2.88 15.48-1-5A3 3 0 0 0 15 13h-1.68a3 3 0 0 0-2.64 0H9a3 3 0 0 0-2.88 2.48l-1 5a1 1 0 0 0 2 .4l1-5A1 1 0 0 1 9 15h1.75a3 3 0 0 1 .65 0H13a1 1 0 0 1 1 0l1 5a1 1 0 0 0 2-.4Z"
+                    />
+                  </svg>
                 </span>
-
-                <span class="price">
-                  {{ price }}
-                  {{ currency_code }}
+                <span class="car-visual__capacity">
+                  {{ carType.pax }}
+                  <span class="car-visual__capacity-label">{{
+                    getTranslation('passengers')
+                  }}</span>
                 </span>
-                <button class="btn-book" (click)="bookRoute(
-                  selectedLocation.code!,
-                  popularRoute.destination!,
-                  selectedLocation.name!,
-                  popularRoute.destination!,
-                  popularRoute.car_type!,
-                  price,
+                <span class="car-visual__note">
+                  {{ getTranslation('or_equivalent') }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="car-routes">
+            <div class="route-grid">
+              @for (popularRoute of carTypePopularRoutes; track popularRoute.id) {
+                @let currency_code = currencyService.currentCurrency().code!;
+                @let price = priceCalculatorService.getRoundedPrice(
+                  popularRoute.euro_price!,
                   currency_code,
-                  0
-                  )" 
-                  [disabled]="isBookNowLoading"
-                  > <ng-container *ngIf="!isBookNowLoading; else loadingTpl">
-                    {{ getTranslation('book_now') }}
-                  </ng-container>
-                  <ng-template #loadingTpl>
-                    <span class="spinner"></span> <!-- Optional custom spinner -->
-                    {{ getTranslation('loading') || 'Loading...' }}
-                  </ng-template>
-                </button>
-              </li>
-            }
-          </ul>
-        </div>
-      </div>
-    }
+                  currencyService.currentCurrency().rate!
+                );
+                @let isSwitched = isRouteSwitched(popularRoute.id);
+                @let fromShort = isSwitched
+                  ? popularRoute.destination!
+                  : getSelectedLocationFull();
+                @let toShort = isSwitched
+                  ? getSelectedLocationFull()
+                  : popularRoute.destination!;
+                @let fromFull = isSwitched
+                  ? popularRoute.destination!
+                  : getSelectedLocationFull();
+                @let toFull = isSwitched
+                  ? getSelectedLocationFull()
+                  : popularRoute.destination!;
+                @let pickupShort = isSwitched
+                  ? popularRoute.destination!
+                  : selectedLocation.code!;
+                @let destShort = isSwitched
+                  ? selectedLocation.code!
+                  : popularRoute.destination!;
+                @let routeIdentifier = popularRoute.id ?? (selectedLocation.code! + '-' + popularRoute.destination + '-' + carType.code!);
+                <article class="route-card">
+                  <div class="route-card__content">
+                    <div class="route-card__locations">
+                      <div class="route-card__location route-card__location--from">
+                        <span class="route-card__icon" aria-hidden="true">
+                          <svg viewBox="0 0 24 24">
+                            <path
+                              d="M12 2C8.14 2 5 5.13 5 8.99c0 4.88 5.6 10.54 6.37 11.29.35.34.91.34 1.26 0 .76-.75 6.37-6.41 6.37-11.29C19 5.13 15.86 2 12 2Zm0 8.25a2.25 2.25 0 1 1 0-4.5 2.25 2.25 0 0 1 0 4.5Z"
+                            />
+                          </svg>
+                        </span>
+                        <div class="route-card__text">
+                          <span class="route-card__label">{{
+                            getTranslation('from_label')
+                          }}</span>
+                          <span
+                            [ngClass]="['route-card__name', getNameSizeClass(fromShort)]"
+                            >{{ fromShort }}</span
+                          >
+                        </div>
+                      </div>
 
+                      <button
+                        type="button"
+                        class="route-card__swap"
+                        (click)="toggleRouteDirection(popularRoute.id)"
+                        [attr.aria-pressed]="isSwitched"
+                        [attr.aria-label]="getTranslation('swap_route')"
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path
+                            d="M9.5 6.5 7 4m0 0-2.5 2.5M7 4v14m8.5-.5L18 20m0 0 2.5-2.5M18 20V6"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </button>
+
+                      <div class="route-card__location route-card__location--to">
+                        <span class="route-card__icon route-card__icon--to" aria-hidden="true">
+                          <svg viewBox="0 0 24 24">
+                            <path
+                              d="M7 3a1 1 0 0 0-1 1v16a1 1 0 0 0 2 0v-6.2l2.17-.94a2 2 0 0 1 1.66 0l1.34.58a4 4 0 0 0 3.19 0l1.34-.58a2 2 0 0 1 1.66 0L21 14V6.67l-1.34-.58a4 4 0 0 0-3.19 0l-1.34.58a2 2 0 0 1-1.66 0l-1.34-.58a4 4 0 0 0-3.19 0L9 7V4a1 1 0 0 0-1-1Z"
+                            />
+                          </svg>
+                        </span>
+                        <div class="route-card__text">
+                          <span class="route-card__label">{{
+                            getTranslation('to_label')
+                          }}</span>
+                          <span
+                            [ngClass]="['route-card__name', getNameSizeClass(toShort)]"
+                            >{{ toShort }}</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="route-card__footer">
+                      <div class="route-card__price">
+                        <div class="route-card__price-box">
+                          <span class="route-card__amount">{{ price }}</span>
+                          <span class="route-card__currency">{{ currency_code }}</span>
+                        </div>
+                      </div>
+                      <button
+                        class="route-card__book"
+                        [class.loading]="isBookNowLoading && loadingRouteId === routeIdentifier"
+                        (click)="
+                          bookRoute(
+                            routeIdentifier,
+                            pickupShort,
+                            destShort,
+                            fromFull,
+                            toFull,
+                            popularRoute.car_type!,
+                            price,
+                            currency_code,
+                            isSwitched ? 1 : 0
+                          )
+                        "
+                        [disabled]="isBookNowLoading"
+                      >
+                        <ng-container *ngIf="!(isBookNowLoading && loadingRouteId === routeIdentifier); else loadingTpl">
+                          {{ getTranslation('book_now') }}
+                        </ng-container>
+                        <ng-template #loadingTpl>
+                          <span class="spinner"></span>
+                          {{ getTranslation('loading') || 'Loading...' }}
+                        </ng-template>
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              }
+            </div>
+          </div>
+        </section>
+      }
     }
   </div>
 </div>

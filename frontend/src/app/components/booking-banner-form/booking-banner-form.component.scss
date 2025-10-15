@@ -1,9 +1,11 @@
 :host {
   display: block;
+  width: 100%;
 }
 
 :host app-booking-form {
   display: block;
+  width: 100%;
   --primary: rgba(37, 99, 235, 1);
   --text-strong: rgba(15, 23, 42, 0.95);
   --text-muted: rgba(71, 85, 105, 0.92);

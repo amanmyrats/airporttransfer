@@ -1,250 +1,459 @@
 .price-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    padding: 5px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 0 12px 12px;
+}
+
+.car-section {
+  display: flex;
+  gap: 24px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 20px 40px -32px rgba(15, 23, 42, 0.55);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  align-items: flex-start;
+}
+
+.car-section:hover {
+  box-shadow: 0 28px 56px -24px rgba(15, 23, 42, 0.6);
+  transform: translateY(-2px);
+}
+
+.car-visual {
+  position: relative;
+  flex: 0 0 340px;
+  max-width: 360px;
+  background: #0f172a;
+}
+
+.car-visual__image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+.car-visual__overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0) 0%,
+    rgba(15, 23, 42, 0.85) 100%
+  );
+  color: #ffffff;
+  padding: 20px 22px 18px;
+}
+
+.car-visual__title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+  letter-spacing: 0.01em;
+}
+
+.car-visual__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  flex-wrap: wrap;
+}
+
+.car-visual__icon svg {
+  width: 26px;
+  height: 26px;
+  fill: #ffffff;
+}
+
+.car-visual__capacity {
+  font-weight: 600;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.car-visual__capacity-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+
+.car-visual__note {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.car-routes {
+  flex: 1;
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: linear-gradient(
+    180deg,
+    rgba(248, 250, 252, 0.6) 0%,
+    rgba(248, 250, 252, 0.3) 100%
+  );
+}
+
+.route-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.route-card {
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: #ffffff;
+  box-shadow:
+    0 22px 44px -18px rgba(15, 23, 42, 0.45),
+    0 16px 32px -26px rgba(15, 23, 42, 0.35),
+    0 8px 18px -18px rgba(15, 23, 42, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+}
+
+.route-card:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow:
+    0 32px 64px -18px rgba(15, 23, 42, 0.55),
+    0 22px 48px -24px rgba(15, 23, 42, 0.4),
+    0 12px 24px -20px rgba(15, 23, 42, 0.25);
+}
+
+.route-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  height: 100%;
+}
+
+.route-card__locations {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  position: relative;
+  padding-right: 0;
+}
+
+.route-card__location {
+  flex: 1;
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 9px 11px;
+  display: flex;
+  gap: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.route-card__location--from {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.12),
+    rgba(59, 130, 246, 0.05)
+  );
+}
+
+.route-card__location--to {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.12),
+    rgba(16, 185, 129, 0.05)
+  );
+}
+
+.route-card__icon {
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.16);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.route-card__icon--to {
+  background: rgba(16, 185, 129, 0.16);
+}
+
+.route-card__icon svg {
+  width: 20px;
+  height: 20px;
+  fill: #2563eb;
+}
+
+.route-card__icon--to svg {
+  fill: #059669;
+}
+
+.route-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.route-card__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.route-card__name {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.route-card__name--medium {
+  font-size: 1.02rem;
+  letter-spacing: 0.028em;
+  line-height: 1.2;
+}
+
+.route-card__name--long {
+  font-size: 0.94rem;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.route-card__swap {
+  border: none;
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: #ffffff;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 22px -18px rgba(59, 130, 246, 0.9);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.route-card__swap svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.route-card__swap:hover {
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.route-card__swap:focus-visible {
+  outline: 3px solid rgba(14, 165, 233, 0.45);
+  outline-offset: 3px;
+}
+
+.route-card__swap[aria-pressed='true'] {
+  background: linear-gradient(135deg, #22c55e, #0ea5e9);
+}
+
+.route-card__footer {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.route-card__price {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.route-card__price-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  border-radius: 16px;
+  padding: 11px 12px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.14), rgba(16, 185, 129, 0.1));
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 10px 24px -20px rgba(16, 185, 129, 0.7);
+  height: 100%;
+}
+
+.route-card__amount {
+  font-size: 1.65rem;
+  line-height: 1;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.route-card__currency {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(15, 23, 42, 0.65);
+}
+
+.route-card__book {
+  border: none;
+  border-radius: 16px;
+  padding: 0 14px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 18px 32px -24px rgba(37, 99, 235, 0.9);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  height: 100%;
+  width: 100%;
+}
+
+.route-card__book.loading {
+  cursor: wait;
+  box-shadow: none;
+  opacity: 0.85;
+  transform: none;
+}
+
+.route-card__book:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 40px -24px rgba(29, 78, 216, 0.8);
+}
+
+.route-card__book:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.route-card__book:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.45);
+  outline-offset: 3px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-top-color: #ffffff;
+  animation: spinner 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
   }
-  
+}
+
+.airport-button-group {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 20px;
+  padding: 4px 12px;
+}
+
+:host ::ng-deep .airport-button-group .p-button {
+  padding: 7px 18px;
+  font-size: 1.1rem;
+  border-radius: 999px;
+  box-shadow: 0 12px 28px -24px rgba(37, 99, 235, 0.5);
+}
+
+:host ::ng-deep .active-airport-button {
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+@media (max-width: 1200px) {
   .car-section {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    // overflow: hidden;
-    // width: 320px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #f9f9f9;
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-    display: flex;
+  .car-visual {
+    flex: none;
+    width: 100%;
+    max-width: none;
+  }
+
+  .car-visual__frame {
+    aspect-ratio: 16 / 9;
+  }
+
+  .car-routes {
+    padding: 22px 20px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .price-list {
+    padding: 0 6px 12px;
+    gap: 24px;
+  }
+
+  .route-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .route-card__location {
+    padding: 9px 11px;
+  }
+
+  .route-card__book {
+    padding: 11px 16px;
+  }
+
+  .car-routes {
     width: 100%;
   }
-  
-  .car-image-and-title {
-    // width: 100%;
-    // height: auto;
-    max-width: 320px;
-    min-width: 320px;
-    max-height: 230px;
+}
 
-    position: relative;
-  }
-  .car-image {
-
-    max-width: 320px;
-    max-height: 230px;
-  }
-  .car-title {
-    font-size: 1.8em;
-    margin: 10px 0;
-    color: #333;
-
-
-    position: absolute;
-    bottom: 0;
-    left: 0;
+@media (max-width: 480px) {
+  .car-routes {
+    padding: 20px 0;
     width: 100%;
-    // background: rgba(0, 0, 0, 0.6); /* Dark semi-transparent background */
-    background: rgba(255, 255, 255, 0.8); /* Dark semi-transparent background */
-    // color: rgb(113, 113, 113);
-    font-weight: bolder;
-    padding: 10px;
-    text-align: center;
-    font-size: 1.2rem;
-    margin-bottom: 0;
   }
 
-  .car-title span {
-    font-size: 0.85rem; /* Smaller font size for "or equivalent" */
-    font-weight: normal; /* Regular weight to make it less prominent */
-    color: #777; /* Lighter grey to visually differentiate */
-    margin-left: 5px; /* Add some spacing from the main title */
-    display: inline-block; /* Ensures it flows with the main title */
-    vertical-align: middle; /* Aligns well with the text baseline */
-  }
-  
-  .route-header {
-    font-size: 1.2em;
-    margin: 10px 0;
-    color: #007bff;
-  }
-  
-  .route-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
+  .car-visual__frame {
+    aspect-ratio: 4 / 3;
   }
 
-  // .route-list hover
-  .route-list li:hover {
-    background-color: #e3e2e2;
-  }
-  
-  .route-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
-    border-bottom: 2px solid #ddd;
-    border-top: 2px solid #ddd;
-    border-right: 2px solid #ddd;
-    border-left: 2px solid #ddd;
-    
-    max-width: 300px;
-    border-radius: 10px;
-  }
-  
-  .route-list li:last-child {
-    // border-bottom: none;
-  }
-  
-  .routes-info {
-    font-weight: bold;
-    color: #555;
-  }
-  .airport-name {
-    text-align: left;
-    margin: 0;
-    padding: 0;
-    color: #656565;
+  .route-card__location {
+    padding: 10px 12px;
   }
 
-  .destination-name {
-    font-weight: bold;
-    font-size: 1.5em;
-    color: #5d5a5a;
-    display: flex;
-    align-items: start;
-    text-align: left;
-  }
-  
-  .price {
-    font-size: 1.2em;
-    color: #28a745;
-    margin-left: auto;
-    font-weight: bold;
-  }
-  
-  .btn-book {
-    padding: 6px 12px;
-    font-size: 0.9em;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 5px;
-  }
-  
-  .btn-book:hover {
-    background-color: #0056b3;
-  }
-  
-  .arrow {
-    // margin: 0 10px;
-    font-size: 1.5em;
-    color: #007bff;
+  .route-card__amount {
+    font-size: 1.5rem;
   }
 
-  .airport-button-group {
-    display: flex;
-    justify-content: center; /* Center buttons horizontally */
-    flex-wrap: wrap;
-    gap: 12px; /* Increased gap for better spacing */
-    margin-top: 5px;
-    margin-bottom: 5px; /* Increased margin */
-    // background-color: white;
-    padding: 3px;
+  .route-card__price-box {
+    width: 100%;
+    justify-content: center;
   }
-  
-  :host ::ng-deep .airport-button-group .p-button {
-    padding: 5px 15px; /* Increased padding for larger buttons */
-    font-size: 1.2rem;
-    border-radius: 8px; /* Rounded corners */
-    transition: background-color 0.3s ease; /* Smooth transition */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  }
-  
-  :host ::ng-deep .active-airport-button {
-    background-color: #28a745 !important;
-    color: white !important;
-    font-weight: 900 !important;
-  }
-
-  .transfer-prices-title {
-    font-size: 1.8rem;
-    margin-bottom: 5px;
-    color: #333;
-    text-align: center;
-  }
-
-  // For mobile
-  @media (max-width: 768px) {
-    .car-section {
-      overflow: hidden;
-      max-width: 400px;
-      width: 100%;
-
-      display: flex;
-      flex-direction: column;
-  
-    }
-    .route-list li {
-      width: 100%;
-      max-width: none;
-      border-radius: 10px;
-    }
-
-    .car-image-and-title {
-      width: 100%;
-      max-width: none;
-      height: auto;
-      position: relative;
-    }
-    .car-image {
-  
-      width: 100%;
-      height: auto;
-    }
-
-    .car-title {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      // background: rgba(0, 0, 0, 0.6); /* Dark semi-transparent background */
-      background: rgba(255, 255, 255, 0.8); /* Dark semi-transparent background */
-      // color: rgb(113, 113, 113);
-      font-weight: bolder;
-      padding: 10px;
-      text-align: center;
-      font-size: 1.2rem;
-      margin-bottom: 0;
-    }
-
-    .car-title .icon {
-      color: black;
-      font-weight: bolder;
-    }
-
-    .airport-button-group {
-      gap: 7px; /* Increased gap for better spacing */
-      margin-top: 2px;
-      margin-bottom: 2px; /* Increased margin */
-    }
-
-    :host ::ng-deep .airport-button-group .p-button {
-      font-size: 1rem;
-      transition: background-color 0.3s ease; /* Smooth transition */
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    }
-
-    .price-list {
-      gap: 20px;
-      padding: 5px;
-    }
-      
-  
-  }
+}

@@ -4,7 +4,7 @@
 
 .booking-form {
   display: grid;
-  gap: clamp(0.9rem, 2.5vw, 1.5rem);
+  gap: clamp(0.9rem, 2.5vw, 0.5rem);
   padding: clamp(0.85rem, 2.6vw, 1.7rem);
   border-radius: 28px;
   border: 1px solid var(--form-border, rgba(148, 163, 184, 0.25));
@@ -14,6 +14,15 @@
     0 30px 55px -40px rgba(37, 99, 235, 0.5)
   );
   position: relative;
+  width: 100%;
+  max-width: 36rem;
+}
+
+.booking-form--horizontal {
+  width: min(88rem, 100%);
+  max-width: 88rem;
+  min-width: min(40rem, 100%);
+  margin: 0 auto;
 }
 
 .maps-overlay {
@@ -67,45 +76,67 @@
   gap: clamp(0.65rem, 2vw, 0.95rem);
 }
 
-.swap-action {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: clamp(-0.35rem, -1.5vw, -0.25rem) 0 clamp(-0.15rem, -1vw, -0.1rem);
+.location-stack {
+  position: relative;
+  display: grid;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
+}
+
+.location-stack .form-group {
+  margin: 0;
 }
 
 .swap-button {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.95rem;
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: rgba(226, 232, 240, 0.7);
-  color: var(--text-strong, #0f172a);
-  font-size: 0.9rem;
-  font-weight: 600;
+  justify-content: center;
+  width: clamp(2.8rem, 6.5vw, 3.3rem);
+  height: clamp(2.8rem, 6.5vw, 3.3rem);
+  border-radius: 18px;
+  border: none;
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: #ffffff;
+  box-shadow: 0 12px 28px -18px rgba(59, 130, 246, 0.9);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease,
-    color 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
 }
 
 .swap-button svg {
-  width: 1rem;
-  height: 1rem;
+  width: clamp(1.1rem, 3.2vw, 1.35rem);
+  height: clamp(1.1rem, 3.2vw, 1.35rem);
   fill: currentColor;
 }
 
-.swap-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 20px 35px -28px rgba(15, 23, 42, 0.45);
-  background: rgba(59, 130, 246, 0.15);
-  color: var(--primary, #2563eb);
+.swap-icon {
+  display: none;
+}
+
+.swap-icon--vertical {
+  display: inline-block;
+}
+
+.location-stack__swap {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+
+.location-stack__swap:hover:not(:disabled) {
+  transform: translate(-50%, -50%) rotate(180deg);
+  box-shadow: 0 16px 34px -20px rgba(59, 130, 246, 0.85);
 }
 
 .swap-button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
+  box-shadow: none;
+}
+
+.swap-button:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.45);
+  outline-offset: 3px;
 }
 
 .form-group {
@@ -230,13 +261,18 @@
 }
 
 .form-note {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--text-muted, #475569);
-  background: rgba(226, 232, 240, 0.45);
-  border-radius: 16px;
-  padding: 0.85rem 1.15rem;
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: rgba(71, 85, 105, 0.78);
+  background: rgba(226, 232, 240, 0.18);
+  border-radius: 12px;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.form-footer {
+  display: grid;
+  gap: 0.75rem;
 }
 
 .btn-submit {
@@ -360,6 +396,86 @@
   border: 0;
 }
 
+@media (min-width: 769px) {
+  .form-grid--horizontal {
+    gap: clamp(0.75rem, 1.8vw, 1.4rem);
+  }
+
+  .location-stack--horizontal {
+    position: static;
+    grid-template-columns: minmax(0, 1fr) minmax(clamp(2.75rem, 6vw, 3.25rem), auto) minmax(0, 1fr);
+    align-items: stretch;
+    gap: clamp(0.4rem, 1vw, 0.9rem);
+  }
+
+  .location-stack--horizontal-no-swap {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .location-stack--horizontal .form-group--from {
+    grid-column: 1;
+  }
+
+  .location-stack--horizontal .form-group--to {
+    grid-column: 3;
+  }
+
+  .location-stack--horizontal .form-group--from,
+  .location-stack--horizontal .form-group--to {
+    height: 100%;
+  }
+
+  .location-stack--horizontal-no-swap .form-group--from,
+  .location-stack--horizontal-no-swap .form-group--to {
+    grid-column: auto;
+  }
+
+  .location-stack--horizontal .location-stack__swap {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    justify-self: center;
+    align-self: center;
+  }
+
+  .location-stack--horizontal .location-stack__swap:hover:not(:disabled) {
+    transform: rotate(180deg);
+  }
+
+  .booking-form--horizontal .swap-icon--vertical {
+    display: none;
+  }
+
+  .booking-form--horizontal .swap-icon--horizontal {
+    display: inline-block;
+  }
+
+  .booking-form--horizontal .swap-button {
+    width: clamp(3.1rem, 5vw, 3.75rem);
+    height: clamp(3.1rem, 5vw, 3.75rem);
+  }
+
+  .booking-form--horizontal .swap-button svg {
+    width: clamp(1.4rem, 3.4vw, 1.7rem);
+    height: clamp(1.4rem, 3.4vw, 1.7rem);
+  }
+
+  .form-footer--horizontal {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(0.75rem, 1.8vw, 1.6rem);
+    align-items: center;
+  }
+
+  .form-footer--horizontal .btn-submit {
+    justify-self: end;
+  }
+
+  .form-footer--horizontal .form-note {
+    margin: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .booking-form {
     padding: clamp(0.75rem, 3.6vw, 1.15rem);
@@ -371,17 +487,16 @@
 }
 
 @media (max-width: 540px) {
-  .form-note {
-    font-size: 0.8rem;
-    padding: 0.65rem 0.85rem;
-  }
-
-  .swap-action {
-    margin: -0.2rem 0 -0.05rem;
-  }
-
   .swap-button {
-    padding: 0.4rem 0.85rem;
-    font-size: 0.85rem;
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+
+  .location-stack {
+    gap: 0.55rem;
+  }
+
+  .location-stack__swap {
+    top: 52%;
   }
 }

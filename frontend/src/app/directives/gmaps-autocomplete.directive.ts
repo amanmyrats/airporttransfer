@@ -16,6 +16,12 @@ type ExtendedPlacesLibrary = google.maps.PlacesLibrary & {
   Place: typeof google.maps.places.Place;
 };
 
+type PopularAirportConfig = {
+  query: string;
+  label: string;
+  secondary?: string;
+};
+
 @Directive({
   selector: '[appGmapsAutocomplete]',
 })
@@ -31,6 +37,12 @@ export class GmapsAutocompleteDirective implements OnInit, OnDestroy {
   private highlightedIndex = -1;
   private predictions: google.maps.places.PlacePrediction[] = [];
   private suppressPredictionRequest = false;
+  private popularPredictionDisplay = new WeakMap<
+    google.maps.places.PlacePrediction,
+    { main: string; secondary?: string }
+  >();
+  private popularPredictions: google.maps.places.PlacePrediction[] = [];
+  private popularPredictionsPromise?: Promise<void>;
   private predictionDebounceTimer?: number;
 
   private inputListener?: (event: Event) => void;
@@ -45,6 +57,34 @@ export class GmapsAutocompleteDirective implements OnInit, OnDestroy {
     private readonly elementRef: ElementRef<HTMLInputElement>,
     @Inject(PLATFORM_ID) private readonly platformId: object,
   ) {}
+
+  private readonly popularAirports: PopularAirportConfig[] = [
+    {
+      query: 'Antalya Airport',
+      label: 'Antalya Airport (AYT)',
+      secondary: 'Antalya, Türkiye',
+    },
+    {
+      query: 'Istanbul Airport',
+      label: 'Istanbul Airport (IST)',
+      secondary: 'Arnavutköy, İstanbul, Türkiye',
+    },
+    {
+      query: 'Sabiha Gökçen Airport',
+      label: 'Sabiha Gökçen Airport (SAW)',
+      secondary: 'Pendik, İstanbul, Türkiye',
+    },
+    {
+      query: 'Gazipaşa-Alanya Airport',
+      label: 'Gazipaşa-Alanya Airport (GZP)',
+      secondary: 'Gazipaşa, Antalya, Türkiye',
+    },
+    {
+      query: 'Dalaman Airport',
+      label: 'Dalaman Airport (DLM)',
+      secondary: 'Dalaman, Muğla, Türkiye',
+    },
+  ];
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) {
@@ -85,9 +125,7 @@ export class GmapsAutocompleteDirective implements OnInit, OnDestroy {
       const value = target.value ?? '';
       if (!value.trim()) {
         this.clearPredictionDebounce();
-        this.hideSuggestions();
-        this.predictions = [];
-        this.highlightedIndex = -1;
+        void this.showPopularAirports();
         return;
       }
       this.schedulePredictionFetch(value);
@@ -102,6 +140,7 @@ export class GmapsAutocompleteDirective implements OnInit, OnDestroy {
     this.focusListener = () => {
       const value = hostInput.value ?? '';
       if (!value.trim()) {
+        void this.showPopularAirports();
         return;
       }
       this.schedulePredictionFetch(value);
@@ -163,6 +202,92 @@ export class GmapsAutocompleteDirective implements OnInit, OnDestroy {
     return this.placesLibraryPromise;
   }
 
+  private async ensurePopularPredictions(): Promise<google.maps.places.PlacePrediction[]> {
+    if (this.popularPredictions.length) {
+      return this.popularPredictions;
+    }
+
+    if (this.popularPredictionsPromise) {
+      await this.popularPredictionsPromise;
+      return this.popularPredictions;
+    }
+
+    this.popularPredictionsPromise = this.fetchPopularPredictions();
+    try {
+      await this.popularPredictionsPromise;
+    } finally {
+      this.popularPredictionsPromise = undefined;
+    }
+
+    return this.popularPredictions;
+  }
+
+  private async fetchPopularPredictions(): Promise<void> {
+    try {
+      const placesLibrary = await this.ensurePlacesLibrary();
+      const results = await Promise.all(
+        this.popularAirports.map(async (airport): Promise<google.maps.places.PlacePrediction | null> => {
+          try {
+            const sessionToken = new placesLibrary.AutocompleteSessionToken();
+            const request = this.buildAutocompleteRequest(airport.query, sessionToken);
+            request.includedPrimaryTypes = ['airport'];
+            const { suggestions } =
+              await placesLibrary.AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
+            const prediction =
+              suggestions
+                .map((s) => s.placePrediction)
+                .find(
+                  (item): item is google.maps.places.PlacePrediction =>
+                    !!item && item.types?.includes('airport'),
+                ) ??
+              suggestions.map((s) => s.placePrediction).find(
+                (item): item is google.maps.places.PlacePrediction => !!item,
+              );
+
+            if (!prediction) {
+              return null;
+            }
+
+            this.popularPredictionDisplay.set(prediction, {
+              main: airport.label,
+              secondary: airport.secondary,
+            });
+
+            return prediction;
+          } catch (error) {
+            console.error(`Failed to preload prediction for ${airport.label}:`, error);
+            return null;
+          }
+        }),
+      );
+
+      this.popularPredictions = results.filter(
+        (prediction): prediction is google.maps.places.PlacePrediction => prediction !== null,
+      );
+    } catch (error) {
+      console.error('Failed to preload popular airport predictions:', error);
+      this.popularPredictions = [];
+    }
+  }
+
+  private async showPopularAirports(): Promise<void> {
+    try {
+      const predictions = await this.ensurePopularPredictions();
+      if (!predictions.length) {
+        this.hideSuggestions();
+        this.predictions = [];
+        this.highlightedIndex = -1;
+        return;
+      }
+
+      this.predictions = predictions.slice();
+      this.highlightedIndex = 0;
+      this.renderSuggestions();
+    } catch (error) {
+      console.error('Failed to display popular airport suggestions:', error);
+    }
+  }
+
   private async fetchPredictions(inputValue: string): Promise<void> {
   if (!inputValue || !inputValue.trim()) {
     this.hideSuggestions();
@@ -198,10 +323,13 @@ export class GmapsAutocompleteDirective implements OnInit, OnDestroy {
 }
 
 
-  private buildAutocompleteRequest(inputValue: string): google.maps.places.AutocompleteRequest {
+  private buildAutocompleteRequest(
+    inputValue: string,
+    sessionToken?: google.maps.places.AutocompleteSessionToken,
+  ): google.maps.places.AutocompleteRequest {
     const request: google.maps.places.AutocompleteRequest = {
       input: inputValue,
-      sessionToken: this.sessionToken,
+      sessionToken: sessionToken ?? this.sessionToken,
       includedRegionCodes: ['TR'],
     };
 
@@ -412,13 +540,15 @@ export class GmapsAutocompleteDirective implements OnInit, OnDestroy {
     textWrapper.style.display = 'grid';
     textWrapper.style.gap = '0.25rem';
 
+    const { main, secondary } = this.getSuggestionTexts(prediction);
+
     const mainLine = document.createElement('span');
-    mainLine.textContent = prediction.mainText?.text ?? prediction.text?.text ?? '';
+    mainLine.textContent = main;
     mainLine.style.fontWeight = '600';
     mainLine.style.fontSize = '0.98rem';
 
     const secondaryLine = document.createElement('span');
-    secondaryLine.textContent = prediction.secondaryText?.text ?? '';
+    secondaryLine.textContent = secondary ?? '';
     secondaryLine.style.fontSize = '0.85rem';
     secondaryLine.style.color = '#64748b';
 
@@ -624,5 +754,19 @@ export class GmapsAutocompleteDirective implements OnInit, OnDestroy {
     }
 
     return placeResult;
+  }
+
+  private getSuggestionTexts(
+    prediction: google.maps.places.PlacePrediction,
+  ): { main: string; secondary?: string } {
+    const override = this.popularPredictionDisplay.get(prediction);
+    if (override) {
+      return override;
+    }
+
+    return {
+      main: prediction.mainText?.text ?? prediction.text?.text ?? '',
+      secondary: prediction.secondaryText?.text ?? '',
+    };
   }
 }

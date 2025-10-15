@@ -1,6 +1,6 @@
-/* ===== Blog List (drop-in replacement) ===== */
-.blog-list {
-  /* Theme tokens */
+// ===== Blog List (drop-in replacement) =====
+:host {
+  // Theme tokens
   --accent: #0078d4;
   --accent-600: #005fa3;
   --text: #222;
@@ -10,7 +10,9 @@
   --card-border: #e8edf2;
   --tag-bg: #f3f6f9;
   --tag-border: #e6ecf2;
+}
 
+.blog-list {
   font-family: 'Segoe UI', sans-serif;
   color: var(--text);
 
@@ -20,7 +22,7 @@
     padding: 0 1.25rem;
   }
 
-  /* ---------- Page head ---------- */
+  // ---------- Page head ----------
   .page-title {
     font-size: 2.4rem;
     font-weight: 800;
@@ -34,7 +36,7 @@
     color: var(--muted);
   }
 
-  /* ---------- Filters ---------- */
+  // ---------- Filters ----------
   .blog-filters {
     border-bottom: 1px solid var(--border);
 
@@ -44,7 +46,7 @@
       gap: .75rem;
     }
 
-    /* Category buttons row */
+    // Category buttons row
     .category-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -55,9 +57,8 @@
         border: 1px solid #ccc;
         border-radius: 20px;
         background: #fff;
-        cursor: pointer;
         font-size: .88rem;
-        transition: background .2s ease, border-color .2s ease, color .2s ease;
+        transition: .2s ease;
 
         &:hover { background: #f1f5f9; }
         &.active {
@@ -68,7 +69,7 @@
       }
     }
 
-    /* Search row */
+    // Search row
     .search-box {
       display: flex;
       flex-wrap: wrap;
@@ -84,8 +85,6 @@
 
         &:focus {
           border-color: var(--accent);
-          box-shadow: 0 0 0 2px rgba(0,120,212,.18);
-          outline: none;
         }
       }
 
@@ -95,7 +94,6 @@
         border: none;
         border-radius: 6px;
         font-size: .95rem;
-        cursor: pointer;
         line-height: 1;
         display: inline-flex;
         align-items: center;
@@ -113,7 +111,7 @@
       }
     }
 
-    /* Active chips (search/tag) */
+    // Active chips (search/tag)
     .chips-row {
       display: flex;
       flex-wrap: wrap;
@@ -133,12 +131,11 @@
     .chip-close {
       border: 0;
       background: transparent;
-      cursor: pointer;
       line-height: 1;
       font-size: 1rem;
     }
 
-    /* Controls: sort + has video + clear all */
+    // Controls: sort + has video + clear all
     .controls {
       display: flex;
       align-items: center;
@@ -160,17 +157,14 @@
       padding: 0 .5rem;
       background: #fff;
       font-size: .95rem;
-      cursor: pointer;
 
       &:focus {
-        outline: none;
         border-color: var(--accent);
-        box-shadow: 0 0 0 2px rgba(0,120,212,.18);
       }
     }
     .toggle.has-video input { margin: 0; }
 
-    /* Clear all (ghost) */
+    // Clear all (ghost)
     .btn-ghost {
       display: inline-flex;
       align-items: center;
@@ -183,18 +177,13 @@
       color: #333;
       line-height: 1;
       white-space: nowrap;
-      cursor: pointer;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-
       &:hover { background: #f5f8fb; }
     }
     .btn-clear-all { white-space: nowrap; }
 
-    /* Mobile: collapse controls, show Filters button */
+    // Mobile: collapse controls, show Filters button
     .btn-filters {
-      display: none; /* hidden on desktop */
+      display: none; // hidden on desktop
     }
 
     @media (max-width: 768px) {
@@ -212,7 +201,7 @@
       }
     }
 
-    /* Desktop alignment */
+    // Desktop alignment
     @media (min-width: 768px) {
       .container {
         flex-direction: row;
@@ -220,14 +209,14 @@
         align-items: center;
         gap: .9rem;
       }
-      /* put categories on the left, the rest stacked on the right */
+      // put categories on the left, the rest stacked on the right
       .category-buttons { order: 1; flex: 1 1 auto; }
       .search-box, .chips-row, .controls, .btn-filters { order: 2; }
       .search-box { flex: 0 1 520px; }
     }
   }
 
-  /* ---------- Grid / Cards ---------- */
+  // ---------- Grid / Cards ----------
   .grid {
     display: grid;
     gap: 1.5rem;
@@ -247,7 +236,7 @@
     overflow: hidden;
     background: #fff;
     box-shadow: 0 2px 12px rgba(0,0,0,.04);
-    transition: transform .18s ease, box-shadow .18s ease;
+    transition: .18s ease;
 
     &:hover,
     &:focus-within {
@@ -265,7 +254,7 @@
       img {
         width: 100%; height: 100%;
         display: block; object-fit: cover;
-        transition: transform .25s ease;
+        transition: .25s ease;
       }
     }
     &:hover .card-figure img { transform: scale(1.03); }
@@ -312,7 +301,6 @@
           .tag {
             border: none;
             background: none;
-            cursor: pointer;
             color: #506273;
             background: var(--tag-bg);
             border: 1px solid var(--tag-border);
@@ -340,143 +328,11 @@
     .subtitle  { font-size: .98rem; }
   }
 
-  /* ---------- Pager ---------- */
-  .pager {
-    margin: 1rem 0 2rem;
-    display: flex;
-    justify-content: center;
-
-    .pager-inner {
-      display: flex;
-      align-items: center;
-      gap: .4rem;
-      flex-wrap: wrap;
-    }
-    .page-btn {
-      min-width: 34px; height: 34px; padding: 0 .5rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: #fff; color: #123; cursor: pointer;
-      transition: background .15s ease, border-color .15s ease, color .15s ease;
-
-      &:hover { background: #f5f8fb; }
-      &.active { background: var(--accent); border-color: var(--accent); color: #fff; cursor: default; }
-      &:disabled { opacity: .5; cursor: not-allowed; }
-    }
-    .ellipsis { padding: 0 .2rem; color: #667; }
-
-    .page-size {
-      display: inline-flex; align-items: center; gap: .35rem;
-      margin-left: .5rem; padding-left: .5rem; border-left: 1px solid #e7ecf1;
-
-      select {
-        height: 34px; border: 1px solid var(--border); border-radius: 6px;
-        background: #fff; padding: 0 .5rem; font-size: .95rem; cursor: pointer;
-        &:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,120,212,.18); }
-      }
-      span { color: #445; font-size: .92rem; }
-    }
-    .page-info { color: #667; font-size: .92rem; }
-
-    @media (max-width: 520px) {
-      .page-size, .page-info { display: none; }
-    }
-  }
 }
 
-    
-        .pager {
-          margin: 1rem 0 2rem;
-          display: flex;
-          justify-content: center;
-    
-          .pager-inner {
-            display: flex;
-            align-items: center;
-            gap: .4rem;
-            flex-wrap: wrap;
-          }
-    
-          .page-btn {
-            min-width: 34px;
-            height: 34px;
-            padding: 0 .5rem;
-            border: 1px solid #e0e6ed;
-            border-radius: 8px;
-            background: #fff;
-            color: #123;
-            cursor: pointer;
-            transition: background .15s ease, border-color .15s ease, color .15s ease;
-    
-            &:hover {
-              background: #f5f8fb;
-            }
-    
-            &.active {
-              background: #0078d4;
-              border-color: #0078d4;
-              color: #fff;
-              cursor: default;
-            }
-    
-            &:disabled {
-              opacity: .5;
-              cursor: not-allowed;
-            }
-          }
-    
-          .ellipsis {
-            padding: 0 .2rem;
-            color: #667;
-          }
-    
-          .page-size {
-            display: inline-flex;
-            align-items: center;
-            gap: .35rem;
-            margin-left: .5rem;
-            padding-left: .5rem;
-            border-left: 1px solid #e7ecf1;
-    
-            select {
-              height: 34px;
-              border: 1px solid #e0e6ed;
-              border-radius: 6px;
-              background: #fff;
-              padding: 0 .5rem;
-              font-size: .95rem;
-              cursor: pointer;
-    
-              &:focus {
-                outline: none;
-                border-color: #0078d4;
-                box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.18);
-              }
-            }
-    
-            span {
-              color: #445;
-              font-size: .92rem;
-            }
-          }
-    
-          .page-info {
-            color: #667;
-            font-size: .92rem;
-          }
-    
-          @media (max-width: 520px) {
-    
-            .page-size,
-            .page-info {
-              display: none;
-            }
-          }
-        }
 .tag {
   border: none;
   background: none;
-  cursor: pointer;
   color: var(--tag-color, #007bff);
 
   &.active {

@@ -33,6 +33,7 @@ export interface BookingSearchEvent {
 })
 export class BookingFormComponent implements OnInit {
   @Input() langInput: any | null = null;
+  @Input() horizontalInDesktop = false;
 
   bookingService = inject(BookingService);
   priceCalculatorService = inject(PriceCalculatorService);
@@ -57,6 +58,11 @@ export class BookingFormComponent implements OnInit {
 
   get isMapsReady(): boolean {
     return this.mapsStatus.status === 'ready';
+  }
+
+  get showSwapButton(): boolean {
+    const form = this.bookingService.bookingInitialForm;
+    return Boolean(form.get('pickup_full')?.value || form.get('dest_full')?.value);
   }
 
   getErrorMessage(messageKey: string | null): string {
@@ -126,10 +132,10 @@ export class BookingFormComponent implements OnInit {
       tr: 'Ara',
     },
     helperLine: {
-      en: 'Enter hotel, villa, or cruise port details to unlock Antalya airport VIP car options and instant fares.',
-      de: 'Geben Sie Hotel-, Villa- oder Kreuzfahrthafen-Daten ein, um Antalya VIP-Transferfahrzeuge und Sofortpreise zu sehen.',
-      ru: 'Укажите отель, виллу или круизный порт, чтобы открыть VIP-авто и тарифы для аэропорта Анталии.',
-      tr: 'Antalya havalimanı VIP araç seçenekleri ve anlık fiyatlar için otel, villa veya liman bilgilerini ekleyin.',
+      en: 'Enter hotel, villa, or cruise port details to unlock Istanbul, Antalya airport VIP car options and instant fares.',
+      de: 'Geben Sie Hotel-, Villa- oder Kreuzfahrthafen-Daten ein, um Istanbul, Antalya VIP-Transferfahrzeuge und Sofortpreise zu sehen.',
+      ru: 'Укажите отель, виллу или круизный порт, чтобы открыть VIP-авто и тарифы для аэропорта Стамбула, Анталии.',
+      tr: 'İstanbul, Antalya havalimanı VIP araç seçenekleri ve anlık fiyatlar için otel, villa veya liman bilgilerini ekleyin.',
     },
     errorTitle: {
       en: 'Can’t find your destination?',
@@ -442,38 +448,77 @@ private buildShortArea(place: google.maps.places.PlaceResult): string | undefine
   if (isAirport) return '';
 
   // Most granular
-  const neighborhood =
-    this.pickComponent(place, ['neighborhood']) ??
-    undefined;
+  const province =
+    this.pickComponent(place, ['administrative_area_level_1']) ?? undefined;
+  const country =
+    this.pickComponent(place, ['country']) ?? undefined;
 
-  // Sub-locality (mahallesi/mezra…); pick highest available level
-  const sublocality =
-    this.pickComponent(place, ['sublocality_level_1']) ??
-    this.pickComponent(place, ['sublocality_level_2']) ??
-    this.pickComponent(place, ['sublocality']) ??
-    undefined;
+  const normalize = (value: string | undefined) =>
+    value ? value.trim().toLowerCase() : undefined;
 
-  // District / ilçe (often locality or admin_area_level_2/3)
-  const district =
-    this.pickComponent(place, ['administrative_area_level_3']) ??
-    this.pickComponent(place, ['locality']) ??
-    this.pickComponent(place, ['administrative_area_level_2']) ??
-    undefined;
+  const provinceNormalized = normalize(province);
+  const countryNormalized = normalize(country);
 
-  // Build list in order, drop empties, dedupe (case-insensitive)
-  const parts = [neighborhood, sublocality, district]
-    .filter(Boolean) as string[];
+  const orderedTypes = [
+    'neighborhood',
+    'sublocality_level_5',
+    'sublocality_level_4',
+    'sublocality_level_3',
+    'sublocality_level_2',
+    'sublocality_level_1',
+    'sublocality',
+    'administrative_area_level_4',
+    'administrative_area_level_3',
+    'administrative_area_level_2',
+    'locality',
+  ];
+
+  const relevantComponents =
+    place.address_components
+      ?.map(component => {
+        const index = orderedTypes.findIndex(type =>
+          component.types?.includes(type)
+        );
+        if (index === -1) {
+          return null;
+        }
+        const name = (component.long_name || component.short_name || '').trim();
+        if (!name) {
+          return null;
+        }
+        return { index, name };
+      })
+      .filter((entry): entry is { index: number; name: string } => !!entry)
+      .sort((a, b) => a.index - b.index) ?? [];
 
   const seen = new Set<string>();
-  const unique = parts.filter(p => {
-    const k = p.trim().toLowerCase();
-    if (seen.has(k)) return false;
-    seen.add(k);
-    return true;
-  });
+  const result: string[] = [];
 
-  // Join with a slash for readability
-  return unique.length ? unique.join(', ') : undefined;
+  for (const { name } of relevantComponents) {
+    const normalized = normalize(name);
+    if (!normalized) {
+      continue;
+    }
+
+    if (provinceNormalized && normalized === provinceNormalized) {
+      continue;
+    }
+    if (countryNormalized && normalized === countryNormalized) {
+      continue;
+    }
+    if (seen.has(normalized)) {
+      continue;
+    }
+
+    seen.add(normalized);
+    result.push(name);
+
+    if (result.length >= 3) {
+      break;
+    }
+  }
+
+  return result.length ? result.join(', ') : undefined;
 }
 
 

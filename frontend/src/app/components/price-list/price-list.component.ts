@@ -43,9 +43,11 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   popularRoutesSignal = this.popularRouteService.popularRoutesSignal;
 
   isBookNowLoading: boolean = false;
+  loadingRouteId: string | null = null;
   
   mainLocations: any[] = this.mainLocationService.getMainLocations();
   selectedLocation: any | null = null;
+  switchedRouteIds = signal<Set<string>>(new Set<string>());
 
   // private router! : Router;
   // isBrowser: boolean;
@@ -81,6 +83,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   }
 
   bookRoute(
+    routeId: string,
     pickup_short: string, 
     dest_short: string,
     pickup_full: string, 
@@ -91,6 +94,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     is_switched_route: number = 0,  
   ): void {
     this.isBookNowLoading = true;
+    this.loadingRouteId = routeId;
     this.bookingService.bookingInitialForm.patchValue({
       pickup_short: pickup_short,
       dest_short: dest_short, 
@@ -130,6 +134,9 @@ export class PriceListComponent implements OnInit, AfterViewInit {
         currency_code: carTypeSelectionFormValue.currency_code, 
         is_switched_route: initialFormValue.is_switched_route,
       },
+    }).catch(() => {
+      this.isBookNowLoading = false;
+      this.loadingRouteId = null;
     });
 
     // Send event to GTM
@@ -185,13 +192,40 @@ export class PriceListComponent implements OnInit, AfterViewInit {
       'de': 'Laden...',
       'ru': 'Загрузка...',
       'tr': 'Yükleniyor...',
-    }
+    },
+    passengers: {
+      'en': 'Passengers',
+      'de': 'Passagiere',
+      'ru': 'Пассажиры',
+      'tr': 'Yolcu',
+    },
+    from_label: {
+      'en': 'From',
+      'de': 'Abfahrt',
+      'ru': 'Откуда',
+      'tr': 'Kalkış',
+    },
+    to_label: {
+      'en': 'To',
+      'de': 'Ziel',
+      'ru': 'Куда',
+      'tr': 'Varış',
+    },
+    swap_route: {
+      'en': 'Switch route',
+      'de': 'Route wechseln',
+      'ru': 'Поменять направление',
+      'tr': 'Rotayı değiştir',
+    },
   };
 
 
 
   showTransferPrices(location: MainLocation, triggeredInOnInit: boolean = false): void {
     this.selectedLocation = location;
+    this.switchedRouteIds.set(new Set<string>());
+    this.loadingRouteId = null;
+    this.isBookNowLoading = false;
     
     if (!triggeredInOnInit) {
       if (isPlatformBrowser(this.platformId)) {
@@ -205,6 +239,67 @@ export class PriceListComponent implements OnInit, AfterViewInit {
       }, 100);
       }
     }
+  }
+
+  toggleRouteDirection(routeId?: string): void {
+    if (!routeId) {
+      return;
+    }
+    this.switchedRouteIds.update((current) => {
+      const next = new Set(current);
+      if (next.has(routeId)) {
+        next.delete(routeId);
+      } else {
+        next.add(routeId);
+      }
+      return next;
+    });
+  }
+
+  isRouteSwitched(routeId?: string): boolean {
+    if (!routeId) {
+      return false;
+    }
+    return this.switchedRouteIds().has(routeId);
+  }
+
+  getSelectedLocationShort(): string {
+    if (!this.selectedLocation) {
+      return '';
+    }
+    const langCode = this.langInput?.code;
+    return (
+      this.selectedLocation.short?.[langCode] ??
+      this.selectedLocation.short?.en ??
+      this.selectedLocation.name ??
+      ''
+    );
+  }
+
+  getSelectedLocationFull(): string {
+    if (!this.selectedLocation) {
+      return '';
+    }
+    const langCode = this.langInput?.code;
+    return (
+      this.selectedLocation[langCode] ??
+      this.selectedLocation.name ??
+      ''
+    );
+  }
+
+  getNameSizeClass(name: string | undefined | null): string {
+    if (!name) {
+      return '';
+    }
+    const length = name.trim().length;
+    if (length > 18) {
+      return 'route-card__name--long';
+    }
+    if (length > 13) {
+      return 'route-card__name--medium';
+    }
+    return '';
   }
 
   // getTranslation(key: string): string {
