@@ -2,7 +2,6 @@ import { Component, DestroyRef, Input, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
 import { GmapsAutocompleteDirective } from '../../../directives/gmaps-autocomplete.directive';
 import { GoogleMapsService } from '../../../services/google-maps.service';
 import { BookingService } from '../../../services/booking.service';
@@ -20,7 +19,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ButtonModule,
     GmapsAutocompleteDirective
   ],
   templateUrl: './blog-booking-box.component.html',

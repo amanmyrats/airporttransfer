@@ -34,6 +34,7 @@ export interface BookingSearchEvent {
 export class BookingFormComponent implements OnInit {
   @Input() langInput: any | null = null;
   @Input() horizontalInDesktop = false;
+  @Input() isShowExtraTitle = false;
 
   bookingService = inject(BookingService);
   priceCalculatorService = inject(PriceCalculatorService);
@@ -126,16 +127,22 @@ export class BookingFormComponent implements OnInit {
       tr: 'Varış alanını temizle',
     },
     search: {
-      en: 'Search',
-      de: 'Suche',
-      ru: 'Поиск',
-      tr: 'Ara',
+      en: 'See Price Options',
+      de: 'Preisoptionen anzeigen',
+      ru: 'Посмотреть варианты цен',
+      tr: 'Fiyat seçeneklerini gör'
     },
     helperLine: {
       en: 'Enter hotel, villa, or cruise port details to unlock Istanbul, Antalya airport VIP car options and instant fares.',
       de: 'Geben Sie Hotel-, Villa- oder Kreuzfahrthafen-Daten ein, um Istanbul, Antalya VIP-Transferfahrzeuge und Sofortpreise zu sehen.',
       ru: 'Укажите отель, виллу или круизный порт, чтобы открыть VIP-авто и тарифы для аэропорта Стамбула, Анталии.',
       tr: 'İstanbul, Antalya havalimanı VIP araç seçenekleri ve anlık fiyatlar için otel, villa veya liman bilgilerini ekleyin.',
+    },
+    bookNowTitle: {
+      en: 'Book your transfer',
+      de: 'Buchen Sie Ihren Transfer',
+      ru: 'Забронируйте трансфер',
+      tr: 'Transferinizi rezerve edin',
     },
     errorTitle: {
       en: 'Can’t find your destination?',
@@ -238,6 +245,7 @@ export class BookingFormComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
+    console.log('Submitting booking form');
     if (!this.isMapsReady) {
       return;
     }
@@ -249,7 +257,7 @@ export class BookingFormComponent implements OnInit {
     const pickupLng = this.parseCoordinate(this.bookingService.bookingInitialForm.get('pickup_lng')?.value);
     const destLat = this.parseCoordinate(this.bookingService.bookingInitialForm.get('dest_lat')?.value);
     const destLng = this.parseCoordinate(this.bookingService.bookingInitialForm.get('dest_lng')?.value);
-
+    console.log('Parsed coordinates:', { pickupLat, pickupLng, destLat, destLng });
     if (pickupLat === null || pickupLng === null || destLat === null || destLng === null) {
       console.warn('Cannot submit booking: coordinates are not resolved yet.', {
         pickupLat,
@@ -268,7 +276,7 @@ export class BookingFormComponent implements OnInit {
 
     const airportCoefficientPickUp = this.priceCalculatorService.getAirportCoefficient(pickupLat, pickupLng);
     const airportCoefficientDest = this.priceCalculatorService.getAirportCoefficient(destLat, destLng);
-
+    console.log('Airport coefficients:', { airportCoefficientPickUp, airportCoefficientDest });
     this.bookingService.bookingInitialForm.get('airport_coefficient')!.setValue(
       Math.max(airportCoefficientPickUp, airportCoefficientDest)
     );
@@ -282,6 +290,7 @@ export class BookingFormComponent implements OnInit {
       this.bookingService.drivingDuration.set(result.duration);
       this.bookingService.bookingCarTypeSelectionForm.get('distance')!.setValue(result.distance);
       this.bookingService.bookingCarTypeSelectionForm.get('driving_duration')!.setValue(result.duration);
+      console.log('Calculated distance and duration:', result);
     } catch (error) {
       console.error('Error calculating distance:', error);
       this.submissionError = true;
@@ -289,7 +298,7 @@ export class BookingFormComponent implements OnInit {
       this.isSubmitting = false;
       return;
     }
-
+    console.log('Final form value before search event:', this.bookingService.bookingInitialForm.value);
     if (!this.bookingService.bookingInitialForm.valid) {
       this.isSubmitting = false;
       return;
@@ -300,7 +309,7 @@ export class BookingFormComponent implements OnInit {
         this.isSubmitting = false;
       }
     };
-
+    console.log('Emitting searchVehicle event');
     this.searchVehicle.emit({
       formValue: this.bookingService.bookingInitialForm.value,
       complete: resolveSubmission,

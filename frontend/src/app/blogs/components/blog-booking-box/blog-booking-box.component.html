@@ -65,12 +65,20 @@
     </div>
 
     <!-- Submit -->
-    <button pButton
-            type="submit"
-            [loading]="isBookNowLoading"
-            class="submit-btn"
-            [disabled]="!isMapsReady">
-      {{ translations.bookNow[langInput.code] }}
+    <button
+      type="submit"
+      class="submit-btn"
+      [class.submit-btn--loading]="isBookNowLoading"
+      [disabled]="!isMapsReady || isBookNowLoading"
+      [attr.aria-busy]="isBookNowLoading"
+    >
+      <span class="submit-btn__spinner" aria-hidden="true" *ngIf="isBookNowLoading"></span>
+      <span class="submit-btn__label">
+        {{ translations.bookNow[langInput.code] }}
+        <svg *ngIf="!isBookNowLoading" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m19.71 11.29-6-6a1 1 0 0 0-1.42 1.42L16.59 11H5a1 1 0 0 0 0 2h11.59l-4.29 4.29a1 1 0 1 0 1.42 1.42l6-6a1 1 0 0 0-.01-1.42Z" />
+        </svg>
+      </span>
     </button>
   </form>
 

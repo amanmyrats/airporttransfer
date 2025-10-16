@@ -60,9 +60,14 @@
         <!-- Mobile booking box after first section -->
         <section *ngIf="section.section_type === 'booking_form'">
           <!-- <app-blog-booking-box *ngIf="i === 0" class="mobile-booking-box" -->
-          <app-blog-booking-box class="mobile-booking-box"
+          <!-- <app-blog-booking-box class="mobile-booking-box"
             [langInput]="currentLanguage">
-          </app-blog-booking-box>
+          </app-blog-booking-box> -->
+                 <app-booking-form
+        [isShowExtraTitle]="true"
+        [horizontalInDesktop]="false"
+        (searchVehicle)="onBookingSearch($event)"
+        ></app-booking-form>
         </section>
 
         <!-- Image section -->
@@ -130,7 +135,12 @@
 
     <!-- Desktop sticky booking box -->
     <aside class="sidebar-booking" aria-label="Booking box">
-      <app-blog-booking-box class="desktop-booking-box" [langInput]="currentLanguage"></app-blog-booking-box>
+      <!-- <app-blog-booking-box class="desktop-booking-box" [langInput]="currentLanguage"></app-blog-booking-box> -->
+       <app-booking-form
+        [isShowExtraTitle]="true"
+        [horizontalInDesktop]="false"
+        (searchVehicle)="onBookingSearch($event)"
+        ></app-booking-form>
     </aside>
   </div>
 </section>

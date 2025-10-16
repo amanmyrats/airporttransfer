@@ -1,7 +1,6 @@
 import { Component, Inject, inject, OnInit, Renderer2 } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule, DOCUMENT, NgOptimizedImage } from '@angular/common';
-import { BlogBookingBoxComponent } from '../blog-booking-box/blog-booking-box.component';
 import { NAVBAR_MENU } from '../../../constants/navbar-menu.constants';
 import { Meta, Title } from '@angular/platform-browser';
 import { SuperHeaderComponent } from '../../../components/super-header/super-header.component';
@@ -20,6 +19,10 @@ import { TableOfContentsComponent } from '../../../admin/blogs/components/table-
 import { BlogSectionMapPublicComponent } from '../../../admin/blogs/components/blog-section-map-public/blog-section-map-public.component';
 import { buildSectionAnchor } from '../../../admin/blogs/components/shared/slug.utils';
 import { LocalizedBlogPost } from '../../../admin/blogs/models/localized-blog-post.model';
+import { BookingFormComponent, BookingSearchEvent } from '../../../components/booking-form/booking-form.component';
+import { GoogleMapsService } from '../../../services/google-maps.service';
+import { BookingService } from '../../../services/booking.service';
+import { PriceCalculatorService } from '../../../services/price-calculator.service';
 
 
 
@@ -27,7 +30,6 @@ import { LocalizedBlogPost } from '../../../admin/blogs/models/localized-blog-po
 @Component({
   selector: 'app-blog-detail-public',
   imports: [
-    BlogBookingBoxComponent, 
     CommonModule, RouterModule, 
     SuperHeaderComponent,
     NavbarComponent,
@@ -37,6 +39,7 @@ import { LocalizedBlogPost } from '../../../admin/blogs/models/localized-blog-po
     DecodeHtmlPipe, BlogVideoPublicComponent, 
     TableOfContentsComponent, RelatedPostsComponent, 
     BlogSectionMapPublicComponent, 
+    BookingFormComponent, 
   ],
   templateUrl: './blog-detail-public.component.html',
   styleUrl: './blog-detail-public.component.scss'
@@ -60,6 +63,10 @@ export class BlogDetailPublicComponent implements OnInit {
     private title: Title, 
     private meta: Meta, 
     private renderer: Renderer2,
+    private router: Router,
+    private googleMapsService: GoogleMapsService,
+    private bookingService: BookingService,
+    private priceCalculatorService: PriceCalculatorService,
     @Inject(DOCUMENT) private doc: Document,
     ) {
       combineLatest([this.route.paramMap, this.route.data])
@@ -268,5 +275,73 @@ export class BlogDetailPublicComponent implements OnInit {
       mainEntityOfPage: { '@type': 'WebPage', '@id': this.blog.canonical_url || '' }
     };
   }
+  onBookingSearch(event: BookingSearchEvent): void {
+    const { formValue, complete, fail } = event;
 
+    const origin: google.maps.LatLngLiteral = {
+      lat: formValue.pickup_lat || 0,
+      lng: formValue.pickup_lng || 0,
+    };
+    const destination: google.maps.LatLngLiteral = {
+      lat: formValue.dest_lat || 0,
+      lng: formValue.dest_lng || 0,
+    };
+
+    const pickupCoefficient = this.priceCalculatorService.getAirportCoefficient(
+      formValue.pickup_lat,
+      formValue.pickup_lng,
+    );
+    const destCoefficient = this.priceCalculatorService.getAirportCoefficient(
+      formValue.dest_lat,
+      formValue.dest_lng,
+    );
+    const airportCoefficient = Math.max(pickupCoefficient, destCoefficient);
+
+    this.bookingService.bookingInitialForm
+      .get('airport_coefficient')
+      ?.setValue(airportCoefficient);
+    this.bookingService.airportCoefficient.set(airportCoefficient);
+
+    this.googleMapsService
+      .calculateDrivingDistanceAndTime(origin, destination)
+      .then(result =>
+        this.navigateToBooking(formValue, result.distance, result.duration, airportCoefficient),
+      )
+      .catch(() =>
+        this.navigateToBooking(formValue, 0, 0, airportCoefficient),
+      )
+      .then(() => complete())
+      .catch(error => {
+        console.error('Error processing booking form submission:', error);
+        fail(error);
+      });
   }
+
+  private navigateToBooking(
+    formValue: any,
+    distance: number,
+    duration: number,
+    airportCoefficient: number,
+  ) {
+    return this.router.navigate(
+      [`${this.currentLanguage.code}/${NAVBAR_MENU.bookNow.slug[this.currentLanguage.code]}/`],
+      {
+        queryParams: {
+          step: 2,
+          pickup_short: formValue.pickup_short,
+          dest_short: formValue.dest_short,
+          pickup_full: formValue.pickup_full,
+          dest_full: formValue.dest_full,
+          pickup_lat: formValue.pickup_lat,
+          pickup_lng: formValue.pickup_lng,
+          dest_lat: formValue.dest_lat,
+          dest_lng: formValue.dest_lng,
+          distance,
+          driving_duration: duration,
+          airport_coefficient: airportCoefficient,
+        },
+      },
+    );
+  }
+
+}

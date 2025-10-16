@@ -98,18 +98,15 @@
 
             <!-- Mobile booking box after first section -->
               <section *ngSwitchCase="'booking_form'">
-                <app-blog-booking-box class="mobile-booking-box" [langInput]="{'code': currentLanguage}">
-                </app-blog-booking-box>
+                <!-- <app-blog-booking-box class="mobile-booking-box" [langInput]="{'code': currentLanguage}">
+                </app-blog-booking-box> -->
+                       <app-booking-form
+        [isShowExtraTitle]="true"
+        [horizontalInDesktop]="false"
+        (searchVehicle)="onBookingSearch($event)"
+        ></app-booking-form>
+
               </section>
-
-
-              <!-- BOOKING FORM (inline on mobile only if translated) -->
-              <!-- <section *ngSwitchCase="'cta_banner'" class="section cta-section">
-              <h3 *ngIf="t.heading">{{ t.heading }}</h3>
-              <div *ngIf="t.body" [innerHTML]="t.body"></div>
-              <app-blog-booking-box class="mobile-booking-box"
-                [langInput]="{'code': currentLanguage}"></app-blog-booking-box>
-            </section> -->
 
               <!-- QUOTE -->
               <section *ngSwitchCase="'quote'" class="section">
@@ -190,7 +187,12 @@
 
     <!-- Desktop sticky booking box -->
     <div class="sidebar-booking">
-      <app-blog-booking-box class="desktop-booking-box" [langInput]="{'code': currentLanguage}"></app-blog-booking-box>
+      <!-- <app-blog-booking-box class="desktop-booking-box" [langInput]="{'code': currentLanguage}"></app-blog-booking-box> -->
+       <app-booking-form
+        [isShowExtraTitle]="true"
+        [horizontalInDesktop]="false"
+        (searchVehicle)="onBookingSearch($event)"
+        ></app-booking-form>
     </div>
   </div>
 </section>

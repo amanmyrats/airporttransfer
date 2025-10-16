@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit, Signal, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Signal, computed, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
@@ -112,12 +112,9 @@ export class RelatedPostsComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetch();
-    // Optional debug client-side:
-    effect(() => {
-      if (isPlatformBrowser(this.platformId)) {
-        // console.debug('Related JSON-LD', this.jsonLd());
-      }
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.jsonLd();
+    }
   }
 
   private fetch(): void {
