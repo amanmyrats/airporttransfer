@@ -292,44 +292,44 @@ export const routes: Routes = [
     // 📰 Blog detail routes (localized category path + slug)
 {
     path: 'en/turkey-airport-transfer-blogs/:slug',
-    loadComponent: () => import('./blog/components/blog-detail/blog-detail.component').then(m => m.BlogDetailComponent),
+    loadComponent: () => import('./blogs/components/blog-detail-public/blog-detail-public.component').then(m => m.BlogDetailPublicComponent),
     data: { language: 'en' }
   },
   {
     path: 'de/turkei-flughafentransfer-blogs/:slug',
-    loadComponent: () => import('./blog/components/blog-detail/blog-detail.component').then(m => m.BlogDetailComponent),
+    loadComponent: () => import('./blogs/components/blog-detail-public/blog-detail-public.component').then(m => m.BlogDetailPublicComponent),
     data: { language: 'de' }
   },
   {
     path: 'ru/трансфер-аэропорт-турция-блог/:slug',
-    loadComponent: () => import('./blog/components/blog-detail/blog-detail.component').then(m => m.BlogDetailComponent),
+    loadComponent: () => import('./blogs/components/blog-detail-public/blog-detail-public.component').then(m => m.BlogDetailPublicComponent),
     data: { language: 'ru' }
   },
   {
     path: 'tr/turkiye-havalimani-transfer-bloglari/:slug',
-    loadComponent: () => import('./blog/components/blog-detail/blog-detail.component').then(m => m.BlogDetailComponent),
+    loadComponent: () => import('./blogs/components/blog-detail-public/blog-detail-public.component').then(m => m.BlogDetailPublicComponent),
     data: { language: 'tr' }
   },
 
 //   Blog list route
 {
     path: 'en/turkey-airport-transfer-blogs',
-    loadComponent: () => import('./blog/components/blog-list/blog-list.component').then(m => m.BlogListComponent),
+    loadComponent: () => import('./blogs/components/blog-list-public/blog-list-public.component').then(m => m.BlogListPublicComponent),
     data: { language: 'en' }
   },
   {
     path: 'de/turkei-flughafentransfer-blogs',
-    loadComponent: () => import('./blog/components/blog-list/blog-list.component').then(m => m.BlogListComponent),
+    loadComponent: () => import('./blogs/components/blog-list-public/blog-list-public.component').then(m => m.BlogListPublicComponent),
     data: { language: 'de' }
   },
   {
     path: 'ru/трансфер-аэропорт-турция-блог',
-    loadComponent: () => import('./blog/components/blog-list/blog-list.component').then(m => m.BlogListComponent),
+    loadComponent: () => import('./blogs/components/blog-list-public/blog-list-public.component').then(m => m.BlogListPublicComponent),
     data: { language: 'ru' }
   },
   {
     path: 'tr/turkiye-havalimani-transfer-bloglari',
-    loadComponent: () => import('./blog/components/blog-list/blog-list.component').then(m => m.BlogListComponent),
+    loadComponent: () => import('./blogs/components/blog-list-public/blog-list-public.component').then(m => m.BlogListPublicComponent),
     data: { language: 'tr' }
   },
 

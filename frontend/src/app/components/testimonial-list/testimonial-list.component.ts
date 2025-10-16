@@ -1,18 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { CarouselModule } from 'primeng/carousel';
 
 @Component({
   selector: 'app-testimonial-list',
-  imports: [
-    CarouselModule
-    ,
-  ],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './testimonial-list.component.html',
-  styleUrl: './testimonial-list.component.scss'
+  styleUrl: './testimonial-list.component.scss',
 })
 export class TestimonialListComponent {
-
-  testimonials: any[] = [
+  testimonials = [
     {
       text: 'Stress-Free Private Airport Transfer from Antalya to Alanya. Booking our private airport transfer from Antalya Airport to Alanya was a breeze! The driver was punctual, professional, and the ride was incredibly comfortable. I’ll definitely use this service again for stress-free airport transfers in Turkey!',
       author: 'Sarah J., United Kingdom',
@@ -44,25 +41,6 @@ export class TestimonialListComponent {
     {
       text: 'Bodrum Havalimanı’ndan Merkeze Konforlu ve Lüks Transfer. Bodrum Milas Havalimanı’ndan Bodrum merkezine olan transferimiz çok keyifli geçti. Yolculuk boyunca çok rahat ettik ve hizmet mükemmeldi. Teşekkür ederiz!',
       author: 'Ahmet D., Türkiye',
-    },
-  ];
-  
-
-  responsiveOptions = [
-    {
-      breakpoint: '1024px',
-      numVisible: 1,
-      numScroll: 1,
-    },
-    {
-      breakpoint: '768px',
-      numVisible: 1,
-      numScroll: 1,
-    },
-    {
-      breakpoint: '560px',
-      numVisible: 1,
-      numScroll: 1,
     },
   ];
 }

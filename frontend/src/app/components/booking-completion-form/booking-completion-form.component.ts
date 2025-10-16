@@ -1,20 +1,14 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, PLATFORM_ID, computed, effect, inject, Input, OnInit, output, signal } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, Inject, PLATFORM_ID, OnDestroy, computed, effect, inject, Input, OnInit, output, signal } from '@angular/core';
+import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
-import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
-import { MessageModule } from 'primeng/message';
 import { CarTypeService } from '../../services/car-type.service';
 import { CurrencyService } from '../../services/currency.service';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { Currency } from '../../models/currency.model';
-import { DatePickerModule } from 'primeng/datepicker';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { CountryISO } from 'ngx-intl-tel-input';
 import { SearchCountryField } from 'ngx-intl-tel-input';
@@ -25,19 +19,15 @@ declare var dataLayer: any;
 @Component({
   selector: 'app-booking-completion-form',
   imports: [
-    CommonModule, 
-    FormsModule, ReactiveFormsModule, 
-    ButtonModule, MessageModule, 
-    CheckboxModule, 
-    ToggleSwitchModule, 
-    InputNumberModule, 
-    DatePickerModule, 
-    NgxIntlTelInputModule, 
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgxIntlTelInputModule,
   ],
   templateUrl: './booking-completion-form.component.html',
   styleUrl: './booking-completion-form.component.scss'
 })
-export class BookingCompletionFormComponent implements OnInit {
+export class BookingCompletionFormComponent implements OnInit, OnDestroy {
   @Input() langInput: any | null = null;
   defaultCountry: CountryISO = CountryISO.Turkey;  // default fallback
   showCustomPickupFullInput = false;
@@ -87,6 +77,13 @@ export class BookingCompletionFormComponent implements OnInit {
   champagnePrice = signal<number>(0);
   flowerPrice = signal<number>(0);
   childSeatCount = signal<number>(0);
+  animateTransferTime = false;
+  animateReturnTime = false;
+  timePickerLocale = 'en-GB';
+  private transferAnimationTimeout?: ReturnType<typeof setTimeout>;
+  private returnAnimationTimeout?: ReturnType<typeof setTimeout>;
+  private readonly timeAnimationDuration = 1100;
+  private readonly timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
   childSeatPrice = computed<number>(() => { 
     // if child_seat_count changes add 5 euro or equivalent to the price
     const childSeatCount: number = this.childSeatCount();
@@ -155,6 +152,9 @@ export class BookingCompletionFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const initialLocaleCode =
+      this.langInput?.code || this.languageService.currentLang()?.code || 'en';
+    this.timePickerLocale = this.resolveTimePickerLocale(initialLocaleCode);
 
     if (isPlatformBrowser(this.platformId)) {
       this.detectUserCountry();
@@ -177,6 +177,10 @@ export class BookingCompletionFormComponent implements OnInit {
 
     // Ensure the return fields are updated based on the "returnTrip" checkbox
     this.toggleReturnFields();
+
+    const initialChildSeatCount =
+      Number(this.bookingService.bookingCompletionForm.get('child_seat_count')?.value) || 0;
+    this.childSeatCountChanged(initialChildSeatCount);
   }
 private detectUserCountry(): void {
   this.http
@@ -446,17 +450,206 @@ private detectUserCountry(): void {
     
   }
 
-  needChildSeatToggleChanged(event: any): void {
-    if (!event.checked) {
-      this.bookingService.bookingCompletionForm.patchValue({
-        child_seat_count: 1,
-      });
-      this.childSeatCount.set(1);
+  needChildSeatToggleChanged(isChecked: boolean): void {
+    const control = this.bookingService.bookingCompletionForm.get('child_seat_count');
+    if (!control) {
+      return;
+    }
+
+    if (isChecked) {
+      const currentValue = Number(control.value) || 0;
+      if (currentValue < 1) {
+        control.setValue(1);
+        this.childSeatCountChanged(1);
+      } else {
+        this.childSeatCountChanged(currentValue);
+      }
+    } else {
+      control.setValue(1);
+      this.childSeatCountChanged(1);
     }
   }
 
-  childSeatCountChanged(event: any): void {
-    this.childSeatCount.set(event.value);
+  adjustNumber(controlName: string, delta: number, min: number, max: number): void {
+    const control = this.bookingService.bookingCompletionForm.get(controlName);
+    if (!control) {
+      return;
+    }
+    const current = Number(control.value) || 0;
+    const next = this.clamp(current + delta, min, max);
+    control.setValue(next);
+    control.markAsDirty();
+    control.markAsTouched();
+    this.handleNumberSideEffects(controlName, next);
+  }
+
+  onNumberInput(controlName: string, rawValue: number, min: number, max: number): void {
+    const control = this.bookingService.bookingCompletionForm.get(controlName);
+    if (!control) {
+      return;
+    }
+    const parsed = Number.isFinite(rawValue) ? rawValue : min;
+    const next = this.clamp(parsed, min, max);
+    control.setValue(next);
+    control.markAsDirty();
+    control.markAsTouched();
+    this.handleNumberSideEffects(controlName, next);
+  }
+
+  onNumberInputEvent(controlName: string, event: Event, min: number, max: number): void {
+    const target = event.target as HTMLInputElement | null;
+    const value = target ? target.valueAsNumber : NaN;
+    this.onNumberInput(controlName, value, min, max);
+  }
+
+  onChildSeatToggle(event: Event): void {
+    const target = event.target as HTMLInputElement | null;
+    this.needChildSeatToggleChanged(!!target?.checked);
+  }
+
+  onTimeChange(controlName: 'transfer_time' | 'return_transfer_time'): void {
+    this.formatTimeInput(controlName);
+    const control = this.bookingService.bookingCompletionForm.get(controlName);
+    if (!control?.value) {
+      return;
+    }
+    this.triggerTimeAnimation(controlName);
+  }
+
+  private formatTimeInput(controlName: string): void {
+    const control = this.bookingService.bookingCompletionForm.get(controlName);
+    if (!control) {
+      return;
+    }
+    control.markAsTouched();
+    const raw = (control.value ?? '').toString().trim();
+    if (!raw) {
+      this.clearInvalidTimeError(control);
+      return;
+    }
+    const normalized = this.normalizeTime(raw);
+    if (normalized) {
+      if (normalized !== control.value) {
+        control.setValue(normalized);
+        control.markAsDirty();
+      }
+      this.clearInvalidTimeError(control);
+    } else {
+      this.setInvalidTimeError(control);
+    }
+  }
+
+  private handleNumberSideEffects(controlName: string, value: number): void {
+    if (controlName === 'child_seat_count') {
+      this.childSeatCountChanged(value);
+    }
+  }
+
+  private clamp(value: number, min: number, max: number): number {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  childSeatCountChanged(value: number): void {
+    this.childSeatCount.set(value);
+  }
+
+  private normalizeTime(value: string): string | null {
+    const sanitized = value.replace(/[^0-9:]/g, '');
+    if (this.timeRegex.test(sanitized)) {
+      return sanitized;
+    }
+
+    const colonMatch = /^(\d{1,2}):(\d{1,2})$/.exec(sanitized);
+    if (colonMatch) {
+      const hours = Number(colonMatch[1]);
+      const minutes = Number(colonMatch[2]);
+      if (hours <= 23 && minutes <= 59) {
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      }
+      return null;
+    }
+
+    if (/^\d{3,4}$/.test(sanitized)) {
+      const padded = sanitized.padStart(4, '0');
+      const hours = Number(padded.slice(0, 2));
+      const minutes = Number(padded.slice(2));
+      if (hours <= 23 && minutes <= 59) {
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      }
+      return null;
+    }
+
+    if (/^\d{1,2}$/.test(sanitized)) {
+      const hours = Number(sanitized);
+      if (hours <= 23) {
+        return `${hours.toString().padStart(2, '0')}:00`;
+      }
+    }
+
+    return null;
+  }
+
+  private setInvalidTimeError(control: AbstractControl): void {
+    const errors = control.errors ?? {};
+    if (errors['invalidTime']) {
+      return;
+    }
+    control.setErrors({ ...errors, invalidTime: true });
+  }
+
+  private clearInvalidTimeError(control: AbstractControl): void {
+    const errors = control.errors;
+    if (!errors || !errors['invalidTime']) {
+      return;
+    }
+
+    const { invalidTime, ...rest } = errors as Record<string, any>;
+    const remainingKeys = Object.keys(rest);
+    control.setErrors(remainingKeys.length ? rest : null);
+  }
+
+  private triggerTimeAnimation(controlName: 'transfer_time' | 'return_transfer_time'): void {
+    const runAnimation = (target: 'transfer' | 'return') => {
+      if (target === 'transfer') {
+        this.animateTransferTime = true;
+        this.transferAnimationTimeout = setTimeout(() => {
+          this.animateTransferTime = false;
+        }, this.timeAnimationDuration);
+      } else {
+        this.animateReturnTime = true;
+        this.returnAnimationTimeout = setTimeout(() => {
+          this.animateReturnTime = false;
+        }, this.timeAnimationDuration);
+      }
+    };
+
+    const resetAndAnimate = (target: 'transfer' | 'return') => {
+      if (target === 'transfer') {
+        this.animateTransferTime = false;
+        if (this.transferAnimationTimeout) {
+          clearTimeout(this.transferAnimationTimeout);
+        }
+      } else {
+        this.animateReturnTime = false;
+        if (this.returnAnimationTimeout) {
+          clearTimeout(this.returnAnimationTimeout);
+        }
+      }
+
+      if (typeof window !== 'undefined' && window.requestAnimationFrame) {
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => runAnimation(target));
+        });
+      } else {
+        setTimeout(() => runAnimation(target), 0);
+      }
+    };
+
+    if (controlName === 'transfer_time') {
+      resetAndAnimate('transfer');
+    } else {
+      resetAndAnimate('return');
+    }
   }
 
   calculateChampagnePrice(): void {
@@ -489,6 +682,29 @@ private detectUserCountry(): void {
 
   goToPreviousStep(): void {
     this.previousStep.emit(this.bookingService.bookingCompletionForm.value);
+  }
+
+  ngOnDestroy(): void {
+    if (this.transferAnimationTimeout) {
+      clearTimeout(this.transferAnimationTimeout);
+    }
+    if (this.returnAnimationTimeout) {
+      clearTimeout(this.returnAnimationTimeout);
+    }
+  }
+
+  private resolveTimePickerLocale(langCode: string): string {
+    switch (langCode) {
+      case 'de':
+        return 'de-DE';
+      case 'ru':
+        return 'ru-RU';
+      case 'tr':
+        return 'tr-TR';
+      case 'en':
+      default:
+        return 'en-GB';
+    }
   }
 
 // create translations for above texts line by line in en, de, ru, tr languages

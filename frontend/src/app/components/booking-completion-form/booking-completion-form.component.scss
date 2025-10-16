@@ -74,14 +74,58 @@
     margin-bottom: 5px;
   }
   
-  input,
-  textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1em;
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.time-selected {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #047857;
+  margin-left: 4px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.18);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.time-selected--animate {
+  animation: time-blink 1.1s ease-in-out 2;
+}
+
+@keyframes time-blink {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.96);
+    background: rgba(16, 185, 129, 0.12);
+    box-shadow: none;
   }
+  35% {
+    opacity: 1;
+    transform: scale(1.05);
+    background: rgba(34, 197, 94, 0.45);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+  }
+  70% {
+    opacity: 0.85;
+    transform: scale(0.99);
+    background: rgba(16, 185, 129, 0.24);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.16);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    background: rgba(16, 185, 129, 0.18);
+    box-shadow: none;
+  }
+}
   
   input:focus,
   textarea:focus {
@@ -165,16 +209,60 @@
 }
 
 /* Toggle Switch Styling */
-.toggle-switch-container p-toggleswitch {
-  transform: scale(1.2); /* Larger for better visibility */
-  flex-shrink: 0; /* Prevent toggle switch from shrinking */
-}
-
-/* Hover Effects */
 .toggle-switch-container:hover {
   background-color: #f1f7ff; /* Subtle highlight on hover */
   border-color: #c6d8ff; /* Slightly darker border */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+}
+
+.toggle-switch {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-switch__slider {
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #d1d5db;
+  border-radius: 999px;
+  transition: background-color 0.25s ease;
+}
+
+.toggle-switch__slider::before {
+  content: '';
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  inset: 3px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.25s ease;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-switch__slider {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.toggle-switch input:checked + .toggle-switch__slider::before {
+  transform: translateX(24px);
+}
+
+.toggle-switch input:focus-visible + .toggle-switch__slider {
+  outline: 3px solid rgba(59, 130, 246, 0.35);
+  outline-offset: 3px;
 }
 
 
@@ -273,11 +361,6 @@
 
 
 
-.custom-icon {
-  font-size: large;
-  font-weight: bold;
-}
-
 .form-hint {
   font-size: 0.8rem;
   color: #666;
@@ -285,6 +368,101 @@
   display: block;
 }
 
+.number-spinner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+
+.number-spinner input {
+  width: 70px;
+  border: none;
+  text-align: center;
+  font-size: 1rem;
+  outline: none;
+}
+
+.number-spinner__btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.number-spinner__btn:hover,
+.number-spinner__btn:focus-visible {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.number-spinner__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.number-spinner--inline {
+  margin-top: 10px;
+}
+
+.form-alert {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.form-alert--compact {
+  margin-top: 6px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
+
+.form-alert--error {
+  background: #fef2f2;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  color: #b91c1c;
+}
+
+.form-alert--info {
+  background: #eff6ff;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: #1d4ed8;
+}
+
+.form-alert--warn {
+  background: #fffbeb;
+  border: 1px solid rgba(250, 204, 21, 0.4);
+  color: #b45309;
+}
+
+.btn-complete[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-complete--loading::after {
+  content: '…';
+  margin-left: 6px;
+}
+
+.form-label-muted {
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
 
 
 
@@ -405,4 +583,13 @@
 
 ::ng-deep .ngx-intl-tel-input .iti__country:hover {
   background-color: #444;
+}
+.number-spinner input[type='number']::-webkit-inner-spin-button,
+.number-spinner input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.number-spinner input[type='number'] {
+  -moz-appearance: textfield;
 }

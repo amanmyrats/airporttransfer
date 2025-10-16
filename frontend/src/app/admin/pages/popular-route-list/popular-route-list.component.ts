@@ -16,7 +16,8 @@ import { SharedPaginatorComponent } from '../../components/shared-paginator/shar
 import { PopularRoute } from '../../models/popular-route.model';
 import { PopularRouteService } from '../../services/popular-route.service';
 import { PopularRouteFormComponent } from '../../components/popular-route-form/popular-route-form.component';
-import { ImportFormComponent } from '../../../components/import-form/import-form.component';
+import { ImportFormComponent } from '../../components/import-form/import-form.component';
+
 
 @Component({
   selector: 'app-popular-route-list',

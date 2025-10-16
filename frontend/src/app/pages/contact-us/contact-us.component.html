@@ -79,13 +79,24 @@
               </label>
               <textarea id="message" formControlName="message" rows="5" required></textarea>
             </div>
-            <button pButton [loading]="isSending" type="submit" class="btn-submit">
+            <button
+              type="submit"
+              class="btn-submit"
+              [disabled]="isSending"
+              [class.btn-submit--loading]="isSending"
+              [attr.aria-busy]="isSending"
+            >
               {{ translations[currentLanguage.code].submit }}
             </button>
-            <p-message *ngIf="isSentSuccessfully"> {{ translations[currentLanguage.code].successMessage }}</p-message>
-            <p-message severity="error" *ngIf="isSendingFailed && !isSentSuccessfully"> 
+            <div *ngIf="isSentSuccessfully" class="form-alert form-alert--success">
+              {{ translations[currentLanguage.code].successMessage }}
+            </div>
+            <div
+              *ngIf="isSendingFailed && !isSentSuccessfully"
+              class="form-alert form-alert--error"
+              role="alert"
+            >
               {{ translations[currentLanguage.code].errorMessage }}
-              <br />  
               <ul *ngIf="contactForm.errors || contactForm.invalid" class="form-errors">
                 <li *ngIf="contactForm.get('name')?.hasError('required')">
                   {{ translations[currentLanguage.code].errors.nameRequired }}
@@ -100,7 +111,7 @@
                   {{ translations[currentLanguage.code].errors.messageRequired }}
                 </li>
               </ul>
-            </p-message>
+            </div>
           </form>
         </div>
         

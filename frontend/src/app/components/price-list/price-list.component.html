@@ -1,17 +1,16 @@
 <app-prices-loading [hidden]="!isLoadingPricesSignal()"></app-prices-loading>
 
 <div #transferPricesContainer class="airport-button-group">
-  <p-button
-    severity="secondary"
+  <button
+    type="button"
+    class="airport-button"
     *ngFor="let mainLocation of mainLocations"
-    [label]="mainLocation.short[langInput?.code]"
     (click)="showTransferPrices(mainLocation)"
-    [styleClass]="
-      selectedLocation === mainLocation
-        ? 'p-button-raised p-button-success  active-airport-button'
-        : ''
-    "
-  ></p-button>
+    [ngClass]="{ 'airport-button--active': selectedLocation === mainLocation }"
+    [attr.aria-pressed]="selectedLocation === mainLocation"
+  >
+    {{ mainLocation.short[langInput?.code] }}
+  </button>
 </div>
 
 <div *ngIf="selectedLocation" class="transfer-prices">

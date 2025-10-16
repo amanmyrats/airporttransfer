@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, computed, effect, ElementRef, Inject, inject, Input, OnInit, PLATFORM_ID, signal, ViewChild } from '@angular/core';
-import { TabsModule } from 'primeng/tabs';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MainLocationService } from '../../services/main-location.service';
 import { PopularRouteService } from '../../admin/services/popular-route.service';
@@ -13,15 +12,12 @@ import { Router } from '@angular/router';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 // import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { MainLocation } from '../../models/main-location.model';
-import { ButtonModule } from 'primeng/button';
 import { PricesLoadingComponent } from '../prices-loading/prices-loading.component';
 
 @Component({
   selector: 'app-price-list',
   imports: [
-    TabsModule, 
     CommonModule, 
-    ButtonModule, 
     PricesLoadingComponent, 
   ],
   templateUrl: './price-list.component.html',

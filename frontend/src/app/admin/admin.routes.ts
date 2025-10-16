@@ -10,14 +10,14 @@ import { RateListComponent } from './pages/rate-list/rate-list.component';
 import { ReservationListComponent } from './pages/reservation-list/reservation-list.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { UserDetailComponent } from './pages/user-detail/user-detail.component';
-import { BlogPostListComponent } from '../blog/components/blog-post-list/blog-post-list.component';
-import { BlogPostFormComponent } from '../blog/components/blog-post-form/blog-post-form.component';
-import { BlogCategoryListComponent } from '../blog/components/blog-category-list/blog-category-list.component';
-import { BlogTagListComponent } from '../blog/components/blog-tag-list/blog-tag-list.component';
-import { BlogPostSectionListComponent } from '../blog/components/blog-post-section-list/blog-post-section-list.component';
-import { BlogPostDetailComponent } from '../blog/components/blog-post-detail/blog-post-detail.component';
-import { BlogPostPreviewComponent } from '../blog/components/blog-post-preview/blog-post-preview.component';
-import { FaqLibraryListComponent } from '../blog/components/faq-library-list/faq-library-list.component';
+import { BlogPostListComponent } from './blogs/components/blog-post-list/blog-post-list.component';
+import { BlogPostFormComponent } from './blogs/components/blog-post-form/blog-post-form.component';
+import { BlogCategoryListComponent } from './blogs/components/blog-category-list/blog-category-list.component';
+import { BlogTagListComponent } from './blogs/components/blog-tag-list/blog-tag-list.component';
+import { BlogPostSectionListComponent } from './blogs/components/blog-post-section-list/blog-post-section-list.component';
+import { BlogPostDetailComponent } from './blogs/components/blog-post-detail/blog-post-detail.component';
+import { BlogPostPreviewComponent } from './blogs/components/blog-post-preview/blog-post-preview.component';
+import { FaqLibraryListComponent } from './blogs/components/faq-library-list/faq-library-list.component';
 
 export const adminRoutes: Routes = [
     {

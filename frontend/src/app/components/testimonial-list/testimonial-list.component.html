@@ -1,16 +1,22 @@
-<p-carousel
-  [value]="testimonials"
-  [numVisible]="1"
-  [numScroll]="1"
-  [circular]="true"
-  [autoplayInterval]="5000"
-  [responsiveOptions]="responsiveOptions"
-  styleClass="testimonial-carousel"
->
-  <ng-template pTemplate="item" let-testimonial>
-    <div class="testimonial-card">
+<section class="testimonial-section">
+  <div class="testimonial-header">
+    <p class="testimonial-kicker">What travellers say</p>
+    <h2 class="testimonial-title">Trusted by guests across Turkey</h2>
+    <p class="testimonial-subtitle">
+      Real feedback from passengers who booked our 24/7 private airport transfer
+      services in Istanbul, Antalya, Bodrum, Alanya, and beyond.
+    </p>
+  </div>
+
+  <div class="testimonial-grid">
+    <article
+      class="testimonial-card"
+      *ngFor="let testimonial of testimonials; let i = index"
+      [class.testimonial-card--accent]="i % 3 === 0"
+    >
+      <div class="testimonial-quote" aria-hidden="true">“</div>
       <p class="testimonial-text">{{ testimonial.text }}</p>
-      <h4 class="testimonial-author">— {{ testimonial.author }}</h4>
-    </div>
-  </ng-template>
-</p-carousel>
+      <p class="testimonial-author">— {{ testimonial.author }}</p>
+    </article>
+  </div>
+</section>
