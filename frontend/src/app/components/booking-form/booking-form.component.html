@@ -30,14 +30,10 @@
   </h3>
 
   <div
-    class="form-grid"
-    [class.form-grid--horizontal]="horizontalInDesktop"
+    class="field-row"
+    [class.field-row--horizontal]="horizontalInDesktop"
   >
-    <div
-      class="location-stack"
-      [class.location-stack--horizontal]="horizontalInDesktop"
-      [class.location-stack--horizontal-no-swap]="horizontalInDesktop && !showSwapButton"
-    >
+    <div class="field-row__locations">
       <div
         class="form-group form-group--from"
         [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid"
@@ -59,7 +55,7 @@
             (placeResolved)="onPlaceResolved()"
             (placeChanged)="onPickupPlaceChanged($event)"
             (keydown)="preventFormSubmit($event)"
-            aria-describedby="form_note"
+            [attr.aria-describedby]="!horizontalInDesktop ? 'form_note' : null"
           />
           <button
             *ngIf="isMapsReady && bookingService.bookingInitialForm.get('pickup_full')?.value"
@@ -83,9 +79,8 @@
       </div>
 
       <button
-        *ngIf="showSwapButton"
         type="button"
-        class="swap-button location-stack__swap"
+        class="swap-button"
         (click)="swapLocations()"
         [disabled]="!isMapsReady"
         [attr.aria-label]="translations.swapLocations[currentLangCode]"
@@ -121,7 +116,7 @@
             (placeResolved)="onPlaceResolved()"
             (placeChanged)="onDestPlaceChanged($event)"
             (keydown)="preventFormSubmit($event)"
-            aria-describedby="form_note"
+            [attr.aria-describedby]="!horizontalInDesktop ? 'form_note' : null"
           />
           <button
             *ngIf="isMapsReady && bookingService.bookingInitialForm.get('dest_full')?.value"
@@ -144,33 +139,31 @@
         </p>
       </div>
     </div>
-    <div
-      class="form-footer"
-      [class.form-footer--horizontal]="horizontalInDesktop"
+
+    <button
+      type="submit"
+      class="submit-btn"
+      [class.submit-btn--loading]="isSubmitting"
+      [disabled]="!canSubmit"
+      [attr.aria-busy]="isSubmitting"
     >
-      <p class="form-note" id="form_note">
-        {{ translations.helperLine[currentLangCode] }}
-      </p>
-
-      <!-- Submit -->
-      <button
-        type="submit"
-        class="submit-btn"
-        [class.submit-btn--loading]="isSubmitting"
-        [disabled]="!canSubmit"
-        [attr.aria-busy]="isSubmitting"
-      >
-        <span class="submit-btn__spinner" aria-hidden="true" *ngIf="isSubmitting"></span>
-        <span class="submit-btn__label">
-          {{ translations.search[currentLangCode] }}
-          <svg *ngIf="!isSubmitting" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m19.71 11.29-6-6a1 1 0 0 0-1.42 1.42L16.59 11H5a1 1 0 0 0 0 2h11.59l-4.29 4.29a1 1 0 1 0 1.42 1.42l6-6a1 1 0 0 0-.01-1.42Z" />
-          </svg>
-        </span>
-      </button>
-
-    </div>
+      <span class="submit-btn__spinner" aria-hidden="true" *ngIf="isSubmitting"></span>
+      <span class="submit-btn__label">
+        {{ translations.search[currentLangCode] }}
+        <svg *ngIf="!isSubmitting" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m19.71 11.29-6-6a1 1 0 0 0-1.42 1.42L16.59 11H5a1 1 0 0 0 0 2h11.59l-4.29 4.29a1 1 0 1 0 1.42 1.42l6-6a1 1 0 0 0-.01-1.42Z" />
+        </svg>
+      </span>
+    </button>
   </div>
+
+  <p
+    *ngIf="!horizontalInDesktop"
+    class="form-note"
+    id="form_note"
+  >
+    {{ translations.helperLine[currentLangCode] }}
+  </p>
 
   <div
     class="error-banner"

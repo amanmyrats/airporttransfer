@@ -6,6 +6,7 @@
   display: grid;
   gap: clamp(0.9rem, 2.5vw, 0.5rem);
   padding: clamp(0.65rem, 2vw, 1rem);
+  box-sizing: border-box;
   border-radius: 28px;
   border: 1px solid var(--form-border, rgba(148, 163, 184, 0.25));
   background: var(--form-surface, rgba(255, 255, 255, 0.92));
@@ -24,7 +25,6 @@
   font-weight: 700;
   color: #0f172a;
   letter-spacing: 0.01em;
-  padding-inline: clamp(0rem, 1vw, 0.75rem);
   text-align: center;
 }
 
@@ -33,10 +33,6 @@
   max-width: 88rem;
   min-width: min(40rem, 100%);
   margin: 0 auto;
-}
-
-.booking-form--horizontal .booking-form__title {
-  text-align: center;
 }
 
 .maps-overlay {
@@ -85,18 +81,18 @@
   }
 }
 
-.form-grid {
+.field-row {
   display: grid;
-  gap: clamp(0.65rem, 2vw, 0.95rem);
+  gap: clamp(0.65rem, 2vw, 0.9rem);
 }
 
-.location-stack {
+.field-row__locations {
   position: relative;
   display: grid;
   gap: clamp(0.5rem, 1.5vw, 0.75rem);
 }
 
-.location-stack .form-group {
+.field-row .form-group {
   margin: 0;
 }
 
@@ -129,15 +125,15 @@
   display: inline-block;
 }
 
-.location-stack__swap {
+.field-row__locations .swap-button {
   position: absolute;
   left: 50%;
-  top: 54%;
+  top: 50%;
   transform: translate(-50%, -50%);
   z-index: 4;
 }
 
-.location-stack__swap:hover:not(:disabled) {
+.field-row__locations .swap-button:hover:not(:disabled) {
   transform: translate(-50%, -50%) rotate(180deg);
   box-shadow: 0 16px 34px -20px rgba(59, 130, 246, 0.85);
 }
@@ -193,7 +189,6 @@
 
 .input-wrapper:focus-within {
   border-color: rgba(37, 99, 235, 0.75);
-  box-shadow: 0 24px 48px -30px rgba(37, 99, 235, 0.5);
   background: rgba(237, 246, 255, 0.95);
 }
 
@@ -283,11 +278,6 @@
   border: 1px solid rgba(148, 163, 184, 0.16);
 }
 
-.form-footer {
-  display: grid;
-  gap: 0.75rem;
-}
-
 .error-banner {
   display: grid;
   gap: 0.75rem;
@@ -296,7 +286,6 @@
   background: rgba(255, 247, 237, 0.9);
   border: 1px solid rgba(251, 191, 36, 0.5);
   color: #92400e;
-  box-shadow: 0 24px 50px -38px rgba(251, 191, 36, 0.55);
 }
 
 .error-banner__title {
@@ -355,41 +344,26 @@
   border: 0;
 }
 
-@media (min-width: 769px) {
-  .form-grid--horizontal {
+@media (min-width: 960px) {
+  .field-row--horizontal {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: stretch;
     gap: clamp(0.75rem, 1.8vw, 1.4rem);
   }
 
-  .location-stack--horizontal {
-    position: static;
+  .field-row--horizontal .field-row__locations {
+    display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(clamp(2.75rem, 6vw, 3.25rem), auto) minmax(0, 1fr);
     align-items: stretch;
     gap: clamp(0.4rem, 1vw, 0.9rem);
   }
 
-  .location-stack--horizontal-no-swap {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .location-stack--horizontal .form-group--from {
-    grid-column: 1;
-  }
-
-  .location-stack--horizontal .form-group--to {
-    grid-column: 3;
-  }
-
-  .location-stack--horizontal .form-group--from,
-  .location-stack--horizontal .form-group--to {
+  .field-row--horizontal .field-row__locations .form-group--from,
+  .field-row--horizontal .field-row__locations .form-group--to {
     height: 100%;
   }
 
-  .location-stack--horizontal-no-swap .form-group--from,
-  .location-stack--horizontal-no-swap .form-group--to {
-    grid-column: auto;
-  }
-
-  .location-stack--horizontal .location-stack__swap {
+  .field-row--horizontal .field-row__locations .swap-button {
     position: static;
     left: auto;
     top: auto;
@@ -398,7 +372,7 @@
     align-self: center;
   }
 
-  .location-stack--horizontal .location-stack__swap:hover:not(:disabled) {
+  .field-row--horizontal .field-row__locations .swap-button:hover:not(:disabled) {
     transform: rotate(180deg);
   }
 
@@ -420,23 +394,12 @@
     height: clamp(1.4rem, 3.4vw, 1.7rem);
   }
 
-  .form-footer--horizontal {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: clamp(0.75rem, 1.8vw, 1.6rem);
-    align-items: center;
-  }
-
-  .form-footer--horizontal .submit-btn {
-    justify-self: end;
-  }
-
-  .form-footer--horizontal .form-note {
-    margin: 0;
+  .field-row--horizontal .submit-btn {
+    align-self: stretch;
+    justify-self: stretch;
+    min-width: clamp(10rem, 16vw, 12.5rem);
   }
 }
-
-
-
 
 .submit-btn {
   display: inline-flex;
@@ -509,22 +472,26 @@
     padding: clamp(0.75rem, 3.6vw, 1.15rem);
   }
 
+  .field-row .submit-btn {
+    width: 100%;
+  }
+
   .submit-btn {
     width: 100%;
   }
 }
 
 @media (max-width: 540px) {
-  .swap-button {
+  .field-row__locations .swap-button {
     width: 2.6rem;
     height: 2.6rem;
   }
 
-  .location-stack {
+  .field-row {
     gap: 0.55rem;
   }
 
-  .location-stack__swap {
-    top: 52%;
+  .field-row__locations .swap-button {
+    top: 50%;
   }
 }

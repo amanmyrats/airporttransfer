@@ -36,35 +36,8 @@
             </ol>
         </nav>
 
-        <section class="booking-stageTEMPORARY_REMOVE" *ngIf="activeStep === 1">
-            <app-booking-initial-form
-                (searchVehicle)="goToStep($event, 1, 2)"
-                [langInput]="currentLanguage"
-            ></app-booking-initial-form>
-        </section>
-
-        <section class="booking-stageTEMPORARY_REMOVE" *ngIf="activeStep === 2">
-            <app-booking-car-type-selection-form
-                (carTypeSelectionOutput)="goToStep($event, 2, 3)"
-                [langInput]="currentLanguage"
-            ></app-booking-car-type-selection-form>
-
-            <div class="booking-stageTEMPORARY_REMOVE__actions" *ngIf="stepFromUrl !== 2">
-                <button
-                    type="button"
-                    class="booking-stageTEMPORARY_REMOVE__btn booking-stageTEMPORARY_REMOVE__btn--ghost"
-                    (click)="goToStep($event, 2, 1)"
-                >
-                    {{ translations.back[languageService.currentLang().code] }}
-                </button>
-            </div>
-        </section>
-
-        <section class="booking-stageTEMPORARY_REMOVE" *ngIf="activeStep === 3">
-            <app-booking-completion-form
-                (previousStep)="goToStep($event, 3, 2)"
-                [langInput]="currentLanguage"
-            ></app-booking-completion-form>
+        <section class="booking-stageTEMPORARY_REMOVE">
+            <router-outlet></router-outlet>
         </section>
     </main>
 

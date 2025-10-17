@@ -120,10 +120,13 @@ export const serverRoutes: ServerRoute[] = [
     // Book Now
     { path: 'en/book-now-24-7-private-airport-transfer-in-turkey', 
         renderMode: RenderMode.Prerender,},
+
     { path: 'de/jetzt-buchen-24-7-privater-flughafentransfer-in-der-türkei', 
         renderMode: RenderMode.Prerender,},
+
     { path: 'ru/забронировать-сейчас-24-7-частный-трансфер-из-аэропорта-в-турции', 
         renderMode: RenderMode.Prerender,},
+
     { path: 'tr/türkiye-de-7-24-özel-havalimanı-transferi-şimdi-rezervasyon-yap', 
         renderMode: RenderMode.Prerender,},
 

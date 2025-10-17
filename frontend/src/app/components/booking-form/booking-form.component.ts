@@ -60,11 +60,6 @@ export class BookingFormComponent implements OnInit {
     return this.mapsStatus.status === 'ready';
   }
 
-  get showSwapButton(): boolean {
-    const form = this.bookingService.bookingInitialForm;
-    return Boolean(form.get('pickup_full')?.value || form.get('dest_full')?.value);
-  }
-
   getErrorMessage(messageKey: string | null): string {
     if (!messageKey) {
       return this.translations.errorText[this.currentLangCode];

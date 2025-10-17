@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { PrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { HomeComponent } from './pages/home/home.component';
+import { BookingStepGuard } from './pages/booking/guards/booking-step.guard';
 import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
 import { SsrTestComponent } from './components/ssr-test/ssr-test.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
@@ -164,10 +165,98 @@ export const routes: Routes = [
     { path: 'tr/türkiye-de-7-24-özel-havalimanı-transferleri-için-uygun-fiyatlar', loadComponent: () => import('./pages/prices/prices.component').then(m => m.PricesComponent), data: { language: 'tr' }   },
     
     // Book Now
-    { path: 'en/book-now-24-7-private-airport-transfer-in-turkey', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'en' }   },
-    { path: 'de/jetzt-buchen-24-7-privater-flughafentransfer-in-der-türkei', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'de' }   },
-    { path: 'ru/забронировать-сейчас-24-7-частный-трансфер-из-аэропорта-в-турции', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'ru' }   },
-    { path: 'tr/türkiye-de-7-24-özel-havalimanı-transferi-şimdi-rezervasyon-yap', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'tr' }   },
+    {
+        path: 'en/book-now-24-7-private-airport-transfer-in-turkey',
+        loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent),
+        data: { language: 'en' },
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./pages/booking/steps/booking-initial-step.component').then(m => m.BookingInitialStepComponent),
+            },
+            {
+                path: 'car-selection',
+                loadComponent: () => import('./pages/booking/steps/booking-car-selection-step.component').then(m => m.BookingCarSelectionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 2 },
+            },
+            {
+                path: 'completion',
+                loadComponent: () => import('./pages/booking/steps/booking-completion-step.component').then(m => m.BookingCompletionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 3 },
+            },
+        ],
+    },
+    {
+        path: 'de/jetzt-buchen-24-7-privater-flughafentransfer-in-der-türkei',
+        loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent),
+        data: { language: 'de' },
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./pages/booking/steps/booking-initial-step.component').then(m => m.BookingInitialStepComponent),
+            },
+            {
+                path: 'car-selection',
+                loadComponent: () => import('./pages/booking/steps/booking-car-selection-step.component').then(m => m.BookingCarSelectionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 2 },
+            },
+            {
+                path: 'completion',
+                loadComponent: () => import('./pages/booking/steps/booking-completion-step.component').then(m => m.BookingCompletionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 3 },
+            },
+        ],
+    },
+    {
+        path: 'ru/забронировать-сейчас-24-7-частный-трансфер-из-аэропорта-в-турции',
+        loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent),
+        data: { language: 'ru' },
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./pages/booking/steps/booking-initial-step.component').then(m => m.BookingInitialStepComponent),
+            },
+            {
+                path: 'car-selection',
+                loadComponent: () => import('./pages/booking/steps/booking-car-selection-step.component').then(m => m.BookingCarSelectionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 2 },
+            },
+            {
+                path: 'completion',
+                loadComponent: () => import('./pages/booking/steps/booking-completion-step.component').then(m => m.BookingCompletionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 3 },
+            },
+        ],
+    },
+    {
+        path: 'tr/türkiye-de-7-24-özel-havalimanı-transferi-şimdi-rezervasyon-yap',
+        loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent),
+        data: { language: 'tr' },
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./pages/booking/steps/booking-initial-step.component').then(m => m.BookingInitialStepComponent),
+            },
+            {
+                path: 'car-selection',
+                loadComponent: () => import('./pages/booking/steps/booking-car-selection-step.component').then(m => m.BookingCarSelectionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 2 },
+            },
+            {
+                path: 'completion',
+                loadComponent: () => import('./pages/booking/steps/booking-completion-step.component').then(m => m.BookingCompletionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 3 },
+            },
+        ],
+    },
 
 
     // // Simple Landing
