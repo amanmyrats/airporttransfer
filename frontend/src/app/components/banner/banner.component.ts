@@ -3,14 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BookingBannerFormComponent } from '../booking-banner-form/booking-banner-form.component';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-banner',
   imports: [
     BookingBannerFormComponent, 
     CommonModule, 
-    ProgressSpinnerModule, 
   ],
   templateUrl: './banner.component.html',
   styleUrl: './banner.component.scss'

@@ -1,8 +1,22 @@
+import { inject, provideEnvironmentInitializer } from '@angular/core';
 import { Routes } from '@angular/router';
+import { PrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 import { HomeComponent } from './pages/home/home.component';
 import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
 import { SsrTestComponent } from './components/ssr-test/ssr-test.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
+
+const adminThemeProviders = [
+    provideEnvironmentInitializer(() => {
+        const prime = inject(PrimeNG);
+        prime.setConfig({
+            theme: {
+                preset: Aura,
+            },
+        });
+    }),
+];
 
 export const routes: Routes = [
     // {   path: 'en/aboutus/',component: AboutUsComponent, data: { language: 'en' }  },
@@ -253,6 +267,7 @@ export const routes: Routes = [
     {
         path: 'admin',
         component: AdminHomeComponent, 
+        providers: adminThemeProviders,
         loadChildren: () => import('./admin/admin.routes').then(x => x.adminRoutes),
         data: { 
             noHydration: true, 
@@ -263,19 +278,22 @@ export const routes: Routes = [
         path: 'passwordreset',
         // component: PasswordResetComponent,
         loadComponent: () => import('./admin/pages/password-reset/password-reset.component').then(m => m.PasswordResetComponent), 
-        data: { language: 'tr' }
+        data: { language: 'tr' },
+        providers: adminThemeProviders,
     },
     {
         path: 'passwordresetconfirm',
         // component: PasswordResetConfirmComponent,
         loadComponent: () => import('./admin/pages/password-reset-confirm/password-reset-confirm.component').then(m => m.PasswordResetConfirmComponent), 
-        data: { language: 'tr' }
+        data: { language: 'tr' },
+        providers: adminThemeProviders,
     },
     {
         path: 'unauthorized',
         // component: UnauthorizedComponent,
         loadComponent: () => import('./admin/pages/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent), 
-        data: { language: 'tr' }
+        data: { language: 'tr' },
+        providers: adminThemeProviders,
     },
 
     {

@@ -1,8 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { LanguageSelectionComponent } from '../language-selection/language-selection.component';
 import { CurrencySelectionComponent } from '../currency-selection/currency-selection.component';
 import { ActivatedRoute } from '@angular/router';
@@ -11,7 +8,7 @@ import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-super-header',  
-  imports: [FormsModule, SelectModule, ButtonModule, 
+  imports: [
     CommonModule, 
     LanguageSelectionComponent, 
     CurrencySelectionComponent, 

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, Input, OnInit, output, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { GmapsAutocompleteDirective } from '../../directives/gmaps-autocomplete.directive';
 import { BookingService } from '../../services/booking.service';
 import { GoogleMapsService } from '../../services/google-maps.service';
@@ -24,7 +24,6 @@ export interface BookingSearchEvent {
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     ReactiveFormsModule,
     GmapsAutocompleteDirective,
   ],

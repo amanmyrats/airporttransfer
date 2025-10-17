@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { LazyLoadEvent } from 'primeng/api';
 import { CommonModule, DatePipe } from '@angular/common';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { DatePicker } from 'primeng/datepicker';
@@ -12,6 +11,7 @@ import { Select } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';
 import { CommonService } from '../../../services/common.service';
 import { SUPPORTED_MAIN_LOCATIONS } from '../../../constants/main-location.constants';
+import { LazyLoadParams } from '../../../interfaces/custom-lazy-load-event';
 
 @Component({
     selector: 'app-filter-search', 
@@ -72,7 +72,7 @@ export class FilterSearchComponent implements OnInit{
   @Output() getBlogCategoryEmitter: EventEmitter<any> = new EventEmitter();
   
   filterSearchForm: FormGroup;
-  event: LazyLoadEvent = {};
+  event: LazyLoadParams = {};
   
   mainLocations: any[] = SUPPORTED_MAIN_LOCATIONS;
 

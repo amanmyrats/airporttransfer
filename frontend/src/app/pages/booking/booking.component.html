@@ -1,91 +1,72 @@
 <div class="home-wrapper">
     <app-super-header [langInput]="currentLanguage"></app-super-header>
     <app-navbar></app-navbar>
-    <div class="card flex justify-center">
-        <p-stepper [(value)]="activeStep" class="basis-[50rem]">
-            <p-step-list>
-                <p-step [value]="1" [disabled]="activeStep !== 1">
-                    {{ translations.destination[currentLanguage.code] }}
-                </p-step>
-                <p-step [value]="2" [disabled]="activeStep !== 2">
-                    {{ translations.vehicle[currentLanguage.code] }}
-                </p-step>
-                <p-step [value]="3" [disabled]="activeStep !== 3">
-                    {{ translations.personal[currentLanguage.code] }}
-                </p-step>
-            </p-step-list>
-            <p-step-panels>
-                <p-step-panel [value]="1">
-                    <ng-template #content let-activateCallback="activateCallback">
-                        <div class="flex flex-col h-48">
-                            <div
-                                class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                            >
-                                <!-- Destination -->
+    <main class="booking">
+        <nav class="booking-stepper" aria-label="Booking steps">
+            <ol class="booking-stepper__list">
+                <li
+                    class="booking-stepper__item"
+                    [class.booking-stepper__item--active]="activeStep === 1"
+                    [class.booking-stepper__item--completed]="activeStep > 1"
+                >
+                    <span class="booking-stepper__index">1</span>
+                    <span class="booking-stepper__label">
+                        {{ translations.destination[currentLanguage.code] }}
+                    </span>
+                </li>
+                <li
+                    class="booking-stepper__item"
+                    [class.booking-stepper__item--active]="activeStep === 2"
+                    [class.booking-stepper__item--completed]="activeStep > 2"
+                >
+                    <span class="booking-stepper__index">2</span>
+                    <span class="booking-stepper__label">
+                        {{ translations.vehicle[currentLanguage.code] }}
+                    </span>
+                </li>
+                <li
+                    class="booking-stepper__item"
+                    [class.booking-stepper__item--active]="activeStep === 3"
+                >
+                    <span class="booking-stepper__index">3</span>
+                    <span class="booking-stepper__label">
+                        {{ translations.personal[currentLanguage.code] }}
+                    </span>
+                </li>
+            </ol>
+        </nav>
 
-    <app-booking-initial-form (searchVehicle)="goToStep($event, 1, 2)" 
-    [langInput]="currentLanguage"
-    >
+        <section class="booking-stageTEMPORARY_REMOVE" *ngIf="activeStep === 1">
+            <app-booking-initial-form
+                (searchVehicle)="goToStep($event, 1, 2)"
+                [langInput]="currentLanguage"
+            ></app-booking-initial-form>
+        </section>
 
-    </app-booking-initial-form>
+        <section class="booking-stageTEMPORARY_REMOVE" *ngIf="activeStep === 2">
+            <app-booking-car-type-selection-form
+                (carTypeSelectionOutput)="goToStep($event, 2, 3)"
+                [langInput]="currentLanguage"
+            ></app-booking-car-type-selection-form>
 
-                            </div>
-                            <!-- <div class="flex pt-6 justify-end">
-                                <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(2)" />
-                            </div> -->
-                        </div>
-                    </ng-template>
-                </p-step-panel>
-      
-                <p-step-panel [value]="2">
-                    <ng-template #content let-activateCallback="activateCallback">
-                        <div class="flex flex-col h-48">
-                            <div
-                                class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                            >
-                                <!-- Vehicle Selection -->
+            <div class="booking-stageTEMPORARY_REMOVE__actions" *ngIf="stepFromUrl !== 2">
+                <button
+                    type="button"
+                    class="booking-stageTEMPORARY_REMOVE__btn booking-stageTEMPORARY_REMOVE__btn--ghost"
+                    (click)="goToStep($event, 2, 1)"
+                >
+                    {{ translations.back[languageService.currentLang().code] }}
+                </button>
+            </div>
+        </section>
 
-    <app-booking-car-type-selection-form (carTypeSelectionOutput)="goToStep($event, 2, 3)"
-    [langInput]="currentLanguage"
-    >
+        <section class="booking-stageTEMPORARY_REMOVE" *ngIf="activeStep === 3">
+            <app-booking-completion-form
+                (previousStep)="goToStep($event, 3, 2)"
+                [langInput]="currentLanguage"
+            ></app-booking-completion-form>
+        </section>
+    </main>
 
-    </app-booking-car-type-selection-form>
-
-                            </div>
-                        </div>
-                        <div class="flex pt-6 justify-between">
-                            <p-button [hidden]="stepFromUrl == 2" 
-                                label="{{ translations.back[languageService.currentLang().code] }}" severity="secondary" icon="pi pi-arrow-left" (onClick)="goToStep($event, 2, 1)" />
-                            <!-- <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(3)" /> -->
-                        </div>
-                    </ng-template>
-                </p-step-panel>
-      
-                <p-step-panel [value]="3">
-                    <ng-template #content let-activateCallback="activateCallback">
-                        <div class="flex flex-col h-48">
-                            <div
-                                class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                            >
-                                <!-- Personal Info -->
-
-    <app-booking-completion-form (previousStep)="goToStep($event, 3, 2)"
-    [langInput]="currentLanguage"
-    >
-
-    </app-booking-completion-form>
-
-                            </div>
-                        </div>
-                        <div class="flex pt-6 justify-start">
-                            <!-- <p-button label="Back" icon="pi pi-arrow-left" iconPos="right" (onClick)="goToStep($event, 3, 2)" /> -->
-                        </div>
-                    </ng-template>
-                </p-step-panel>
-            </p-step-panels>
-        </p-stepper>
-      </div>
-
-    
     <app-footer></app-footer>
 </div>

@@ -1,9 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { NgIf } from '@angular/common';
 import { SuperHeaderComponent } from '../../components/super-header/super-header.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from '../../components/footer/footer.component';
-import { ButtonModule } from 'primeng/button';
-import { StepperModule } from 'primeng/stepper';
 import { BookingInitialFormComponent } from '../../components/booking-initial-form/booking-initial-form.component';
 import { BookingCompletionFormComponent } from '../../components/booking-completion-form/booking-completion-form.component';
 import { BookingCarTypeSelectionFormComponent } from '../../components/booking-car-type-selection-form/booking-car-type-selection-form.component';
@@ -11,18 +10,16 @@ import { ActivatedRoute } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { LanguageService } from '../../services/language.service';
 import { BookingSearchEvent } from '../../components/booking-form/booking-form.component';
-import { usePreset } from '@primeng/themes';
-import Aura from '@primeng/themes/aura';
 import { Meta, Title } from '@angular/platform-browser';
 
 
 @Component({
   selector: 'app-booking',
   imports: [
+    NgIf,
     SuperHeaderComponent,
     NavbarComponent,
     FooterComponent, 
-    ButtonModule, StepperModule, 
     BookingInitialFormComponent, 
     BookingCarTypeSelectionFormComponent, 
     BookingCompletionFormComponent, 
@@ -64,7 +61,6 @@ export class BookingComponent implements OnInit {
         this.activeStep = this.stepFromUrl; // Start from step 3
       }
     });
-    usePreset(Aura);
   }
 
 

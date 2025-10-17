@@ -152,36 +152,22 @@
         {{ translations.helperLine[currentLangCode] }}
       </p>
 
-      <!-- <button
+      <!-- Submit -->
+      <button
         type="submit"
-        class="btn-submit"
+        class="submit-btn"
+        [class.submit-btn--loading]="isSubmitting"
         [disabled]="!canSubmit"
         [attr.aria-busy]="isSubmitting"
       >
-        <span class="btn-submit__spinner" *ngIf="isSubmitting" aria-hidden="true"></span>
-        <span>{{ translations.search[currentLangCode] }}</span>
-        <svg *ngIf="!isSubmitting" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m19.71 11.29-6-6a1 1 0 0 0-1.42 1.42L16.59 11H5a1 1 0 0 0 0 2h11.59l-4.29 4.29a1 1 0 1 0 1.42 1.42l6-6a1 1 0 0 0-.01-1.42Z" />
-        </svg>
-      </button> -->
-
-          <!-- Submit -->
-    <button
-      type="submit"
-      class="submit-btn"
-      [class.submit-btn--loading]="isSubmitting"
-      [disabled]="!canSubmit"
-      [attr.aria-busy]="isSubmitting"
-    >
-      <span class="submit-btn__spinner" aria-hidden="true" *ngIf="isSubmitting"></span>
-      <span class="submit-btn__label">
-        {{ translations.search[currentLangCode] }}
-        <svg *ngIf="!isSubmitting" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m19.71 11.29-6-6a1 1 0 0 0-1.42 1.42L16.59 11H5a1 1 0 0 0 0 2h11.59l-4.29 4.29a1 1 0 1 0 1.42 1.42l6-6a1 1 0 0 0-.01-1.42Z" />
-        </svg>
-      </span>
-    </button>
-
+        <span class="submit-btn__spinner" aria-hidden="true" *ngIf="isSubmitting"></span>
+        <span class="submit-btn__label">
+          {{ translations.search[currentLangCode] }}
+          <svg *ngIf="!isSubmitting" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m19.71 11.29-6-6a1 1 0 0 0-1.42 1.42L16.59 11H5a1 1 0 0 0 0 2h11.59l-4.29 4.29a1 1 0 1 0 1.42 1.42l6-6a1 1 0 0 0-.01-1.42Z" />
+          </svg>
+        </span>
+      </button>
 
     </div>
   </div>

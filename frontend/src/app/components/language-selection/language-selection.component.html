@@ -5,7 +5,11 @@
         style="width: 20px; height: 15px;"
         />
       <span>{{ selectedLanguage.name }}</span>
-      <i class="dropdown-arrow pi pi-chevron-down"></i>
+      <span class="dropdown-arrow" aria-hidden="true">
+        <svg viewBox="0 0 12 8" focusable="false" aria-hidden="true">
+          <path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
     </button>
     <!-- Dropdown Menu -->
     <ul class="dropdown-menu" [class.show]="isDropdownVisible">

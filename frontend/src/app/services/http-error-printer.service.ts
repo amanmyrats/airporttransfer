@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,14 +8,14 @@ import { MessageService } from 'primeng/api';
 export class HttpErrorPrinterService {
 
   constructor(
-    private messageService: MessageService, 
+    private notificationService: NotificationService, 
     // private translateService?: TranslateService
   ) {} // Inject messageService and optional translateService
 
   public printHttpError(err: any): void {
     console.log("HttpErrorPrinterService.printHttpError()");
     console.log(err);
-    this.messageService.clear();
+    this.notificationService.clear();
     if (err.error) {
       for (const [key, value] of Object.entries(err.error)) {
         // const translatedKey = this.translateKey(key); // Optional translation
@@ -24,25 +24,25 @@ export class HttpErrorPrinterService {
 
         const is_failed_login = string_value.toLowerCase().includes('no active account'.toLowerCase());
         if (is_failed_login) {
-          this.messageService.add({ severity: 'error', summary: key, detail: 'E-Posta veya şifre hatalı.' });
+          this.notificationService.add({ severity: 'error', summary: key, detail: 'E-Posta veya şifre hatalı.' });
         } else {
-          this.messageService.add({ severity: 'error', summary: key, detail: value as string });
+          this.notificationService.add({ severity: 'error', summary: key, detail: value as string });
         }
 
       }
     } else {
       console.error('Beklenmedik hata:', err);
-      this.messageService.add({ severity: 'error', summary: 'Unexpected Error', detail: 'An unexpected error occurred.' }); // Default error message
+      this.notificationService.add({ severity: 'error', summary: 'Unexpected Error', detail: 'An unexpected error occurred.' }); // Default error message
     }
   }
 
 
   /** NEW: simple validator-to-toast mapper */
   printFormErrors(form: FormGroup, labels: Record<string, string> = {}): void {
-    this.messageService.clear();
+    this.notificationService.clear();
 
     const add = (summary: string, detail: string) =>
-      this.messageService.add({ severity: 'error', summary, detail });
+      this.notificationService.add({ severity: 'error', summary, detail });
 
     let any = false;
     Object.entries(form.controls).forEach(([key, control]) => {

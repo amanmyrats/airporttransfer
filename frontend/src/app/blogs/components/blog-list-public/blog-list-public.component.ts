@@ -7,7 +7,6 @@ import { FooterComponent } from '../../../components/footer/footer.component';
 import { NAVBAR_MENU } from '../../../constants/navbar-menu.constants';
 import { Meta, Title } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LazyLoadEvent } from 'primeng/api';
 import { environment as env } from '../../../../environments/environment';
 import { LocalizedBlogPost } from '../../../admin/blogs/models/localized-blog-post.model';
 import { BlogCategory } from '../../../admin/blogs/models/blog-category.model';
@@ -15,6 +14,7 @@ import { BlogTag } from '../../../admin/blogs/models/blog-tag.model';
 import { BlogCategoryService } from '../../../admin/blogs/services/blog-category.service';
 import { BlogService } from '../../../admin/blogs/services/blog.service';
 import { CommonService } from '../../../services/common.service';
+import { LazyLoadParams } from '../../../interfaces/custom-lazy-load-event';
 
 @Component({
   selector: 'app-blog-list-public',
@@ -63,7 +63,7 @@ export class BlogListPublicComponent implements OnInit {
   filtersOpen = false;
 
   // event object for CommonService
-  event: LazyLoadEvent = { first: 0, rows: this.pageSize, filters: {} };
+  event: LazyLoadParams = { first: 0, rows: this.pageSize, filters: {} };
   commonService = inject(CommonService);
   router = inject(Router);
 
