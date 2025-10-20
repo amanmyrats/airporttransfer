@@ -227,13 +227,6 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe((params) => {
       this.stepFromUrl = params['step'];
       const popularRouteParam = params['is_from_popular_routes'];
-      if (popularRouteParam !== undefined) {
-        const normalizedValue = popularRouteParam.toString().toLowerCase();
-        this.isFromPopularRoute = ['1', 'true', 'yes'].includes(normalizedValue);
-        this.handlePopularRoute(params);
-      } else {
-        this.isFromPopularRoute = false;
-      }
       console.log('bookingInitialForm:', this.bookingService.bookingInitialForm.value);
       this.bookingService.bookingCompletionForm.patchValue({
         pickup_short: this.bookingService.bookingInitialForm.get('pickup_short')?.value,
@@ -241,6 +234,13 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
         pickup_full: this.bookingService.bookingInitialForm.get('pickup_full')?.value,
         dest_full: this.bookingService.bookingInitialForm.get('dest_full')?.value,
       });
+      if (popularRouteParam !== undefined) {
+        const normalizedValue = popularRouteParam.toString().toLowerCase();
+        this.isFromPopularRoute = ['1', 'true', 'yes'].includes(normalizedValue);
+        this.handlePopularRoute(params);
+      } else {
+        this.isFromPopularRoute = false;
+      }
       this.updateRouteMapUrl();
     });
 
