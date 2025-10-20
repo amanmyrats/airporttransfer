@@ -58,7 +58,7 @@ export class BookingBannerFormComponent {
       .calculateDrivingDistanceAndTime(origin, destination)
       .then(result => {
         return this.router.navigate(
-          [`${this.languageCode}/${NAVBAR_MENU.bookNow.slug[this.languageCode]}/`],
+          [`${this.languageCode}/${NAVBAR_MENU.bookNow.slug[this.languageCode]}/car-selection/`],
           {
             queryParams: {
               step: 2,

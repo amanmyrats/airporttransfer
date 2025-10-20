@@ -4,27 +4,70 @@
       <span class="car-selection__badge">{{ translations.cars[langInput.code] }}</span>
       <h1>{{ translations.bookYourRide ? translations.bookYourRide[langInput.code] : translations.cars[langInput.code] }}</h1>
     </div>
-    <div class="car-selection__route" *ngIf="bookingService.bookingInitialForm.value.pickup_full || bookingService.bookingInitialForm.value.dest_full">
-      <div class="route-chip">
-        <span class="route-icon" aria-hidden="true">📍</span>
-        <span class="route-text">{{ bookingService.bookingInitialForm.value.pickup_full }}</span>
+    <div
+      class="car-selection__route"
+      *ngIf="bookingService.bookingInitialForm.value.pickup_full || bookingService.bookingInitialForm.value.dest_full"
+    >
+      <div class="summary-route" *ngIf="bookingService.bookingInitialForm.value.pickup_full as pickupFull">
+        <div class="route-chip">
+          <span class="route-icon" aria-hidden="true">📍</span>
+          <span class="route-text">
+            <span class="route-text__label">{{ translations.from[langInput.code] }}</span>
+            <span class="route-text__primary">
+              {{
+                getPrimaryLocation(pickupFull)
+                  || pickupFull
+              }}
+            </span>
+            <span
+              class="route-text__secondary"
+              *ngIf="getSecondaryLocation(pickupFull)"
+            >
+              {{ getSecondaryLocation(pickupFull) }}
+            </span>
+          </span>
+        </div>
       </div>
-      <span class="route-arrow" aria-hidden="true">➜</span>
-      <div class="route-chip route-chip--destination">
-        <span class="route-icon" aria-hidden="true">🏁</span>
-        <span class="route-text">{{ bookingService.bookingInitialForm.value.dest_full }}</span>
+
+      <div class="summary-route" *ngIf="bookingService.bookingInitialForm.value.dest_full as destFull">
+        <div class="route-chip route-chip--destination">
+          <span class="route-icon" aria-hidden="true">🏁</span>
+          <span class="route-text">
+            <span class="route-text__label route-text__label--destination">{{ translations.to[langInput.code] }}</span>
+            <span class="route-text__primary">
+              {{
+                getPrimaryLocation(destFull)
+                  || destFull
+              }}
+            </span>
+            <span
+              class="route-text__secondary"
+              *ngIf="getSecondaryLocation(destFull)"
+            >
+              {{ getSecondaryLocation(destFull) }}
+            </span>
+          </span>
+        </div>
       </div>
     </div>
-    <div class="car-selection__metrics">
-      <div class="metric">
+    <div
+      class="car-selection__metrics"
+      *ngIf="bookingService.bookingCarTypeSelectionForm.value.distance || bookingService.bookingCarTypeSelectionForm.value.driving_duration"
+    >
+      <div class="metric" *ngIf="bookingService.bookingCarTypeSelectionForm.value.distance">
         <span class="metric-icon" aria-hidden="true">🛣️</span>
-        <span class="metric-label">{{ translations.distance[langInput.code] }}</span>
-        <strong class="metric-value">{{ bookingService.bookingCarTypeSelectionForm.value.distance | number: '1.0-0' }} km</strong>
+        <strong class="metric-value">
+          {{ bookingService.bookingCarTypeSelectionForm.value.distance | number: '1.0-0' }} km
+        </strong>
       </div>
-      <div class="metric">
+      <div class="metric" *ngIf="bookingService.bookingCarTypeSelectionForm.value.driving_duration">
         <span class="metric-icon" aria-hidden="true">⏱️</span>
-        <span class="metric-label">{{ translations.duration?.[langInput.code] || 'Duration' }}</span>
-        <strong class="metric-value">{{ bookingService.bookingCarTypeSelectionForm.value.driving_duration | number: '1.0-0' }} mins</strong>
+        <strong class="metric-value">
+          {{
+            bookingService.bookingCarTypeSelectionForm.value.driving_duration
+              | durationFormat: langInput?.code
+          }}
+        </strong>
       </div>
     </div>
   </header>
@@ -69,65 +112,63 @@
           [src]="'images/cartypes/' + carType.image.name[languageService.currentLang().code]"
           [alt]="carType.image.alt[languageService.currentLang().code]"
         />
+        <figcaption class="car-card__badge">{{ translations.availableCar?.[langInput.code] || 'Available' }}</figcaption>
+        <div class="car-card__overlay">
+          <h2 class="car-card__overlay-title">{{ carType.name }}</h2>
+          <span class="car-card__overlay-subtitle">{{ translations.orEquivalent?.[langInput.code] || 'or equivalent' }}</span>
+        </div>
       </figure>
       <div class="car-card__content">
-        <header class="car-card__header">
-          <div class="car-card__title">
-            <h2>{{ carType.name }}</h2>
-            <span class="car-card__subtitle">{{ translations.orEquivalent?.[langInput.code] || 'or equivalent' }}</span>
-          </div>
-          <p class="car-card__capacity">
-            <span aria-hidden="true">👥</span>
-            {{ carType.pax }} {{ translations.passengers?.[langInput.code] || 'Passengers' }}
-          </p>
-        </header>
-
         <section class="car-card__body">
-          <!-- <p class="car-card__description" *ngIf="carType.code">{{ carType.code }}</p> -->
-
-          <ng-container *ngIf="carType.specialPrice; else standardPrice">
-            <div class="car-card__special">
-              <span class="car-card__special-label">{{ translations.specialPrice[langInput.code] }}</span>
-              <!-- <p>{{ translations.longDistanceMessage[langInput.code] }}</p> -->
-              <ul class="contact-links contact-links--inline">
-                <li>
-                  <span aria-hidden="true">💬</span>
-                  <a [href]="socialIcons.whatsapp.url" target="_blank" rel="noopener">WhatsApp {{ socialIcons.phone.formatted }}</a>
-                </li>
-                <li>
-                  <span aria-hidden="true">📨</span>
-                  <a [href]="socialIcons.telegram.url" target="_blank" rel="noopener">Telegram &#64;{{ socialIcons.telegram.username }}</a>
-                </li>
-                <li>
-                  <span aria-hidden="true">✉️</span>
-                  <a [href]="'mailto:' + socialIcons.email.info">{{ socialIcons.email.info }}</a>
-                </li>
-              </ul>
+          <div class="car-card__metrics" *ngIf="!carType.specialPrice">
+            <div class="car-card__metric car-card__metric--capacity">
+              <span class="car-card__metric-icon" aria-hidden="true">👥</span>
+              <div class="car-card__metric-text">
+                <strong class="car-card__metric-value">{{ carType.pax }} {{ translations.passengers?.[langInput.code] || 'Passengers' }}</strong>
+              </div>
             </div>
-          </ng-container>
-
-          <ng-template #standardPrice>
-            <div class="car-card__price">
-              <span class="price-label">{{ translations.price[langInput.code] }}</span>
-              <span class="price-value">{{ carType.price }} {{ currencyService.currentCurrency().sign }}</span>
+            <div class="car-card__metric car-card__metric--price">
+              <div class="car-card__metric-text">
+                <strong class="car-card__metric-value">{{ carType.price }} {{ currencyService.currentCurrency().sign }}</strong>
+              </div>
             </div>
-          </ng-template>
+          </div>
+
+          <div class="car-card__cta-row" *ngIf="!carType.specialPrice; else specialContact">
+            <button
+              type="button"
+              class="car-card__cta"
+              (click)="onCarTypeSelection(
+                carType,
+                carType.price,
+                currencyService.currentCurrency().code!,
+                bookingService.bookingCarTypeSelectionForm.value.distance
+              )"
+            >
+              {{ translations.selectThisCar?.[langInput.code] || 'Select This Car' }}
+            </button>
+          </div>
         </section>
 
-        <footer class="car-card__footer" *ngIf="!carType.specialPrice">
-          <button
-            type="button"
-            class="car-card__cta"
-            (click)="onCarTypeSelection(
-              carType,
-              carType.price,
-              currencyService.currentCurrency().code!,
-              bookingService.bookingCarTypeSelectionForm.value.distance
-            )"
-          >
-            {{ translations.select[langInput.code] }}
-          </button>
-        </footer>
+        <ng-template #specialContact>
+          <div class="car-card__special">
+            <span class="car-card__special-label">{{ translations.specialPrice[langInput.code] }}</span>
+            <ul class="contact-links contact-links--inline">
+              <li>
+                <span aria-hidden="true">💬</span>
+                <a [href]="socialIcons.whatsapp.url" target="_blank" rel="noopener">WhatsApp {{ socialIcons.phone.formatted }}</a>
+              </li>
+              <li>
+                <span aria-hidden="true">📨</span>
+                <a [href]="socialIcons.telegram.url" target="_blank" rel="noopener">Telegram &#64;{{ socialIcons.telegram.username }}</a>
+              </li>
+              <li>
+                <span aria-hidden="true">✉️</span>
+                <a [href]="'mailto:' + socialIcons.email.info">{{ socialIcons.email.info }}</a>
+              </li>
+            </ul>
+          </div>
+        </ng-template>
       </div>
     </article>
   </div>

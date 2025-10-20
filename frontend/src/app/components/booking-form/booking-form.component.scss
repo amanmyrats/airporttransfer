@@ -286,6 +286,18 @@
   background: rgba(255, 247, 237, 0.9);
   border: 1px solid rgba(251, 191, 36, 0.5);
   color: #92400e;
+  width: min(440px, calc(100% - 1.5rem));
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  justify-self: center;
+}
+
+@media (max-width: 768px) {
+  .error-banner {
+    width: calc(100% - 1rem);
+    margin: 0 auto;
+  }
 }
 
 .error-banner__title {

@@ -11,12 +11,14 @@ import { SOCIAL_ICONS } from '../../constants/social.constants';
 import { GoogleMapsService } from '../../services/google-maps.service';
 // import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { PriceListComponent } from '../price-list/price-list.component';
+import { DurationFormatPipe } from '../../pipes/duration-format.pipe';
 
 @Component({
   selector: 'app-booking-car-type-selection-form',
   imports: [
     CommonModule, 
     PriceListComponent,
+    DurationFormatPipe,
   ],
   templateUrl: './booking-car-type-selection-form.component.html',
   styleUrl: './booking-car-type-selection-form.component.scss'
@@ -140,12 +142,30 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
       ru: 'Время в пути',
       tr: 'Süre',
     },
+    from: {
+      en: 'From',
+      de: 'Von',
+      ru: 'От',
+      tr: 'Nereden',
+    },
+    to: {
+      en: 'To',
+      de: 'Nach',
+      ru: 'До',
+      tr: 'Nereye',
+    },
     select: {
       en: 'Select', 
       de: 'Auswählen',
       ru: 'Выбрать',
       tr: 'Seç',
     }, 
+    selectThisCar: {
+      en: 'Select This Car',
+      de: 'Dieses Fahrzeug wählen',
+      ru: 'Выбрать этот автомобиль',
+      tr: 'Bu Aracı Seç',
+    },
     price: {
       en: 'Price', 
       de: 'Preis',
@@ -157,6 +177,18 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
       de: 'Personen',
       ru: 'Пассажиров',
       tr: 'Yolcu',
+    },
+    capacity: {
+      en: 'Capacity',
+      de: 'Kapazität',
+      ru: 'Вместимость',
+      tr: 'Kapasite',
+    },
+    availableCar: {
+      en: 'Available',
+      de: 'Verfügbar',
+      ru: 'Доступно',
+      tr: 'Müsait',
     },
     orEquivalent: {
       en: 'or equivalent',

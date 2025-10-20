@@ -2,11 +2,10 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { SuperHeaderComponent } from '../../components/super-header/super-header.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from '../../components/footer/footer.component';
-import { ActivatedRoute, NavigationEnd, Params, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Params, Router, RouterOutlet } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { LanguageService } from '../../services/language.service';
 import { Meta, Title } from '@angular/platform-browser';
-import { filter, map } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
@@ -23,7 +22,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class BookingComponent implements OnInit {
   bookingService = inject(BookingService);
-  activeStep: number = 1;
   currentLanguage: any = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
 
   constructor(
@@ -53,18 +51,6 @@ export class BookingComponent implements OnInit {
         this.handleQueryParams(params);
       });
 
-    this.router.events
-      .pipe(
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef),
-        map(() => this.resolveActiveStep())
-      )
-      .subscribe((step) => {
-        this.activeStep = step;
-      });
-
-    // Initialise step based on the current URL.
-    this.activeStep = this.resolveActiveStep();
   }
 
   private handleQueryParams(params: Params): void {
@@ -126,17 +112,6 @@ export class BookingComponent implements OnInit {
     }
   }
 
-  private resolveActiveStep(): number {
-    const childPath = this.route.firstChild?.routeConfig?.path ?? '';
-    if (childPath === 'completion') {
-      return 3;
-    }
-    if (childPath === 'car-selection') {
-      return 2;
-    }
-    return 1;
-  }
-
   private prefillStep1Data(params: Params): void {
     if (!params) {
       return;
@@ -183,30 +158,4 @@ export class BookingComponent implements OnInit {
     this.meta.updateTag({ name: 'description', content: meta.description });
   }
 
-  translations: any = {
-    destination: {
-      en: 'Destination',
-      de: 'Ziel',
-      ru: 'Место назначения',
-      tr: 'Gidilecek Yer',
-    },
-    vehicle: {
-      en: 'Vehicle',
-      de: 'Fahrzeug',
-      ru: 'Транспортное средство',
-      tr: 'Araç',
-    }, 
-    personal: {
-      en: 'Personal Info', 
-      de: 'Persönliche Informationen',
-      ru: 'Личная информация',
-      tr: 'Kişisel Bilgiler',
-    }, 
-    back: {
-      en: 'Back', 
-      de: 'Zurück',
-      ru: 'Назад',
-      tr: 'Geri',
-    },
-  }
 }

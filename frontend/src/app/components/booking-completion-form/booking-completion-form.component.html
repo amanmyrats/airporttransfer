@@ -1,30 +1,78 @@
 <section class="reservation-detail-page">
-    <div class="container">
-      <!-- Left Section: Reservation Details -->
-      <div class="reservation-details">
-        <h2>
+    <ng-template #reservationDetails let-extraClass="extraClass">
+      <div class="reservation-details" [ngClass]="extraClass">
+        <h2 *ngIf="extraClass !== 'reservation-details--inline'">
           {{ translations.reservationDetails[langInput.code] }}
         </h2>
-        <img [src]="'images/cartypes/' + selectedCar?.image.name[languageService.currentLang().code]" 
-          [alt]="selectedCar?.image.alt[languageService.currentLang().code]" class="car-image" />
-        <p><strong>
-          {{ translations.car[langInput.code] }}
-          :
-        </strong> {{ selectedCar?.name }}</p>
-        <p><strong>
-          {{ translations.from[langInput.code] }}
-          :
-        </strong> {{ fromLocation }}</p>
-        <p><strong>
-          {{ translations.to[langInput.code] }}
-          :
-        </strong> {{ toLocation }}</p>
-        <p *ngIf="distance > 0"><strong>
-          {{ translations.distance[langInput.code] }}
-          :
-        </strong> {{ distance }} km</p>
+        <figure class="car-image-wrapper">
+          <img
+            [src]="'images/cartypes/' + selectedCar?.image.name[languageService.currentLang().code]" 
+            [alt]="selectedCar?.image.alt[languageService.currentLang().code]"
+            class="car-image"
+          />
+          <figcaption class="car-image__caption" *ngIf="selectedCar">
+            <span class="car-image__name">{{ selectedCar.name }}</span>
+            <span class="car-image__equivalent">{{ translations.orEquivalent[langInput.code] }}</span>
+          </figcaption>
+        </figure>
+        <div class="reservation-summary">
+          <div class="reservation-summary__route" *ngIf="fromLocation || toLocation">
+            <div class="summary-route" *ngIf="fromLocation as pickupFull">
+              <div class="route-chip">
+                <span class="route-icon" aria-hidden="true">📍</span>
+                <span class="route-text">
+                  <span class="route-text__label">{{ translations.from[langInput.code] }}</span>
+                  <ng-container *ngIf="getAddressLines(pickupFull) as pickupAddress">
+                    <span class="route-text__primary">{{ pickupAddress.primary || pickupFull }}</span>
+                    <span class="route-text__secondary" *ngIf="pickupAddress.secondary">{{ pickupAddress.secondary }}</span>
+                  </ng-container>
+                </span>
+              </div>
+            </div>
+
+            <div class="summary-route summary-route--destination" *ngIf="toLocation as destinationFull">
+              <div class="route-chip route-chip--destination">
+                <span class="route-icon" aria-hidden="true">🏁</span>
+                <span class="route-text">
+                  <span class="route-text__label route-text__label--destination">{{ translations.to[langInput.code] }}</span>
+                  <ng-container *ngIf="getAddressLines(destinationFull) as destinationAddress">
+                    <span class="route-text__primary">{{ destinationAddress.primary || destinationFull }}</span>
+                    <span class="route-text__secondary" *ngIf="destinationAddress.secondary">{{ destinationAddress.secondary }}</span>
+                  </ng-container>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="reservation-summary__metrics" *ngIf="distance > 0 || duration > 0">
+            <div class="metric" *ngIf="distance > 0">
+              <span class="metric-icon" aria-hidden="true">🛣️</span>
+              <strong class="metric-value">{{ distance | number: '1.0-0' }} km</strong>
+            </div>
+            <div class="metric" *ngIf="duration > 0">
+              <span class="metric-icon" aria-hidden="true">⏱️</span>
+              <strong class="metric-value">{{ duration | durationFormat: langInput?.code }}</strong>
+            </div>
+          </div>
+          <div class="reservation-map" *ngIf="shouldRenderRouteMap()">
+            <img
+              class="reservation-map__image"
+              [src]="routeStaticMapUrl!"
+              alt="Route preview map"
+            />
+            <div class="reservation-map__distance" *ngIf="distance > 0">
+              <span>{{ distance | number: '1.0-0' }} km</span>
+            </div>
+          </div>
+        </div>
       </div>
-  
+    </ng-template>
+    <div class="container">
+      <!-- Left Section: Reservation Details -->
+      <ng-container *ngIf="shouldShowAsideSummary()">
+        <ng-container *ngTemplateOutlet="reservationDetails; context: { extraClass: null }"></ng-container>
+      </ng-container>
+
       <!-- Right Section: Form -->
       <div class="reservation-form">
         <h2>
@@ -410,6 +458,10 @@
                 placeholder="{{ translations.notePlaceholder[langInput.code] }}"></textarea>
             </div>
           </div>
+
+          <ng-container *ngIf="shouldShowInlineSummary()">
+            <ng-container *ngTemplateOutlet="reservationDetails; context: { extraClass: 'reservation-details--inline' }"></ng-container>
+          </ng-container>
 
 
           <!-- Payment Information -->

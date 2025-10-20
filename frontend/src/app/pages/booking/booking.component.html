@@ -2,40 +2,6 @@
     <app-super-header [langInput]="currentLanguage"></app-super-header>
     <app-navbar></app-navbar>
     <main class="booking">
-        <nav class="booking-stepper" aria-label="Booking steps">
-            <ol class="booking-stepper__list">
-                <li
-                    class="booking-stepper__item"
-                    [class.booking-stepper__item--active]="activeStep === 1"
-                    [class.booking-stepper__item--completed]="activeStep > 1"
-                >
-                    <span class="booking-stepper__index">1</span>
-                    <span class="booking-stepper__label">
-                        {{ translations.destination[currentLanguage.code] }}
-                    </span>
-                </li>
-                <li
-                    class="booking-stepper__item"
-                    [class.booking-stepper__item--active]="activeStep === 2"
-                    [class.booking-stepper__item--completed]="activeStep > 2"
-                >
-                    <span class="booking-stepper__index">2</span>
-                    <span class="booking-stepper__label">
-                        {{ translations.vehicle[currentLanguage.code] }}
-                    </span>
-                </li>
-                <li
-                    class="booking-stepper__item"
-                    [class.booking-stepper__item--active]="activeStep === 3"
-                >
-                    <span class="booking-stepper__index">3</span>
-                    <span class="booking-stepper__label">
-                        {{ translations.personal[currentLanguage.code] }}
-                    </span>
-                </li>
-            </ol>
-        </nav>
-
         <section class="booking-stageTEMPORARY_REMOVE">
             <router-outlet></router-outlet>
         </section>

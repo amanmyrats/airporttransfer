@@ -34,6 +34,20 @@
     flex: 1;
     max-width: 400px;
   }
+
+  .reservation-details.reservation-details--inline {
+    flex: none;
+    max-width: 100%;
+    margin: 1.5rem 0;
+  }
+
+  .reservation-details--inline h2 {
+    margin-top: 0;
+  }
+
+  .reservation-details--inline .reservation-summary {
+    margin-top: 0.9rem;
+  }
   
   .reservation-form {
     flex: 2;
@@ -41,16 +55,202 @@
   }
   
   /* Reservation Details */
+  .car-image-wrapper {
+    position: relative;
+    margin: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    line-height: 0;
+    display: flex;
+    width: 100%;
+  }
+
   .car-image {
     width: 100%;
     height: auto;
-    border-radius: 10px;
-    margin-bottom: 15px;
+    display: block;
+    object-fit: cover;
   }
-  
-  .reservation-details p {
-    margin: 10px 0;
-    font-size: 1.1em;
+
+  .car-image__caption {
+    position: absolute;
+    inset: auto 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.8rem 0.95rem;
+    background: linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0) 0%,
+      rgba(30, 41, 59, 0.68) 55%,
+      rgba(15, 23, 42, 0.78) 100%
+    );
+    color: #f8fafc;
+  }
+
+  .car-image__name {
+    font-size: 1.08rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .car-image__equivalent {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: rgba(226, 232, 240, 0.92);
+    line-height: 1.1;
+  }
+
+  .reservation-summary {
+    display: grid;
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .summary-row {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .summary-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #2563eb;
+  }
+
+  .summary-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .reservation-summary__route {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .summary-route {
+    display: flex;
+    width: 100%;
+  }
+
+  .route-chip {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 14px;
+    background: rgba(248, 250, 252, 0.96);
+    border: 1px solid rgba(148, 163, 184, 0.26);
+    box-shadow: 0 16px 28px -32px rgba(15, 23, 42, 0.45);
+    width: 100%;
+    min-height: 3.4rem;
+  }
+
+  .route-chip--destination {
+    background: rgba(16, 185, 129, 0.14);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .route-icon {
+    font-size: 1rem;
+    line-height: 1.2;
+    margin-top: 0.05rem;
+  }
+
+  .route-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .route-text__label {
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: rgba(15, 23, 42, 0.55);
+  }
+
+  .route-text__label--destination {
+    color: rgba(22, 101, 52, 0.75);
+  }
+
+  .route-text__primary {
+    font-weight: 700;
+    line-height: 1.2;
+    color: #0f172a;
+  }
+
+  .route-text__secondary {
+    font-size: 0.68rem;
+    line-height: 1.25;
+    color: rgba(15, 23, 42, 0.5);
+    max-width: 100%;
+    word-break: break-word;
+  }
+
+  .reservation-summary__metrics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.8rem;
+  }
+
+  .metric {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.7rem;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.05);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .metric-icon {
+    font-size: 1rem;
+  }
+
+  .metric-value {
+    color: #0f172a;
+    font-weight: 700;
+  }
+
+  .reservation-map {
+    position: relative;
+    margin-top: 1rem;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    box-shadow: 0 22px 40px -28px rgba(15, 23, 42, 0.35);
+  }
+
+  .reservation-map__image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .reservation-map__distance {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.85);
+    color: #f1f5f9;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
   
   /* Form */
@@ -508,6 +708,10 @@ textarea {
     .reservation-form {
       width: 100%;
       max-width: 400px;
+    }
+
+    .reservation-map {
+      display: none;
     }
 
     /* Reservation Details */

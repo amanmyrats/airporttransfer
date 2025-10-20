@@ -111,7 +111,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     console.log('Booking Car Type Selection Form:', carTypeSelectionFormValue);
 
 
-    this.router.navigate([`${this.langInput.code}/${this.navbar.bookNow.slug[this.langInput.code]}/`], {
+    this.router.navigate([`${this.langInput.code}/${this.navbar.bookNow.slug[this.langInput.code]}/completion/`], {
       queryParams: {
         step: 3,
         is_from_popular_routes: initialFormValue.is_from_popular_routes,

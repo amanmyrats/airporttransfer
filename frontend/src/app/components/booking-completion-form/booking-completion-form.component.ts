@@ -1,6 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, PLATFORM_ID, OnDestroy, computed, effect, inject, Input, OnInit, output, signal } from '@angular/core';
+import { Component, HostListener, Inject, PLATFORM_ID, OnDestroy, computed, effect, inject, Input, OnInit, output, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,6 +12,9 @@ import { Currency } from '../../models/currency.model';
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { CountryISO } from 'ngx-intl-tel-input';
 import { SearchCountryField } from 'ngx-intl-tel-input';
+import { GoogleMapsService } from '../../services/google-maps.service';
+import { DurationFormatPipe } from '../../pipes/duration-format.pipe';
+import { Subscription } from 'rxjs';
 
 declare var gtag: Function;
 declare var dataLayer: any;
@@ -23,6 +26,7 @@ declare var dataLayer: any;
     FormsModule,
     ReactiveFormsModule,
     NgxIntlTelInputModule,
+    DurationFormatPipe,
   ],
   templateUrl: './booking-completion-form.component.html',
   styleUrl: './booking-completion-form.component.scss'
@@ -61,6 +65,7 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
   bookingService = inject(BookingService);
   carTypeService = inject(CarTypeService);
   currencyService = inject(CurrencyService);
+  googleMapsService = inject(GoogleMapsService);
 
   flowerPriceInEuro = 15;
   champagnePriceInEuro = 25;
@@ -117,10 +122,12 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
   currency = this.currencyService.getCurrencyByCode(
     this.bookingService.bookingCarTypeSelectionForm.get('currency_code')?.value
   )
-  fromLocation = this.bookingService.bookingInitialForm.get('pickup_full')?.value;
-  toLocation = this.bookingService.bookingInitialForm.get('dest_full')?.value;
-  distance = this.bookingService.bookingCarTypeSelectionForm.get('distance')?.value;
   passengerCount = 333;
+  isFromPopularRoute = false;
+  isMobileView = false;
+  routeStaticMapUrl: string | null = null;
+  private readonly googleStaticMapsKey = 'AIzaSyAidis3l3HFmi1ij_qQTPIaeTCs7pAmcrQ';
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder, 
@@ -151,10 +158,67 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
 
   }
 
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.updateViewportState();
+  }
+
+  private updateViewportState(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.isMobileView = false;
+      this.updateRouteMapUrl();
+      return;
+    }
+    this.isMobileView = window.innerWidth <= 768;
+    this.updateRouteMapUrl();
+  }
+
+  get fromLocation(): string {
+    return (
+      this.bookingService.bookingCompletionForm.get('pickup_full')?.value ||
+      this.bookingService.bookingInitialForm.get('pickup_full')?.value ||
+      ''
+    );
+  }
+
+  get toLocation(): string {
+    return (
+      this.bookingService.bookingCompletionForm.get('dest_full')?.value ||
+      this.bookingService.bookingInitialForm.get('dest_full')?.value ||
+      ''
+    );
+  }
+
+  get distance(): number {
+    return Number(this.bookingService.bookingCarTypeSelectionForm.get('distance')?.value) || 0;
+  }
+
+  get duration(): number {
+    return Number(this.bookingService.bookingCarTypeSelectionForm.get('driving_duration')?.value) || 0;
+  }
+
+  getAddressLines(fullAddress: string | null | undefined): { primary: string; secondary: string } {
+    return this.googleMapsService.getAddressLines(fullAddress);
+  }
+
+  shouldShowAsideSummary(): boolean {
+    return !this.isMobileView || this.isFromPopularRoute;
+  }
+
+  shouldShowInlineSummary(): boolean {
+    return this.isMobileView && !this.isFromPopularRoute;
+  }
+
+  shouldRenderRouteMap(): boolean {
+    return !this.isMobileView && !this.isFromPopularRoute && !!this.routeStaticMapUrl;
+  }
+
   ngOnInit(): void {
     const initialLocaleCode =
       this.langInput?.code || this.languageService.currentLang()?.code || 'en';
     this.timePickerLocale = this.resolveTimePickerLocale(initialLocaleCode);
+
+    this.updateViewportState();
 
     if (isPlatformBrowser(this.platformId)) {
       this.detectUserCountry();
@@ -162,6 +226,14 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
 
     this.route.queryParams.subscribe((params) => {
       this.stepFromUrl = params['step'];
+      const popularRouteParam = params['is_from_popular_routes'];
+      if (popularRouteParam !== undefined) {
+        const normalizedValue = popularRouteParam.toString().toLowerCase();
+        this.isFromPopularRoute = ['1', 'true', 'yes'].includes(normalizedValue);
+        this.handlePopularRoute(params);
+      } else {
+        this.isFromPopularRoute = false;
+      }
       console.log('bookingInitialForm:', this.bookingService.bookingInitialForm.value);
       this.bookingService.bookingCompletionForm.patchValue({
         pickup_short: this.bookingService.bookingInitialForm.get('pickup_short')?.value,
@@ -169,10 +241,7 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
         pickup_full: this.bookingService.bookingInitialForm.get('pickup_full')?.value,
         dest_full: this.bookingService.bookingInitialForm.get('dest_full')?.value,
       });
-
-      if (params['is_from_popular_routes']) {
-        this.handlePopularRoute(params);
-      }
+      this.updateRouteMapUrl();
     });
 
     // Ensure the return fields are updated based on the "returnTrip" checkbox
@@ -181,6 +250,13 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
     const initialChildSeatCount =
       Number(this.bookingService.bookingCompletionForm.get('child_seat_count')?.value) || 0;
     this.childSeatCountChanged(initialChildSeatCount);
+
+    const initialFormSub = this.bookingService.bookingInitialForm.valueChanges.subscribe(() => {
+      this.updateRouteMapUrl();
+    });
+    this.subscriptions.push(initialFormSub);
+
+    this.updateRouteMapUrl();
   }
 private detectUserCountry(): void {
   this.http
@@ -270,6 +346,8 @@ private detectUserCountry(): void {
       this.showCustomPickupFullInput = false;
       this.showCustomDestinationFullInput = false;
     }
+
+    this.updateRouteMapUrl();
   }
 
   private isAirport(value: string): boolean {
@@ -652,6 +730,58 @@ private detectUserCountry(): void {
     }
   }
 
+  private shouldGenerateRouteMap(): boolean {
+    return !this.isMobileView && !this.isFromPopularRoute;
+  }
+
+  private getCoordinatePair(prefix: 'pickup' | 'dest'): { lat: number; lng: number } | null {
+    const latRaw = this.bookingService.bookingInitialForm.get(`${prefix}_lat`)?.value;
+    const lngRaw = this.bookingService.bookingInitialForm.get(`${prefix}_lng`)?.value;
+    const lat = this.parseCoordinateValue(latRaw);
+    const lng = this.parseCoordinateValue(lngRaw);
+    if (lat === null || lng === null) {
+      return null;
+    }
+    return { lat, lng };
+  }
+
+  private parseCoordinateValue(raw: unknown): number | null {
+    if (typeof raw === 'number') {
+      return Number.isFinite(raw) ? raw : null;
+    }
+    if (typeof raw === 'string' && raw.trim().length) {
+      const parsed = parseFloat(raw);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+    return null;
+  }
+
+  private updateRouteMapUrl(): void {
+    if (!isPlatformBrowser(this.platformId) || !this.shouldGenerateRouteMap()) {
+      this.routeStaticMapUrl = null;
+      return;
+    }
+
+    const origin = this.getCoordinatePair('pickup');
+    const destination = this.getCoordinatePair('dest');
+
+    if (!origin || !destination) {
+      this.routeStaticMapUrl = null;
+      return;
+    }
+
+    const size = '380x220';
+    const scale = Math.min(Math.ceil(window.devicePixelRatio || 1), 2);
+
+    const markers = [
+      `markers=${encodeURIComponent(`label:A|color:0x1d4ed8|${origin.lat},${origin.lng}`)}`,
+      `markers=${encodeURIComponent(`label:B|color:0xea580c|${destination.lat},${destination.lng}`)}`,
+    ];
+    const path = `path=${encodeURIComponent(`color:0x2563EBFF|weight:4|${origin.lat},${origin.lng}|${destination.lat},${destination.lng}`)}`;
+
+    this.routeStaticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=${size}&scale=${scale}&${markers.join('&')}&${path}&key=${this.googleStaticMapsKey}`;
+  }
+
   calculateChampagnePrice(): void {
     console.log(this.bookingService.bookingCompletionForm.get('greet_with_champagne')?.value);
     if (this.bookingService.bookingCompletionForm.get('greet_with_champagne')?.value) {
@@ -691,6 +821,8 @@ private detectUserCountry(): void {
     if (this.returnAnimationTimeout) {
       clearTimeout(this.returnAnimationTimeout);
     }
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.subscriptions = [];
   }
 
   private resolveTimePickerLocale(langCode: string): string {
@@ -734,6 +866,12 @@ private detectUserCountry(): void {
       ru: 'Автомобиль',
       tr: 'Araba',
     },
+    orEquivalent: {
+      en: 'or equivalent',
+      de: 'oder ähnlich',
+      ru: 'или аналогичный',
+      tr: 'veya dengi',
+    },
     from: {
       en: 'From', 
       de: 'Von',
@@ -758,6 +896,12 @@ private detectUserCountry(): void {
       ru: 'Расстояние',
       tr: 'Mesafe',
     }, 
+    duration: {
+      en: 'Duration',
+      de: 'Dauer',
+      ru: 'Время в пути',
+      tr: 'Süre',
+    },
     completeYourReservation: {
       en: 'Complete Your Reservation',
       de: 'Vervollständigen Sie Ihre Reservierung',
