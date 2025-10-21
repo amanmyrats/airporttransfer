@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SUPPORTED_MAIN_LOCATIONS } from '../../constants/main-location.constants';
 import { Meta, Title } from '@angular/platform-browser';
 import { DevEnvComponent } from '../../components/dev-env/dev-env.component';
+import { Testimonial, TESTIMONIALS } from '../../constants/testimonials.constants';
 
 @Component({
   selector: 'app-home',
@@ -42,6 +43,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   currentLanguage = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
   mainLocations: any[] = SUPPORTED_MAIN_LOCATIONS;
   isBrowser: boolean;
+  testimonialPlaceholderCount = 3;
+  testimonialFullCount = Math.min(10, TESTIMONIALS.length);
+  testimonialPreview: Testimonial[] = TESTIMONIALS.slice(0, this.testimonialPlaceholderCount);
   
   // private platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
