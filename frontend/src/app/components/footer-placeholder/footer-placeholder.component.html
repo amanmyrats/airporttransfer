@@ -21,10 +21,13 @@
   <nav aria-label="Airport transfer quick links">
     <h3>Popular airport pages</h3>
     <ul>
-      <li><a href="/en/affordable-prices-for-24-7-private-airport-transfers-in-turkey/">Airport transfer prices</a></li>
-      <li><a href="/en/services-of-24-7-private-airport-transfer-in-turkey/">Private transfer services</a></li>
-      <li><a href="/en/about-24-7-private-airport-transfer-in-turkey/">About Airport Transfer Hub</a></li>
-      <li><a href="/en/contact-of-24-7-private-airport-transfer-in-turkey/">Contact &amp; reservations</a></li>
+      <li><a href="{{currentLanguage.code}}/">{{ getTranslation('home') }}</a></li>
+      <li><a href="{{currentLanguage.code}}/{{navbarMenu.aboutUs.slug[currentLanguage.code]}}/">{{ getTranslation('aboutus') }}</a></li>
+      <li><a href="{{currentLanguage.code}}/{{navbarMenu.services.slug[currentLanguage.code]}}/">{{ getTranslation('ourservices') }}</a></li>
+      <li><a href="{{currentLanguage.code}}/{{navbarMenu.gallery.slug[currentLanguage.code]}}/">{{ getTranslation('gallery') }}</a></li>
+      <li><a href="{{currentLanguage.code}}/{{navbarMenu.contactUs.slug[currentLanguage.code]}}/">{{ getTranslation('contact') }}</a></li>
+      <li><a href="{{currentLanguage.code}}/{{navbarMenu.blogs.slug[currentLanguage.code]}}/">{{ getTranslation('blog') }}</a></li>
+      <li><a href="{{currentLanguage.code}}/{{navbarMenu.newBlogs.slug[currentLanguage.code]}}/">{{ getTranslation('newBlog') }}</a></li>
     </ul>
   </nav>
 

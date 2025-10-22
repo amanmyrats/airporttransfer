@@ -11,6 +11,8 @@
   border: 1px solid var(--form-border, rgba(148, 163, 184, 0.25));
   background: var(--form-surface, rgba(255, 255, 255, 0.92));
 
+  // background: rgba(17, 25, 40, 0.55);
+  // background: rgba(108, 115, 131, 0.85);
   box-shadow: var(
     --form-shadow,
     0 30px 55px -40px rgba(37, 99, 235, 0.5)
@@ -34,6 +36,7 @@
   max-width: 88rem;
   min-width: min(40rem, 100%);
   margin: 0 auto;
+  background: rgba(108, 115, 131, 0.35);
 }
 
 .maps-overlay {
@@ -260,20 +263,26 @@
 }
 
 .form-group.invalid label {
-  color: rgba(185, 28, 28, 0.9);
+  color: #be123c;
 }
 
 .field-error {
-  margin: 0;
+  margin: 0.3rem 0 0;
   font-size: 0.85rem;
-  color: #b91c1c;
+  font-weight: 600;
+  color: #7f1d1d;
+  background: rgba(254, 226, 226, 0.94);
+  border: 1px solid rgba(248, 113, 113, 0.6);
+  border-radius: 10px;
+  padding: 0.45rem 0.65rem;
+  box-shadow: 0 10px 22px -18px rgba(248, 113, 113, 0.8);
 }
 
 .form-note {
   margin: 0.35rem 0 0;
   font-size: 0.85rem;
-  color: rgba(71, 85, 105, 0.78);
-  background: rgba(226, 232, 240, 0.18);
+  color: rgba(62, 76, 95, 0.78);
+  background: rgba(228, 231, 236, 0.98);
   border-radius: 12px;
   padding: 0.4rem 0.65rem;
   border: 1px solid rgba(148, 163, 184, 0.16);
