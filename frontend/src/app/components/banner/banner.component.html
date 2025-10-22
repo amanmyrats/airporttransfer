@@ -30,7 +30,18 @@
       
       <span class="banner-form">
 
-        <app-booking-banner-form [langInput]="langInput"></app-booking-banner-form>
+      @defer (on idle) {
+        <app-booking-banner-form 
+          [langInput]="langInput"
+          >
+        </app-booking-banner-form>
+      } @placeholder {
+        <app-booking-banner-form-placeholder 
+          [langInput]="langInput"
+          >
+        </app-booking-banner-form-placeholder>
+      }
+  
       </span>
 
       <div class="floating-buttons">

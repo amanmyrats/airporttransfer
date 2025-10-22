@@ -14,6 +14,10 @@ import { SUPPORTED_MAIN_LOCATIONS } from '../../constants/main-location.constant
 import { Meta, Title } from '@angular/platform-browser';
 import { DevEnvComponent } from '../../components/dev-env/dev-env.component';
 import { Testimonial, TESTIMONIALS } from '../../constants/testimonials.constants';
+import { FooterPlaceholderComponent } from '../../components/footer-placeholder/footer-placeholder.component';
+import { TestimonialListPlaceholderComponent } from '../../components/testimonial-list-placeholder/testimonial-list-placeholder.component';
+import { BlogListPlaceholderComponent } from '../../components/blog-list-placeholder/blog-list-placeholder.component';
+import { PriceListPlaceholderComponent } from '../../components/price-list-placeholder/price-list-placeholder.component';
 
 @Component({
   selector: 'app-home',
@@ -23,11 +27,11 @@ import { Testimonial, TESTIMONIALS } from '../../constants/testimonials.constant
     SuperHeaderComponent,
     NavbarComponent,
     BannerComponent,
-    PriceListComponent,
+    PriceListComponent, PriceListPlaceholderComponent, 
     CtaComponent, 
-    TestimonialListComponent, 
-    BlogListComponent, 
-    FooterComponent, 
+    TestimonialListComponent, TestimonialListPlaceholderComponent, 
+    BlogListComponent, BlogListPlaceholderComponent, 
+    FooterComponent, FooterPlaceholderComponent, 
     DevEnvComponent, 
   ],
   templateUrl: './home.component.html',

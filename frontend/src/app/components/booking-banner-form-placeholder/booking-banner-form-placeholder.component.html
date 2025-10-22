@@ -1,0 +1,52 @@
+<section
+  class="booking-banner-placeholder"
+  itemscope
+  itemtype="https://schema.org/TaxiService"
+  [attr.lang]="langCode"
+>
+  <meta itemprop="name" content="Airport Transfer Hub Private Airport Transfers" />
+  <meta itemprop="areaServed" content="Turkey" />
+  <meta itemprop="serviceType" content="Private airport transfer" />
+
+  <form
+    class="booking-banner-placeholder__form"
+    itemscope
+    itemtype="https://schema.org/TaxiReservation"
+    method="get"
+    [attr.action]="formAction"
+    role="search"
+  >
+    <meta itemprop="provider" content="Airport Transfer Hub" />
+    <label>
+      {{ localize(translations.pickupLabel) }}
+      <input
+        type="text"
+        name="pickup"
+        required
+        itemprop="pickupLocation"
+        autocomplete="off"
+        [attr.placeholder]="localize(loadingPlaceholder)"
+        disabled
+        aria-disabled="true"
+      />
+    </label>
+    <label>
+      {{ localize(translations.dropoffLabel) }}
+      <input
+        type="text"
+        name="dropoff"
+        required
+        itemprop="dropoffLocation"
+        autocomplete="off"
+        [attr.placeholder]="localize(loadingPlaceholder)"
+        disabled
+        aria-disabled="true"
+      />
+    </label>
+    <button type="submit" class="booking-banner-placeholder__submit" disabled aria-disabled="true">
+      {{ localize(translations.submit) }}
+    </button>
+  </form>
+
+  <p class="booking-banner-placeholder__disclaimer">{{ localize(translations.disclaimer) }}</p>
+</section>

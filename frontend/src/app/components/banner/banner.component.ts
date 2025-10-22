@@ -1,6 +1,7 @@
 import { Component, inject, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingBannerFormComponent } from '../booking-banner-form/booking-banner-form.component';
+import { BookingBannerFormPlaceholderComponent } from '../booking-banner-form-placeholder/booking-banner-form-placeholder.component';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
 
@@ -8,6 +9,7 @@ import { SOCIAL_ICONS } from '../../constants/social.constants';
   selector: 'app-banner',
   imports: [
     BookingBannerFormComponent, 
+    BookingBannerFormPlaceholderComponent,
     CommonModule, 
   ],
   templateUrl: './banner.component.html',

@@ -1,21 +1,3 @@
-// .banner {
-//     position: relative;
-//     background-size: cover;
-//     background-position: center;
-//     height: 80vh;
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     text-align: center;
-//     color: #fff;
-//   }
-  
-//   .banner-content {
-//     max-width: 600px;
-//     background: rgba(0, 0, 0, 0.6);
-//     padding: 10px;
-//     border-radius: 10px;
-//   }
 .banner {
   position: relative;
   // height: 70vh; /* Keeps the same height as before */
@@ -95,44 +77,6 @@
     margin: 0 0 16px;
   }
 }
-  
-  // .reservation-form {
-  //   display: flex;
-  //   flex-direction: column;
-  //   gap: 15px;
-  // }
-  
-  // .form-group {
-  //   display: flex;
-  //   flex-direction: column;
-  // }
-  
-  // .form-group label {
-  //   font-weight: bold;
-  //   margin-bottom: 5px;
-  // }
-  
-  // .form-group input {
-  //   padding: 10px;
-  //   border: 1px solid #ccc;
-  //   border-radius: 5px;
-  // }
-  
-  // .btn {
-  //   padding: 10px 15px;
-  //   font-size: 1em;
-  //   background-color: #007bff;
-  //   color: #fff;
-  //   border: none;
-  //   border-radius: 5px;
-  //   cursor: pointer;
-  // }
-  
-  // .btn:hover {
-  //   background-color: #0056b3;
-  // }
-
-
   .floating-buttons {
     position: fixed;
     bottom: 20px;
@@ -235,9 +179,6 @@
 
   // Mobile
   @media (max-width: 576px) {
-    .banner {
-      // height: 450px; /* Keeps the same height as before */
-    }
     .banner-content {
       padding: 5px 0 10px 0;
       margin: 5px 0 10px 0;
