@@ -9,25 +9,28 @@
   <app-banner #banner [langInput]="currentLanguage"></app-banner>
 
   <!-- Price List for Airport Transfer in Turkey -->
-  @defer (on idle) {
-  <app-price-list [langInput]="currentLanguage"></app-price-list>
+  <!-- @defer (on idle) {
+    <app-price-list 
+      [langInput]="currentLanguage" 
+    >
+    </app-price-list>
   } @placeholder {
-  <app-price-list [langInput]="currentLanguage" 
-  [loadPartially]="true"
-  ></app-price-list>
-  }
-  <app-cta></app-cta>
+    <app-price-list 
+      [langInput]="currentLanguage" 
+      [loadForHomePagePlaceholder]="true"
+      >
+    </app-price-list>
+  } -->
+  <!-- <app-cta></app-cta> -->
 
-  @defer (on idle) {
-    <app-testimonial-list [testimonialCountToShow]="testimonialFullCount"></app-testimonial-list>
+  <!-- @defer (on idle) {
+    <app-testimonial-list></app-testimonial-list>
   } @placeholder {
-    <app-testimonial-list [testimonialCountToShow]="testimonialPlaceholderCount"></app-testimonial-list>
-    
-  }
-  <app-testimonial-list></app-testimonial-list>
+    <app-testimonial-list [loadForHomePagePlaceholder]="true"></app-testimonial-list>
+  } -->
 
-  <app-blog-list></app-blog-list>
+  <!-- <app-blog-list></app-blog-list> -->
   
-  <app-footer></app-footer>
+  <!-- <app-footer></app-footer> -->
 
 </div>

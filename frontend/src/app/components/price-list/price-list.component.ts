@@ -13,6 +13,7 @@ import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 // import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { MainLocation } from '../../models/main-location.model';
 import { PricesLoadingComponent } from '../prices-loading/prices-loading.component';
+import { CarType } from '../../models/car-type.model';
 
 @Component({
   selector: 'app-price-list',
@@ -26,6 +27,10 @@ import { PricesLoadingComponent } from '../prices-loading/prices-loading.compone
 export class PriceListComponent implements OnInit, AfterViewInit {
   @ViewChild('transferPricesContainer') transferPricesContainer!: ElementRef;
   @Input() langInput!: any;
+  @Input() loadForHomePagePlaceholder: boolean = false;
+  carsTypeCountToShowOnHomePage = 1;
+  pricesCountToShowOnHomePage = 3;
+  carTypes: CarType[] = [];
 
   navbar = NAVBAR_MENU;
   activeIndex: number = 1;
@@ -60,6 +65,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     private router: Router, 
     @Inject(PLATFORM_ID) private platformId: Object, 
   ) {
+    this.carTypes = this.carTypeService.getCarTypes();
     this.mainLocations = this.mainLocationService.getMainLocations();
     this.popularRouteService.updatePopularRoutesSignal();
 
@@ -71,6 +77,11 @@ export class PriceListComponent implements OnInit, AfterViewInit {
         popularRoutes.some(route => route.main_location === location.code)
       );
       this.mainLocations = filteredMainLocations;
+      if (this.loadForHomePagePlaceholder) {
+        // set carTypes to only VITO for placeholder loading
+        this.carTypes = this.carTypeService.getCarTypes().filter(carType => carType.code === 'VITO');
+        // 
+      }
     });
   }
   

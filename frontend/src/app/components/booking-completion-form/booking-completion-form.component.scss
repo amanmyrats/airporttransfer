@@ -1,4 +1,3 @@
-/* General Styles */
 .reservation-detail-page {
     font-family: Arial, sans-serif;
     padding: 20px;
@@ -54,7 +53,6 @@
     max-width: 800px;
   }
   
-  /* Reservation Details */
   .car-image-wrapper {
     position: relative;
     margin: 0;
@@ -253,7 +251,6 @@
     text-transform: uppercase;
   }
   
-  /* Form */
   .form-group {
     margin-bottom: 30px;
   }
@@ -347,7 +344,6 @@ textarea {
     resize: none;
   }
   
-  /* Form Actions */
 .form-actions {
   display: flex;
   justify-content: space-between;
@@ -357,7 +353,6 @@ textarea {
   margin-top: 20px;
 }
 
-/* Back Button */
 .btn-back {
   background-color: #f0f0f0;
   color: #333;
@@ -375,7 +370,6 @@ textarea {
   color: #000;
 }
 
-/* Complete Reservation Button */
 .btn-complete {
   background-color: #007bff;
   color: #fff;
@@ -394,34 +388,31 @@ textarea {
 }
 
 
-/* Need Child Seat Section */
 .toggle-switch-container {
   display: flex; 
   flex-direction: column;
   align-items: center;
-  // gap: 5px; /* Space between items */
+  // gap: 5px;
   padding: 15px;
-  background-color: #f9f9f9; /* Neutral light background */
-  border: 1px solid #ddd; /* Subtle border */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 15px;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Label Styling */
 .toggle-switch-container span {
   font-size: 1em;
   font-weight: bold;
   color: #333;
-  // flex-shrink: 0; /* Prevent label from shrinking */
+  // flex-shrink: 0;
 }
 
-/* Toggle Switch Styling */
 .toggle-switch-container:hover {
-  background-color: #f1f7ff; /* Subtle highlight on hover */
-  border-color: #c6d8ff; /* Slightly darker border */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+  background-color: #f1f7ff;
+  border-color: #c6d8ff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .toggle-switch {
@@ -475,7 +466,6 @@ textarea {
 }
 
 
-/* Payment Info Styling */
 .payment-info {
   margin-bottom: 20px;
   padding: 20px;
@@ -487,7 +477,6 @@ textarea {
   color: #333;
 }
 
-/* Price Breakdown Styling */
 .payment-info .price-breakdown {
   margin-bottom: 15px;
   text-align: left;
@@ -500,7 +489,6 @@ textarea {
   line-height: 1.4;
 }
 
-/* Note Styling */
 .payment-info .note {
   margin-top: 10px;
   font-size: 0.85em;
@@ -508,14 +496,12 @@ textarea {
   text-align: center;
 }
 
-/* Hover Effects */
 .payment-info:hover {
   background-color: #f1f8ff;
   border-color: #b8daff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Price Breakdown Styling */
 .price-breakdown {
   display: flex;
   flex-direction: column;
@@ -545,26 +531,24 @@ textarea {
   color: #004085;
 }
 
-/* Hover Effect for Rows */
 .price-row:hover {
   background-color: #eef6ff;
   border-color: #b8daff;
 }
 
-/* Total Price Styling */
 .total-price-container {
   margin-top: 10px;
-  padding: 10px; /* Add more padding for a distinct section */
-  // background: linear-gradient(90deg, #4571a0, #aeb0b2); /* Gradient background for emphasis */
-  border-radius: 8px; /* Smooth, rounded corners */
+  padding: 10px;
+  // background: linear-gradient(90deg, #4571a0, #aeb0b2);
+  border-radius: 8px;
   text-align: center;
-  color: #5f2222; /* White text for contrast */
+  color: #5f2222;
 }
 
 .total-price {
-  font-size: 1.8em; /* Large font size for importance */
+  font-size: 1.8em;
   font-weight: bold;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Subtle shadow for text readability */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -672,14 +656,7 @@ textarea {
   font-weight: 600;
   font-size: 0.95rem;
 }
-
-
-
-
-
-
-  /* Responsive Design */
-  @media (max-width: 768px) {
+@media (max-width: 768px) {
     .reservation-detail-page {
       padding: 3px;
     }
@@ -714,12 +691,11 @@ textarea {
       display: none;
     }
 
-    /* Reservation Details */
     .car-image {
       max-width: 100%;
       max-height: 200px;
       height: auto;
-      object-fit: contain; /* Ensures the entire image is visible */
+      object-fit: contain;
     }
   
     .reservation-details h2 {
@@ -738,14 +714,11 @@ textarea {
       gap: 15px;
     }
     
-
-    /* Need Child Seat Section */
     .toggle-switch-container {
       padding: 5px;
       margin-top: 5px;
     }
 
-    /* Payment Info Styling */
     .payment-info {
       margin-bottom: 5px;
       padding: 5px 20px;
@@ -761,7 +734,7 @@ textarea {
 
 
 
-/* === Custom styling for ngx-intl-tel-input === */
+// Custom styling for ngx-intl-tel-input
 ::ng-deep .ngx-intl-tel-input {
   width: 100%;
 }

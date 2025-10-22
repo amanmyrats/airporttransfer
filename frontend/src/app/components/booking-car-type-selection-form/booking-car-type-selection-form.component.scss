@@ -407,6 +407,10 @@
 }
 
 .car-card__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
   width: 100%;
   padding: 0.9rem 1.1rem;
   border: none;
@@ -417,12 +421,49 @@
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 22px 45px -28px rgba(37, 99, 235, 0.6);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
 }
 
 .car-card__cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 26px 50px -28px rgba(37, 99, 235, 0.7);
+}
+
+.car-card__cta:disabled {
+  pointer-events: none;
+}
+
+.car-card__cta--loading {
+  cursor: wait;
+  opacity: 0.85;
+}
+
+.car-card__cta-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.car-card__cta--loading .car-card__cta-label {
+  opacity: 0.9;
+}
+
+.car-card__cta-spinner {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 999px;
+  border: 2px solid rgba(248, 250, 252, 0.45);
+  border-top-color: #f8fafc;
+  animation: car-card-spinner 0.65s linear infinite;
+}
+
+@keyframes car-card-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .fixed-price-section {

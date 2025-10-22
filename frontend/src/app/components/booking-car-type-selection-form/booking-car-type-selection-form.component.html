@@ -138,6 +138,8 @@
             <button
               type="button"
               class="car-card__cta"
+              [disabled]="isSelectingCar(carType)"
+              [class.car-card__cta--loading]="isSelectingCar(carType)"
               (click)="onCarTypeSelection(
                 carType,
                 carType.price,
@@ -145,7 +147,14 @@
                 bookingService.bookingCarTypeSelectionForm.value.distance
               )"
             >
-              {{ translations.selectThisCar?.[langInput.code] || 'Select This Car' }}
+              <span
+                class="car-card__cta-spinner"
+                *ngIf="isSelectingCar(carType)"
+                aria-hidden="true"
+              ></span>
+              <span class="car-card__cta-label">
+                {{ translations.selectThisCar?.[langInput.code] || 'Select This Car' }}
+              </span>
             </button>
           </div>
         </section>

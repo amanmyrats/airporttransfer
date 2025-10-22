@@ -15,11 +15,12 @@
 
 <div *ngIf="selectedLocation" class="transfer-prices">
   <div class="price-list">
-    @for (carType of carTypeService.getCarTypes(); track carType.code) {
+    @for (carType of carTypes; track carType.code) {
       @let carTypePopularRoutes =
         popularRouteService.getPopularRoutesByMainLocationCodeAndCarType(
           selectedLocation.code!,
-          carType.code!
+          carType.code!, 
+          loadForHomePagePlaceholder ? pricesCountToShowOnHomePage : 100
         );
       @if (carTypePopularRoutes.length > 0) {
         <section class="car-section">

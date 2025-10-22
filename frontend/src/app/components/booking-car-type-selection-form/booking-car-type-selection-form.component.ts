@@ -28,6 +28,7 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
   
   socialIcons = SOCIAL_ICONS;
   maxDistance: number = 230;
+  selectingCarCode: string | null = null;
 
   bookingService = inject(BookingService);
   priceCalculatorService = inject(PriceCalculatorService);
@@ -53,6 +54,7 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
 
   onCarTypeSelection(carType: any, price: number, currency_code: string, distance: number): void {
     console.log('Selected CarType:', carType);
+    this.selectingCarCode = carType.code ?? null;
     // Handle carType selection logic here
     this.bookingService.bookingCarTypeSelectionForm.patchValue({
       car_type: carType.code,
@@ -62,9 +64,17 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
       driving_duration: 60,
     });
     if (this.bookingService.bookingCarTypeSelectionForm.valid) {
-      this.carTypeSelectionOutput.emit(this.bookingService.bookingCarTypeSelectionForm.value);
+      const resolveSelection = () => {
+        this.clearSelectionLoading();
+      };
+      this.carTypeSelectionOutput.emit({
+        ...this.bookingService.bookingCarTypeSelectionForm.value,
+        complete: resolveSelection,
+        fail: resolveSelection,
+      });
     } else {
       console.log('CarType selection form is invalid');
+      this.clearSelectionLoading();
     }
 
     // Send event to GTM
@@ -102,6 +112,14 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
   isValidDistance(): boolean {
     const distance = this.bookingService.distance();
     return typeof distance && distance > 0 && !isNaN(distance);
+  }
+
+  isSelectingCar(carType: CarType): boolean {
+    return !!this.selectingCarCode && this.selectingCarCode === carType.code;
+  }
+
+  private clearSelectionLoading(): void {
+    this.selectingCarCode = null;
   }
   
   isLongDistance(): boolean {

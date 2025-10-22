@@ -11,8 +11,8 @@
   <div class="testimonial-grid">
     <article
       class="testimonial-card"
-      *ngFor="let testimonial of testimonials; let i = index"
-      [class.testimonial-card--accent]="i % 3 === 0"
+      *ngFor="let testimonial of visibleTestimonials; let i = index"
+      [class.testimonial-card--accent]="isAccent(i)"
     >
       <div class="testimonial-quote" aria-hidden="true">“</div>
       <p class="testimonial-text">{{ testimonial.text }}</p>

@@ -49,6 +49,9 @@ export class BookingCarSelectionStepComponent implements OnInit {
   }
 
   onCarSelection(selection: any): void {
+    const complete = typeof selection?.complete === 'function' ? selection.complete : undefined;
+    const fail = typeof selection?.fail === 'function' ? selection.fail : undefined;
+
     const queryParams = {
       step: 3,
       car_type: selection?.car_type ?? this.bookingService.bookingCarTypeSelectionForm.get('car_type')?.value,
@@ -62,7 +65,13 @@ export class BookingCarSelectionStepComponent implements OnInit {
       queryParamsHandling: 'merge',
     };
 
-    this.router.navigate(['completion'], extras).catch(() => void 0);
+    this.router
+      .navigate(['completion'], extras)
+      .then(() => complete?.())
+      .catch((error) => {
+        fail?.(error);
+        return void 0;
+      });
   }
 
   goBack(): void {
