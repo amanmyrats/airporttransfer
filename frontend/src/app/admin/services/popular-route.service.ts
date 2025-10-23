@@ -44,8 +44,8 @@ export class PopularRouteService {
     this.getPopularRoutes('').subscribe({
       next: (paginatedResponse: PaginatedResponse<PopularRoute>)=> {
         this.popularRoutesSignal.set(paginatedResponse.results!);
-        // console.log('Fetched popular places and set it to signal')
-        // console.log(paginatedResponse.results!)
+        console.log('Fetched popular places and set it to signal')
+        console.log(paginatedResponse.results!)
         this.isLoadingPricesSignal.set(false);
       }, 
       error: (err: any) => {
@@ -55,9 +55,10 @@ export class PopularRouteService {
     });
   }
 
-  getPopularRoutesByMainLocationCodeAndCarType(mainLocationCode: string, carTypeCode: string): PopularRoute[] {
+  getPopularRoutesByMainLocationCodeAndCarType(
+    mainLocationCode: string, carTypeCode: string, limitBy: number = 100): PopularRoute[] {
     return this.popularRoutesSignal().filter(
-      (popularRoute: PopularRoute) => popularRoute.main_location === mainLocationCode && popularRoute.car_type === carTypeCode);
+      (popularRoute: PopularRoute) => popularRoute.main_location === mainLocationCode && popularRoute.car_type === carTypeCode).slice(0, limitBy);
   }
 
   export(queryString: string, format?: string): Observable<any> {

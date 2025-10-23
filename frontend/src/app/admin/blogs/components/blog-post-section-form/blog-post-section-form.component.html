@@ -1,0 +1,64 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="section-form">
+  <!-- <div class="p-field">
+      <label for="order">Section Order</label>
+      <input
+        id="order"
+        type="number"
+        pInputText
+        formControlName="order"
+        placeholder="e.g. 0" 
+        size="large"
+      />
+    </div> -->
+    <input type="hidden" formControlName="id" />
+    <input type="hidden" formControlName="post" />
+  <div class="card flex justify-center">
+
+
+    <label class="font-bold block mb-2" for="order">
+      Section Order
+    </label>
+    <p-inputnumber formControlName="order" [showButtons]="true" buttonLayout="vertical" spinnerMode="vertical"
+      inputId="order" [inputStyle]="{ width: '3rem' }">
+      <ng-template #incrementbuttonicon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus"
+          viewBox="0 0 16 16">
+          <path
+            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+        </svg>
+
+      </ng-template>
+      <ng-template #decrementbuttonicon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-dash"
+          viewBox="0 0 16 16">
+          <path d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5z" />
+        </svg>
+
+      </ng-template>
+    </p-inputnumber>
+    <p-message
+    *ngIf="form?.get('order')?.touched && form?.get('order')?.hasError('required')"
+    severity="error"
+    text="Section Order is required."
+  ></p-message>
+  </div>
+  <div class="p-field">
+    <label for="section_type">Section Type</label>
+    <p-dropdown id="section_type" [options]="sectionTypes" optionLabel="label" optionValue="value"
+      placeholder="Select section type" formControlName="section_type" showClear 
+      [appendTo]="'body'"
+      ></p-dropdown>
+      <p-message
+      *ngIf="form?.get('section_type')?.touched && form?.get('section_type')?.hasError('required')"
+      severity="error"
+      text="Section Type is required."
+    ></p-message>
+  </div>
+
+  <div>
+  </div>
+  <div class="form-actions">
+     
+    <button pButton type="submit" label="Save Section" class="p-button-sm" [disabled]="form.invalid"></button>
+  </div>
+</form>

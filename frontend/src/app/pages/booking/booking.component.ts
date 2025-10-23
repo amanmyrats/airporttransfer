@@ -1,18 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { SuperHeaderComponent } from '../../components/super-header/super-header.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { FooterComponent } from '../../components/footer/footer.component';
-import { ButtonModule } from 'primeng/button';
-import { StepperModule } from 'primeng/stepper';
-import { BookingInitialFormComponent } from '../../components/booking-initial-form/booking-initial-form.component';
-import { BookingCompletionFormComponent } from '../../components/booking-completion-form/booking-completion-form.component';
-import { BookingCarTypeSelectionFormComponent } from '../../components/booking-car-type-selection-form/booking-car-type-selection-form.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params, Router, RouterOutlet } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { LanguageService } from '../../services/language.service';
-import { usePreset } from '@primeng/themes';
-import Aura from '@primeng/themes/aura';
 import { Meta, Title } from '@angular/platform-browser';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -21,80 +15,116 @@ import { Meta, Title } from '@angular/platform-browser';
     SuperHeaderComponent,
     NavbarComponent,
     FooterComponent, 
-    ButtonModule, StepperModule, 
-    BookingInitialFormComponent, 
-    BookingCarTypeSelectionFormComponent, 
-    BookingCompletionFormComponent, 
+    RouterOutlet,
   ],
   templateUrl: './booking.component.html',
   styleUrl: './booking.component.scss'
 })
 export class BookingComponent implements OnInit {
   bookingService = inject(BookingService);
-  activeStep: number = 1;
-  stepFromUrl: number | null = null;
-  currentLanguage = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
+  currentLanguage: any = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
 
   constructor(
     private route: ActivatedRoute, 
+    private router: Router,
     public languageService: LanguageService, 
     private title: Title, 
     private meta: Meta, 
+    private readonly destroyRef: DestroyRef,
   ) { }
 
   ngOnInit(): void {
-    console.log('BookingComponent initialized');
-
     const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
-  
+    const detectedLanguage = this.languageService.getLanguageByCode(languageCode);
+    if (detectedLanguage) {
+      this.currentLanguage = detectedLanguage;
+      this.languageService.currentLang.set(detectedLanguage);
+    } else {
+      this.currentLanguage.code = languageCode;
+    }
+
     this.setMetaTags(this.currentLanguage.code);
 
-    this.route.queryParams.subscribe((params) => {
-      if (params['step'] === '2') {
-        this.prefillStep1Data(params);
-        this.stepFromUrl = 2; // Start from step 2
-        this.activeStep = this.stepFromUrl;
-      }
-      if (params['step'] === '3') {
-        this.prefillStep1Data(params);
-        this.prefillStep2Data(params);
-        this.stepFromUrl = 3;
-        this.activeStep = this.stepFromUrl; // Start from step 3
-      }
-    });
-    usePreset(Aura);
+    this.route.queryParams
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.handleQueryParams(params);
+      });
+
   }
 
+  private handleQueryParams(params: Params): void {
+    const requestedStep = this.getRequestedStep(params);
 
-  prefillStep1Data(params: any): void {
-    this.bookingService.bookingInitialForm.patchValue({
-      pickup_full: params['pickup_full'],
-      pickup_lat: params['pickup_lat'],
-      pickup_lng: params['pickup_lng'],
-      dest_full: params['dest_full'],
-      dest_lat: params['dest_lat'],
-      dest_lng: params['dest_lng'],
-    });
-    this.bookingService.bookingCarTypeSelectionForm.patchValue({
-      distance: params['distance'],
-      driving_duration: params['driving_duration'],
-    });
+    if (requestedStep >= 2) {
+      this.prefillStep1Data(params);
+    }
+
+    if (requestedStep >= 3) {
+      this.prefillStep2Data(params);
+    }
+
+    this.navigateToStep(requestedStep, params);
   }
 
-  prefillStep2Data(params: any): void {
-    this.bookingService.bookingCarTypeSelectionForm.patchValue({
-      car_type: params['car_type'],
-      amount: params['amount'],
-      currency_code: params['currency_code'],
-    });
+  private getRequestedStep(params: Params): number {
+    const stepParam = params['step'];
+    if (stepParam === '3') {
+      return 3;
+    }
+    if (stepParam === '2') {
+      return 2;
+    }
+    return 1;
   }
 
-  goToStep(event: any, fromStep: number, toStep: number): void {
-    console.log('Navigating fromStep:', fromStep);
-    console.log('Navigating toStep:', toStep);
-    console.log('Event:', event);
-    this.activeStep = toStep;
+  private navigateToStep(step: number, params: Params): void {
+    const currentChildPath = this.route.firstChild?.routeConfig?.path ?? '';
+
+    switch (step) {
+      case 3:
+        if (currentChildPath !== 'completion') {
+          this.router.navigate(['completion'], {
+            relativeTo: this.route,
+            queryParams: { ...params, step: 3 },
+            queryParamsHandling: 'merge',
+          });
+        }
+        break;
+      case 2:
+        if (currentChildPath !== 'car-selection') {
+          this.router.navigate(['car-selection'], {
+            relativeTo: this.route,
+            queryParams: { ...params, step: 2 },
+            queryParamsHandling: 'merge',
+          });
+        }
+        break;
+      default:
+        if (currentChildPath) {
+          this.router.navigate(['../'], {
+            relativeTo: this.route.firstChild!,
+            queryParams: { ...params, step: 1 },
+            queryParamsHandling: 'merge',
+          });
+        }
+        break;
+    }
+  }
+
+  private prefillStep1Data(params: Params): void {
+    if (!params) {
+      return;
+    }
+    this.bookingService.applyStepOneParams(params);
+    this.bookingService.applyDistanceParams(params);
+  }
+
+  private prefillStep2Data(params: Params): void {
+    if (!params) {
+      return;
+    }
+    this.bookingService.applyStepTwoParams(params);
   }
 
   setMetaTags(langCode: string): void {
@@ -126,33 +156,6 @@ export class BookingComponent implements OnInit {
     const meta: any = metaTags[langCode] || metaTags['en'];
     this.title.setTitle(meta.title);
     this.meta.updateTag({ name: 'description', content: meta.description });
-  }
-
-  translations: any = {
-    destination: {
-      en: 'Destination',
-      de: 'Ziel',
-      ru: 'Место назначения',
-      tr: 'Gidilecek Yer',
-    },
-    vehicle: {
-      en: 'Vehicle',
-      de: 'Fahrzeug',
-      ru: 'Транспортное средство',
-      tr: 'Araç',
-    }, 
-    personal: {
-      en: 'Personal Info', 
-      de: 'Persönliche Informationen',
-      ru: 'Личная информация',
-      tr: 'Kişisel Bilgiler',
-    }, 
-    back: {
-      en: 'Back', 
-      de: 'Zurück',
-      ru: 'Назад',
-      tr: 'Geri',
-    },
   }
 
 }

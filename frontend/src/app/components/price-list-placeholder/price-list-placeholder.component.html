@@ -1,0 +1,52 @@
+<section
+  itemscope
+  itemtype="https://schema.org/OfferCatalog"
+  [attr.lang]="langCode"
+>
+  <h2 itemprop="name">{{ localize(translations.heading) }}</h2>
+  <p>{{ localize(translations.intro) }}</p>
+
+  <ol *ngIf="locationSummaries.length; else loadingCopy">
+    <li
+      *ngFor="let summary of locationSummaries; trackBy: trackLocation"
+      itemprop="itemListElement"
+      itemscope
+      itemtype="https://schema.org/Offer"
+    >
+      <article>
+        <h3 itemprop="name">{{ getLocationName(summary.location) }}</h3>
+        <meta itemprop="category" content="Private airport transfer" />
+
+        <ul>
+          <li *ngFor="let route of summary.routes; trackBy: trackRoute">
+            <div itemprop="itemOffered" itemscope itemtype="https://schema.org/Service">
+              <span itemprop="name">Transfer to {{ route.destination }}</span>
+              <meta itemprop="provider" content="Airport Transfer Hub" />
+            </div>
+            <p>
+              <span>{{ localize(translations.priceLabel) }}: </span>
+              <ng-container *ngIf="route.price !== null; else priceOnRequest">
+                <span itemprop="priceSpecification" itemscope itemtype="https://schema.org/PriceSpecification">
+                  <meta itemprop="priceCurrency" [attr.content]="route.currency" />
+                  <meta itemprop="price" [attr.content]="route.price" />
+                  {{ route.price | number: '1.0-0' }} {{ route.currency }}
+                </span>
+              </ng-container>
+              <ng-template #priceOnRequest>{{ localize(translations.fallbackPrice) }}</ng-template>
+              <span *ngIf="route.carTypeName"> · {{ route.carTypeName }}</span>
+              <span *ngIf="route.distance"> · {{ route.distance }}</span>
+            </p>
+          </li>
+        </ul>
+      </article>
+    </li>
+  </ol>
+
+  <ng-template #loadingCopy>
+    <p>Airport transfer prices load automatically once routes are available.</p>
+  </ng-template>
+
+  <p>
+    <a itemprop="url" [attr.href]="pricePageUrl">{{ localize(translations.viewMore) }}</a>
+  </p>
+</section>

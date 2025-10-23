@@ -1,0 +1,65 @@
+<div class="form-wrapper">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <!-- Hidden IDs -->
+      <input type="hidden" formControlName="id" />
+      <input type="hidden" formControlName="item" />
+  
+      <!-- Language (disabled on edit) -->
+      <div class="form-field">
+        <label for="language">Language</label>
+        <p-dropdown
+          inputId="language"
+          [options]="languages"
+          optionLabel="label"
+          optionValue="value"
+          formControlName="language"
+          [disabled]="translation?.id != null"
+          placeholder="Select language"
+        ></p-dropdown>
+        <p-message
+          *ngIf="f['language']?.touched && (f['language']?.errors?.['required'] || f['language']?.errors?.['lang'])"
+          severity="warn"
+          text="Please select a valid language (en, de, ru, tr).">
+        </p-message>
+      </div>
+  
+      <!-- Question -->
+      <div class="form-field">
+        <label for="question">Question</label>
+        <input
+          id="question"
+          type="text"
+          pInputText
+          formControlName="question"
+          placeholder="Enter question"
+        />
+        <p-message
+          *ngIf="f['question']?.touched && f['question']?.invalid"
+          severity="warn"
+          text="Question is required (max 255 chars).">
+        </p-message>
+      </div>
+  
+      <!-- Answer -->
+      <div class="form-field">
+        <label for="answer">Answer</label>
+        <textarea
+          id="answer"
+          pInputTextarea
+          autoResize="true"
+          rows="5"
+          formControlName="answer"
+          placeholder="Enter answer (HTML or plain text)"
+        ></textarea>
+      </div>
+  
+      <!-- Submit -->
+      <div class="form-actions">
+        <button pButton type="submit" label="Save Translation" icon="pi pi-check"></button>
+      </div>
+    </form>
+  
+    <p-toast [life]="8000"></p-toast>
+    <p-message></p-message>
+  </div>
+  

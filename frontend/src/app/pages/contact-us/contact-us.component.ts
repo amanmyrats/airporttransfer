@@ -6,8 +6,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ContactUsMessageService } from '../../admin/services/contact-us-message.service';
-import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
 import { CommonModule } from '@angular/common';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
 
@@ -16,10 +14,10 @@ import { SOCIAL_ICONS } from '../../constants/social.constants';
   imports: [
     SuperHeaderComponent,
     NavbarComponent,
-    FooterComponent, 
-    FormsModule, ReactiveFormsModule, 
-    ButtonModule, MessageModule, 
-    CommonModule, 
+    FooterComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
   ],
   templateUrl: './contact-us.component.html',
   styleUrl: './contact-us.component.scss'

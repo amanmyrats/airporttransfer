@@ -1,18 +1,39 @@
-import { Component } from '@angular/core';
-import { CarouselModule } from 'primeng/carousel';
+import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-testimonial-list',
-  imports: [
-    CarouselModule
-    ,
-  ],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './testimonial-list.component.html',
-  styleUrl: './testimonial-list.component.scss'
+  styleUrl: './testimonial-list.component.scss',
 })
-export class TestimonialListComponent {
+export class TestimonialListComponent implements OnInit {
+  @Input() loadForHomePagePlaceholder: boolean = false;
+  @Input() testimonialCountToShowOnHomePage: number | null = null;
 
-  testimonials: any[] = [
+  ngOnInit(): void {
+    if (this.loadForHomePagePlaceholder && this.testimonialCountToShowOnHomePage === null) {
+      this.testimonialCountToShowOnHomePage = 3; // Show only 3 testimonials for placeholder
+    }
+  }
+
+  get visibleTestimonials() {
+    if (this.testimonialCountToShowOnHomePage !== null) {
+      return this.testimonials.slice(0, this.testimonialCountToShowOnHomePage);
+    }
+    return this.testimonials;
+  }
+
+  trackByAuthor(index: number, testimonial: any): string {
+    return testimonial.author;
+  }
+
+  isAccent(index: number): boolean {
+    return index % 3 === 0;
+  }
+  
+  testimonials = [
     {
       text: 'Stress-Free Private Airport Transfer from Antalya to Alanya. Booking our private airport transfer from Antalya Airport to Alanya was a breeze! The driver was punctual, professional, and the ride was incredibly comfortable. I’ll definitely use this service again for stress-free airport transfers in Turkey!',
       author: 'Sarah J., United Kingdom',
@@ -44,25 +65,6 @@ export class TestimonialListComponent {
     {
       text: 'Bodrum Havalimanı’ndan Merkeze Konforlu ve Lüks Transfer. Bodrum Milas Havalimanı’ndan Bodrum merkezine olan transferimiz çok keyifli geçti. Yolculuk boyunca çok rahat ettik ve hizmet mükemmeldi. Teşekkür ederiz!',
       author: 'Ahmet D., Türkiye',
-    },
-  ];
-  
-
-  responsiveOptions = [
-    {
-      breakpoint: '1024px',
-      numVisible: 1,
-      numScroll: 1,
-    },
-    {
-      breakpoint: '768px',
-      numVisible: 1,
-      numScroll: 1,
-    },
-    {
-      breakpoint: '560px',
-      numVisible: 1,
-      numScroll: 1,
     },
   ];
 }

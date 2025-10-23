@@ -1,0 +1,79 @@
+<div class="form-wrapper">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <!-- Hidden IDs -->
+      <input type="hidden" formControlName="id" />
+      <input type="hidden" formControlName="section" />
+  
+      <!-- Order -->
+      <div class="form-field">
+        <label for="order">Order</label>
+        <p-inputNumber
+          inputId="order"
+          formControlName="order"
+          [min]="0"
+          [useGrouping]="false"
+          [showButtons]="true"
+        />
+      </div>
+  
+      <!-- Internal note (admin only) -->
+      <div class="form-field">
+        <label for="internal_note">Internal Note</label>
+        <input
+          id="internal_note"
+          type="text"
+          pInputText
+          formControlName="internal_note"
+          placeholder="Only visible in admin"
+        />
+      </div>
+  
+      <!-- Anchor -->
+      <div class="form-field">
+        <label for="anchor">Anchor (in-page id)</label>
+        <input
+          id="anchor"
+          type="text"
+          pInputText
+          formControlName="anchor"
+          placeholder="e.g. airport-transfer-times"
+          (blur)="onAnchorBlur()"
+        />
+        <p-message
+          *ngIf="f['anchor']?.touched && f['anchor']?.errors?.['slug']"
+          severity="warn"
+          text="Use lowercase letters, numbers and hyphens only."
+        ></p-message>
+      </div>
+  
+      <!-- Toggles -->
+      <div class="form-field checkboxes">
+        <div class="checkbox-row">
+          <p-checkbox
+            binary="true"
+            formControlName="is_expanded_by_default"
+            inputId="is_expanded_by_default"
+          ></p-checkbox>
+          <label for="is_expanded_by_default">Expanded by default</label>
+        </div>
+  
+        <div class="checkbox-row">
+          <p-checkbox
+            binary="true"
+            formControlName="is_featured"
+            inputId="is_featured"
+          ></p-checkbox>
+          <label for="is_featured">Featured</label>
+        </div>
+      </div>
+  
+      <!-- Submit -->
+      <div class="form-actions">
+        <button pButton type="submit" label="Save FAQ Item" icon="pi pi-check"></button>
+      </div>
+    </form>
+  
+    <p-toast [life]="8000"></p-toast>
+    <p-message></p-message>
+  </div>
+  

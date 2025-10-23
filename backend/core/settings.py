@@ -17,14 +17,15 @@ from datetime import timedelta
 from logging.handlers import RotatingFileHandler
 
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers, default_methods
 
 
-# Load environment variables from .env file
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from .env file
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -35,7 +36,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ['*', 'backend.airporttransfer.transfertakip.com']
+ALLOWED_HOSTS = [
+    '*', 
+    'backend.airporttransfer.transfertakip.com', 
+    'dev.backend.airporttransferhub.com',
+]
+
 
 AUTH_USER_MODEL = 'accounts.Account'
 
@@ -48,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages', 
 
     'corsheaders',
 
@@ -59,6 +66,7 @@ INSTALLED_APPS = [
     'common', 
     'transfer', 
 
+    'blog.apps.BlogConfig', 
 
 ]
 
@@ -153,13 +161,23 @@ CORS_ALLOW_METHODS = [
     "OPTIONS",
 ]
 
-CORS_ALLOW_HEADERS = [
-    "Content-type",
-    "Authorization",
+# CORS_ALLOW_HEADERS = [
+#     "Content-type",
+#     "Authorization",
+#     "x-csrftoken",
+#     "accept",
+#     "origin",
+#     "user-agent",
+# ]
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "authorization",     # lower-case
+    "x-language",        # you use this
+    "x-requested-with",
     "x-csrftoken",
-    "accept",
-    "origin",
-    "user-agent",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://dev.airporttransferhub.com",
+    # "https://admin.airporttransferhub.com",
 ]
 
 REST_FRAMEWORK = {
@@ -283,6 +301,61 @@ LOGGING = {
 if DEBUG:
     FRONTEND_URL = 'http://localhost:4200'
     BACKEND_URL = 'http://localhost:8000'
+    DEFAULT_LANGUAGE = "en"
+
 else:
     FRONTEND_URL = 'https://airporttransferhub.com'
     BACKEND_URL = 'https://backend.airporttransfer.transfertakip.com'
+    DEFAULT_LANGUAGE = "en"
+
+
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME', 'eu-north-1')  # Default to 'eu-north-1' if not set
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+# Optional: to make files public
+AWS_DEFAULT_ACL = 'public-read'
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "bucket_name": os.getenv("AWS_STORAGE_BUCKET_NAME"),
+            "region_name": os.getenv("AWS_S3_REGION_NAME", "eu-north-1"),
+            "file_overwrite": True,
+            "custom_domain": f'{os.getenv("AWS_STORAGE_BUCKET_NAME")}.s3.{os.getenv("AWS_S3_REGION_NAME", "eu-north-1")}.amazonaws.com',
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+
+# Media files
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+
+# Slug policy per language: "latin" (ASCII) or "unicode" (keep native chars)
+BLOG_SLUG_POLICY = {
+    "en": "latin",
+    "de": "latin",
+    "tr": "latin",
+    "ru": "unicode",   # keep Cyrillic if you want native URLs for Russian
+}
+BLOG_SLUG_DEFAULT_POLICY = "latin"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",  # table name
+        "TIMEOUT": 600,              # 10 minutes (set what you like)
+        "OPTIONS": {
+            "MAX_ENTRIES": 10000,
+            "CULL_FREQUENCY": 3,     # evict 1/3 when full
+        },
+        "KEY_PREFIX": "ath",         # short, unique prefix
+    },
+}

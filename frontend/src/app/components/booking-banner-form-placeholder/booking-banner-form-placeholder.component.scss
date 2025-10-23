@@ -1,0 +1,148 @@
+.booking-banner-placeholder {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: rgba(17, 25, 40, 0.55);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 32px 60px -40px rgba(15, 23, 42, 0.65);
+  color: #f8fafc;
+  width: 100%;
+  max-width: 88rem;
+  margin: 0 auto;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.booking-banner-placeholder__form {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.4fr) minmax(9rem, auto);
+  gap: clamp(0.75rem, 2vw, 1rem);
+  align-items: stretch;
+  background: rgba(15, 23, 42, 0.65);
+  padding: clamp(0.9rem, 2vw, 1.1rem);
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.booking-banner-placeholder__form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: rgba(226, 232, 240, 0.85);
+  min-width: 0;
+}
+
+.booking-banner-placeholder__input-wrapper {
+  position: relative;
+  display: block;
+}
+
+.booking-banner-placeholder__form input {
+  padding: 0.75rem 0.9rem;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(248, 250, 252, 0.95);
+  color: #0f172a;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.booking-banner-placeholder__input-wrapper input {
+  padding-right: 2.5rem;
+}
+
+.booking-banner-placeholder__form input:disabled {
+  opacity: 0.85;
+  color: rgba(71, 85, 105, 0.9);
+  cursor: not-allowed;
+}
+
+.booking-banner-placeholder__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.25rem clamp(2.2rem, 5vw, 3rem);
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: #f8fafc;
+  font-size: 1rem;
+  font-weight: 600;
+  min-height: 3rem;
+  align-self: stretch;
+  justify-self: stretch;
+  min-width: 0;
+}
+
+.booking-banner-placeholder__submit:disabled {
+  opacity: 0.75;
+}
+
+.booking-banner-placeholder__spinner {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  border: 2px solid rgba(14, 165, 233, 0.2);
+  border-top-color: #0ea5e9;
+  animation: booking-banner-placeholder-spin 0.8s linear infinite;
+}
+
+.booking-banner-placeholder__spinner--input {
+  position: absolute;
+  top: 50%;
+  right: 0.85rem;
+  margin-top: -0.55rem;
+  pointer-events: none;
+}
+
+.booking-banner-placeholder__spinner--button {
+  margin: 0;
+}
+
+.booking-banner-placeholder__submit:disabled .booking-banner-placeholder__spinner {
+  border-top-color: rgba(248, 250, 252, 0.9);
+  border-right-color: rgba(59, 130, 246, 0.35);
+}
+
+.booking-banner-placeholder__form input:disabled + .booking-banner-placeholder__spinner {
+  border-top-color: rgba(59, 130, 246, 0.75);
+}
+
+@keyframes booking-banner-placeholder-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.booking-banner-placeholder__disclaimer {
+  margin: 0;
+  text-align: center;
+  color: rgba(226, 232, 240, 0.78);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .booking-banner-placeholder {
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .booking-banner-placeholder__form {
+    grid-template-columns: 1fr;
+  }
+  
+  .booking-banner-placeholder__submit {
+    width: 100%;
+    align-self: stretch;
+  }
+}

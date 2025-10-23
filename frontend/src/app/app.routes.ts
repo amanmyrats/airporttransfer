@@ -1,8 +1,23 @@
+import { inject, provideEnvironmentInitializer } from '@angular/core';
 import { Routes } from '@angular/router';
+import { PrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 import { HomeComponent } from './pages/home/home.component';
+import { BookingStepGuard } from './pages/booking/guards/booking-step.guard';
 import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
 import { SsrTestComponent } from './components/ssr-test/ssr-test.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
+
+const adminThemeProviders = [
+    provideEnvironmentInitializer(() => {
+        const prime = inject(PrimeNG);
+        prime.setConfig({
+            theme: {
+                preset: Aura,
+            },
+        });
+    }),
+];
 
 export const routes: Routes = [
     // {   path: 'en/aboutus/',component: AboutUsComponent, data: { language: 'en' }  },
@@ -150,27 +165,115 @@ export const routes: Routes = [
     { path: 'tr/türkiye-de-7-24-özel-havalimanı-transferleri-için-uygun-fiyatlar', loadComponent: () => import('./pages/prices/prices.component').then(m => m.PricesComponent), data: { language: 'tr' }   },
     
     // Book Now
-    { path: 'en/book-now-24-7-private-airport-transfer-in-turkey', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'en' }   },
-    { path: 'de/jetzt-buchen-24-7-privater-flughafentransfer-in-der-türkei', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'de' }   },
-    { path: 'ru/забронировать-сейчас-24-7-частный-трансфер-из-аэропорта-в-турции', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'ru' }   },
-    { path: 'tr/türkiye-de-7-24-özel-havalimanı-transferi-şimdi-rezervasyon-yap', loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent), data: { language: 'tr' }   },
+    {
+        path: 'en/book-now-24-7-private-airport-transfer-in-turkey',
+        loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent),
+        data: { language: 'en' },
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./pages/booking/steps/booking-initial-step.component').then(m => m.BookingInitialStepComponent),
+            },
+            {
+                path: 'car-selection',
+                loadComponent: () => import('./pages/booking/steps/booking-car-selection-step.component').then(m => m.BookingCarSelectionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 2 },
+            },
+            {
+                path: 'completion',
+                loadComponent: () => import('./pages/booking/steps/booking-completion-step.component').then(m => m.BookingCompletionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 3 },
+            },
+        ],
+    },
+    {
+        path: 'de/jetzt-buchen-24-7-privater-flughafentransfer-in-der-türkei',
+        loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent),
+        data: { language: 'de' },
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./pages/booking/steps/booking-initial-step.component').then(m => m.BookingInitialStepComponent),
+            },
+            {
+                path: 'car-selection',
+                loadComponent: () => import('./pages/booking/steps/booking-car-selection-step.component').then(m => m.BookingCarSelectionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 2 },
+            },
+            {
+                path: 'completion',
+                loadComponent: () => import('./pages/booking/steps/booking-completion-step.component').then(m => m.BookingCompletionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 3 },
+            },
+        ],
+    },
+    {
+        path: 'ru/забронировать-сейчас-24-7-частный-трансфер-из-аэропорта-в-турции',
+        loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent),
+        data: { language: 'ru' },
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./pages/booking/steps/booking-initial-step.component').then(m => m.BookingInitialStepComponent),
+            },
+            {
+                path: 'car-selection',
+                loadComponent: () => import('./pages/booking/steps/booking-car-selection-step.component').then(m => m.BookingCarSelectionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 2 },
+            },
+            {
+                path: 'completion',
+                loadComponent: () => import('./pages/booking/steps/booking-completion-step.component').then(m => m.BookingCompletionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 3 },
+            },
+        ],
+    },
+    {
+        path: 'tr/türkiye-de-7-24-özel-havalimanı-transferi-şimdi-rezervasyon-yap',
+        loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent),
+        data: { language: 'tr' },
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./pages/booking/steps/booking-initial-step.component').then(m => m.BookingInitialStepComponent),
+            },
+            {
+                path: 'car-selection',
+                loadComponent: () => import('./pages/booking/steps/booking-car-selection-step.component').then(m => m.BookingCarSelectionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 2 },
+            },
+            {
+                path: 'completion',
+                loadComponent: () => import('./pages/booking/steps/booking-completion-step.component').then(m => m.BookingCompletionStepComponent),
+                canActivate: [BookingStepGuard],
+                data: { step: 3 },
+            },
+        ],
+    },
 
 
-    // Simple Landing
-    {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'en' } },
-    {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'de' } },
-    {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'ru' } },
-    {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'tr' } },
+    // // Simple Landing
+    // {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'en' } },
+    // {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'de' } },
+    // {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'ru' } },
+    // {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-1', loadComponent: () => import('./pages/simple-landing/simple-landing.component').then(m => m.SimpleLandingComponent), data: { language: 'tr' } },
 
-    {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'en' } },
-    {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'de' } },
-    {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'ru' } },
-    {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'tr' } },
+    // {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'en' } },
+    // {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'de' } },
+    // {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'ru' } },
+    // {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-2', loadComponent: () => import('./pages/simple-landing-step-2/simple-landing-step-2.component').then(m => m.SimpleLandingStep2Component), data: { language: 'tr' } },
 
-    {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'en' } },
-    {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'de' } },
-    {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'ru' } },
-    {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'tr' } },
+    // {path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'en' } },
+    // {path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'de' } },
+    // {path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'ru' } },
+    // {path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-3', loadComponent: () => import('./pages/simple-landing-step-3/simple-landing-step-3.component').then(m => m.SimpleLandingStep3Component), data: { language: 'tr' } },
     
     // Booking received
     {
@@ -253,27 +356,33 @@ export const routes: Routes = [
     {
         path: 'admin',
         component: AdminHomeComponent, 
+        providers: adminThemeProviders,
         loadChildren: () => import('./admin/admin.routes').then(x => x.adminRoutes),
-        data: { noHydration: true },
+        data: { 
+            noHydration: true, 
+         },
     },
 
     {
         path: 'passwordreset',
         // component: PasswordResetComponent,
         loadComponent: () => import('./admin/pages/password-reset/password-reset.component').then(m => m.PasswordResetComponent), 
-        data: { language: 'tr' }
+        data: { language: 'tr' },
+        providers: adminThemeProviders,
     },
     {
         path: 'passwordresetconfirm',
         // component: PasswordResetConfirmComponent,
         loadComponent: () => import('./admin/pages/password-reset-confirm/password-reset-confirm.component').then(m => m.PasswordResetConfirmComponent), 
-        data: { language: 'tr' }
+        data: { language: 'tr' },
+        providers: adminThemeProviders,
     },
     {
         path: 'unauthorized',
         // component: UnauthorizedComponent,
         loadComponent: () => import('./admin/pages/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent), 
-        data: { language: 'tr' }
+        data: { language: 'tr' },
+        providers: adminThemeProviders,
     },
 
     {
@@ -285,14 +394,84 @@ export const routes: Routes = [
         path: 'blogs', 
         component: SsrTestComponent,
     },
-    
-    {   path: 'en', component: HomeComponent, data: { language: 'en' }  },
-    {   path: 'de', component: HomeComponent, data: { language: 'de' }  },
-    {   path: 'ru', component: HomeComponent, data: { language: 'ru' }  },
-    {   path: 'tr', component: HomeComponent, data: { language: 'tr' }  },
-    
-    {   path: '', component: HomeComponent, data: { language: 'en' }  },
-    
-    {   path: '**', redirectTo: '/en', pathMatch: 'full', data: { language: 'en' } }, // Redirect unknown paths
 
+
+    // 📰 Blog detail routes (localized category path + slug)
+{
+    path: 'en/turkey-airport-transfer-blogs/:slug',
+    loadComponent: () => import('./blogs/components/blog-detail-public/blog-detail-public.component').then(m => m.BlogDetailPublicComponent),
+    data: { language: 'en' }
+  },
+  {
+    path: 'de/turkei-flughafentransfer-blogs/:slug',
+    loadComponent: () => import('./blogs/components/blog-detail-public/blog-detail-public.component').then(m => m.BlogDetailPublicComponent),
+    data: { language: 'de' }
+  },
+  {
+    path: 'ru/трансфер-аэропорт-турция-блог/:slug',
+    loadComponent: () => import('./blogs/components/blog-detail-public/blog-detail-public.component').then(m => m.BlogDetailPublicComponent),
+    data: { language: 'ru' }
+  },
+  {
+    path: 'tr/turkiye-havalimani-transfer-bloglari/:slug',
+    loadComponent: () => import('./blogs/components/blog-detail-public/blog-detail-public.component').then(m => m.BlogDetailPublicComponent),
+    data: { language: 'tr' }
+  },
+
+//   Blog list route
+{
+    path: 'en/turkey-airport-transfer-blogs',
+    loadComponent: () => import('./blogs/components/blog-list-public/blog-list-public.component').then(m => m.BlogListPublicComponent),
+    data: { language: 'en' }
+  },
+  {
+    path: 'de/turkei-flughafentransfer-blogs',
+    loadComponent: () => import('./blogs/components/blog-list-public/blog-list-public.component').then(m => m.BlogListPublicComponent),
+    data: { language: 'de' }
+  },
+  {
+    path: 'ru/трансфер-аэропорт-турция-блог',
+    loadComponent: () => import('./blogs/components/blog-list-public/blog-list-public.component').then(m => m.BlogListPublicComponent),
+    data: { language: 'ru' }
+  },
+  {
+    path: 'tr/turkiye-havalimani-transfer-bloglari',
+    loadComponent: () => import('./blogs/components/blog-list-public/blog-list-public.component').then(m => m.BlogListPublicComponent),
+    data: { language: 'tr' }
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+  {   path: 'en', component: HomeComponent, data: { language: 'en' }  },
+  {   path: 'de', component: HomeComponent, data: { language: 'de' }  },
+  {   path: 'ru', component: HomeComponent, data: { language: 'ru' }  },
+  {   path: 'tr', component: HomeComponent, data: { language: 'tr' }  },
+  
+  {   path: '', component: HomeComponent, data: { language: 'en' }  },
+  
+  {   path: '**', redirectTo: '/en', pathMatch: 'full', data: { language: 'en' } }, // Redirect unknown paths
+
+
+
+  
 ];

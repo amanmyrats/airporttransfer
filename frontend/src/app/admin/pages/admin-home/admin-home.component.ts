@@ -116,6 +116,16 @@ export class AdminHomeComponent implements OnInit {
         icon: 'pi pi-user',
         routerLink: '/admin/users/'
       },
+      {
+        label: 'Blogs Posts',
+        icon: 'pi pi-user',
+        routerLink: '/admin/blog-posts/'
+      },
+      {
+        label: 'FAQ',
+        icon: 'pi pi-question',
+        routerLink: '/admin/faqlibraries/'
+      }
     ];
   }
 

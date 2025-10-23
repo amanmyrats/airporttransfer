@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LazyLoadEvent } from 'primeng/api';
-import { CustomLazyLoadEvent } from '../interfaces/custom-lazy-load-event';
+import { LazyLoadParams } from '../interfaces/custom-lazy-load-event';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +43,7 @@ export class CommonService {
     return result;
   }
 
-  public buildPaginationParams(event: LazyLoadEvent): string {
+  public buildPaginationParams(event: LazyLoadParams): string {
     if (!event) {
       return '';
     }

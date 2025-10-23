@@ -1,0 +1,87 @@
+<div class="form-wrapper">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <input type="hidden" formControlName="id" />
+      <input type="hidden" formControlName="post" />
+      <!-- Language -->
+      <div *ngIf="!blogPostTranslation" class="form-field">
+        <label for="language">Language *</label>
+        <p-dropdown
+          inputId="language"
+          [options]="languages"
+          optionLabel="label"
+          optionValue="code"
+          formControlName="language"
+          placeholder="Select language"
+        />
+      </div>
+  
+      <!-- Title -->
+      <div class="form-field">
+        <label for="title">Title *</label>
+        <input id="title" type="text" pInputText formControlName="title" />
+        <p-message
+        *ngIf="f['title'].touched && f['title'].hasError('required')"
+        severity="error"
+        text="Title is required."
+      ></p-message>
+      </div>
+  
+      <!-- Short Description -->
+      <div class="form-field">
+        <label for="short_description">Short Description</label>
+        <textarea
+          id="short_description"
+          pInputTextarea
+          formControlName="short_description"
+          rows="10"
+          placeholder="Optional short summary"
+          autoResize="true"
+        ></textarea>
+      </div>
+  
+  
+      <!-- SEO Title -->
+      <div class="form-field">
+        <label for="seo_title">SEO Title</label>
+        <input id="seo_title" type="text" pInputText formControlName="seo_title" />
+      </div>
+  
+      <!-- SEO Description -->
+      <div class="form-field">
+        <label for="seo_description">SEO Description</label>
+        <textarea
+          id="seo_description"
+          pInputTextarea
+          formControlName="seo_description"
+          rows="5"
+          placeholder="Optional SEO summary"
+        ></textarea>
+      </div>
+  
+      <!-- Slug -->
+      <div class="form-field">
+        <label for="slug">Slug *</label>
+        <input
+          id="slug"
+          type="text"
+          pInputText
+          formControlName="slug"
+          placeholder="e.g. istanbul-airport-guide"
+        />
+        <p-message
+        *ngIf="f['slug'].touched && f['slug'].hasError('required')"
+        severity="error"
+        text="Slug is required."
+      ></p-message>
+      </div>
+
+      <!-- Submit -->
+      <div class="form-actions">
+        <button pButton type="submit" label="Save Translation" icon="pi pi-check"></button>
+
+      </div>
+
+    </form>
+    <p-toast></p-toast>
+  </div>
+  

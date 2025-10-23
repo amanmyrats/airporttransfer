@@ -28,7 +28,21 @@
         {{ getTranslation('banner.subtitle') }}
       </p>
       
-      <app-booking-banner-form [langInput]="langInput"></app-booking-banner-form>
+      <span class="banner-form">
+
+      @defer (on immediate) {
+        <app-booking-banner-form 
+          [langInput]="langInput"
+          >
+        </app-booking-banner-form>
+      } @placeholder {
+        <app-booking-banner-form-placeholder 
+          [langInput]="langInput"
+          >
+        </app-booking-banner-form-placeholder>
+      }
+  
+      </span>
 
       <div class="floating-buttons">
         

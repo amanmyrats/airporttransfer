@@ -6,8 +6,6 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { jwtInterceptor } from './interceptors/jwt.interceptor';
 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
@@ -22,12 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch(),withInterceptors([jwtInterceptor])), 
     provideAnimationsAsync(),
-    providePrimeNG({
-        theme: {
-            preset: undefined,
-            // preset: Aura
-        }
-    }), 
 
   ]
 };

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,18 +7,18 @@ import { MessageService } from 'primeng/api';
 export class FormErrorPrinterService {
 
   constructor(
-    private messageService: MessageService, 
+    private notificationService: NotificationService, 
   ) {}
 
   printFormValidationErrors(form: any) {
-    this.messageService.clear(); // Clear existing messages
+    this.notificationService.clear(); // Clear existing messages
     for (const controlName in form.controls) {
       if (form.controls.hasOwnProperty(controlName)) {
         const control = form.get(controlName);
         if (control && control.invalid) {
           const errorMessages = this.getErrorMessages(controlName, control.errors);
           errorMessages.forEach(message => {
-            this.messageService.add({ severity: 'error', summary: 'Doğrulama Hatası', detail: message });
+            this.notificationService.add({ severity: 'error', summary: 'Doğrulama Hatası', detail: message });
           });
         }
       }

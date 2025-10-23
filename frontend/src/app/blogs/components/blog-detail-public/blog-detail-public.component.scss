@@ -1,0 +1,204 @@
+.blog-detail {
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+
+  .hero {
+    position: relative;
+    height: 320px;
+    margin: 0;
+    overflow: hidden;
+
+    /* Maintain aspect ratio & avoid CLS. Image fills container */
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+
+      h1 {
+        font-size: 2.4rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .short-description {
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin: 0 auto;
+        opacity: 0.9;
+      }
+    }
+  }
+
+  .container {
+    max-width: 1140px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .meta {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+
+    .tags {
+      margin-top: 0.5rem;
+
+      .tag {
+        display: inline-block;
+        background: #f0f0f0;
+        border-radius: 4px;
+        padding: 3px 8px;
+        font-size: 0.8rem;
+        margin-right: 6px;
+        color: #444;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .section {
+    margin-bottom: 2.5rem;
+
+    h2 {
+      font-size: 1.6rem;
+      color: #222;
+      margin-bottom: 1rem;
+    }
+
+    p, li {
+      line-height: 1.7;
+      font-size: 1.05rem;
+    }
+
+    ul { padding-left: 1.5rem; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+
+      th, td {
+        border: 1px solid #ccc;
+        padding: 0.75rem;
+        text-align: left;
+      }
+
+      th { background-color: #f5f5f5; }
+    }
+
+    blockquote {
+      border-left: 4px solid #ccc;
+      padding-left: 1rem;
+      color: #666;
+      font-style: italic;
+      margin: 1.5rem 0;
+    }
+  }
+
+  .image-section {
+    text-align: center;
+
+    .blog-image {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+
+    .caption {
+      font-size: 0.85rem;
+      color: #777;
+    }
+  }
+
+  .cta-section {
+    background: #f1f6fb;
+    border: 1px solid #d3e3f1;
+    padding: 2rem;
+    text-align: center;
+    border-radius: 8px;
+
+    h3 { font-size: 1.4rem; margin-bottom: 1rem; }
+
+    .btn-cta {
+      background-color: #0057a8;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 500;
+
+      &:hover { background-color: #004080; }
+    }
+  }
+
+  .blog-content-grid {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  .main-content { flex: 1 1 0; }
+
+  aside.sidebar-booking {
+    width: 320px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 80px;
+    height: fit-content;
+
+    .desktop-booking-box { display: block; }
+  }
+
+  .mobile-booking-box { display: none; }
+
+  @media (max-width: 768px) {
+    .hero {
+      height: 240px;
+
+      .overlay h1 { font-size: 1.8rem; }
+      .short-description { font-size: 1rem; }
+    }
+
+    .blog-content-grid { flex-direction: column; }
+    aside.sidebar-booking { display: none; }
+    .mobile-booking-box { display: block; margin: 2rem 0; }
+  }
+}
+
+.section-content {
+  white-space: normal;        /* make sure it’s not nowrap */
+  overflow-wrap: anywhere;    /* allow breaks even in long tokens */
+  word-break: break-word;     /* fallback for older content */
+}
+
+.section-content p {          /* optional: nicer spacing */
+  margin: 0 0 .5rem 0;
+}
+
+::ng-deep th,
+::ng-deep td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+::ng-deep th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+::ng-deep tr:nth-child(even) {
+  background-color: #fafafa;
+}

@@ -1,0 +1,115 @@
+/* constant-height carousel (prevents page reflow on each slide) */
+.carousel {
+    position: relative;
+    border-radius: 10px;
+    background: #f6f6f6;
+    outline: none;
+  }
+  
+  .viewport {
+    height: var(--h, 420px);
+    overflow: hidden;
+    border-radius: 10px;
+    background: #eee;
+  }
+  
+  /* horizontal strip of slides */
+  .track {
+    height: 100%;
+    display: flex;
+    transition: transform 340ms ease;
+    will-change: transform;
+  }
+  
+  .slide {
+    flex: 0 0 100%;
+    height: 100%;
+    margin: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* keeps height fixed, crops nicely */
+  }
+  
+  .slide figcaption {
+    position: absolute;
+    left: 12px;
+    bottom: 10px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.92rem;
+  }
+  
+  /* arrows */
+  .nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 5; /* above images */
+    transition: background 0.15s ease, opacity 0.15s ease, transform 0.12s ease;
+  }
+  
+  .nav.prev { left: 10px; }
+  .nav.next { right: 10px; }
+  
+  .nav:hover { background: rgba(0, 0, 0, 0.7); }
+  .nav:active { transform: translateY(-50%) scale(0.97); }
+  
+  .nav:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.35);
+  }
+  
+  /* dots */
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0 0.2rem;
+  }
+  
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: none;
+    background: #cfcfcf;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .dot:hover { transform: scale(1.15); }
+  .dot.active { background: #555; }
+  
+  /* empty */
+  .empty {
+    padding: 1rem;
+    color: #777;
+    text-align: center;
+  }
+  
+  /* mobile tweaks */
+  @media (max-width: 768px) {
+    .nav { width: 34px; height: 34px; font-size: 20px; }
+  }
+  

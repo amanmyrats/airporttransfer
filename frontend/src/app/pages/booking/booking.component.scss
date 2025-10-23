@@ -4,3 +4,50 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+.booking {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.booking-stage {
+    background: #ffffff;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 20px 45px -25px rgba(17, 24, 39, 0.35);
+}
+
+.booking-stage__actions {
+    margin-top: 2rem;
+}
+
+.booking-stage__btn {
+    appearance: none;
+    border: none;
+    font: inherit;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.booking-stage__btn--ghost {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    color: #111827;
+}
+
+.booking-stage__btn--ghost:hover {
+    border-color: #9ca3af;
+    color: #1f2937;
+}
+
+@media (max-width: 768px) {
+    .booking {
+        padding: 0.5rem 0.5rem 1.5rem;
+    }
+}

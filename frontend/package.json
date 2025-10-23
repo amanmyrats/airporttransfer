@@ -10,11 +10,13 @@
     "serve:ssr:airporttransfer": "node dist/airporttransfer/server/server.mjs",
     "build:ssr": "ng build && ng run airporttransfer:server",
     "prerender": "ng run airporttransfer:prerender",
-    "i18n-merge": "xliffmerge --profile xliffmerge.json --verbose"
+    "i18n-merge": "xliffmerge --profile xliffmerge.json --verbose",
+    "start:local": "ng serve --configuration=local"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "^19.0.0",
+    "@angular/cdk": "^19.2.19",
     "@angular/common": "^19.0.0",
     "@angular/compiler": "^19.0.0",
     "@angular/core": "^19.0.0",
@@ -36,6 +38,8 @@
     "ngx-intl-tel-input": "^17.0.0",
     "primeicons": "^7.0.0",
     "primeng": "^19.0.2",
+    "quill": "^2.0.3",
+    "quill-table-ui": "^1.0.7",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

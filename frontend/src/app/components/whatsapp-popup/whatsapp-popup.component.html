@@ -1,42 +1,57 @@
-<div class="popup-box" *ngIf="showPopup" [ngClass]="position">
+<div class="popup-wrapper" *ngIf="showPopup" [ngClass]="position">
+  <button
+    type="button"
+    class="whatsapp-pill"
+    (click)="expandPopup()"
+    *ngIf="!isExpanded"
+  >
+    <img
+      [src]="'images/socialicons/' + socialIcons.whatsapp.image.name[currentLanguage.code]"
+      [alt]="socialIcons.whatsapp.image.alt[currentLanguage.code]"
+      class="pill-icon"
+    />
+    <span>{{ translations.needHelp[currentLanguage.code] }}</span>
+  </button>
+
+  <div class="popup-box" *ngIf="isExpanded">
     <div class="popup-content">
-  
-      <!-- Close Button -->
-      <button class="close-btn" (click)="dismissToday()">×</button>
-  
-      <!-- Title & Message -->
+      <button class="close-btn" type="button" (click)="collapsePopup()" aria-label="Minimize WhatsApp helper">
+        ×
+      </button>
+
       <div class="popup-header">
-        <img 
-          [src]="'images/socialicons/' + socialIcons.whatsapp.image.name[currentLanguage.code]" 
-          [alt]="socialIcons.whatsapp.image.alt[currentLanguage.code]" 
+        <img
+          [src]="'images/socialicons/' + socialIcons.whatsapp.image.name[currentLanguage.code]"
+          [alt]="socialIcons.whatsapp.image.alt[currentLanguage.code]"
           class="popup-icon"
         />
         <div>
           <h4>
-            {{ translations.startChat[currentLanguage.code] }}
+            {{ translations.startChatForDiscount[currentLanguage.code] }}
           </h4>
           <p>
             {{ translations.chatWithSupport[currentLanguage.code] }}
           </p>
         </div>
       </div>
-  
-      <!-- Start Chat Button -->
-      <a [href]="getWhatsAppLink()" target="_blank" class="whatsapp-button">
-        <img 
-          [src]="'images/socialicons/' + socialIcons.whatsapp.image.name[currentLanguage.code]" 
-          [alt]="socialIcons.whatsapp.image.alt[currentLanguage.code]" 
+
+      <a [href]="getWhatsAppLink()" target="_blank" class="whatsapp-button" rel="noopener">
+        <img
+          [src]="'images/socialicons/' + socialIcons.whatsapp.image.name[currentLanguage.code]"
+          [alt]="socialIcons.whatsapp.image.alt[currentLanguage.code]"
           class="button-icon"
         />
         {{ translations.startChat[currentLanguage.code] }}
       </a>
-  
-      <!-- Reminder / Dismiss -->
-      <!-- <div class="actions">
-        <button (click)="remindLater()" class="remind-btn">Remind me later</button>
-        <button (click)="dismissToday()" class="dismiss-btn">Don't show today</button>
-      </div> -->
-  
+
+      <div class="actions">
+        <button type="button" (click)="remindLater()">
+          {{ translations.remindLater[currentLanguage.code] }}
+        </button>
+        <button type="button" (click)="dismissToday()">
+          {{ translations.dontShow[currentLanguage.code] }}
+        </button>
+      </div>
     </div>
   </div>
-  
+</div>

@@ -1,0 +1,291 @@
+<!-- Toolbar -->
+<div class="faq-toolbar">
+    <div class="left">
+      <p-button
+        class="p-button-primary"
+        [label]="'Add New FAQ'"
+        [rounded]="true"
+        size="small"
+        (click)="addNewEmptyFaq(0)">
+        <ng-template pTemplate="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+               class="bi bi-plus" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </ng-template>
+      </p-button>
+    </div>
+  
+    <div class="right">
+      <span class="hint">Drag to reorder</span>
+    </div>
+  </div>
+  
+  <!-- List (drag & drop container) -->
+  <div class="faq-list" cdkDropList (cdkDropListDropped)="drop($event)">
+    <ng-container *ngFor="let item of ordered(); trackBy: trackById">
+      <figure class="faq-item">
+        <div class="faq-row" cdkDrag>
+  
+          <!-- LEFT SIDE (actions & meta) -->
+          <div class="item-side">
+            <div class="item-side__actions">
+  
+              <div class="row-buttons">
+                <button
+                  pButton
+                  label="Remove"
+                  class="p-button-danger p-button-sm"
+                  (click)="deleteFaq(item.id!)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                       class="bi bi-trash" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5.5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6zm3-.5a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+                    <path fill-rule="evenodd"
+                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                  </svg>
+                </button>
+  
+                <p-button
+                  class="edit-btn"
+                  [label]="'Edit'"
+                  [rounded]="true"
+                  outlined="true"
+                  size="small"
+                  (click)="openFaqForm(item)">
+                  <ng-template pTemplate="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                         class="bi bi-pencil" viewBox="0 0 16 16">
+                      <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zM10.5 3.207 2 11.707V14h2.293l8.5-8.5-2.293-2.293z"/>
+                    </svg>
+                  </ng-template>
+                </p-button>
+              </div>
+  
+              <!-- METADATA (library item fields) -->
+              <div class="item-meta">
+                <dl class="kv">
+                  <div class="kv__row">
+                    <dt>ID</dt>
+                    <dd class="mono">#{{ item.id }}</dd>
+                  </div>
+                  <div class="kv__row">
+                    <dt>Order</dt>
+                    <dd class="mono">{{ item.order }}</dd>
+                  </div>
+                  <div class="kv__row">
+                    <dt>Key</dt>
+                    <dd class="mono">{{ item.key }}</dd>
+                  </div>
+                  <div class="kv__row">
+                    <dt>Slug lock</dt>
+                    <dd>
+                      <span class="badge" [class.on]="item.slug_lock">{{ item.slug_lock ? 'Locked' : 'Auto' }}</span>
+                    </dd>
+                  </div>
+                  <div class="kv__row">
+                    <dt>Identifier</dt>
+                    <dd class="mono">{{ item.internal_identifier }}</dd>
+                  </div>
+                  <div class="kv__row">
+                    <dt>Featured</dt>
+                    <dd>
+                      <span class="badge" [class.on]="item.is_featured">{{ item.is_featured ? 'Yes' : 'No' }}</span>
+                    </dd>
+                  </div>
+                  <div class="kv__row">
+                    <dt>Expanded</dt>
+                    <dd>
+                      <span class="badge" [class.on]="item.is_expanded_by_default">
+                        {{ item.is_expanded_by_default ? 'Yes' : 'No' }}
+                      </span>
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+  
+
+
+
+              <!-- LINKS WITH BLOG POSTS -->
+<div class="linked-posts">
+  <div class="linked-posts__header">
+    <span class="section-title">Linked blog posts</span>
+
+    <p-button
+      class="p-button-sm"
+      [rounded]="true"
+      outlined="true"
+      size="small"
+      label="Link with blogpost"
+      (click)="startLink(item)">
+      <ng-template pTemplate="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+             class="bi bi-link-45deg" viewBox="0 0 16 16">
+          <path d="M4.715 6.542a3 3 0 0 1 4.243 0l.707.707-.708.707-.707-.707a2 2 0 1 0-2.828 2.828l.707.707-.707.707-.707-.707a3 3 0 0 1 0-4.243z"/>
+          <path d="M6.379 9.318l.707-.707.707.707a2 2 0 1 0 2.828-2.828l-.707-.707.707-.707.707.707a3 3 0 1 1-4.243 4.243l-.707-.707z"/>
+        </svg>
+      </ng-template>
+    </p-button>
+  </div>
+<!-- Inline link editor for THIS item -->
+<div class="link-editor" *ngIf="linkingForId === item.id">
+  <p-autoComplete
+    [(ngModel)]="selectedBlog"
+    [suggestions]="blogSearchResults"
+    (completeMethod)="searchBlogs($event)"
+    field="internal_title"
+    [forceSelection]="true"
+    [dropdown]="true"
+    placeholder="Search blog posts…"
+    inputStyleClass="w-full"
+    [minLength]="2"
+  >
+    <ng-template let-blog pTemplate="item">
+      <div class="ac-row">
+        <div class="ac-title">{{ blog.internal_title }}</div>  <!-- was: blog.title -->
+        <div class="ac-sub">#{{ blog.id }} — {{ blog.slug }}</div>
+      </div>
+    </ng-template>
+  </p-autoComplete>
+
+  <div class="link-editor__actions">
+    <p-button label="Add" class="p-button-sm p-button-success"
+      [disabled]="!selectedBlog"
+      (click)="confirmLink(item)">
+    </p-button>
+    <p-button label="Cancel" class="p-button-sm p-button-text"
+      (click)="cancelLink()">
+    </p-button>
+  </div>
+</div>
+
+
+  <!-- Existing links list -->
+  <div class="linked-posts__list" *ngIf="(item.links?.length || 0) > 0; else noLinks">
+    <div class="post-chip" *ngFor="let link of item.links">
+      <div class="post-chip__text">
+        <span class="post-title">{{ link.blog_post_internal_title || ('Post #' + link.blog_post) }}</span>
+        <!-- <span class="post-slug" *ngIf="link.blog_post_slug">/{{ link.blog_post_slug }}</span> -->
+      </div>
+      <button
+        type="button"
+        class="post-chip__remove"
+        pTooltip="Remove link"
+        (click)="removeLink(item, link)">
+        ✕
+      </button>
+    </div>
+  </div>
+
+  <ng-template #noLinks>
+    <div class="muted small">No links yet.</div>
+  </ng-template>
+</div>
+
+
+              <div class="move-buttons">
+                <button pButton icon="pi pi-arrow-up" class="p-button-rounded p-button-text" (click)="moveUp(item)"></button>
+                <button pButton icon="pi pi-arrow-down" class="p-button-rounded p-button-text" (click)="moveDown(item)"></button>
+              </div>
+  
+              <div class="drag-handle" cdkDragHandle pTooltip="Drag to reorder">☰</div>
+            </div>
+          </div>
+  
+          <!-- RIGHT SIDE — show ALL translations for this library item -->
+          <div class="translation-side multi">
+            <div class="translations-grid">
+              <!-- Loop through fixed language set -->
+              <ng-container *ngFor="let lang of ['en','de','ru','tr']">
+                <!-- existing translation -->
+                <ng-container *ngIf="getTranslationByLanguage(item.translations!, lang) as tx; else emptyLang">
+                  <section class="translation-card" [attr.lang]="tx.language">
+                    <header class="translation-card__header">
+                      <span class="lang-chip">{{ tx.language?.toUpperCase() }}</span>
+                      <p-button
+                        class="edit-btn"
+                        [label]="'Edit'"
+                        [rounded]="true"
+                        outlined="true"
+                        size="small"
+                        (click)="openFaqTranslationForm(item.id!, tx, null)">
+                        <ng-template pTemplate="icon">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                               class="bi bi-pencil" viewBox="0 0 16 16">
+                            <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zM10.5 3.207 2 11.707V14h2.293l8.5-8.5-2.293-2.293z"/>
+                          </svg>
+                        </ng-template>
+                      </p-button>
+                    </header>
+  
+                    <div class="translation-card__body">
+                      <dl class="kv">
+                        <div class="kv__row">
+                          <dt>Question</dt>
+                          <dd [class.muted]="!tx.question">{{ tx.question || '—' }}</dd>
+                        </div>
+                        <div class="kv__row">
+                          <dt>Answer</dt>
+                          <dd class="answer" [class.muted]="!tx.answer">
+                            {{ tx.answer || '—' }}
+                          </dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </section>
+                </ng-container>
+  
+                <!-- missing translation for this language -->
+                <ng-template #emptyLang>
+                  <section class="translation-card translation-empty" [attr.lang]="lang">
+                    <header class="translation-card__header">
+                      <span class="lang-chip">{{ lang.toUpperCase() }}</span>
+                    </header>
+                    <div class="translation-card__body">
+                      <p class="empty-text">No translation yet.</p>
+                      <p-button
+                        class="add-btn"
+                        [label]="'Add Translation'"
+                        [rounded]="true"
+                        outlined="true"
+                        size="small"
+                        (click)="openFaqTranslationForm(item.id!, null, lang)">
+                        <ng-template pTemplate="icon">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                               class="bi bi-plus" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                          </svg>
+                        </ng-template>
+                      </p-button>
+                    </div>
+                  </section>
+                </ng-template>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </ng-container>
+  
+    <ng-container *ngIf="ordered()?.length === 0">
+      <div class="empty-state">
+        No FAQs in library yet
+        <p-button
+          class="p-button-primary"
+          [label]="'Add New FAQ'"
+          [rounded]="true"
+          size="small"
+          (click)="addNewEmptyFaq(0)">
+          <ng-template pTemplate="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                 class="bi bi-plus" viewBox="0 0 16 16">
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+          </ng-template>
+        </p-button>
+      </div>
+    </ng-container>
+  </div>
+  
+  <p-toast [life]="8000"></p-toast>
+  

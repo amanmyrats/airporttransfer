@@ -1,0 +1,119 @@
+<!-- blog-video-form.component.html -->
+<div class="form-wrapper">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <input type="hidden" formControlName="id" />
+      <input type="hidden" formControlName="section" />
+  
+      <div class="form-field">
+        <label for="provider">Provider *</label>
+        <p-select
+          inputId="provider"
+          formControlName="provider"
+          [options]="providers"
+          bindLabel="label"
+          bindValue="value"
+          placeholder="Select provider"
+        ></p-select>
+        <p-message *ngIf="f['provider']?.touched && f['provider']?.hasError('required')"
+                   severity="error" text="Provider is required."></p-message>
+      </div>
+  
+      <div class="form-field" *ngIf="form.value.provider === 'youtube' || form.value.provider === 'vimeo'">
+        <label for="provider_video_id">Video ID *</label>
+        <input id="provider_video_id" type="text" pInputText formControlName="provider_video_id" placeholder="e.g., dQw4w9WgXcQ" />
+        <p-message *ngIf="f['provider_video_id']?.touched && f['provider_video_id']?.hasError('required')"
+                   severity="error" text="Video ID is required for YouTube/Vimeo."></p-message>
+      </div>
+  
+      <div class="form-field">
+        <label for="source_url">Source URL</label>
+        <input id="source_url" type="text" pInputText formControlName="source_url" placeholder="Canonical URL (optional)" />
+      </div>
+  
+      <div class="form-field">
+        <label for="hls_url">HLS (.m3u8)</label>
+        <input id="hls_url" type="text" pInputText formControlName="hls_url" placeholder="https://.../playlist.m3u8" />
+      </div>
+  
+      <div class="form-field">
+        <label for="dash_url">DASH (.mpd)</label>
+        <input id="dash_url" type="text" pInputText formControlName="dash_url" placeholder="https://.../manifest.mpd" />
+      </div>
+  
+      <div class="form-field">
+        <label for="poster">Poster</label>
+        <input id="poster" type="file" (change)="onPosterSelected($event)" [disabled]="!video?.id" />
+        <p-message *ngIf="!video?.id" severity="info" text="Save the video first to enable poster upload."></p-message>
+      </div>
+  
+      <div class="form-field">
+        <label for="width">Width (px)</label>
+        <p-inputNumber inputId="width" formControlName="width" [min]="0" [useGrouping]="false" [showButtons]="true" />
+      </div>
+  
+      <div class="form-field">
+        <label for="height">Height (px)</label>
+        <p-inputNumber inputId="height" formControlName="height" [min]="0" [useGrouping]="false" [showButtons]="true" />
+      </div>
+  
+      <div class="form-field">
+        <label for="duration_seconds">Duration (sec)</label>
+        <p-inputNumber inputId="duration_seconds" formControlName="duration_seconds" [min]="0" [useGrouping]="false" [showButtons]="true" />
+      </div>
+  
+      <div class="form-field">
+        <label for="mime_type">MIME type</label>
+        <input id="mime_type" type="text" pInputText formControlName="mime_type" placeholder="video/mp4, application/x-mpegURL" />
+      </div>
+  
+      <div class="checkbox-row">
+        <div class="checkbox-wrapper">
+          <p-checkbox binary="true" formControlName="autoplay" inputId="autoplay"></p-checkbox>
+          <label for="autoplay">Autoplay</label>
+        </div>
+        <div class="checkbox-wrapper">
+          <p-checkbox binary="true" formControlName="muted" inputId="muted"></p-checkbox>
+          <label for="muted">Muted</label>
+        </div>
+        <div class="checkbox-wrapper">
+          <p-checkbox binary="true" formControlName="loop" inputId="loop"></p-checkbox>
+          <label for="loop">Loop</label>
+        </div>
+        <div class="checkbox-wrapper">
+          <p-checkbox binary="true" formControlName="controls" inputId="controls"></p-checkbox>
+          <label for="controls">Controls</label>
+        </div>
+        <div class="checkbox-wrapper">
+          <p-checkbox binary="true" formControlName="playsinline" inputId="playsinline"></p-checkbox>
+          <label for="playsinline">Plays inline</label>
+        </div>
+        <!-- <div class="checkbox-wrapper">
+          <p-checkbox binary="true" formControlName="is_primary" inputId="is_primary"></p-checkbox>
+          <label for="is_primary">Primary</label>
+        </div> -->
+      </div>
+  
+      <div class="form-field">
+        <label for="preload">Preload</label>
+        <p-select inputId="preload" formControlName="preload" [options]="preloadOptions" bindLabel="label" bindValue="value"></p-select>
+      </div>
+  
+      <div class="form-field">
+        <label for="start_at">Start at (sec)</label>
+        <p-inputNumber inputId="start_at" formControlName="start_at" [min]="0" [useGrouping]="false" [showButtons]="true" />
+      </div>
+  
+      <div class="form-field">
+        <label for="end_at">End at (sec)</label>
+        <p-inputNumber inputId="end_at" formControlName="end_at" [min]="0" [useGrouping]="false" [showButtons]="true" />
+      </div>
+  
+      <div class="form-actions">
+        <button pButton type="submit" label="Save Video" icon="pi pi-check"></button>
+      </div>
+    </form>
+  
+    <p-toast [life]="10000"></p-toast>
+    <p-message></p-message>
+  </div>
+  

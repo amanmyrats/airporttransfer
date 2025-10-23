@@ -1,0 +1,228 @@
+<app-super-header 
+>
+</app-super-header>
+<app-navbar></app-navbar>
+
+<section class="blog-list" role="region" aria-label="Blog list">
+  <div class="container">
+    <header class="page-head">
+      <h1 class="page-title">Travel Tips & Guides</h1>
+      <p class="subtitle">
+        Explore blogs about airport transfers, Turkish destinations, and insider travel tips.
+      </p>
+    </header>
+
+    
+    
+
+    <section class="blog-filters">
+      <div class="container">
+    
+        <!-- Category Select Buttons -->
+        <div class="category-buttons">
+          <button 
+            type="button" 
+            [class.active]="selectedCategory === ''" 
+            (click)="selectCategory('')">
+            All
+          </button>
+          <button 
+            type="button" 
+            *ngFor="let cat of blogCategories" 
+            [class.active]="selectedCategory === cat.id?.toString()" 
+            (click)="selectCategory(cat.id!.toString())">
+            {{ cat.name }}
+          </button>
+        </div>
+    
+        <!-- Search -->
+        <div class="search-box">
+          <input 
+            type="text" 
+            placeholder="Search blog posts..." 
+            [(ngModel)]="searchTerm" 
+            (keyup.enter)="onSearch()"
+            aria-label="Search blog posts"
+          />
+          <button class="btn-search" (click)="onSearch()">🔍 Search</button>
+          <button class="btn-clear" *ngIf="searchTerm" (click)="onClear()">✖</button>
+        </div>
+    
+
+        <!-- Active filter chip -->
+<!-- <div class="active-filters" *ngIf="selectedTag">
+  <span class="chip">
+    Tag: {{ selectedTagName || ('#' + selectedTag) }}
+    <button type="button" class="chip-close" (click)="clearTag()" aria-label="Remove tag filter">×</button>
+  </span>
+</div> -->
+
+<!-- inside .blog-filters .container, after your search box + tag chip -->
+<div class="chips-row">
+  <!-- <span class="chip" *ngIf="searchTerm">
+    “{{ searchTerm }}”
+    <button type="button" class="chip-close" (click)="onClear()" aria-label="Clear search">×</button>
+  </span> -->
+
+  <span class="chip" *ngIf="selectedTag">
+    #{{ selectedTagName || selectedTag }}
+    <button type="button" class="chip-close" (click)="clearTag()" aria-label="Remove tag">×</button>
+  </span>
+</div>
+
+<!-- Controls row -->
+<div class="controls" [class.open]="filtersOpen">
+  <label class="sort">
+    <span>Sort by</span>
+    <select [(ngModel)]="ordering" (change)="onSortChange()">
+      <option value="-published_at">Newest</option>
+      <option value="published_at">Oldest</option>
+      <option value="-views_count">Most viewed</option>
+      <option value="-priority">Featured first</option>
+    </select>
+  </label>
+
+  <label class="toggle has-video">
+    <input #hasVideoToggle type="checkbox"
+           [checked]="hasVideo"
+           (change)="toggleHasVideo(hasVideoToggle.checked)" />
+    <span>Has video</span>
+  </label>
+
+  <button class="btn-ghost btn-clear-all" *ngIf="searchTerm || selectedCategory || selectedTag || hasVideo || ordering !== '-published_at'"
+  type="button" (click)="clearAllFilters()">Clear all</button>
+</div>
+
+<!-- Mobile “Filters” toggle button -->
+<button type="button" class="btn-filters" (click)="filtersOpen = !filtersOpen">
+  Filters
+</button>
+
+
+
+      </div>
+    </section>
+
+    
+
+  
+
+
+    <ng-container *ngIf="blogPosts?.length; else empty">
+      <div class="grid">
+        <article class="card" *ngFor="let blog of blogPosts; let i = index; trackBy: trackById">
+          <a
+            class="media"
+            [routerLink]="['/', currentLanguage.code, navbarMenu.newBlogs.slug[currentLanguage.code], blog.translation?.slug || '' ]"
+            [attr.aria-label]="blog.translation?.title || ''"
+          >
+            <figure class="card-figure" *ngIf="(blog.thumbnail || blog.main_image) as imgSrc">
+              <img
+                [ngSrc]="imgSrc"
+                [alt]="blog.translation?.title || ''"
+                width="640"
+                height="360"
+                loading="lazy"
+                [attr.sizes]="'(max-width: 640px) 100vw, 640px'"
+                decoding="async"
+                [loading]="i === 0 ? undefined : 'lazy'"
+                
+                [priority]="i === 0"
+              />
+            </figure>
+          </a>
+
+          <div class="card-content">
+            <time class="published-date" [attr.datetime]="blog.published_at || ''">
+              {{ blog.published_at | date: 'longDate' }}
+            </time>
+
+            <h2 class="card-title">
+              <a
+                [routerLink]="['/', currentLanguage.code, navbarMenu.newBlogs.slug[currentLanguage.code], blog.translation?.slug || '' ]"
+              >
+                {{ blog.translation?.title }}
+              </a>
+            </h2>
+
+            <p class="short-description">
+              {{ blog.translation?.short_description }}
+            </p>
+
+            <div class="meta">
+              <span class="views" aria-label="Views">{{ blog.views_count }} views</span>
+              <nav class="tags" aria-label="Tags" *ngIf="blog.tags?.length">
+                <button
+                type="button"
+                class="tag"
+                *ngFor="let tag of blog.tags"
+                [class.active]="selectedTag === (tag?.id?.toString())"
+                (click)="applyTag(tag)"
+              >
+                #{{ tag?.name || tag }}
+              </button>
+
+              </nav>
+            </div>
+          </div>
+        </article>
+      </div>
+    </ng-container>
+
+    <ng-template #empty>
+      <p class="empty">No posts yet.</p>
+    </ng-template>
+  </div>
+</section>
+
+
+
+<nav class="pager" aria-label="Blog pagination" *ngIf="totalPages > 0">
+  <div class="pager-inner">
+    <button class="page-btn" (click)="firstPage()" [disabled]="page === 1" aria-label="First page">«</button>
+    <button class="page-btn" (click)="prevPage()"  [disabled]="page === 1" aria-label="Previous page">‹</button>
+
+    <ng-container *ngIf="pageWindow[0] > 1">
+      <button class="page-btn" (click)="goToPage(1)">1</button>
+      <span class="ellipsis">…</span>
+    </ng-container>
+
+    <button
+      *ngFor="let p of pageWindow"
+      class="page-btn"
+      [class.active]="p === page"
+      (click)="goToPage(p)"
+      [attr.aria-current]="p === page ? 'page' : null">
+      {{ p }}
+    </button>
+
+    <ng-container *ngIf="pageWindow[pageWindow.length - 1] < totalPages">
+      <span class="ellipsis">…</span>
+      <button class="page-btn" (click)="goToPage(totalPages)">{{ totalPages }}</button>
+    </ng-container>
+
+    <button class="page-btn" (click)="nextPage()" [disabled]="page === totalPages" aria-label="Next page">›</button>
+    <button class="page-btn" (click)="lastPage()" [disabled]="page === totalPages" aria-label="Last page">»</button>
+
+    <label class="page-size">
+      <span>Show</span>
+      <select [(ngModel)]="pageSize" (change)="goToPage(1)">
+        <option [value]="3">3</option>
+        <option [value]="6">6</option>
+        <option [value]="9">9</option>
+        <option [value]="12">12</option>
+      </select>
+      <span>per page</span>
+    </label>
+
+    <span class="page-info">Page {{ page }} of {{ totalPages }}</span>
+  </div>
+</nav>
+
+
+
+@defer {
+  <app-footer></app-footer>
+} @placeholder {
+  <div style="height:120px"></div>
+}

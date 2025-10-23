@@ -24,7 +24,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /home/ubuntu/dev/airporttransfer
-            ./deploy_script.sh ${{ secrets.GH_USERNAME }} ${{ secrets.GH_PAT }} ${{ secrets.GH_DEV_BRANCH }}
+            ./dev_deploy_script.sh ${{ secrets.GH_USERNAME }} ${{ secrets.GH_PAT }} ${{ secrets.GH_DEV_BRANCH }}
 
       # Set up Node.js environment
       - name: Setup Node.js

@@ -1,0 +1,206 @@
+<form
+  class="booking-form"
+  [class.booking-form--horizontal]="horizontalInDesktop"
+  [formGroup]="bookingService.bookingInitialForm"
+  (ngSubmit)="onSubmit()"
+  novalidate
+>
+  <div
+    *ngIf="mapsStatus.status !== 'ready'"
+    class="maps-overlay"
+    [attr.aria-live]="mapsStatus.status === 'loading' ? 'polite' : 'assertive'"
+    role="status"
+  >
+    <div class="maps-overlay__content">
+      <div class="maps-overlay__spinner" aria-hidden="true"></div>
+      <p *ngIf="mapsStatus.status === 'loading'">
+        {{ translations.mapsLoading[currentLangCode] }}
+      </p>
+      <p *ngIf="mapsStatus.status === 'failed'">
+        {{ translations.mapsError[currentLangCode] }}
+      </p>
+    </div>
+  </div>
+
+  <h3
+    *ngIf="isShowExtraTitle"
+    class="booking-form__title"
+  >
+    {{ translations.bookNowTitle[currentLangCode] }}
+  </h3>
+
+  <div
+    class="field-row"
+    [class.field-row--horizontal]="horizontalInDesktop"
+  >
+    <div class="field-row__locations">
+      <div
+        class="form-group form-group--from"
+        [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid"
+      >
+        <label for="pickup_full">{{ translations.from[currentLangCode] }}</label>
+        <div class="input-wrapper">
+          <span class="input-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C8.14 2 5 5.13 5 8.99c0 4.88 5.6 10.54 6.37 11.29.35.34.91.34 1.26 0 .76-.75 6.37-6.41 6.37-11.29C19 5.13 15.86 2 12 2Zm0 8.25a2.25 2.25 0 1 1 0-4.5 2.25 2.25 0 0 1 0 4.5Z" />
+            </svg>
+          </span>
+          <input
+            type="text"
+            id="pickup_full"
+            placeholder="{{ translations.from_placeholder[currentLangCode] }}"
+            formControlName="pickup_full"
+            appGmapsAutocomplete
+            (placeResolving)="onPlaceResolving()"
+            (placeResolved)="onPlaceResolved()"
+            (placeChanged)="onPickupPlaceChanged($event)"
+            (keydown)="preventFormSubmit($event)"
+            [attr.aria-describedby]="!horizontalInDesktop ? 'form_note' : null"
+          />
+          <button
+            *ngIf="isMapsReady && bookingService.bookingInitialForm.get('pickup_full')?.value"
+            type="button"
+            class="clear-btn"
+            (click)="clearField('pickup_full')"
+            [attr.aria-label]="translations.clearPickup[currentLangCode]"
+            [disabled]="!isMapsReady"
+          >
+            <span class="visually-hidden">{{ translations.clearPickup[currentLangCode] }}</span>
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <p
+          *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('pickup_full')?.invalid"
+          class="field-error"
+          role="alert"
+        >
+          {{ translations.from_required[currentLangCode] }}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="swap-button"
+        (click)="swapLocations()"
+        [disabled]="!isMapsReady"
+        [attr.aria-label]="translations.swapLocations[currentLangCode]"
+      >
+        <svg class="swap-icon swap-icon--horizontal" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M5 7.5h12m0 0-2-2m2 2-2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M19 16.5H7m0 0 2-2m-2 2 2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <svg class="swap-icon swap-icon--vertical" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M9.5 6.5 7 4m0 0-2.5 2.5M7 4v14m8.5-.5L18 20m0 0 2.5-2.5M18 20V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span class="visually-hidden">{{ translations.swapLocations[currentLangCode] }}</span>
+      </button>
+
+      <div
+        class="form-group form-group--to"
+        [class.invalid]="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid"
+      >
+        <label for="dest_full">{{ translations.to[currentLangCode] }}</label>
+        <div class="input-wrapper">
+          <span class="input-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3a1 1 0 0 0-1 1v16a1 1 0 0 0 2 0v-6.2l2.17-.94a2 2 0 0 1 1.66 0l1.34.58a4 4 0 0 0 3.19 0l1.34-.58a2 2 0 0 1 1.66 0L21 14V6.67l-1.34-.58a4 4 0 0 0-3.19 0l-1.34.58a2 2 0 0 1-1.66 0l-1.34-.58a4 4 0 0 0-3.19 0L9 7V4a1 1 0 0 0-1-1Z" />
+            </svg>
+          </span>
+          <input
+            type="text"
+            id="dest_full"
+            placeholder="{{ translations.to_placeholder[currentLangCode] }}"
+            formControlName="dest_full"
+            appGmapsAutocomplete
+            (placeResolving)="onPlaceResolving()"
+            (placeResolved)="onPlaceResolved()"
+            (placeChanged)="onDestPlaceChanged($event)"
+            (keydown)="preventFormSubmit($event)"
+            [attr.aria-describedby]="!horizontalInDesktop ? 'form_note' : null"
+          />
+          <button
+            *ngIf="isMapsReady && bookingService.bookingInitialForm.get('dest_full')?.value"
+            type="button"
+            class="clear-btn"
+            (click)="clearField('dest_full')"
+            [attr.aria-label]="translations.clearDropOff[currentLangCode]"
+            [disabled]="!isMapsReady"
+          >
+            <span class="visually-hidden">{{ translations.clearDropOff[currentLangCode] }}</span>
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <p
+          *ngIf="hasSubmitted && bookingService.bookingInitialForm.get('dest_full')?.invalid"
+          class="field-error"
+          role="alert"
+        >
+          {{ translations.to_required[currentLangCode] }}
+        </p>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="submit-btn"
+      [class.submit-btn--loading]="isSubmitting"
+      [disabled]="!canSubmit"
+      [attr.aria-busy]="isSubmitting"
+    >
+      <span class="submit-btn__spinner" aria-hidden="true" *ngIf="isSubmitting"></span>
+      <span class="submit-btn__label">
+        {{ translations.search[currentLangCode] }}
+        <svg *ngIf="!isSubmitting" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m19.71 11.29-6-6a1 1 0 0 0-1.42 1.42L16.59 11H5a1 1 0 0 0 0 2h11.59l-4.29 4.29a1 1 0 1 0 1.42 1.42l6-6a1 1 0 0 0-.01-1.42Z" />
+        </svg>
+      </span>
+    </button>
+  </div>
+
+  <p
+    *ngIf="!horizontalInDesktop"
+    class="form-note"
+    id="form_note"
+  >
+    {{ translations.helperLine[currentLangCode] }}
+  </p>
+
+  <div
+    class="error-banner"
+    *ngIf="hasSubmitted && (submissionError || bookingService.bookingInitialForm.invalid)"
+    role="alert"
+  >
+    <h3 class="error-banner__title">
+      {{ translations.errorTitle[currentLangCode] }}
+    </h3>
+    <p class="error-banner__text">
+      {{ getErrorMessage(submissionErrorMessageKey) }}
+    </p>
+    <ul class="contact-options">
+      <li>
+        <span>{{ translations.contactWhatsapp[currentLangCode] }}</span>
+        <a href="{{ socialIcon.whatsapp.url }}" target="_blank" rel="noopener">
+          {{ socialIcon.phone.formatted }}
+        </a>
+      </li>
+      <li>
+        <span>{{ translations.contactTelegram[currentLangCode] }}</span>
+        <a href="{{ socialIcon.telegram.url }}" target="_blank" rel="noopener">
+          &#64;{{ socialIcon.telegram.username }}
+        </a>
+      </li>
+      <li>
+        <span>{{ translations.contactPhone[currentLangCode] }}</span>
+        <a href="tel:{{ socialIcon.phone.number }}">
+          {{ socialIcon.phone.formatted }}
+        </a>
+      </li>
+      <li>
+        <span>{{ translations.contactEmail[currentLangCode] }}</span>
+        <a href="mailto:{{ socialIcon.email.info }}">
+          {{ socialIcon.email.info }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</form>

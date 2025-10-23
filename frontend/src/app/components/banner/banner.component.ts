@@ -1,16 +1,16 @@
 import { Component, inject, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingBannerFormComponent } from '../booking-banner-form/booking-banner-form.component';
+import { BookingBannerFormPlaceholderComponent } from '../booking-banner-form-placeholder/booking-banner-form-placeholder.component';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-banner',
   imports: [
     BookingBannerFormComponent, 
+    BookingBannerFormPlaceholderComponent,
     CommonModule, 
-    ProgressSpinnerModule, 
   ],
   templateUrl: './banner.component.html',
   styleUrl: './banner.component.scss'
@@ -60,10 +60,10 @@ export class BannerComponent implements OnInit {
         // de: 'Stressfreie 24/7 Privat flughafen transfers in der Türkei',
         // ru: 'Беззаботные круглосуточные 24/7 частные трансферы из аэропорта в Турции',
         // tr: 'Türkiye\'de Sorunsuz 7/24 Özel Havalimanı Transferleri',
-        en: '24/7 Istanbul, Antalya Airport VIP Transfers',
-        de: '24/7 Istanbul, Antalya Flughafen VIP Transfers',
-        ru: '24/7 Стамбул, Анталия Аэропорт VIP Трансферы',
-        tr: '7/24 İstanbul, Antalya Havalimanı VIP Transferleri',
+        en: '24/7 Istanbul, Antalya Airport Transfers',
+        de: '24/7 Istanbul, Antalya Flughafentransfers',
+        ru: '24/7 Стамбул, Анталия Аэропорт Трансферы',
+        tr: '7/24 İstanbul, Antalya Havalimanı Transferleri',
       }, 
       subtitle: {
         // en: 'Reliable, affordable, and comfortable 24/7 private car rides to and from major Turkish airports.',

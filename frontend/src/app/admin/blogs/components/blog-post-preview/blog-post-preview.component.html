@@ -1,0 +1,198 @@
+<div class="section-toolbar">
+  <p-selectButton [options]="availableLanguages" [(ngModel)]="currentLanguage" optionLabel="label" optionValue="value"
+    class="lang-switch" (onChange)="onLanguageChange($event.value)"></p-selectButton>
+
+  <div class="btn-actions">
+
+    <br>
+
+    <a [routerLink]="gotoEditGeneralDetails()" style="text-decoration: none;" pButton class="p-button-text p-button-md">
+
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-journal-text"
+        viewBox="0 0 16 16">
+        <path d="M5 8h6v1H5V8zm0 2h6v1H5v-1z" />
+        <path d="M3 0h10a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1zm0 1v13h10V1H3z" />
+      </svg>
+      Edit General Details
+
+    </a>
+    <br>
+
+    <a [routerLink]="gotoEditSections()" style="text-decoration: none;" pButton class="p-button-text p-button-md">
+
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-journal-text"
+        viewBox="0 0 16 16">
+        <path d="M5 8h6v1H5V8zm0 2h6v1H5v-1z" />
+        <path d="M3 0h10a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1zm0 1v13h10V1H3z" />
+      </svg>
+      Edit Sections
+
+    </a>
+  </div>
+</div>
+<!-- <pre>{{ blog | json }}</pre> -->
+
+
+<section class="blog-detail" *ngIf="blog && blog.translation">
+  <!-- Hero section -->
+  <div class="hero" [style.backgroundImage]="'url(' + blog.main_image + ')'">
+    <div class="overlay">
+      <h1>{{ blog.translation.title }}</h1>
+      <p class="short-description">{{ blog.translation.short_description }}</p>
+    </div>
+  </div>
+
+  <!-- Blog content and booking box layout -->
+  <div class="container blog-content-grid">
+    <!-- Main blog content -->
+    <div class="main-content">
+      <div class="meta">
+        <span>{{ blog.published_at | date: 'longDate' }}</span> ·
+        <span>{{ blog.views_count }} views</span>
+        <span *ngIf="blog.author" style="margin-left: 10px;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+            <path fill="currentColor"
+              d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z" />
+          </svg>
+          {{ blog.author }}</span>
+        <div class="tags">
+          <span *ngFor="let tag of blog.tags" class="tag">#{{ tag.name }}</span>
+        </div>
+        <div *ngIf="blog?.is_partial" class="notice notice-warning">
+          Some sections aren’t available in {{ currentLanguage.toUpperCase() }} yet.
+        </div>
+      </div>
+      <!-- <iframe src="https://www.google.com/maps/d/embed?mid=1YkWz8_upONz1RdQHEhtycSVkK3WjTNY&ehbc=2E312F" width="640" height="480"></iframe> -->
+
+
+      <app-table-of-contents [language]="currentLanguage" [sections]="blog.sections!"
+        [includeTypes]="['text','faq','steps','table']" [requireHeading]="true" [maxHeight]="360">
+      </app-table-of-contents>
+
+      <ng-container *ngFor="let section of blog.sections; let i = index; trackBy: trackBySectionId">
+        <!-- Try to grab the single localized translation -->
+        <ng-container *ngIf="section.translations?.[0] as t; else missingTrans">
+
+          <ng-container [ngSwitch]="section.section_type">
+            <!-- TEXT -->
+            <section *ngSwitchCase="'text'" class="section text-section"
+              [attr.id]="buildSectionAnchor(section?.translations?.[0]?.heading, section.id!)"
+              [attr.name]="buildSectionAnchor(section?.translations?.[0]?.heading, section.id!)">
+              <h2 *ngIf="t.heading">{{ t.heading }}</h2>
+              <div [innerHTML]="t.body | decodeHtml"></div>
+            </section>
+
+
+            <!-- IMAGE -->
+            <section *ngSwitchCase="'image'" class="section image-section">
+              <app-image-section-public [images]="section.images!" mode="image"></app-image-section-public>
+            </section>
+
+            <!-- GALLERY -->
+            <section *ngSwitchCase="'gallery'" class="section image-section">
+              <app-image-section-public [images]="section.images!" [lang]="currentLanguage" [loop]="false"
+                [showIndicators]="true">
+              </app-image-section-public>
+            </section>
+
+
+            <!-- Mobile booking box after first section -->
+              <section *ngSwitchCase="'booking_form'">
+                <!-- <app-blog-booking-box class="mobile-booking-box" [langInput]="{'code': currentLanguage}">
+                </app-blog-booking-box> -->
+                       <app-booking-form
+        [isShowExtraTitle]="true"
+        [horizontalInDesktop]="false"
+        (searchVehicle)="onBookingSearch($event)"
+        ></app-booking-form>
+
+              </section>
+
+              <!-- QUOTE -->
+              <section *ngSwitchCase="'quote'" class="section">
+                <blockquote>
+                  {{ t.body }}
+                  <footer *ngIf="t.heading">— {{ t.heading }}</footer>
+                </blockquote>
+              </section>
+
+              <!-- CTA BANNER -->
+              <section *ngSwitchCase="'cta_banner'" class="section cta-section">
+                <h3>{{ t.heading || 'Looking for a private airport transfer?' }}</h3>
+                <div *ngIf="t.body" [innerHTML]="t.body"></div>
+                <a class="btn-cta" routerLink="/en/book-now-24-7-private-airport-transfer-in-turkey">Book Now</a>
+              </section>
+
+              <!-- VIDEO / MAP / FAQ / STEPS / TABLE / FEATURES / DOWNLOAD (render raw HTML) -->
+              <section *ngSwitchCase="'video'" class="section video-section">
+
+                <app-blog-video-public *ngIf="section.section_type === 'video'" [section]="section"
+                  [lang]="currentLanguage" [height]="480">
+                </app-blog-video-public>
+
+
+              </section>
+              <section *ngSwitchCase="'map'" class="section map-section">
+
+                <app-blog-section-map-public [section]="section" [lang]="currentLanguage" [height]="420">
+                </app-blog-section-map-public>
+
+              </section>
+
+              <section *ngSwitchCase="'faq'" class="section faq-section">
+                <app-faq-section-public [heading]="section?.translations?.[0]?.heading || 'Frequently Asked Questions'"
+                  [resolved_items]="blog.resolved_faqs || []" [openFirstByDefault]="true" [enableJsonLd]="true">
+                </app-faq-section-public>
+              </section>
+
+              <section *ngSwitchCase="'steps'" class="section steps-section" [innerHTML]="t.body"></section>
+              <section *ngSwitchCase="'table'" class="section" [innerHTML]="t.body"></section>
+              <section *ngSwitchCase="'features'" class="section features-section" [innerHTML]="t.body"></section>
+              <section *ngSwitchCase="'download'" class="section download-section" [innerHTML]="t.body"></section>
+
+              <!-- DEFAULT -->
+              <section *ngSwitchDefault class="section text-section">
+                <h2 *ngIf="t.heading">{{ t.heading }}</h2>
+                <div [innerHTML]="t.body | decodeHtml"></div>
+
+              </section>
+
+          </ng-container>
+
+        </ng-container>
+
+        <!-- ADMIN EMPTY STATE (strict: show tools, no content) -->
+        <ng-template #missingTrans>
+          <section class="section missing-translation">
+            <div class="missing-row">
+              <div>
+                <strong>No {{ currentLanguage.toUpperCase() }} translation</strong>
+                for section #{{ i + 1 }} <code>{{ section.section_type }}</code>
+              </div>
+              <div class="actions">
+                <button pButton label="Add translation" (click)="openAddTranslation(section)"></button>
+                <button pButton class="p-button-text" label="Copy from EN" *ngIf="canCopyFrom(section, 'en')"
+                  (click)="copyFromLanguage(section, 'en')"></button>
+              </div>
+            </div>
+          </section>
+        </ng-template>
+      </ng-container>
+
+      <app-related-posts [postId]="blog.id!" [language]="currentLanguage" [limit]="4" [title]="'You may also like'"
+        [showDates]="true">
+      </app-related-posts>
+
+    </div>
+
+    <!-- Desktop sticky booking box -->
+    <div class="sidebar-booking">
+      <!-- <app-blog-booking-box class="desktop-booking-box" [langInput]="{'code': currentLanguage}"></app-blog-booking-box> -->
+       <app-booking-form
+        [isShowExtraTitle]="true"
+        [horizontalInDesktop]="false"
+        (searchVehicle)="onBookingSearch($event)"
+        ></app-booking-form>
+    </div>
+  </div>
+</section>

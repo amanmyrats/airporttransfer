@@ -1,0 +1,10 @@
+/* blog-video-translation-form.component.scss */
+.form-wrapper {
+    max-width: 960px; margin: 2rem auto; padding: 2rem;
+    border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .form-grid { display: grid; gap: 1.25rem; }
+  .form-field { display: flex; flex-direction: column; }
+  .form-field label { font-weight: 500; margin-bottom: .5rem; }
+  .form-actions { margin-top: 1.5rem; text-align: right; }
+  

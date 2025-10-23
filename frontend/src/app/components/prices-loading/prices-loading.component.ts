@@ -1,15 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SUPPORTED_MAIN_LOCATIONS } from '../../constants/main-location.constants';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-prices-loading',
-  imports: [
-    ProgressSpinnerModule, 
-    CommonModule, 
-  ],
+  imports: [CommonModule],
   templateUrl: './prices-loading.component.html',
   styleUrl: './prices-loading.component.scss'
 })

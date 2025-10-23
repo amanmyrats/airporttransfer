@@ -120,10 +120,13 @@ export const serverRoutes: ServerRoute[] = [
     // Book Now
     { path: 'en/book-now-24-7-private-airport-transfer-in-turkey', 
         renderMode: RenderMode.Prerender,},
+
     { path: 'de/jetzt-buchen-24-7-privater-flughafentransfer-in-der-türkei', 
         renderMode: RenderMode.Prerender,},
+
     { path: 'ru/забронировать-сейчас-24-7-частный-трансфер-из-аэропорта-в-турции', 
         renderMode: RenderMode.Prerender,},
+
     { path: 'tr/türkiye-de-7-24-özel-havalimanı-transferi-şimdi-rezervasyon-yap', 
         renderMode: RenderMode.Prerender,},
 
@@ -147,44 +150,44 @@ export const serverRoutes: ServerRoute[] = [
 
 
     // Simple Landing
-    {   path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-1', 
-        renderMode: RenderMode.Prerender,
-    },
-    {   path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-1', 
-        renderMode: RenderMode.Prerender,
-    },
-    {   path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-1', 
-        renderMode: RenderMode.Prerender,
-    },
-    {   path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-1', 
-        renderMode: RenderMode.Prerender,
-    },
+    // {   path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-1', 
+    //     renderMode: RenderMode.Prerender,
+    // },
+    // {   path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-1', 
+    //     renderMode: RenderMode.Prerender,
+    // },
+    // {   path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-1', 
+    //     renderMode: RenderMode.Prerender,
+    // },
+    // {   path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-1', 
+    //     renderMode: RenderMode.Prerender,
+    // },
 
-    {   path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-2', 
-        renderMode: RenderMode.Prerender,
-    },
-    {   path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-2', 
-        renderMode: RenderMode.Prerender,
-    },
-    {   path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-2', 
-        renderMode: RenderMode.Prerender,
-    },
-    {   path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-2', 
-        renderMode: RenderMode.Prerender,
-    },
+    // {   path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-2', 
+    //     renderMode: RenderMode.Prerender,
+    // },
+    // {   path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-2', 
+    //     renderMode: RenderMode.Prerender,
+    // },
+    // {   path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-2', 
+    //     renderMode: RenderMode.Prerender,
+    // },
+    // {   path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-2', 
+    //     renderMode: RenderMode.Prerender,
+    // },
 
-    {   path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-3', 
-        renderMode: RenderMode.Prerender,
-    },
-    {   path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-3', 
-        renderMode: RenderMode.Prerender,
-    },
-    {   path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-3', 
-        renderMode: RenderMode.Prerender,
-    },
-    {   path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-3', 
-        renderMode: RenderMode.Prerender,
-    },
+    // {   path: 'en/quick-and-easy-airport-transfer-booking-in-turkey-step-3', 
+    //     renderMode: RenderMode.Prerender,
+    // },
+    // {   path: 'de/schnelle-und-einfache-buchung-von-flughafentransfers-in-der-türkei-schritt-3', 
+    //     renderMode: RenderMode.Prerender,
+    // },
+    // {   path: 'ru/быстрое-и-простое-бронирование-трансфера-в-аэропорт-в-турции-шаг-3', 
+    //     renderMode: RenderMode.Prerender,
+    // },
+    // {   path: 'tr/türkiye-de-hızlı-ve-kolay-havalimanı-transferi-rezervasyonu-adım-3', 
+    //     renderMode: RenderMode.Prerender,
+    // },
     
     // PRIVACY POLICY AND TERMS OF SERVICE
     {
@@ -262,6 +265,28 @@ export const serverRoutes: ServerRoute[] = [
     },
     {
         path: '**',
-        renderMode: RenderMode.Server,
-    }
+        renderMode: RenderMode.Client,
+    }, 
+
+
+
+
+
+    // {
+    //     path: 'en/turkey-airport-transfer-blogs/:slug',
+    //     renderMode: RenderMode.Client
+    //   },
+    //   {
+    //     path: 'de/turkei-flughafentransfer-blogs/:slug',
+    //     renderMode: RenderMode.Client
+    //   },
+    //   {
+    //     path: 'ru/трансфер-аэропорт-турция-блог/:slug',
+    //     renderMode: RenderMode.Client
+    //   },
+    //   {
+    //     path: 'tr/turkiye-havalimani-transfer-bloglari/:slug',
+    //     renderMode: RenderMode.Client
+    //   },
+      
 ];

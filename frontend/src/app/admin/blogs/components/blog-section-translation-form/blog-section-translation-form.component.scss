@@ -1,0 +1,35 @@
+.translation-form {
+  width: 100%;
+    max-width: 1200px;
+    padding: 1.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    // background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  
+    .p-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+  
+      label {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+  
+      input,
+      textarea,
+      .p-dropdown,
+      .p-fileupload {
+        width: 100%;
+      }
+    }
+  
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+  

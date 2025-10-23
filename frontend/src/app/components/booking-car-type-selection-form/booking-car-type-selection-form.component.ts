@@ -8,14 +8,17 @@ import { CurrencyService } from '../../services/currency.service';
 import { ActivatedRoute } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { GoogleMapsService } from '../../services/google-maps.service';
 // import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { PriceListComponent } from '../price-list/price-list.component';
+import { DurationFormatPipe } from '../../pipes/duration-format.pipe';
 
 @Component({
   selector: 'app-booking-car-type-selection-form',
   imports: [
     CommonModule, 
     PriceListComponent,
+    DurationFormatPipe,
   ],
   templateUrl: './booking-car-type-selection-form.component.html',
   styleUrl: './booking-car-type-selection-form.component.scss'
@@ -25,10 +28,12 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
   
   socialIcons = SOCIAL_ICONS;
   maxDistance: number = 230;
+  selectingCarCode: string | null = null;
 
   bookingService = inject(BookingService);
   priceCalculatorService = inject(PriceCalculatorService);
   currencyService = inject(CurrencyService);
+  googleMapsService = inject(GoogleMapsService);
   carTypeSelectionOutput = output<any>();
 
 
@@ -49,6 +54,7 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
 
   onCarTypeSelection(carType: any, price: number, currency_code: string, distance: number): void {
     console.log('Selected CarType:', carType);
+    this.selectingCarCode = carType.code ?? null;
     // Handle carType selection logic here
     this.bookingService.bookingCarTypeSelectionForm.patchValue({
       car_type: carType.code,
@@ -58,9 +64,17 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
       driving_duration: 60,
     });
     if (this.bookingService.bookingCarTypeSelectionForm.valid) {
-      this.carTypeSelectionOutput.emit(this.bookingService.bookingCarTypeSelectionForm.value);
+      const resolveSelection = () => {
+        this.clearSelectionLoading();
+      };
+      this.carTypeSelectionOutput.emit({
+        ...this.bookingService.bookingCarTypeSelectionForm.value,
+        complete: resolveSelection,
+        fail: resolveSelection,
+      });
     } else {
       console.log('CarType selection form is invalid');
+      this.clearSelectionLoading();
     }
 
     // Send event to GTM
@@ -99,10 +113,26 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
     const distance = this.bookingService.distance();
     return typeof distance && distance > 0 && !isNaN(distance);
   }
+
+  isSelectingCar(carType: CarType): boolean {
+    return !!this.selectingCarCode && this.selectingCarCode === carType.code;
+  }
+
+  private clearSelectionLoading(): void {
+    this.selectingCarCode = null;
+  }
   
   isLongDistance(): boolean {
     const distance = this.bookingService.distance();
     return typeof distance && distance > this.maxDistance;
+  }
+
+  getPrimaryLocation(fullAddress: string | null | undefined): string {
+    return this.googleMapsService.getAddressLines(fullAddress).primary;
+  }
+
+  getSecondaryLocation(fullAddress: string | null | undefined): string {
+    return this.googleMapsService.getAddressLines(fullAddress).secondary;
   }
 
   translations: any = {
@@ -112,24 +142,78 @@ export class BookingCarTypeSelectionFormComponent implements OnInit {
       ru: 'Доступные типы автомобилей',
       tr: 'Mevcut Araç Tipleri',
     }, 
+    bookYourRide: {
+      en: 'Choose Your VIP Ride',
+      de: 'Wählen Sie Ihre VIP-Fahrt',
+      ru: 'Выберите свой VIP-трансфер',
+      tr: 'VIP Yolculuğunuzu Seçin',
+    },
     distance: {
       en: 'Distance', 
       de: 'Entfernung',
       ru: 'Расстояние',
       tr: 'Mesafe',
     }, 
+    duration: {
+      en: 'Duration',
+      de: 'Dauer',
+      ru: 'Время в пути',
+      tr: 'Süre',
+    },
+    from: {
+      en: 'From',
+      de: 'Von',
+      ru: 'От',
+      tr: 'Nereden',
+    },
+    to: {
+      en: 'To',
+      de: 'Nach',
+      ru: 'До',
+      tr: 'Nereye',
+    },
     select: {
       en: 'Select', 
       de: 'Auswählen',
       ru: 'Выбрать',
       tr: 'Seç',
     }, 
+    selectThisCar: {
+      en: 'Select This Car',
+      de: 'Dieses Fahrzeug wählen',
+      ru: 'Выбрать этот автомобиль',
+      tr: 'Bu Aracı Seç',
+    },
     price: {
       en: 'Price', 
       de: 'Preis',
       ru: 'Цена',
       tr: 'Fiyat',
     }, 
+    passengers: {
+      en: 'Passengers',
+      de: 'Personen',
+      ru: 'Пассажиров',
+      tr: 'Yolcu',
+    },
+    capacity: {
+      en: 'Capacity',
+      de: 'Kapazität',
+      ru: 'Вместимость',
+      tr: 'Kapasite',
+    },
+    availableCar: {
+      en: 'Available',
+      de: 'Verfügbar',
+      ru: 'Доступно',
+      tr: 'Müsait',
+    },
+    orEquivalent: {
+      en: 'or equivalent',
+      de: 'oder ähnlich',
+      ru: 'или аналогичный',
+      tr: 'veya dengi',
+    },
     contact: {
       en: 'Write to us, we’ll help you find the best option', 
       de: 'Schreiben Sie uns, wir helfen Ihnen, die beste Option zu finden',

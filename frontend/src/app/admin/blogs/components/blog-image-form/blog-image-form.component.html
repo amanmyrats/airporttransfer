@@ -1,0 +1,142 @@
+<div class="form-wrapper">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <!-- Hidden IDs -->
+      <input id="id" type="hidden" formControlName="id" />
+      <input id="section" type="hidden" formControlName="section" />
+  
+      <!-- Primary toggle -->
+      <div class="form-field checkboxes">
+        <div class="checkbox-wrapper">
+          <p-checkbox
+            binary="true"
+            formControlName="is_primary"
+            inputId="is_primary"
+          ></p-checkbox>
+          <label for="is_primary">Primary image</label>
+        </div>
+      </div>
+  
+      <!-- Width / Height -->
+      <div class="form-field">
+        <label for="width">Width (px)</label>
+        <p-inputNumber
+          inputId="width"
+          formControlName="width"
+          [min]="0"
+          [useGrouping]="false"
+          [showButtons]="true"
+        />
+      </div>
+  
+      <div class="form-field">
+        <label for="height">Height (px)</label>
+        <p-inputNumber
+          inputId="height"
+          formControlName="height"
+          [min]="0"
+          [useGrouping]="false"
+          [showButtons]="true"
+        />
+      </div>
+  
+      <!-- MIME type -->
+      <!-- <div class="form-field">
+        <label for="mime_type">MIME Type</label>
+        <input
+          id="mime_type"
+          type="text"
+          pInputText
+          formControlName="mime_type"
+          placeholder="image/jpeg"
+        />
+      </div> -->
+  
+      <!-- Bytes -->
+      <!-- <div class="form-field">
+        <label for="bytes">File Size (bytes)</label>
+        <p-inputNumber
+          inputId="bytes"
+          formControlName="bytes"
+          [min]="0"
+          [useGrouping]="false"
+          [showButtons]="true"
+        />
+      </div> -->
+  
+      <!-- Focal point -->
+      <div class="form-field">
+        <label for="focal_x">Focal X (0–1)</label>
+        <p-inputNumber
+          inputId="focal_x"
+          formControlName="focal_x"
+          [min]="0"
+          [max]="1"
+          [step]="0.01"
+          [useGrouping]="false"
+          [showButtons]="true"
+        />
+        <p-message
+          *ngIf="f['focal_x']?.touched && (f['focal_x']?.value < 0 || f['focal_x']?.value > 1)"
+          severity="warn"
+          text="Value should be between 0 and 1."
+        ></p-message>
+      </div>
+  
+      <div class="form-field">
+        <label for="focal_y">Focal Y (0–1)</label>
+        <p-inputNumber
+          inputId="focal_y"
+          formControlName="focal_y"
+          [min]="0"
+          [max]="1"
+          [step]="0.01"
+          [useGrouping]="false"
+          [showButtons]="true"
+        />
+        <p-message
+          *ngIf="f['focal_y']?.touched && (f['focal_y']?.value < 0 || f['focal_y']?.value > 1)"
+          severity="warn"
+          text="Value should be between 0 and 1."
+        ></p-message>
+      </div>
+  
+      <!-- Dominant color -->
+      <div class="form-field">
+        <label for="dominant_color">Dominant Color</label>
+        <div class="color-row" style="display:flex; gap:.75rem; align-items:center;">
+          <p-colorPicker
+            inputId="dominant_color"
+            formControlName="dominant_color"
+          ></p-colorPicker>
+          <input
+            type="text"
+            pInputText
+            formControlName="dominant_color"
+            placeholder="#RRGGBB"
+            style="flex:1"
+          />
+        </div>
+      </div>
+  
+      <!-- Blurhash -->
+      <div class="form-field">
+        <label for="blurhash">Blurhash</label>
+        <input
+          id="blurhash"
+          type="text"
+          pInputText
+          formControlName="blurhash"
+          placeholder="LEHV6nWB2yk8pyo0adR*.7kCMdnj"
+        />
+      </div>
+  
+      <!-- Submit -->
+      <div class="form-actions">
+        <button pButton type="submit" label="Save Image" icon="pi pi-check"></button>
+      </div>
+    </form>
+  
+    <p-toast [life]="10000"></p-toast>
+    <p-message></p-message>
+  </div>
+  

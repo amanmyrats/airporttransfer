@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, computed, effect, ElementRef, Inject, inject, Input, OnInit, PLATFORM_ID, signal, ViewChild } from '@angular/core';
-import { TabsModule } from 'primeng/tabs';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MainLocationService } from '../../services/main-location.service';
 import { PopularRouteService } from '../../admin/services/popular-route.service';
@@ -13,15 +12,13 @@ import { Router } from '@angular/router';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 // import { GoogleTagManagerService } from 'angular-google-tag-manager';
 import { MainLocation } from '../../models/main-location.model';
-import { ButtonModule } from 'primeng/button';
 import { PricesLoadingComponent } from '../prices-loading/prices-loading.component';
+import { CarType } from '../../models/car-type.model';
 
 @Component({
   selector: 'app-price-list',
   imports: [
-    TabsModule, 
     CommonModule, 
-    ButtonModule, 
     PricesLoadingComponent, 
   ],
   templateUrl: './price-list.component.html',
@@ -30,6 +27,10 @@ import { PricesLoadingComponent } from '../prices-loading/prices-loading.compone
 export class PriceListComponent implements OnInit, AfterViewInit {
   @ViewChild('transferPricesContainer') transferPricesContainer!: ElementRef;
   @Input() langInput!: any;
+  @Input() loadForHomePagePlaceholder: boolean = false;
+  carsTypeCountToShowOnHomePage = 1;
+  pricesCountToShowOnHomePage = 3;
+  carTypes: CarType[] = [];
 
   navbar = NAVBAR_MENU;
   activeIndex: number = 1;
@@ -43,9 +44,11 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   popularRoutesSignal = this.popularRouteService.popularRoutesSignal;
 
   isBookNowLoading: boolean = false;
+  loadingRouteId: string | null = null;
   
   mainLocations: any[] = this.mainLocationService.getMainLocations();
   selectedLocation: any | null = null;
+  switchedRouteIds = signal<Set<string>>(new Set<string>());
 
   // private router! : Router;
   // isBrowser: boolean;
@@ -62,6 +65,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     private router: Router, 
     @Inject(PLATFORM_ID) private platformId: Object, 
   ) {
+    this.carTypes = this.carTypeService.getCarTypes();
     this.mainLocations = this.mainLocationService.getMainLocations();
     this.popularRouteService.updatePopularRoutesSignal();
 
@@ -73,6 +77,11 @@ export class PriceListComponent implements OnInit, AfterViewInit {
         popularRoutes.some(route => route.main_location === location.code)
       );
       this.mainLocations = filteredMainLocations;
+      if (this.loadForHomePagePlaceholder) {
+        // set carTypes to only VITO for placeholder loading
+        this.carTypes = this.carTypeService.getCarTypes().filter(carType => carType.code === 'VITO');
+        // 
+      }
     });
   }
   
@@ -81,14 +90,25 @@ export class PriceListComponent implements OnInit, AfterViewInit {
   }
 
   bookRoute(
-    pickup_full: string, dest_full: string, 
+    routeId: string,
+    pickup_short: string, 
+    dest_short: string,
+    pickup_full: string, 
+    dest_full: string, 
     car_type: string, 
-    price: number, currency_code: string  
+    price: number, 
+    currency_code: string, 
+    is_switched_route: number = 0,  
   ): void {
     this.isBookNowLoading = true;
+    this.loadingRouteId = routeId;
     this.bookingService.bookingInitialForm.patchValue({
+      pickup_short: pickup_short,
+      dest_short: dest_short, 
       pickup_full: pickup_full,
-      dest_full: dest_full,
+      dest_full: dest_full, 
+      is_from_popular_routes: 1,
+      is_switched_route: is_switched_route,
     });
     this.bookingService.bookingCarTypeSelectionForm.patchValue({
       car_type: car_type,
@@ -96,27 +116,34 @@ export class PriceListComponent implements OnInit, AfterViewInit {
       currency_code: currency_code,
     });
 
-    const intialFormValue = this.bookingService.bookingInitialForm.value;
+    const initialFormValue = this.bookingService.bookingInitialForm.value;
     const carTypeSelectionFormValue = this.bookingService.bookingCarTypeSelectionForm.value;
-    console.log('Booking Initial Form:', intialFormValue);
+    console.log('Booking Initial Form:', initialFormValue);
     console.log('Booking Car Type Selection Form:', carTypeSelectionFormValue);
 
 
-    this.router.navigate([`${this.langInput.code}/${this.navbar.bookNow.slug[this.langInput.code]}/`], {
+    this.router.navigate([`${this.langInput.code}/${this.navbar.bookNow.slug[this.langInput.code]}/completion/`], {
       queryParams: {
         step: 3,
-        pickup_full: intialFormValue.pickup_full,
-        dest_full: intialFormValue.dest_full,
-        pickup_lat: intialFormValue.pickup_lat,
-        pickup_lng: intialFormValue.pickup_lng,
-        dest_lat: intialFormValue.dest_lat,
-        dest_lng: intialFormValue.dest_lng, 
+        is_from_popular_routes: initialFormValue.is_from_popular_routes,
+        pickup_short: initialFormValue.pickup_short,
+        dest_short: initialFormValue.dest_short,
+        pickup_full: initialFormValue.pickup_full,
+        dest_full: initialFormValue.dest_full,
+        pickup_lat: initialFormValue.pickup_lat,
+        pickup_lng: initialFormValue.pickup_lng,
+        dest_lat: initialFormValue.dest_lat,
+        dest_lng: initialFormValue.dest_lng, 
         distance: 0,
         driving_duration: 0,
         car_type: carTypeSelectionFormValue.car_type,
         amount: carTypeSelectionFormValue.amount,
-        currency_code: carTypeSelectionFormValue.currency_code
+        currency_code: carTypeSelectionFormValue.currency_code, 
+        is_switched_route: initialFormValue.is_switched_route,
       },
+    }).catch(() => {
+      this.isBookNowLoading = false;
+      this.loadingRouteId = null;
     });
 
     // Send event to GTM
@@ -172,13 +199,40 @@ export class PriceListComponent implements OnInit, AfterViewInit {
       'de': 'Laden...',
       'ru': 'Загрузка...',
       'tr': 'Yükleniyor...',
-    }
+    },
+    passengers: {
+      'en': 'Passengers',
+      'de': 'Passagiere',
+      'ru': 'Пассажиры',
+      'tr': 'Yolcu',
+    },
+    from_label: {
+      'en': 'From',
+      'de': 'Abfahrt',
+      'ru': 'Откуда',
+      'tr': 'Kalkış',
+    },
+    to_label: {
+      'en': 'To',
+      'de': 'Ziel',
+      'ru': 'Куда',
+      'tr': 'Varış',
+    },
+    swap_route: {
+      'en': 'Switch route',
+      'de': 'Route wechseln',
+      'ru': 'Поменять направление',
+      'tr': 'Rotayı değiştir',
+    },
   };
 
 
 
   showTransferPrices(location: MainLocation, triggeredInOnInit: boolean = false): void {
     this.selectedLocation = location;
+    this.switchedRouteIds.set(new Set<string>());
+    this.loadingRouteId = null;
+    this.isBookNowLoading = false;
     
     if (!triggeredInOnInit) {
       if (isPlatformBrowser(this.platformId)) {
@@ -192,6 +246,67 @@ export class PriceListComponent implements OnInit, AfterViewInit {
       }, 100);
       }
     }
+  }
+
+  toggleRouteDirection(routeId?: string): void {
+    if (!routeId) {
+      return;
+    }
+    this.switchedRouteIds.update((current) => {
+      const next = new Set(current);
+      if (next.has(routeId)) {
+        next.delete(routeId);
+      } else {
+        next.add(routeId);
+      }
+      return next;
+    });
+  }
+
+  isRouteSwitched(routeId?: string): boolean {
+    if (!routeId) {
+      return false;
+    }
+    return this.switchedRouteIds().has(routeId);
+  }
+
+  getSelectedLocationShort(): string {
+    if (!this.selectedLocation) {
+      return '';
+    }
+    const langCode = this.langInput?.code;
+    return (
+      this.selectedLocation.short?.[langCode] ??
+      this.selectedLocation.short?.en ??
+      this.selectedLocation.name ??
+      ''
+    );
+  }
+
+  getSelectedLocationFull(): string {
+    if (!this.selectedLocation) {
+      return '';
+    }
+    const langCode = this.langInput?.code;
+    return (
+      this.selectedLocation[langCode] ??
+      this.selectedLocation.name ??
+      ''
+    );
+  }
+
+  getNameSizeClass(name: string | undefined | null): string {
+    if (!name) {
+      return '';
+    }
+    const length = name.trim().length;
+    if (length > 18) {
+      return 'route-card__name--long';
+    }
+    if (length > 13) {
+      return 'route-card__name--medium';
+    }
+    return '';
   }
 
   // getTranslation(key: string): string {

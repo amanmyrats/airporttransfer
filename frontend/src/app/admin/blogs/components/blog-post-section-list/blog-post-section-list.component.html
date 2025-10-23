@@ -1,0 +1,219 @@
+<div class="section-toolbar">
+    <p-selectButton
+      [options]="availableLanguages"
+      [(ngModel)]="currentLanguage"
+      optionLabel="label"
+      optionValue="value"
+      class="lang-switch" 
+    ></p-selectButton>
+  
+    <div class="btn-actions">
+
+      <button pButton type="button" label="Open All" (click)="openAll()" class="p-button-sm"></button>
+      <button pButton type="button" label="Close All" (click)="closeAll()" class="p-button-sm p-button-secondary"></button>
+
+      <p-button class="p-button-primary" [label]="'Add New Section'" [rounded]="true" size="small"
+        (click)="openBlogPostSectionForm()">
+        <ng-template pTemplate="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus"
+            viewBox="0 0 16 16">
+            <path
+              d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+          </svg>
+
+        </ng-template>
+      </p-button>
+
+
+      <a [routerLink]="gotoPreview(this.postId)" style="text-decoration: none;" pButton
+      class="p-button-text p-button-md">
+
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+        class="bi bi-journal-text" viewBox="0 0 16 16">
+        <path d="M5 8h6v1H5V8zm0 2h6v1H5v-1z" />
+        <path d="M3 0h10a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1zm0 1v13h10V1H3z" />
+      </svg>
+      Preview
+    </a>
+    
+    <br>
+
+    <a [routerLink]="gotoEditGeneralDetails(this.postId)" 
+        style="text-decoration: none;" pButton
+      class="p-button-text p-button-md">
+
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+        class="bi bi-journal-text" viewBox="0 0 16 16">
+        <path d="M5 8h6v1H5V8zm0 2h6v1H5v-1z" />
+        <path d="M3 0h10a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1zm0 1v13h10V1H3z" />
+      </svg>
+      Edit General Details
+
+    </a>
+    </div>
+  </div>
+  
+  <div
+    cdkDropList
+    [cdkDropListData]="sections"
+    [cdkDropListSortingDisabled]="false"
+    class="section-list"
+    (cdkDropListDropped)="drop($event)"
+  >
+    <div
+      *ngFor="let section of sections; let i = index"
+      class="section-item"
+      cdkDrag
+    >
+      <div class="header">
+        <span class="drag-handle" cdkDragHandle>☰</span>
+        <span class="label">
+          {{ section.order }}: Section {{ i + 1 }} — {{ section.section_type }} - {{ getTranslation(section)?.heading }}
+        </span>
+        <div class="section-actions">
+
+          <p-button class="p-button-primary" [label]="'Edit'" [rounded]="true" outlined="true"
+          size="small" (click)="openBlogPostSectionForm(section)">
+          <ng-template pTemplate="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil"
+              viewBox="0 0 16 16">
+              <path
+                d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zM10.5 3.207 2 11.707V14h2.293l8.5-8.5-2.293-2.293z" />
+            </svg>
+          </ng-template>
+        </p-button>
+        <p-button class="p-button-primary" [label]="'Delete'" [rounded]="true" severity="danger" size="small"
+          (click)="deleteBlogPostSection(section.id!)">
+          <ng-template pTemplate="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-trash"
+              viewBox="0 0 16 16">
+              <path
+                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5.5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6zm3-.5a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+              <path fill-rule="evenodd"
+                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+            </svg>
+          </ng-template>
+        </p-button>
+
+          <button
+            class="toggle-button"
+            (click)="toggleSection(section.id!)" 
+          >
+            {{ isOpen(section.id!) ? '▾' : '▸' }}
+          </button>
+        </div>
+      </div>
+  
+      <div class="section-body" *ngIf="expandedSections.has(section.id!)">
+        <span *ngIf="section.section_type === 'text'">
+        <div *ngIf="getTranslation(section); else noTranslation">
+          <h4>{{ getTranslation(section)?.heading }}
+
+            <p-button class="p-button-primary" [label]="'Edit'" [rounded]="true" size="small"
+            (click)="openBlogPostSectionTranslationForm(section, getTranslation(section))">
+            <ng-template pTemplate="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil"
+              viewBox="0 0 16 16">
+              <path
+                d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zM10.5 3.207 2 11.707V14h2.293l8.5-8.5-2.293-2.293z" />
+            </svg>
+      
+            </ng-template>
+          </p-button>
+            
+          </h4>
+          <div class="section-content" [innerHTML]="getTranslation(section)?.body | safeHtml">
+            
+          </div>
+          
+          
+          
+
+        </div>
+        <ng-template #noTranslation>
+          <em class="no-translation">
+            No translation for {{ currentLanguage.toUpperCase() }}
+          <br/>
+
+
+      <p-button class="p-button-primary" [label]="'Add New Section Translation'" [rounded]="true" size="small"
+      (click)="openBlogPostSectionTranslationForm(section)">
+      <ng-template pTemplate="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus"
+          viewBox="0 0 16 16">
+          <path
+            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+        </svg>
+
+      </ng-template>
+    </p-button>
+
+          </em>
+        </ng-template>
+      </span>
+@if (section.section_type === 'image') {
+
+    <app-blog-image-detail
+    [section]="section" 
+    [language]="currentLanguage"
+    ></app-blog-image-detail>
+} 
+@if (section.section_type === 'gallery') {
+
+  <app-blog-image-detail
+  [section]="section"
+  [language]="currentLanguage"
+  ></app-blog-image-detail>
+}
+@if (section.section_type === 'video') {
+
+  <app-blog-video-detail
+    [section]="section"
+    [language]="currentLanguage"
+    ></app-blog-video-detail>
+}
+@if (section.section_type === 'quote') {
+  quote quote quote
+}
+@if (section.section_type === 'booking_form') {
+  booking_form booking_form booking_form
+}
+@if (section.section_type === 'map') {
+  
+  <app-blog-section-map-detail
+    [section]="section"
+    [language]="currentLanguage"
+    ></app-blog-section-map-detail>
+}
+@if (section.section_type === 'faq') {
+  <app-faq-item-list-admin
+    [section]="section"
+    [language]="currentLanguage"
+    [faq_links]="faq_links"
+    >
+  </app-faq-item-list-admin>
+}
+@if (section.section_type === 'steps') {
+  steps steps steps
+}
+@if (section.section_type === 'table') {
+  table table table
+}
+@if (section.section_type === 'features') {
+  features features features
+}
+@if (section.section_type === 'download') {
+  download download download
+}
+@if (section.section_type === 'cta_banner') {
+  cta_banner cta_banner cta_banner
+}
+
+
+
+      </div>
+    </div>
+  </div>
+
+<p-toast position="bottom-right" [life]="20000" />
+<p-confirmDialog />

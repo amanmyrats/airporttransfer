@@ -1,7 +1,6 @@
-
-<div class="prices-loader">
-    <p-progress-spinner strokeWidth="8" fill="transparent" animationDuration=".5s" [style]="{ width: '50px', height: '50px' }" />
-    <span class="loading-text">
-        {{ translations.pricesLoading[currentLanguage.code] }}
-    </span>
+<div class="prices-loader" role="status" aria-live="polite">
+  <span class="spinner" aria-hidden="true"></span>
+  <span class="loading-text">
+    {{ translations.pricesLoading[currentLanguage.code] }}
+  </span>
 </div>

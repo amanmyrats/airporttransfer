@@ -1,0 +1,30 @@
+<div class="tag-list-wrapper">
+  <div class="toolbar">
+    <h2>Blog Tags</h2>
+    <button pButton label="Add New Tag" icon="pi pi-plus" (click)="openCreate()"></button>
+  </div>
+
+  <p-table [value]="tags" responsiveLayout="scroll">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Slug</th>
+        <th style="width: 220px;">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-tag>
+      <tr>
+        <td>{{ tag.name }}</td>
+        <td>{{ tag.slug }}</td>
+        <td class="actions">
+          <button pButton icon="pi pi-pencil" label="Edit" class="p-button-sm p-button-text" (click)="openEdit(tag)"></button>
+          <button pButton icon="pi pi-trash" label="Delete" class="p-button-sm p-button-danger p-button-text" (click)="confirmDelete(tag)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast [life]="6000"></p-toast>

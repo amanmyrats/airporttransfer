@@ -1,30 +1,78 @@
 <section class="reservation-detail-page">
-    <div class="container">
-      <!-- Left Section: Reservation Details -->
-      <div class="reservation-details">
-        <h2>
+    <ng-template #reservationDetails let-extraClass="extraClass">
+      <div class="reservation-details" [ngClass]="extraClass">
+        <h2 *ngIf="extraClass !== 'reservation-details--inline'">
           {{ translations.reservationDetails[langInput.code] }}
         </h2>
-        <img [src]="'images/cartypes/' + selectedCar?.image.name[languageService.currentLang().code]" 
-          [alt]="selectedCar?.image.alt[languageService.currentLang().code]" class="car-image" />
-        <p><strong>
-          {{ translations.car[langInput.code] }}
-          :
-        </strong> {{ selectedCar?.name }}</p>
-        <p><strong>
-          {{ translations.from[langInput.code] }}
-          :
-        </strong> {{ fromLocation }}</p>
-        <p><strong>
-          {{ translations.to[langInput.code] }}
-          :
-        </strong> {{ toLocation }}</p>
-        <p *ngIf="distance > 0"><strong>
-          {{ translations.distance[langInput.code] }}
-          :
-        </strong> {{ distance }} km</p>
+        <figure class="car-image-wrapper">
+          <img
+            [src]="'images/cartypes/' + selectedCar?.image.name[languageService.currentLang().code]" 
+            [alt]="selectedCar?.image.alt[languageService.currentLang().code]"
+            class="car-image"
+          />
+          <figcaption class="car-image__caption" *ngIf="selectedCar">
+            <span class="car-image__name">{{ selectedCar.name }}</span>
+            <span class="car-image__equivalent">{{ translations.orEquivalent[langInput.code] }}</span>
+          </figcaption>
+        </figure>
+        <div class="reservation-summary">
+          <div class="reservation-summary__route" *ngIf="fromLocation || toLocation">
+            <div class="summary-route" *ngIf="fromLocation as pickupFull">
+              <div class="route-chip">
+                <span class="route-icon" aria-hidden="true">📍</span>
+                <span class="route-text">
+                  <span class="route-text__label">{{ translations.from[langInput.code] }}</span>
+                  <ng-container *ngIf="getAddressLines(pickupFull) as pickupAddress">
+                    <span class="route-text__primary">{{ pickupAddress.primary || pickupFull }}</span>
+                    <span class="route-text__secondary" *ngIf="pickupAddress.secondary">{{ pickupAddress.secondary }}</span>
+                  </ng-container>
+                </span>
+              </div>
+            </div>
+
+            <div class="summary-route summary-route--destination" *ngIf="toLocation as destinationFull">
+              <div class="route-chip route-chip--destination">
+                <span class="route-icon" aria-hidden="true">🏁</span>
+                <span class="route-text">
+                  <span class="route-text__label route-text__label--destination">{{ translations.to[langInput.code] }}</span>
+                  <ng-container *ngIf="getAddressLines(destinationFull) as destinationAddress">
+                    <span class="route-text__primary">{{ destinationAddress.primary || destinationFull }}</span>
+                    <span class="route-text__secondary" *ngIf="destinationAddress.secondary">{{ destinationAddress.secondary }}</span>
+                  </ng-container>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="reservation-summary__metrics" *ngIf="distance > 0 || duration > 0">
+            <div class="metric" *ngIf="distance > 0">
+              <span class="metric-icon" aria-hidden="true">🛣️</span>
+              <strong class="metric-value">{{ distance | number: '1.0-0' }} km</strong>
+            </div>
+            <div class="metric" *ngIf="duration > 0">
+              <span class="metric-icon" aria-hidden="true">⏱️</span>
+              <strong class="metric-value">{{ duration | durationFormat: langInput?.code }}</strong>
+            </div>
+          </div>
+          <div class="reservation-map" *ngIf="shouldRenderRouteMap()">
+            <img
+              class="reservation-map__image"
+              [src]="routeStaticMapUrl!"
+              alt="Route preview map"
+            />
+            <div class="reservation-map__distance" *ngIf="distance > 0">
+              <span>{{ distance | number: '1.0-0' }} km</span>
+            </div>
+          </div>
+        </div>
       </div>
-  
+    </ng-template>
+    <div class="container">
+      <!-- Left Section: Reservation Details -->
+      <ng-container *ngIf="shouldShowAsideSummary()">
+        <ng-container *ngTemplateOutlet="reservationDetails; context: { extraClass: null }"></ng-container>
+      </ng-container>
+
       <!-- Right Section: Form -->
       <div class="reservation-form">
         <h2>
@@ -32,35 +80,70 @@
         </h2>
         <form [formGroup]="bookingService.bookingCompletionForm" (ngSubmit)="onSubmit()">
           <!-- Travel and Flight Info -->
-          <div class="form-group">
+            <div class="form-group">
             <h3>
           {{ translations.travelAndFlightInfo[langInput.code] }}
             </h3>
+            <div class="form-item" *ngIf="showCustomPickupFullInput">
+              <label for="popular_route_location">
+                {{ translations.customPickupLabel[langInput.code] }}
+              </label>
+              <input
+                type="text"
+                id="popular_route_location" 
+                formControlName="pickup_full"
+              />
+            </div>
+
+            <div class="form-item" *ngIf="showCustomDestinationFullInput">
+              <label for="popular_route_location">
+                {{ translations.customDestinationLabel[langInput.code] }}
+              </label>
+              <input
+                type="text"
+                id="popular_route_location" 
+                formControlName="dest_full"
+              />
+            </div>
             <div class="form-row">
               <div class="form-item">
                 <label for="transfer_date">          
                   {{ translations.transferDate[langInput.code] }}
                 </label>
                 <input type="date" id="transfer_date" formControlName="transfer_date" />
-                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_date')?.invalid" 
-                severity="error" variant="simple" size="small">
-                {{ translations.fieldRequired[langInput.code] }}
-              </p-message>
+                <div
+                  *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_date')?.invalid"
+                  class="form-alert form-alert--error form-alert--compact"
+                >
+                  {{ translations.fieldRequired[langInput.code] }}
+                </div>
               </div>
               
               <div class="form-item">
                 <label for="transfer_time">
-                {{ translations.transferTime[langInput.code] }}
+                {{ translations.transferTime[langInput.code] }} 
+                  <span
+                    class="time-selected"
+                    [class.time-selected--animate]="animateTransferTime"
+                    *ngIf="bookingService.bookingCompletionForm.get('transfer_time')?.value"
+                  >
+                    [ {{ bookingService.bookingCompletionForm.get('transfer_time')?.value }} ]
+                  </span>
                 </label>
-                <p-datepicker inputId="calendar-timeonly" 
-                  id="transfer_time" formControlName="transfer_time"
-                  [timeOnly]="true"  dataType="string"/>
-
-                <!-- <input type="time" id="transfer_time" formControlName="transfer_time" required /> -->
-                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_time')?.invalid" 
-                severity="error" variant="simple" size="small">
-                {{ translations.fieldRequired[langInput.code] }}
-              </p-message>
+                <input
+                  type="time"
+                  id="transfer_time"
+                  formControlName="transfer_time"
+                  required 
+                  [attr.lang]="timePickerLocale"
+                  (change)="onTimeChange('transfer_time')"
+                />
+                <div
+                  *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('transfer_time')?.invalid"
+                  class="form-alert form-alert--error form-alert--compact"
+                >
+                  {{ translations.fieldRequired[langInput.code] }}
+                </div>
               </div>
 
               <div class="form-item">
@@ -75,7 +158,14 @@
               <span>
                 {{ translations.returnTransfer[langInput.code] }}
               </span>
-              <p-toggleswitch formControlName="is_round_trip"></p-toggleswitch>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  formControlName="is_round_trip"
+                  (change)="toggleReturnFields()"
+                />
+                <span class="toggle-switch__slider" aria-hidden="true"></span>
+              </label>
             </div>
 
             <div *ngIf="bookingService.bookingCompletionForm.get('is_round_trip')?.value">
@@ -89,13 +179,22 @@
                 <div class="form-item">
                   <label for="return_transfer_time">
                 {{ translations.returnTransferTime[langInput.code] }}
+                    <span
+                      class="time-selected"
+                      [class.time-selected--animate]="animateReturnTime"
+                      *ngIf="bookingService.bookingCompletionForm.get('return_transfer_time')?.value"
+                    >
+                      [ {{ bookingService.bookingCompletionForm.get('return_transfer_time')?.value }} ]
+                    </span>
                   </label>
 
-                    <p-datepicker inputId="calendar-timeonly" 
-                    id="return_transfer_time" formControlName="return_transfer_time"
-                    [timeOnly]="true"  dataType="string"/>
-
-                  <!-- <input type="time" id="return_transfer_time" formControlName="return_transfer_time" /> -->
+                  <input
+                    type="time"
+                    id="return_transfer_time"
+                    formControlName="return_transfer_time"
+                    [attr.lang]="timePickerLocale"
+                    (change)="onTimeChange('return_transfer_time')"
+                  />
                 </div>
 
 
@@ -121,10 +220,12 @@
               {{ translations.fullName[langInput.code] }}
                 </label>
                 <input type="text" id="passenger_name" formControlName="passenger_name" placeholder="{{ translations.fullName[langInput.code] }}" required />
-                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_name')?.invalid" 
-                severity="error" variant="simple" size="small">
-                {{ translations.fieldRequired[langInput.code] }}
-              </p-message>
+                <div
+                  *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_name')?.invalid"
+                  class="form-alert form-alert--error form-alert--compact"
+                >
+                  {{ translations.fieldRequired[langInput.code] }}
+                </div>
               </div>
               <div class="form-item">
                 <label for="passenger_email">
@@ -133,15 +234,17 @@
                 <input type="email" id="passenger_email" formControlName="passenger_email" placeholder="{{ translations.email[langInput.code] }}" />
 
   <!-- Show warning only if user typed something and it's invalid -->
-  <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_email')?.value && bookingService.bookingCompletionForm.get('passenger_email')?.invalid"
-  severity="warn" variant="simple" size="small">
-{{ translations.invalidEmail[langInput.code] || 'Please enter a valid email address.' }}
-</p-message>
+  <div
+    *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_email')?.value && bookingService.bookingCompletionForm.get('passenger_email')?.invalid"
+    class="form-alert form-alert--warn form-alert--compact"
+  >
+    {{ translations.invalidEmail[langInput.code] || 'Please enter a valid email address.' }}
+  </div>
               </div>
               <div class="form-item">
                 
                 @defer {
-                  <label for="passenger_phone" class="p-text-secondary" style="margin-bottom: 4px; display: block;">
+                  <label for="passenger_phone" class="form-label-muted" style="margin-bottom: 4px; display: block;">
                   {{ translations.phone[langInput.code] }}
                 </label>
                   <ngx-intl-tel-input
@@ -171,10 +274,12 @@
                 {{ translations.phoneFormatHint?.[langInput.code] || 'Please include country code, starting with + or 00 (e.g. +90 555 555 5555)' }}
               </small> -->
 
-                <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_phone')?.invalid" 
-                severity="error" variant="simple" size="small">
-                {{ translations.fieldRequired[langInput.code] }}
-              </p-message>
+                <div
+                  *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('passenger_phone')?.invalid"
+                  class="form-alert form-alert--error form-alert--compact"
+                >
+                  {{ translations.fieldRequired[langInput.code] }}
+                </div>
               </div>
               <!-- <div class="form-item">
                 <label for="passenger_additional_phone">
@@ -188,19 +293,34 @@
                   {{ translations.passengerCount[langInput.code] }}
                   :
                 </label>
-                <p-inputnumber formControlName="passenger_count" 
-                    [showButtons]="true" 
-                    buttonLayout="horizontal" 
-                    spinnerMode="horizontal" 
-                    [min]="0" [max]="20"
-                    [inputStyle]="{ width: '5rem' }">
-                  <ng-template #incrementbuttonicon>
-                    <span class="custom-icon">+</span>
-                  </ng-template>
-                  <ng-template #decrementbuttonicon>
-                    <span class="custom-icon">-</span>
-                  </ng-template>
-                </p-inputnumber>
+                <div class="number-spinner">
+                  <button
+                    type="button"
+                    class="number-spinner__btn"
+                    (click)="adjustNumber('passenger_count', -1, 0, 20)"
+                    [disabled]="(bookingService.bookingCompletionForm.get('passenger_count')?.value || 0) <= 0"
+                    aria-label="Decrease passenger count"
+                  >
+                    &minus;
+                  </button>
+                  <input
+                    type="number"
+                    id="passenger_count"
+                    formControlName="passenger_count"
+                    min="0"
+                    max="20"
+                    (change)="onNumberInputEvent('passenger_count', $event, 0, 20)"
+                  />
+                  <button
+                    type="button"
+                    class="number-spinner__btn"
+                    (click)="adjustNumber('passenger_count', 1, 0, 20)"
+                    [disabled]="(bookingService.bookingCompletionForm.get('passenger_count')?.value || 0) >= 20"
+                    aria-label="Increase passenger count"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
               <div class="form-item">
                 <label for="passenger_count_child">
@@ -209,20 +329,34 @@
                   {{ translations.yearsOld[langInput.code] }}
                   ):
                 </label>
-                <p-inputnumber 
-                  formControlName="passenger_count_child" 
-                  [showButtons]="true" 
-                  buttonLayout="horizontal" 
-                  spinnerMode="horizontal" 
-                  [min]="0" [max]="9"
-                  [inputStyle]="{ width: '5rem' }">
-                  <ng-template #incrementbuttonicon>
-                    <span class="custom-icon">+</span>
-                  </ng-template>
-                  <ng-template #decrementbuttonicon>
-                    <span class="custom-icon">-</span>
-                  </ng-template>
-                </p-inputnumber>
+                <div class="number-spinner">
+                  <button
+                    type="button"
+                    class="number-spinner__btn"
+                    (click)="adjustNumber('passenger_count_child', -1, 0, 9)"
+                    [disabled]="(bookingService.bookingCompletionForm.get('passenger_count_child')?.value || 0) <= 0"
+                    aria-label="Decrease child passenger count"
+                  >
+                    &minus;
+                  </button>
+                  <input
+                    type="number"
+                    id="passenger_count_child"
+                    formControlName="passenger_count_child"
+                    min="0"
+                    max="9"
+                    (change)="onNumberInputEvent('passenger_count_child', $event, 0, 9)"
+                  />
+                  <button
+                    type="button"
+                    class="number-spinner__btn"
+                    (click)="adjustNumber('passenger_count_child', 1, 0, 9)"
+                    [disabled]="(bookingService.bookingCompletionForm.get('passenger_count_child')?.value || 0) >= 9"
+                    aria-label="Increase child passenger count"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -242,28 +376,45 @@
               {{ translations.childSeatPricePerUnit[langInput.code] }}
             </div>
 
-              <p-toggleswitch 
-                formControlName="need_child_seat" 
-                (onChange)="needChildSeatToggleChanged($event)"
-                ></p-toggleswitch>
-              <p-inputnumber 
-                *ngIf="this.bookingService.bookingCompletionForm.value.need_child_seat" 
-                formControlName="child_seat_count" 
-                [showButtons]="true" 
-                buttonLayout="horizontal" 
-                spinnerMode="horizontal" 
-                [min]="0" [max]="9"
-                [inputStyle]="{ width: '3rem' }" 
-                (onInput)="childSeatCountChanged($event)">
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  formControlName="need_child_seat"
+                  (change)="onChildSeatToggle($event)"
+                />
+                <span class="toggle-switch__slider" aria-hidden="true"></span>
+              </label>
+              <div
+                class="number-spinner number-spinner--inline"
+                *ngIf="bookingService.bookingCompletionForm.value.need_child_seat"
+              >
+                <button
+                  type="button"
+                  class="number-spinner__btn"
+                  (click)="adjustNumber('child_seat_count', -1, 1, 9)"
+                  [disabled]="(bookingService.bookingCompletionForm.get('child_seat_count')?.value || 0) <= 1"
+                  aria-label="Decrease child seat count"
                 >
-                {{childSeatPrice()}}
-                <ng-template #incrementbuttonicon>
-                  <span class="custom-icon">+</span>
-                </ng-template>
-                <ng-template #decrementbuttonicon>
-                  <span class="custom-icon">-</span>
-                </ng-template>
-              </p-inputnumber>
+                  &minus;
+                </button>
+                <input
+                  type="number"
+                  id="child_seat_count"
+                  formControlName="child_seat_count"
+                  min="1"
+                  max="9"
+                  (change)="onNumberInputEvent('child_seat_count', $event, 1, 9)"
+                />
+                <button
+                  type="button"
+                  class="number-spinner__btn"
+                  (click)="adjustNumber('child_seat_count', 1, 1, 9)"
+                  [disabled]="(bookingService.bookingCompletionForm.get('child_seat_count')?.value || 0) >= 9"
+                  aria-label="Increase child seat count"
+                >
+                  +
+                </button>
+              </div>
             </div>
             
           <!-- Greeting with Flower -->
@@ -273,10 +424,14 @@
             </span> 
             <div>+15 €</div>
 
-            <p-toggleswitch 
-              formControlName="greet_with_flower" 
-              (onChange)="calculateFlowerPrice()"
-              ></p-toggleswitch>
+            <label class="toggle-switch">
+              <input
+                type="checkbox"
+                formControlName="greet_with_flower"
+                (change)="calculateFlowerPrice()"
+              />
+              <span class="toggle-switch__slider" aria-hidden="true"></span>
+            </label>
           </div>
 
           <!-- Greeting with Champagne -->
@@ -285,10 +440,14 @@
               {{ translations.greetingWithChampagne[langInput.code] }}
             </span>
             <div>+25 €</div>
-            <p-toggleswitch 
-              formControlName="greet_with_champagne" 
-              (onChange)="calculateChampagnePrice()"
-              ></p-toggleswitch>
+            <label class="toggle-switch">
+              <input
+                type="checkbox"
+                formControlName="greet_with_champagne"
+                (change)="calculateChampagnePrice()"
+              />
+              <span class="toggle-switch__slider" aria-hidden="true"></span>
+            </label>
           </div>
 
             <div class="form-item">
@@ -299,6 +458,10 @@
                 placeholder="{{ translations.notePlaceholder[langInput.code] }}"></textarea>
             </div>
           </div>
+
+          <ng-container *ngIf="shouldShowInlineSummary()">
+            <ng-container *ngTemplateOutlet="reservationDetails; context: { extraClass: 'reservation-details--inline' }"></ng-container>
+          </ng-container>
 
 
           <!-- Payment Information -->
@@ -395,11 +558,19 @@
 
           <!-- Complete Reservation -->
           <div class="form-actions">
-            <p-message *ngIf="hasSubmitted && bookingService.bookingCompletionForm.invalid" 
-            severity="info" variant="simple" size="small">
-            {{ translations.formError[langInput.code] }}
-          </p-message>
-            <button pButton [loading]="isSaving" type="submit" class="btn-complete">
+            <div
+              *ngIf="hasSubmitted && bookingService.bookingCompletionForm.invalid"
+              class="form-alert form-alert--info"
+            >
+              {{ translations.formError[langInput.code] }}
+            </div>
+            <button
+              type="submit"
+              class="btn-complete"
+              [disabled]="isSaving"
+              [class.btn-complete--loading]="isSaving"
+              [attr.aria-busy]="isSaving"
+            >
             {{ translations.completeReservation[langInput.code] }}
             </button>
             <button [hidden]="stepFromUrl == 3" type="button" class="btn-back" 
