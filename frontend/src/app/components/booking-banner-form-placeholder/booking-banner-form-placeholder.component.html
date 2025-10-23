@@ -17,33 +17,49 @@
     role="search"
   >
     <meta itemprop="provider" content="Airport Transfer Hub" />
-    <label>
+    <label class="booking-banner-placeholder__field">
       {{ localize(translations.pickupLabel) }}
-      <input
-        type="text"
-        name="pickup"
-        required
-        itemprop="pickupLocation"
-        autocomplete="off"
-        [attr.placeholder]="localize(loadingPlaceholder)"
-        disabled
-        aria-disabled="true"
-      />
+      <span class="booking-banner-placeholder__input-wrapper">
+        <input
+          type="text"
+          name="pickup"
+          required
+          itemprop="pickupLocation"
+          autocomplete="off"
+          [attr.placeholder]="localize(loadingPlaceholder)"
+          disabled
+          aria-disabled="true"
+        />
+        <span
+          class="booking-banner-placeholder__spinner booking-banner-placeholder__spinner--input"
+          aria-hidden="true"
+        ></span>
+      </span>
     </label>
-    <label>
+    <label class="booking-banner-placeholder__field">
       {{ localize(translations.dropoffLabel) }}
-      <input
-        type="text"
-        name="dropoff"
-        required
-        itemprop="dropoffLocation"
-        autocomplete="off"
-        [attr.placeholder]="localize(loadingPlaceholder)"
-        disabled
-        aria-disabled="true"
-      />
+      <span class="booking-banner-placeholder__input-wrapper">
+        <input
+          type="text"
+          name="dropoff"
+          required
+          itemprop="dropoffLocation"
+          autocomplete="off"
+          [attr.placeholder]="localize(loadingPlaceholder)"
+          disabled
+          aria-disabled="true"
+        />
+        <span
+          class="booking-banner-placeholder__spinner booking-banner-placeholder__spinner--input"
+          aria-hidden="true"
+        ></span>
+      </span>
     </label>
     <button type="submit" class="booking-banner-placeholder__submit" disabled aria-disabled="true">
+      <span
+        class="booking-banner-placeholder__spinner booking-banner-placeholder__spinner--button"
+        aria-hidden="true"
+      ></span>
       {{ localize(translations.submit) }}
     </button>
   </form>
