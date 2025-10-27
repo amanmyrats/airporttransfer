@@ -234,6 +234,21 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
         pickup_full: this.bookingService.bookingInitialForm.get('pickup_full')?.value,
         dest_full: this.bookingService.bookingInitialForm.get('dest_full')?.value,
       });
+      // If there is distance, make it integer
+      const distanceValue = this.bookingService.bookingCarTypeSelectionForm.get('distance')?.value;
+      if (distanceValue) {
+        this.bookingService.bookingCarTypeSelectionForm.patchValue({
+          distance: Math.round(Number(distanceValue)),
+        });
+      }
+      // if there is driving_duration, make it integer
+      const durationValue = this.bookingService.bookingCarTypeSelectionForm.get('driving_duration')?.value;
+      if (durationValue) {
+        this.bookingService.bookingCarTypeSelectionForm.patchValue({
+          driving_duration: Math.round(Number(durationValue)),
+        });
+      }
+
       if (popularRouteParam !== undefined) {
         const normalizedValue = popularRouteParam.toString().toLowerCase();
         this.isFromPopularRoute = ['1', 'true', 'yes'].includes(normalizedValue);
