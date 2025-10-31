@@ -1,0 +1,11 @@
+<app-super-header></app-super-header>
+<app-navbar></app-navbar>
+
+<main class="callback-page" aria-live="assertive">
+  <div class="callback-card">
+    <span class="spinner" aria-hidden="true"></span>
+    <p>{{ statusMessage() || 'Completing Apple sign-in…' }}</p>
+  </div>
+</main>
+
+<app-footer></app-footer>

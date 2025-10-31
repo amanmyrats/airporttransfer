@@ -1,8 +1,11 @@
-import { effect, Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SUPPORTED_LANGUAGES } from '../constants/language.contants';
 import { Language } from '../models/language.model';
 import { isPlatformBrowser } from '@angular/common';
+
+export type SupportedLangCode = 'en' | 'de' | 'ru' | 'tr';
+const SUPPORTED_LANG_CODES: readonly SupportedLangCode[] = ['en', 'de', 'ru', 'tr'] as const;
 
 @Injectable({
   providedIn: 'root',
@@ -120,6 +123,35 @@ export class LanguageService {
   getLanguageName(code: string): string | undefined {
     const language = this.getLanguageByCode(code);
     return language ? language.name : undefined;
+  }
+
+  extractLangFromUrl(url: string): SupportedLangCode | null {
+    if (!url) {
+      return null;
+    }
+    const clean = url.split('?')[0];
+    const segment = clean.split('/').filter(Boolean)[0];
+    return SUPPORTED_LANG_CODES.includes(segment as SupportedLangCode)
+      ? (segment as SupportedLangCode)
+      : null;
+  }
+
+  withLangPrefix(path: string, lang?: string | null): string {
+    const normalized = path.replace(/^\/+/, '');
+    if (lang && SUPPORTED_LANG_CODES.includes(lang as SupportedLangCode)) {
+      return `/${lang}/${normalized}`.replace(/\/+/g, '/');
+    }
+    return `/${normalized}`.replace(/\/+/g, '/');
+  }
+
+  commandsWithLang(lang: string | null, ...segments: string[]): any[] {
+    const normalized = segments.map(segment =>
+      segment.replace(/^\/+/g, '').replace(/\/+$/g, ''),
+    );
+    if (lang && SUPPORTED_LANG_CODES.includes(lang as SupportedLangCode)) {
+      return ['/', lang, ...normalized];
+    }
+    return ['/', ...normalized];
   }
 
   /**

@@ -17,11 +17,11 @@ import { OverlayModule } from 'primeng/overlay';
 import { Popover } from 'primeng/popover';
 import { AuthService } from '../../../services/auth.service';
 import { ActiveRouteService } from '../../../services/active-route.service';
-import { LoginComponent } from '../login/login.component';
 import { SOCIAL_ICONS } from '../../../constants/social.constants';
 import { usePreset } from '@primeng/themes';
 import Aura from '@primeng/themes/aura';
 import { Meta } from '@angular/platform-browser';
+import { LoginComponent as AuthLoginComponent } from '../../../auth/pages/login/login.component';
 
 @Component({
   selector: 'app-admin-home',
@@ -38,7 +38,7 @@ import { Meta } from '@angular/platform-browser';
     OverlayModule,
     Popover,
     RouterModule,
-    LoginComponent,
+    AuthLoginComponent,
   ],
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.scss'
@@ -86,8 +86,10 @@ export class AdminHomeComponent implements OnInit {
   }
 
   logOut() {
-    this.authService.logout();
-    this.router.navigateByUrl('/');
+    this.authService.logout().subscribe({
+      next: () => this.router.navigateByUrl('/'),
+      error: () => this.router.navigateByUrl('/'),
+    });
   }
 
   getFirstName(): void {

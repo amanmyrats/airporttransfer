@@ -1,0 +1,103 @@
+### Register
+POST http://localhost:8000/api/v1/auth/register/
+Content-Type: application/json
+
+{
+  "email": "client@example.com",
+  "password": "Secret123!",
+  "first_name": "Client",
+  "preferred_language": "en",
+  "marketing_opt_in": true
+}
+
+### Verify Email
+POST http://localhost:8000/api/v1/auth/email/verify/
+Content-Type: application/json
+
+{
+  "key": "{{ verification_token }}"
+}
+
+### Login
+POST http://localhost:8000/api/v1/auth/login/
+Content-Type: application/json
+
+{
+  "email": "client@example.com",
+  "password": "Secret123!"
+}
+
+### Refresh Token
+POST http://localhost:8000/api/v1/auth/token/refresh/
+Content-Type: application/json
+
+{
+  "refresh": "{{ refresh_token }}"
+}
+
+### Logout
+POST http://localhost:8000/api/v1/auth/logout/
+Authorization: Bearer {{ access_token }}
+Content-Type: application/json
+
+{
+  "refresh": "{{ refresh_token }}"
+}
+
+### Forgot Password
+POST http://localhost:8000/api/v1/auth/password/forgot/
+Content-Type: application/json
+
+{
+  "email": "client@example.com"
+}
+
+### Password Reset Confirm
+POST http://localhost:8000/api/v1/auth/password/reset/confirm/
+Content-Type: application/json
+
+{
+  "uid": "{{ uid }}",
+  "token": "{{ reset_token }}",
+  "new_password": "NewSecret123!"
+}
+
+### Current User
+GET http://localhost:8000/api/v1/auth/me/
+Authorization: Bearer {{ access_token }}
+
+### Update Profile
+PATCH http://localhost:8000/api/v1/auth/me/
+Authorization: Bearer {{ access_token }}
+Content-Type: application/json
+
+{
+  "first_name": "New Name",
+  "profile": {
+    "phone_e164": "+905555555555",
+    "preferred_language": "de",
+    "marketing_opt_in": false
+  }
+}
+
+### Google Social Login
+POST http://localhost:8000/api/v1/auth/social/google/
+Content-Type: application/json
+
+{
+  "id_token": "{{ google_id_token }}"
+}
+
+### Apple Social Login
+POST http://localhost:8000/api/v1/auth/social/apple/
+Content-Type: application/json
+
+{
+  "identity_token": "{{ apple_identity_token }}"
+}
+
+### Microsoft Social Login (Placeholder)
+POST http://localhost:8000/api/v1/auth/social/microsoft/
+Content-Type: application/json
+
+{}

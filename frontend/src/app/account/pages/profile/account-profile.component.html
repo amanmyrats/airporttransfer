@@ -1,0 +1,33 @@
+<p-toast></p-toast>
+<p-card header="Profile">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="profile-form">
+    <div class="grid">
+      <div class="col">
+        <label for="first_name">First name</label>
+        <input pInputText id="first_name" formControlName="first_name" autocomplete="given-name" />
+      </div>
+      <div class="col">
+        <label for="last_name">Last name</label>
+        <input pInputText id="last_name" formControlName="last_name" autocomplete="family-name" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="phone_e164">Phone (E.164)</label>
+      <input pInputText id="phone_e164" formControlName="phone_e164" autocomplete="tel" />
+    </div>
+    <div class="field">
+      <label for="preferred_language">Preferred language</label>
+      <p-dropdown inputId="preferred_language"
+                  [options]="languages"
+                  optionLabel="label"
+                  optionValue="code"
+                  formControlName="preferred_language">
+      </p-dropdown>
+    </div>
+    <div class="field checkbox">
+      <p-checkbox inputId="marketing_opt_in" binary="true" formControlName="marketing_opt_in"></p-checkbox>
+      <label for="marketing_opt_in">I want to receive promotions.</label>
+    </div>
+    <button type="submit" pButton label="Save changes" [loading]="loading()" class="w-full md:w-auto"></button>
+  </form>
+</p-card>

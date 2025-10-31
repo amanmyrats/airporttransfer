@@ -1,0 +1,11 @@
+<div class="dashboard">
+  <h2>Welcome back, {{ user()?.first_name || user()?.email }}</h2>
+  <div class="cards">
+    <p-card header="Upcoming reservations">
+      <p>No reservations yet. Book your next transfer!</p>
+    </p-card>
+    <p-card header="Profile completeness">
+      <p>{{ user()?.customer_profile?.preferred_language | uppercase }} • Marketing opt-in: {{ user()?.customer_profile?.marketing_opt_in ? 'Yes' : 'No' }}</p>
+    </p-card>
+  </div>
+</div>

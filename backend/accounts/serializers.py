@@ -1,8 +1,9 @@
-from django.contrib.auth.hashers import make_password
-
 from rest_framework import serializers
 
-from .models import Account, UserColumn
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.password_validation import validate_password
+
+from .models import Account, CustomerProfile, UserColumn
 from .utils import sendpassword_task, make_random_password
 
 
@@ -13,10 +14,10 @@ class AccountModelSerializer(serializers.ModelSerializer):
         model = Account
         fields = (
             'id', 'email', 'first_name', 'last_name', 
-            'phone', 
+            'phone', 'is_client', 'is_company_user',
             'is_active', 'is_staff', 'is_superuser', 'date_joined', 
             'role')
-        read_only_fields = ('is_active', 'is_staff', 'is_superuser', 'date_joined',)
+        read_only_fields = ('is_active', 'is_staff', 'is_superuser', 'date_joined', 'is_client', 'is_company_user',)
 
     def create(self, validated_data):
         try:
@@ -62,3 +63,81 @@ class UserColumnModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserColumn
         fields = '__all__'
+
+
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomerProfile
+        fields = ('phone_e164', 'preferred_language', 'marketing_opt_in')
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, min_length=5)
+    preferred_language = serializers.CharField(write_only=True, max_length=2, default='en')
+    marketing_opt_in = serializers.BooleanField(write_only=True, default=False)
+
+    class Meta:
+        model = Account
+        fields = ('email', 'password', 'first_name', 'last_name', 'preferred_language', 'marketing_opt_in')
+
+    def validate_email(self, value):
+        email = Account.objects.normalize_email(value)
+        if Account.objects.filter(email__iexact=email).exists():
+            raise serializers.ValidationError('An account with this email already exists.')
+        return email
+
+    def validate_password(self, value):
+        if len(value) < 5:
+            raise serializers.ValidationError('Password must be at least 5 characters long.')
+        validate_password(value)
+        return value
+
+    def create(self, validated_data):
+        preferred_language = validated_data.pop('preferred_language', 'en')
+        marketing_opt_in = validated_data.pop('marketing_opt_in', False)
+        password = validated_data.pop('password')
+        account = Account.objects.create_user(
+            password=password,
+            role='client',
+            is_active=False,
+            **validated_data,
+        )
+        profile = getattr(account, 'customer_profile', None)
+        if profile is None:
+            profile, _ = CustomerProfile.objects.get_or_create(user=account)
+        profile.preferred_language = preferred_language
+        profile.marketing_opt_in = marketing_opt_in
+        profile.save(update_fields=['preferred_language', 'marketing_opt_in', 'updated_at'])
+        return account
+
+
+class AuthUserSerializer(serializers.ModelSerializer):
+    profile = CustomerProfileSerializer(source='customer_profile')
+
+    class Meta:
+        model = Account
+        fields = ('id', 'email', 'first_name', 'last_name', 'role', 'is_staff', 'is_client', 'is_company_user', 'profile')
+
+
+class AccountProfileUpdateSerializer(serializers.Serializer):
+    first_name = serializers.CharField(required=False, allow_blank=False, max_length=30)
+    last_name = serializers.CharField(required=False, allow_null=True, allow_blank=True, max_length=30)
+    profile = CustomerProfileSerializer(required=False)
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if validated_data:
+            instance.save(update_fields=list(validated_data.keys()))
+        if profile_data:
+            profile = getattr(instance, 'customer_profile', None)
+            if profile is None:
+                profile = CustomerProfile.objects.create(user=instance)
+            for attr, value in profile_data.items():
+                setattr(profile, attr, value)
+            profile.save(update_fields=list(profile_data.keys()) + ['updated_at'])
+        return instance
+
+    def to_representation(self, instance):
+        return AuthUserSerializer(instance).data

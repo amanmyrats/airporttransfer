@@ -3,10 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment as env } from '../../../environments/environment';
 import { PaginatedResponse } from '../../models/paginated-response.model';
-import { PasswordReset } from '../../models/password-reset.model';
-import { PasswordResetConfirm } from '../../models/password-reset-confirm.model';
 import { User } from '../models/user.model';
-import { UserChangePassword } from '../models/user-change-password.model';
 
 @Injectable({
   providedIn: 'root', 
@@ -42,18 +39,6 @@ export class UserService {
   
   activateDeactivateUser(id: string): Observable<any> {
     return this.http.post(`${env.baseUrl}${env.apiV1}${this.endpoint}${id}/activatedeactivate/`, {});
-  }
-
-  changePassword(userChangePassword: UserChangePassword): Observable<any> {
-    return this.http.post(`${env.baseUrl}${env.apiV1}${this.endpoint}changepassword/`, userChangePassword);
-  }
-
-  passwordReset(passwordReset: PasswordReset): Observable<any> {
-    return this.http.post<any>(`${env.baseUrl}${env.apiV1}accounts/publicaccounts/passwordreset/`, passwordReset);
-  }
-
-  passwordResetConfirm(passwordResetConfirm: PasswordResetConfirm): Observable<any> {
-    return this.http.post<any>(`${env.baseUrl}${env.apiV1}accounts/publicaccounts/passwordresetconfirm/`, passwordResetConfirm);
   }
 
   getUserDetail(): Observable<any> {

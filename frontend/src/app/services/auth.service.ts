@@ -1,321 +1,256 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, of } from 'rxjs';
-import { map, switchMap, catchError, finalize } from 'rxjs/operators';
-import { environment as env } from '../../environments/environment';
+import { Injectable, PLATFORM_ID, inject, computed, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, throwError, firstValueFrom } from 'rxjs';
+import { catchError, finalize, map, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { AuthApiService } from '../auth/services/auth-api.service';
+import {
+  AuthUser,
+  LoginPayload,
+  LoginResponse,
+  RegisterPayload,
+  UpdateProfilePayload,
+} from '../auth/models/auth.models';
 
-@Injectable({
-  providedIn: 'root'
-})
+const STORAGE_KEYS = {
+  access: 'auth.accessToken',
+  refresh: 'auth.refreshToken',
+  user: 'auth.user',
+};
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly authApi = inject(AuthApiService);
+  private readonly http = inject(HttpClient);
 
-  private baseUrl = env.baseUrl;
-  private endPoint = 'auth/'
-  private refreshInProgress = false;
+  readonly user = signal<AuthUser | null>(null);
+  readonly accessToken = signal<string | null>(null);
+  readonly refreshToken = signal<string | null>(null);
+  readonly isAuthenticated = computed(() => !!this.accessToken());
 
-  private accessTokenSubject: BehaviorSubject<any> = new BehaviorSubject<string>('');
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private refreshInFlight: Observable<LoginResponse | null> | null = null;
+  private readonly authBase = (environment.authBase ?? `${environment.apiBase}/auth`).replace(/\/?$/, '/');
+  private bootstrapped = false;
 
-  constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
-    
-  ) { 
-    this.accessTokenSubject.next(this.currentAccessToken);
-    this.refreshTokenSubject.next(this.currentRefreshToken);
+  constructor() {
+    this.bootstrapFromStorage();
   }
 
+  bootstrapFromStorage(): void {
+    if (!this.isBrowser()) {
+      return;
+    }
+    const access = localStorage.getItem(STORAGE_KEYS.access);
+    const refresh = localStorage.getItem(STORAGE_KEYS.refresh);
+    const userRaw = localStorage.getItem(STORAGE_KEYS.user);
+    const user = userRaw ? (JSON.parse(userRaw) as AuthUser) : null;
+    if (access) {
+      this.accessToken.set(access);
+    }
+    if (refresh) {
+      this.refreshToken.set(refresh);
+    }
+    if (user) {
+      this.user.set(user);
+    }
+    this.bootstrapped = true;
+  }
+
+  setSession(response: LoginResponse): void {
+    console.log('Setting session with response:', response);
+    this.accessToken.set(response.access);
+    console.log('Access token set to:', response.access);
+    this.refreshToken.set(response.refresh);
+    console.log('Refresh token set to:', response.refresh);
+    this.user.set(response.user);
+    console.log('User set to:', response.user);
+    if (this.isBrowser()) {
+      localStorage.setItem(STORAGE_KEYS.access, response.access);
+      localStorage.setItem(STORAGE_KEYS.refresh, response.refresh);
+      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(response.user));
+      localStorage.setItem('userId', String(response.user.id ?? ''));
+      localStorage.setItem('email', response.user.email ?? '');
+      localStorage.setItem('firstName', response.user.first_name ?? '');
+      localStorage.setItem('roleName', response.user.role ?? '');
+      localStorage.setItem('isStaff', String(response.user.is_staff ?? false));
+      localStorage.setItem('profile', JSON.stringify(response.user.customer_profile ?? {}));
+    }
+  }
+
+  clearSession(): void {
+    this.accessToken.set(null);
+    this.refreshToken.set(null);
+    this.user.set(null);
+    if (this.isBrowser()) {
+      localStorage.removeItem(STORAGE_KEYS.access);
+      localStorage.removeItem(STORAGE_KEYS.refresh);
+      localStorage.removeItem(STORAGE_KEYS.user);
+      localStorage.removeItem('userId');
+      localStorage.removeItem('email');
+      localStorage.removeItem('firstName');
+      localStorage.removeItem('roleName');
+      localStorage.removeItem('isStaff');
+      localStorage.removeItem('profile');
+    }
+  }
+
+  async ensureSessionInitialized(): Promise<void> {
+    if (!this.bootstrapped) {
+      this.bootstrapFromStorage();
+    }
+    if (this.currentAccessToken && !this.user()) {
+      try {
+        await firstValueFrom(this.loadMe());
+      } catch {
+        // swallow errors; invalid tokens will clear session inside loadMe
+      }
+    }
+  }
 
   login(email: string, password: string): Observable<boolean> {
-    return this.http.post<any>(`${this.baseUrl}${this.endPoint}api/token/`, { email, password })
-      .pipe(
-        map(response => {
-          console.log(response);
-          if (response && response.access) {
-            if (isPlatformBrowser(this.platformId)) {
-              localStorage.setItem('accessToken', response.access);
-              localStorage.setItem('refreshToken', response.refresh);
-              localStorage.setItem('userId', response.user_id);
-              localStorage.setItem('firstName', response.first_name);
-              localStorage.setItem('roleName', response.role);
-              localStorage.setItem('isSuperuser', response.is_superuser);
-              this.accessTokenSubject.next(response.access);
-              this.refreshTokenSubject.next(response.refresh);
-              return true;
-            }
-          }
-          return false;
-        })
-      );
+    const payload: LoginPayload = { email, password };
+    return this.authApi.login(payload).pipe(
+      tap((res) => this.setSession(res)),
+      map(() => true)
+    );
   }
-  // refreshToken() {
-  //   return this.http.post<any>(
-  //     `${this.baseUrl}${this.endPoint}api/token/refresh/`, 
-  //     { refresh: this.currentRefreshToken });
-  // }
 
-  refreshToken(): Observable<any> {
-    console.log('inside: authService.refreshToken()')
-    return this.refreshTokenSubject.pipe(
-      switchMap(refreshToken => {
-        console.log('refreshToken: ' + refreshToken)
-        console.log('this.refreshInProgress: ' + this.refreshInProgress)
-        if (!refreshToken || this.refreshInProgress) {
-          return of(null);
+  loginWithResponse(payload: LoginPayload): Observable<LoginResponse> {
+    return this.authApi.login(payload).pipe(tap((res) => this.setSession(res)));
+  }
+
+  register(payload: RegisterPayload): Observable<{ detail: string }> {
+    return this.authApi.register(payload);
+  }
+
+  refreshTokens(): Observable<LoginResponse | null> {
+    const refresh = this.refreshToken();
+    if (!refresh) {
+      return of(null);
+    }
+    if (this.refreshInFlight) {
+      return this.refreshInFlight;
+    }
+    const refresh$ = this.authApi.refresh(refresh).pipe(
+      tap((res) => {
+        const nextRefresh = res.refresh ?? refresh;
+        const nextUser = res.user ?? this.user();
+        if (res.user) {
+          this.setSession({ access: res.access, refresh: nextRefresh, user: res.user });
+          return;
         }
-        this.refreshInProgress = true;
-        console.log("Sending refresh token.")
-        return this.http.post<any>(
-          `${this.baseUrl}${this.endPoint}api/token/refresh/`, 
-          { refresh: refreshToken })
-          .pipe(
-            // Use map operator within the projection function
-            map(response => {
-              if (response && response.access) {
-              if (isPlatformBrowser(this.platformId)) {
-                localStorage.setItem('accessToken', response.access);
-              }  
-              this.refreshTokenSubject.next(response.refresh);
-              }
-              return response;
-            }),
-            catchError(error => {
-              this.logout();
-              throw error;
-            }),
-            finalize(() => {
-              this.refreshInProgress = false;
-            })
-          );
+        if (nextUser) {
+          this.setSession({ access: res.access, refresh: nextRefresh, user: nextUser });
+          return;
+        }
+        this.accessToken.set(res.access);
+        this.refreshToken.set(nextRefresh);
+        if (this.isBrowser()) {
+          localStorage.setItem(STORAGE_KEYS.access, res.access);
+          localStorage.setItem(STORAGE_KEYS.refresh, nextRefresh);
+        }
+      }),
+      catchError((error) => {
+        this.clearSession();
+        return throwError(() => error);
+      }),
+      map((res) => {
+        const nextUser = res.user ?? this.user();
+        if (!nextUser) {
+          return null;
+        }
+        return {
+          access: res.access,
+          refresh: res.refresh ?? refresh,
+          user: nextUser,
+        } as LoginResponse;
+      }),
+      finalize(() => {
+        this.refreshInFlight = null;
+      })
+    );
+    this.refreshInFlight = refresh$;
+    return refresh$;
+  }
+
+  logout(): Observable<void> {
+    const refresh = this.refreshToken();
+    const apiCall = refresh ? this.authApi.logout(refresh).pipe(catchError(() => of({ detail: 'ok' }))) : of({ detail: 'ok' });
+    return apiCall.pipe(
+      map(() => {
+        this.clearSession();
       })
     );
   }
 
-  logout(): void {
-                
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('userId');
-      localStorage.removeItem('firstName');
-      localStorage.removeItem('roleName');
-      localStorage.removeItem('isSuperuser');
-      this.accessTokenSubject.next('');
-      this.refreshTokenSubject.next('');
+  loadMe(): Observable<AuthUser | null> {
+    if (!this.accessToken()) {
+      return of(null);
     }
+    return this.authApi.me().pipe(
+      tap((user) => {
+        this.user.set(user);
+        if (this.isBrowser()) {
+          localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
+          localStorage.setItem('userId', String(user.id ?? ''));
+          localStorage.setItem('email', user.email ?? '');
+          localStorage.setItem('firstName', user.first_name ?? '');
+          localStorage.setItem('roleName', user.role ?? '');
+          localStorage.setItem('isStaff', String(user.is_staff ?? false));
+          localStorage.setItem('profile', JSON.stringify(user.customer_profile ?? {}));
+        }
+      }),
+      map((user) => user),
+      catchError((error) => {
+        if (error?.status === 401) {
+          this.clearSession();
+        }
+        return of(null);
+      })
+    );
   }
 
-  public get currentAccessToken(): string | null {
-    if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem('accessToken');
-      // Access the current value using getValue()
-      // return this.accessTokenSubject.getValue();
-    }
-    return null;
-  }
-
-  setAccessToken(accessToken: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      return localStorage.setItem('accessToken', accessToken);
-    }
-  }
-
-  
-  public get currentRefreshToken(): string | null {
-    if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem('refreshToken');
-      // Access the current value using getValue()
-      // return this.refreshTokenSubject.getValue();
-    }
-    return null;
-  }
-
-  public get accessTokenChanges(): Observable<string> {
-    return this.accessTokenSubject.asObservable();
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.currentAccessToken;
+  updateMe(body: UpdateProfilePayload): Observable<AuthUser> {
+    return this.authApi.updateMe(body).pipe(
+      tap((user) => {
+        this.user.set(user);
+        if (this.isBrowser()) {
+          localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
+        }
+      })
+    );
   }
 
   changePassword(oldPassword: string, newPassword: string, confirmPassword: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}${this.endPoint}changepassword/`, 
-      { old_password: oldPassword, new_password: newPassword, confirm_password: confirmPassword});
+    return this.http.post<any>(`${this.authBase}changepassword/`, {
+      old_password: oldPassword,
+      new_password: newPassword,
+      confirm_password: confirmPassword,
+    });
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.accessToken();
+  }
+
+  get currentAccessToken(): string | null {
+    return this.accessToken();
+  }
+
+  get currentRefreshToken(): string | null {
+    return this.refreshToken();
+  }
+
+  setAccessToken(accessToken: string): void {
+    this.accessToken.set(accessToken);
+    if (this.isBrowser()) {
+      localStorage.setItem(STORAGE_KEYS.access, accessToken);
+    }
+  }
+
+  private isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
   }
 }
-
-// import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-// import { HttpClient } from '@angular/common/http';
-// import { BehaviorSubject, Observable, of } from 'rxjs';
-// import { catchError, finalize, map, shareReplay } from 'rxjs/operators';
-// import { isPlatformBrowser } from '@angular/common';
-// import { environment as env } from '../../environments/environment';
-
-// interface LoginResponse {
-//   access: string;
-//   refresh: string;
-//   user_id?: string;
-//   first_name?: string;
-//   role?: string;
-//   is_superuser?: boolean;
-// }
-
-// interface RefreshResponse {
-//   access: string;
-// }
-
-// @Injectable({ providedIn: 'root' })
-// export class AuthService {
-//   private baseUrl = env.baseUrl;
-//   private endPoint = 'auth/';
-
-//   private accessTokenSubject = new BehaviorSubject<string>('');
-//   private refreshTokenSubject = new BehaviorSubject<string | null>(null);
-
-//   /** Shared in-flight refresh observable (cleared on complete/error) */
-//   private refreshInFlight$?: Observable<string | null>;
-
-//   constructor(
-//     private http: HttpClient,
-//     @Inject(PLATFORM_ID) private platformId: Object
-//   ) {
-//     // Initialize subjects from storage (SSR-safe)
-//     const access = this.currentAccessToken;
-//     const refresh = this.currentRefreshToken;
-//     if (access) this.accessTokenSubject.next(access);
-//     this.refreshTokenSubject.next(refresh);
-//   }
-
-//   /** ---- Auth API ---- */
-
-//   login(email: string, password: string): Observable<boolean> {
-//     return this.http
-//       .post<LoginResponse>(`${this.baseUrl}${this.endPoint}api/token/`, { email, password })
-//       .pipe(
-//         map(res => {
-//           if (res?.access && res?.refresh) {
-//             this.setTokens(res.access, res.refresh);
-//             // Optional user metadata
-//             this.safeSet('userId', String(res.user_id ?? ''));
-//             this.safeSet('firstName', String(res.first_name ?? ''));
-//             this.safeSet('roleName', String(res.role ?? ''));
-//             this.safeSet('isSuperuser', String(res.is_superuser ?? ''));
-//             return true;
-//           }
-//           return false;
-//         })
-//       );
-//   }
-
-//   /**
-//    * Returns a shared observable that emits a fresh access token (string),
-//    * or null if refresh failed or not available. Only one network call runs at a time.
-//    */
-//   refreshAccessTokenOnce(): Observable<string | null> {
-//     if (this.refreshInFlight$) return this.refreshInFlight$;
-
-//     const refresh = this.currentRefreshToken;
-//     if (!refresh) return of(null);
-
-//     const req$ = this.http
-//       .post<RefreshResponse>(`${this.baseUrl}${this.endPoint}api/token/refresh/`, { refresh })
-//       .pipe(
-//         map(res => {
-//           const newAccess = res?.access ?? null;
-//           if (newAccess) {
-//             this.safeSet('accessToken', newAccess);
-//             this.accessTokenSubject.next(newAccess);
-//           }
-//           return newAccess;
-//         }),
-//         catchError(() => of(null)),
-//         shareReplay(1),
-//         finalize(() => {
-//           // allow next refresh attempt
-//           this.refreshInFlight$ = undefined;
-//         })
-//       );
-
-//     this.refreshInFlight$ = req$;
-//     return req$;
-//   }
-
-//   logout(): void {
-//     // Clear tokens & metadata
-//     this.safeRemove('accessToken');
-//     this.safeRemove('refreshToken');
-//     this.safeRemove('userId');
-//     this.safeRemove('firstName');
-//     this.safeRemove('roleName');
-//     this.safeRemove('isSuperuser');
-
-//     // Reset subjects
-//     this.accessTokenSubject.next('');
-//     this.refreshTokenSubject.next(null);
-//   }
-
-//   /** ---- Token helpers ---- */
-
-//   setTokens(access: string, refresh?: string): void {
-//     this.safeSet('accessToken', access);
-//     this.accessTokenSubject.next(access);
-
-//     if (refresh !== undefined) {
-//       this.safeSet('refreshToken', refresh);
-//       this.refreshTokenSubject.next(refresh);
-//     }
-//   }
-
-//   setAccessToken(accessToken: string): void {
-//     this.safeSet('accessToken', accessToken);
-//     this.accessTokenSubject.next(accessToken);
-//   }
-
-//   get currentAccessToken(): string | null {
-//     return this.safeGet('accessToken');
-//   }
-
-//   get currentRefreshToken(): string | null {
-//     return this.safeGet('refreshToken');
-//   }
-
-//   get hasRefreshToken(): boolean {
-//     return !!this.currentRefreshToken;
-//   }
-
-//   /** Emits whenever access token changes */
-//   get accessTokenChanges(): Observable<string> {
-//     return this.accessTokenSubject.asObservable();
-//   }
-
-//   isLoggedIn(): boolean {
-//     return !!this.currentAccessToken;
-//   }
-
-//   /** ---- Other API ---- */
-
-//   changePassword(oldPassword: string, newPassword: string, confirmPassword: string): Observable<any> {
-//     return this.http.post<any>(
-//       `${this.baseUrl}${this.endPoint}changepassword/`,
-//       { old_password: oldPassword, new_password: newPassword, confirm_password: confirmPassword }
-//     );
-//   }
-
-//   /** ---- Storage (SSR-safe) ---- */
-
-//   private safeGet(key: string): string | null {
-//     if (!isPlatformBrowser(this.platformId)) return null;
-//     try { return localStorage.getItem(key); } catch { return null; }
-//   }
-
-//   private safeSet(key: string, value: string): void {
-//     if (!isPlatformBrowser(this.platformId)) return;
-//     try { localStorage.setItem(key, value); } catch {}
-//   }
-
-//   private safeRemove(key: string): void {
-//     if (!isPlatformBrowser(this.platformId)) return;
-//     try { localStorage.removeItem(key); } catch {}
-//   }
-// }

@@ -1,0 +1,50 @@
+<app-super-header></app-super-header>
+<app-navbar></app-navbar>
+
+<main class="auth-page" aria-labelledby="login-title">
+  <section class="auth-card" role="form">
+    <h1 id="login-title">Sign in</h1>
+    <p class="auth-subtitle">Access your AirportTransfer account to manage bookings and profile.</p>
+
+    <p *ngIf="statusMessage()" class="alert" [class.alert--error]="statusMessage()?.type === 'error'" [class.alert--info]="statusMessage()?.type === 'info'">
+      {{ statusMessage()?.text }}
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form">
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" autocomplete="email" required />
+        <p class="form-error" *ngIf="form.controls['email']?.invalid && form.controls['email']?.touched">Email is required.</p>
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input id="password" type="password" formControlName="password" autocomplete="current-password" required />
+        <p class="form-error" *ngIf="form.controls['password']?.invalid && form.controls['password']?.touched">Password is required.</p>
+      </div>
+
+      <div class="form-row">
+        <label class="checkbox">
+          <input type="checkbox" formControlName="remember" id="remember" />
+          <span>Remember me</span>
+        </label>
+        <a [routerLink]="linkWithLang('auth/forgot-password')" class="link">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="loading()">{{ loading() ? 'Signing in…' : 'Login' }}</button>
+    </form>
+
+    <p class="divider" role="presentation"><span>or</span></p>
+
+    <div class="social-buttons">
+      <button type="button" class="btn btn-google" (click)="handleGoogleSignIn()">Continue with Google</button>
+      <button type="button" class="btn btn-apple" (click)="handleAppleSignIn()">Continue with Apple</button>
+    </div>
+
+    <footer class="auth-footer">
+      <p>New here? <a [routerLink]="linkWithLang('auth/register')" class="link">Create an account</a></p>
+    </footer>
+  </section>
+</main>
+
+<app-footer></app-footer>

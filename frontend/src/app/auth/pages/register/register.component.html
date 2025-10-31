@@ -1,0 +1,65 @@
+<app-super-header></app-super-header>
+<app-navbar></app-navbar>
+
+<main class="auth-page" aria-labelledby="register-title">
+  <section class="auth-card">
+    <h1 id="register-title">Create your account</h1>
+    <p class="auth-subtitle">Register to book transfers, manage reservations, and update your profile.</p>
+
+    <p *ngIf="statusMessage()" class="alert alert--error">{{ statusMessage()?.text }}</p>
+
+    <ng-container *ngIf="!success(); else successTpl">
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form">
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" autocomplete="email" required />
+          <p class="form-error" *ngIf="form.controls['email']?.invalid && form.controls['email']?.touched">Please enter a valid email address.</p>
+        </div>
+
+        <div class="form-field">
+          <label for="password">Password</label>
+          <input id="password" type="password" formControlName="password" autocomplete="new-password" required />
+          <p class="form-error" *ngIf="passwordControl?.invalid && passwordControl?.touched">Password must be at least 6 characters.</p>
+        </div>
+
+        <div class="form-field">
+          <label for="first_name">First name</label>
+          <input id="first_name" formControlName="first_name" autocomplete="given-name" />
+        </div>
+
+        <div class="form-field">
+          <label for="last_name">Last name</label>
+          <input id="last_name" formControlName="last_name" autocomplete="family-name" />
+        </div>
+
+        <div class="form-field">
+          <label for="preferred_language">Preferred language</label>
+          <select id="preferred_language" formControlName="preferred_language">
+            <option *ngFor="let option of languages" [value]="option.code">{{ option.label }}</option>
+          </select>
+        </div>
+
+        <label class="checkbox">
+          <input type="checkbox" id="marketing_opt_in" formControlName="marketing_opt_in" />
+          <span>I agree to receive occasional marketing emails.</span>
+        </label>
+
+        <button type="submit" class="btn btn-primary" [disabled]="loading()">{{ loading() ? 'Creating account…' : 'Register' }}</button>
+      </form>
+
+      <footer class="auth-footer">
+        <p>Already have an account? <button type="button" class="link-button" (click)="navigateToLogin()">Login</button></p>
+      </footer>
+    </ng-container>
+
+    <ng-template #successTpl>
+      <div class="success-state">
+        <h2>Verify your email</h2>
+        <p>We sent a verification link to your inbox. Confirm your email to activate the account.</p>
+        <button type="button" class="btn btn-primary" (click)="navigateToLogin()">Back to login</button>
+      </div>
+    </ng-template>
+  </section>
+</main>
+
+<app-footer></app-footer>

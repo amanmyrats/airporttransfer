@@ -1,0 +1,14 @@
+Hi {{ user.first_name|default:user.email }},
+
+Thanks for registering with AirportTransfer. Please verify your email address to activate your account.
+
+Verification link:
+{{ verification_url }}
+
+If the link above does not open, use the token below with the API:
+TOKEN: {{ token }}
+
+If you did not request this email, you can safely ignore it.
+
+Best regards,
+AirportTransfer Team
