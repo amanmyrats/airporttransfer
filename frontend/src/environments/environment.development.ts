@@ -4,7 +4,7 @@ export const environment = {
   authBase: 'https://dev.backend.airporttransferhub.com/api/v1/auth',
   baseUrl: 'https://dev.backend.airporttransferhub.com/',
   apiV1: 'api/v1/',
-  googleClientId: 'YOUR_GOOGLE_CLIENT_ID',
+  googleClientId: '455481319488-6gcbh9g2vh7oh2ust3q4e3lrbhtgu4u2.apps.googleusercontent.com',
   appleClientId: 'YOUR_APPLE_CLIENT_ID',
   appleRedirectUri: 'https://airporttransferhub.com/auth/social/apple/callback',
   buildTimestamp: new Date().toISOString(),

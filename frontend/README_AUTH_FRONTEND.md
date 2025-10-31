@@ -20,7 +20,7 @@ For local development update `environment.local.ts` and run with `ng serve --con
 
 ## Session Lifecycle
 
-`AuthService` (signals-based) persists `access`, `refresh`, and `user` JSON in `localStorage`. On boot (`APP_INITIALIZER`) it restores tokens, then calls `/me/` if needed. The service exposes `user`, `accessToken`, `refreshToken`, and `isAuthenticated` signals for other components.
+`AuthService` (signals-based) persists `access`, `refresh`, and `user` JSON in `localStorage`. The service exposes `user`, `accessToken`, `refreshToken`, and `isAuthenticated` signals for other components.
 
 ## HTTP Interceptor
 

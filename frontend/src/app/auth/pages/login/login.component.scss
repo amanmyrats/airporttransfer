@@ -137,11 +137,28 @@
   border: 1px solid rgba(148, 163, 184, 0.4);
   background: #fff;
   color: #0f172a;
+  gap: 0.75rem;
 }
 
 .btn-google:hover,
 .btn-apple:hover {
   background: rgba(15, 23, 42, 0.04);
+}
+
+.social-icon {
+  display: inline-flex;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.social-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.social-label {
+  display: inline-flex;
+  align-items: center;
 }
 
 .divider {

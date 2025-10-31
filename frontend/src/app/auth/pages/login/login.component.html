@@ -10,6 +10,25 @@
       {{ statusMessage()?.text }}
     </p>
 
+    <div class="social-buttons">
+      <button type="button" class="btn btn-google" (click)="handleGoogleSignIn()">
+        <span class="social-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6 1.54 7.38 2.83l5.4-5.26C32.96 3.67 28.8 2 24 2 14.82 2 7.06 7.83 4.08 16.08l6.95 5.4C12.68 14.4 17.88 9.5 24 9.5z"/>
+            <path fill="#34A853" d="M46.5 24.5c0-1.63-.14-3.2-.41-4.73H24v9h12.66c-.55 2.82-2.18 5.22-4.68 6.84l7.41 5.75C43.96 37.49 46.5 31.49 46.5 24.5z"/>
+            <path fill="#4A90E2" d="M11.03 28.32a10.9 10.9 0 0 1-.57-3.32c0-1.16.21-2.3.55-3.34l-6.93-5.4A21.98 21.98 0 0 0 2 25c0 3.52.84 6.84 2.34 9.76l6.69-5.84z"/>
+            <path fill="#FBBC05" d="M24 46c5.84 0 10.74-1.93 14.32-5.25l-7.41-5.75C29 36.64 26.65 37.5 24 37.5c-6.12 0-11.32-4.9-12.97-11.5l-6.95 5.4C7.06 40.17 14.82 46 24 46z"/>
+          </svg>
+        </span>
+        <span class="social-label">Continue with Google</span>
+      </button>
+      <button *ngIf="appleEnabled" type="button" class="btn btn-apple" (click)="handleAppleSignIn()">
+        <span class="social-label">Continue with Apple</span>
+      </button>
+    </div>
+
+    <p class="divider" role="presentation"><span>or sign in with email</span></p>
+
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form">
       <div class="form-field">
         <label for="email">Email</label>
@@ -33,13 +52,6 @@
 
       <button type="submit" class="btn btn-primary" [disabled]="loading()">{{ loading() ? 'Signing in…' : 'Login' }}</button>
     </form>
-
-    <p class="divider" role="presentation"><span>or</span></p>
-
-    <div class="social-buttons">
-      <button type="button" class="btn btn-google" (click)="handleGoogleSignIn()">Continue with Google</button>
-      <button type="button" class="btn btn-apple" (click)="handleAppleSignIn()">Continue with Apple</button>
-    </div>
 
     <footer class="auth-footer">
       <p>New here? <a [routerLink]="linkWithLang('auth/register')" class="link">Create an account</a></p>

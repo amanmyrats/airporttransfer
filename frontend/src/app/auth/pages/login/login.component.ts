@@ -28,6 +28,7 @@ export class LoginComponent {
   readonly form: FormGroup;
   readonly loading = signal(false);
   readonly statusMessage = signal<{ type: 'info' | 'success' | 'error'; text: string } | null>(null);
+  readonly appleEnabled = this.isAppleConfigured();
   private returnUrl = '/account';
   currentLang: string | null = null;
 
@@ -193,5 +194,10 @@ export class LoginComponent {
 
   linkWithLang(path: string): string {
     return this.languageService.withLangPrefix(path, this.currentLang);
+  }
+
+  private isAppleConfigured(): boolean {
+    const clientId = environment.appleClientId;
+    return Boolean(clientId && clientId !== 'YOUR_APPLE_CLIENT_ID' && !clientId.startsWith('TODO'));
   }
 }
