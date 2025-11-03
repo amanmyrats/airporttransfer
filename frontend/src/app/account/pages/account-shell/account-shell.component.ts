@@ -46,6 +46,7 @@ export class AccountShellComponent {
     return [
       { label: 'Dashboard', link: this.languageService.withLangPrefix('account', lang) },
       { label: 'Reservations', link: this.languageService.withLangPrefix('account/reservations', lang) },
+      { label: 'Reviews', link: this.languageService.withLangPrefix('account/reviews', lang) },
       { label: 'Profile', link: this.languageService.withLangPrefix('account/profile', lang) },
       { label: 'Change Password', link: this.languageService.withLangPrefix('account/change-password', lang) },
     ];

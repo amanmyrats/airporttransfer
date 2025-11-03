@@ -1,0 +1,82 @@
+<p-toast></p-toast>
+
+<p-card class="review-detail">
+  <ng-template pTemplate="header">
+    <h1>Review details</h1>
+    <div class="review-detail__meta" *ngIf="review() as current">
+      <p>Reservation: <strong>{{ reservationLabel(current) }}</strong></p>
+      <p>Created: {{ current.created_at | date: 'medium' }}</p>
+    </div>
+  </ng-template>
+
+  <section *ngIf="review() as current" class="review-detail__status">
+    <p-tag
+      [severity]="current.status === 'published' ? 'success' : current.status === 'rejected' ? 'danger' : 'warn'"
+      [value]="statusLabel(current.status)"
+    ></p-tag>
+    <span *ngIf="!isEditable()" class="review-detail__lock">
+      Editing window closed — contact support if you need further changes.
+    </span>
+  </section>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="review-detail__form">
+    <fieldset class="review-detail__rating">
+      <legend>Rating</legend>
+      <div class="review-detail__stars">
+        <label *ngFor="let score of [1, 2, 3, 4, 5]" [class.is-selected]="form.controls.rating.value === score">
+          <input type="radio" [value]="score" formControlName="rating" [disabled]="!isEditable() || loading()" />
+          <span>{{ score }}</span>
+        </label>
+      </div>
+      <div class="review-detail__validation" *ngIf="form.controls.rating.invalid && form.controls.rating.touched">
+        Rating must be between 1 and 5.
+      </div>
+    </fieldset>
+
+    <label class="review-detail__field">
+      <span>Title <small>(optional)</small></span>
+      <input
+        pInputText
+        type="text"
+        formControlName="title"
+        [maxlength]="titleMaxLength()"
+        [disabled]="!isEditable() || loading()"
+      />
+      <div class="review-detail__validation" *ngIf="form.controls.title.invalid && form.controls.title.touched">
+        Title must be at most {{ titleMaxLength() }} characters.
+      </div>
+    </label>
+
+    <label class="review-detail__field">
+      <span>Comment <small>(optional)</small></span>
+      <textarea
+        pInputTextarea
+        rows="6"
+        formControlName="comment"
+        [maxlength]="commentMaxLength()"
+        [disabled]="!isEditable() || loading()"
+      ></textarea>
+      <div class="review-detail__meta-text">{{ commentCharsLeft() }} characters left</div>
+      <div class="review-detail__validation" *ngIf="form.controls.comment.invalid && form.controls.comment.touched">
+        Comment must be at most {{ commentMaxLength() }} characters.
+      </div>
+    </label>
+
+    <div class="review-detail__actions">
+      <button
+        pButton
+        type="button"
+        label="Back"
+        class="p-button-text"
+        (click)="backToList()"
+      ></button>
+      <button
+        pButton
+        type="submit"
+        label="Update review"
+        [disabled]="!isEditable() || loading()"
+        [loading]="loading()"
+      ></button>
+    </div>
+  </form>
+</p-card>

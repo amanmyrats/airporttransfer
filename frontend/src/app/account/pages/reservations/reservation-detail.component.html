@@ -1,5 +1,11 @@
-<p-card header="Reservation detail">
-  <p>Reservation ID: {{ reservationId }}</p>
+<p-card header="Reservation detail" class="reservation-detail">
+  <p>Reservation ID: {{ reservationId() || 'unknown' }}</p>
   <p>This is a placeholder for reservation details.</p>
-  <a routerLink="/account/reservations">Back to list</a>
+
+  <section *ngIf="canReview()" class="reservation-detail__cta">
+    <p>Ready to share feedback about this trip?</p>
+    <button pButton type="button" label="Write a review" [routerLink]="reviewLink()"></button>
+  </section>
+
+  <a [routerLink]="listLink()">Back to list</a>
 </p-card>

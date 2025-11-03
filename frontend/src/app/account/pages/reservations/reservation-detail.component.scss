@@ -5,3 +5,16 @@ p-card {
 a {
   color: var(--primary-color);
 }
+
+.reservation-detail__cta {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+
+  p {
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+  }
+}

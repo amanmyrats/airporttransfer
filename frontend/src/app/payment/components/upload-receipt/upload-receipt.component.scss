@@ -1,0 +1,54 @@
+.upload-receipt {
+  display: grid;
+  gap: 1rem;
+
+  .file-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 1px dashed #d0d5dd;
+    border-radius: 0.75rem;
+    background: #f8fafc;
+
+    input[type='file'] {
+      display: none;
+    }
+
+    .file-name {
+      font-size: 0.85rem;
+      color: #475467;
+    }
+  }
+
+  .note {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    textarea {
+      border: 1px solid #d0d5dd;
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      resize: vertical;
+    }
+  }
+
+  button {
+    justify-self: start;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+
+    &:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+  }
+}
+

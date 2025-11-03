@@ -1,0 +1,70 @@
+<section class="checkout" *ngIf="booking() as booking">
+  <header class="summary">
+    <div>
+      <h1>Checkout</h1>
+      <p>Booking <strong>{{ booking.number }}</strong></p>
+    </div>
+    <div class="amount">{{ amountFormatted() }}</div>
+  </header>
+
+  <div class="details">
+    <div>
+      <span>Passenger</span>
+      <strong>{{ booking.passenger_name || '—' }}</strong>
+    </div>
+    <div>
+      <span>Contact</span>
+      <strong>{{ booking.passenger_email || booking.passenger_phone || '—' }}</strong>
+    </div>
+    <div>
+      <span>Route</span>
+      <strong>{{ booking.pickup_full }} → {{ booking.dest_full }}</strong>
+    </div>
+  </div>
+
+  <app-payment-method-select
+    [methods]="methods()"
+    [selected]="selectedMethod()"
+    (methodSelected)="onMethodSelected($event)"
+  ></app-payment-method-select>
+
+  <p class="error" *ngIf="error()">{{ error() }}</p>
+
+  <div class="spinner" *ngIf="isLoading()">Processing…</div>
+
+  <ng-container *ngIf="intent() as intent">
+    <section class="result" *ngIf="intentIsFinal(intent)">
+      <h2>{{ intent.status === 'succeeded' ? 'Payment succeeded' : 'Payment update' }}</h2>
+      <p>
+        <ng-container [ngSwitch]="intent.status">
+          <span *ngSwitchCase="'succeeded'">Thank you! Your reservation is now paid.</span>
+          <span *ngSwitchCase="'failed'">Payment failed. Please try another method.</span>
+          <span *ngSwitchDefault>Payment status: {{ intent.status }}.</span>
+        </ng-container>
+      </p>
+    </section>
+
+    <section *ngIf="selectedMethod() as method" class="method-section">
+      <ng-container *ngIf="isCard(method); else offlineFlow">
+        <app-payment-button
+          [clientSecret]="intent.client_secret"
+          [publishableKey]="cardPublishableKey()"
+          [intentId]="intent.public_id"
+          [bookingRef]="booking.number"
+          (statusChange)="onCardStatusChange($event)"
+        ></app-payment-button>
+      </ng-container>
+      <ng-template #offlineFlow>
+        <app-offline-instructions
+          [instruction]="intent.bank_transfer_instruction"
+          [amountMinor]="intent.amount_minor"
+          [currency]="intent.currency"
+          [bookingRef]="booking.number"
+        ></app-offline-instructions>
+        <app-upload-receipt (submitted)="onReceiptSubmit($event)"></app-upload-receipt>
+      </ng-template>
+    </section>
+  </ng-container>
+</section>
+
+<p *ngIf="!booking()">Loading booking details…</p>

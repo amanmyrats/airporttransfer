@@ -28,6 +28,18 @@ export const accountRoutes: Routes = [
         component: ReservationDetailComponent,
       },
       {
+        path: 'reviews',
+        loadComponent: () => import('./pages/reviews/my-reviews.component').then(m => m.MyReviewsComponent),
+      },
+      {
+        path: 'reviews/new/:reservationId',
+        loadComponent: () => import('./pages/reviews/review-create.component').then(m => m.ReviewCreateComponent),
+      },
+      {
+        path: 'reviews/:id',
+        loadComponent: () => import('./pages/reviews/review-detail.component').then(m => m.ReviewDetailComponent),
+      },
+      {
         path: 'change-password',
         component: AccountChangePasswordComponent,
       },

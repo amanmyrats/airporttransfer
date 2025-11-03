@@ -88,6 +88,11 @@ const accountRouteEntries: Routes = [
 export const routes: Routes = [
     ...authRouteEntries,
     ...accountRouteEntries,
+    {
+        path: 'checkout/:bookingRef',
+        // canActivate: [SessionInitGuard, ClientAuthGuard],
+        loadChildren: () => import('./payment/payment.routes').then(m => m.paymentRoutes),
+    },
     // {   path: 'en/aboutus/',component: AboutUsComponent, data: { language: 'en' }  },
     // {   path: 'de/aboutus/',component: AboutUsComponent, data: { language: 'de' }  },
     // {   path: 'ru/aboutus/',component: AboutUsComponent, data: { language: 'ru' }  },

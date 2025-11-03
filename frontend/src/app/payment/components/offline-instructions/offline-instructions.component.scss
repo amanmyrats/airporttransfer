@@ -1,0 +1,41 @@
+.offline-instructions {
+  border: 1px solid #d0d5dd;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  background: #fafbff;
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .amount {
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem 1.5rem;
+  }
+
+  dt {
+    font-weight: 600;
+    color: #344054;
+  }
+
+  dd {
+    margin: 0.25rem 0 0;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.95rem;
+  }
+
+  .note {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #475467;
+  }
+}
+

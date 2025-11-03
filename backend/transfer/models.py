@@ -20,6 +20,13 @@ class Reservation(models.Model):
         ('confirmed', 'Onaylandı'),
     ]
 
+    PAYMENT_STATUS_CHOICES = [
+        ('unpaid', 'Unpaid'),
+        ('paid', 'Paid'),
+        ('partial_refund', 'Partially Refunded'),
+        ('refunded', 'Refunded'),
+    ]
+
     TRANSFER_TYPE_CHOICES = [
         ('PRIVATE', 'Özel Transfer'),
         ('SHUTTLE', 'Paylaşımlı Transfer'),
@@ -78,6 +85,7 @@ class Reservation(models.Model):
     greet_with_flower = models.BooleanField(default=False)
     
     status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='pending')
+    payment_status = models.CharField(max_length=32, choices=PAYMENT_STATUS_CHOICES, default='unpaid')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -1,0 +1,15 @@
+<section class="method-select">
+  <h2>Select a payment option</h2>
+  <ul class="method-list">
+    <li *ngFor="let method of methods; trackBy: trackByMethod">
+      <button
+        type="button"
+        (click)="onSelect(method.method)"
+        [class.selected]="method.method === selected"
+      >
+        <span class="label">{{ labelFor(method.method) }}</span>
+        <span class="details">{{ method.currencies.join(', ') }}</span>
+      </button>
+    </li>
+  </ul>
+</section>

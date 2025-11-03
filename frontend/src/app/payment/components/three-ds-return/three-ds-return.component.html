@@ -1,0 +1,5 @@
+<section class="three-ds-result" [class.success]="status() === 'success'" [class.failed]="status() === 'failed'">
+  <h2>Secure authentication</h2>
+  <p>{{ message() }}</p>
+  <button type="button" (click)="goBack()">Back to checkout</button>
+</section>

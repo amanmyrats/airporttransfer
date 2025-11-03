@@ -75,11 +75,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.postgres',
     'storages', 
 
     'corsheaders',
 
     'rest_framework',
+    'drf_spectacular',
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'dj_rest_auth',
@@ -96,6 +98,8 @@ INSTALLED_APPS = [
     'transfer', 
 
     'blog.apps.BlogConfig', 
+    'payment.apps.PaymentConfig',
+    'reviews.apps.ReviewsConfig',
 
 ]
 
@@ -209,9 +213,12 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'core.pagination.CustomPageNumberPagination',
     'PAGE_SIZE': 50,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_THROTTLE_RATES': {
         'auth_burst': '10/min',
         'auth_sensitive': '5/min',
+        'payment_intent_create': '5/min',
+        'payment_intent_confirm': '10/min',
     },
 }
 
@@ -421,4 +428,27 @@ CACHES = {
         },
         "KEY_PREFIX": "ath",         # short, unique prefix
     },
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "AirportTransferHub API",
+    "DESCRIPTION": "API schema for AirportTransferHub including payment module.",
+    "VERSION": "1.0.0",
+}
+
+PAYMENT_ENABLE_CARD = os.getenv("PAYMENT_ENABLE_CARD", "true").lower() == "true"
+PAYMENT_OFFLINE_CHANNELS = env_list(
+    "PAYMENT_OFFLINE_CHANNELS",
+    default="CASH,BANK_TRANSFER,RUB_PHONE_TRANSFER",
+)
+PAYMENT_STRIPE_SECRET_KEY = os.getenv("PAYMENT_STRIPE_SECRET_KEY")
+PAYMENT_STRIPE_PUBLISHABLE_KEY = os.getenv("PAYMENT_STRIPE_PUBLISHABLE_KEY")
+PAYMENT_STRIPE_WEBHOOK_SECRET = os.getenv("PAYMENT_STRIPE_WEBHOOK_SECRET")
+PAYMENT_STRIPE_API_VERSION = os.getenv("PAYMENT_STRIPE_API_VERSION", "2023-10-16")
+PAYMENT_OFFLINE_MAX_FILE_SIZE = env_int("PAYMENT_OFFLINE_MAX_FILE_SIZE", 5 * 1024 * 1024)
+PAYMENT_BANK_TRANSFER_INSTRUCTIONS = {
+    "iban": os.getenv("PAYMENT_BANK_IBAN", ""),
+    "account_name": os.getenv("PAYMENT_BANK_ACCOUNT_NAME", ""),
+    "bank_name": os.getenv("PAYMENT_BANK_NAME", ""),
+    "reference_text": os.getenv("PAYMENT_BANK_REFERENCE", ""),
 }

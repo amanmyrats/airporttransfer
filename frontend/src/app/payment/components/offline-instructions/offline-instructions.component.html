@@ -1,0 +1,29 @@
+<section class="offline-instructions" *ngIf="instruction as details">
+  <h3>Transfer Instructions</h3>
+  <p class="amount">Please transfer {{ formatAmount() }} and reference your booking code.</p>
+
+  <dl>
+    <div>
+      <dt>Reference</dt>
+      <dd>{{ details.reference_text || bookingRef }}</dd>
+    </div>
+    <div>
+      <dt>IBAN</dt>
+      <dd>{{ details.iban }}</dd>
+    </div>
+    <div>
+      <dt>Account name</dt>
+      <dd>{{ details.account_name }}</dd>
+    </div>
+    <div>
+      <dt>Bank</dt>
+      <dd>{{ details.bank_name }}</dd>
+    </div>
+    <div *ngIf="details.expires_at">
+      <dt>Expires</dt>
+      <dd>{{ details.expires_at | date:'medium' }}</dd>
+    </div>
+  </dl>
+
+  <p class="note">Upload your transfer receipt once completed so our team can verify the payment.</p>
+</section>
