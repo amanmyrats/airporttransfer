@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { AuthApiService } from '../../services/auth-api.service';
-import { AuthService } from '../../../services/auth.service';
-import { LoginPayload } from '../../models/auth.models';
+import { AuthService } from '../../services/auth.service';
+import { AuthUser, LoginPayload } from '../../models/auth.models';
 import { SocialAuthService } from '../../services/social-auth.service';
 import { take } from 'rxjs/operators';
 import { LanguageService } from '../../../services/language.service';
@@ -64,6 +64,7 @@ export class LoginComponent {
       });
 
     this.currentLang = this.languageService.extractLangFromUrl(this.router.url);
+    console.log('Extracted lang from url: ', this.currentLang);
 
     if (isPlatformBrowser(this.platformId)) {
       this.socialService.loadGoogle();
@@ -89,7 +90,7 @@ export class LoginComponent {
         console.log('Session set in AuthService');
         this.loading.set(false);
         console.log('Navigating post login to:', this.returnUrl);
-        this.navigatePostLogin(res.user.role);
+        this.navigatePostLogin(res.user);
         if (isPlatformBrowser(this.platformId)) {
           localStorage.removeItem('auth.returnUrl');
         }
@@ -151,7 +152,7 @@ export class LoginComponent {
       next: (res) => {
         this.authService.setSession(res);
         this.loading.set(false);
-        this.navigatePostLogin(res.user.role);
+        this.navigatePostLogin(res.user);
         if (isPlatformBrowser(this.platformId)) {
           localStorage.removeItem('auth.returnUrl');
         }
@@ -169,7 +170,7 @@ export class LoginComponent {
       next: (res) => {
         this.authService.setSession(res);
         this.loading.set(false);
-        this.navigatePostLogin(res.user.role);
+        this.navigatePostLogin(res.user);
       },
       error: () => {
         this.loading.set(false);
@@ -178,18 +179,76 @@ export class LoginComponent {
     });
   }
 
-  private navigatePostLogin(role: string): void {
-    console.log('Navigating post login for role:', role);
-    const lang = this.currentLang;
+  private navigatePostLogin(user: AuthUser): void {
+    console.log('Navigating post login for user:', user);
+    const lang = this.resolvePreferredLang();
     console.log('Current language for navigation:', lang);
-    if (role?.startsWith('company_')) {
-      console.log('Navigating to admin for company user');
-      this.router.navigate(['/admin']).catch(() => {});
+    if (this.isAdminUser(user)) {
+      console.log('Navigating to admin for privileged user');
+      const target = this.returnUrl?.startsWith('/admin') ? this.returnUrl : '/admin';
+      this.router.navigateByUrl(target).catch(() => {});
       return;
     }
-    const target = this.returnUrl || this.languageService.withLangPrefix('account', lang);
+    const target = this.buildClientTarget(lang);
     console.log('Final navigation target:', target);
     this.router.navigateByUrl(target).catch(() => {});
+  }
+
+  private isAdminUser(user: AuthUser | null | undefined): boolean {
+    if (!user) {
+      return false;
+    }
+    const role = user.role ?? '';
+    return (
+      user.is_staff ||
+      user.is_company_user ||
+      role.startsWith('company_') ||
+      role === 'admin' ||
+      role === 'superuser' ||
+      role === 'super_user'
+    );
+  }
+
+  private resolvePreferredLang(): string | null {
+    return (
+      this.currentLang ??
+      this.languageService.extractLangFromUrl(this.returnUrl ?? '') ??
+      this.serviceLangCode() ??
+      null
+    );
+  }
+
+  private buildClientTarget(lang: string | null): string {
+    const raw = this.returnUrl?.trim() ?? '';
+    if (!raw) {
+      return this.languageService.withLangPrefix('account', lang);
+    }
+    const normalized = raw.startsWith('/') ? raw : `/${raw}`;
+    const existingLang = this.languageService.extractLangFromUrl(normalized);
+    if (existingLang) {
+      return normalized;
+    }
+
+    const withoutLeading = normalized.replace(/^\/+/, '');
+    if (!withoutLeading) {
+      return this.languageService.withLangPrefix('account', lang);
+    }
+    if (withoutLeading === 'account') {
+      return this.languageService.withLangPrefix('account', lang);
+    }
+    if (withoutLeading.startsWith('account/')) {
+      return this.languageService.withLangPrefix(withoutLeading, lang);
+    }
+    return this.languageService.withLangPrefix(withoutLeading, lang);
+  }
+
+  private serviceLangCode(): string | null {
+    try {
+      const current = this.languageService.currentLang?.();
+      return current?.code ?? null;
+    } catch {
+      return null;
+    }
   }
 
   linkWithLang(path: string): string {

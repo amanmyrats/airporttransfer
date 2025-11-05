@@ -1,20 +1,37 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, HostListener, Inject, PLATFORM_ID, OnDestroy, computed, effect, inject, Input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  PLATFORM_ID,
+  OnDestroy,
+  computed,
+  effect,
+  inject,
+  Input,
+  OnInit,
+  output,
+  signal,
+} from '@angular/core';
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BookingService } from '../../services/booking.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LanguageService } from '../../services/language.service';
+import { NgxIntlTelInputModule, CountryISO, SearchCountryField } from 'ngx-intl-tel-input';
+import { Subscription } from 'rxjs';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+
+import { AuthService } from '../../auth/services/auth.service';
+import { AuthUser } from '../../auth/models/auth.models';
+import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
+import { BookingService } from '../../services/booking.service';
 import { CarTypeService } from '../../services/car-type.service';
 import { CurrencyService } from '../../services/currency.service';
-import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
-import { Currency } from '../../models/currency.model';
-import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
-import { CountryISO } from 'ngx-intl-tel-input';
-import { SearchCountryField } from 'ngx-intl-tel-input';
 import { GoogleMapsService } from '../../services/google-maps.service';
+import { LanguageService } from '../../services/language.service';
 import { DurationFormatPipe } from '../../pipes/duration-format.pipe';
-import { Subscription } from 'rxjs';
+import { Currency } from '../../models/currency.model';
+
+type AirportShortCode = 'IST' | 'SAW' | 'AYT' | 'GZP' | 'DLM';
 
 declare var gtag: Function;
 declare var dataLayer: any;
@@ -66,6 +83,8 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
   carTypeService = inject(CarTypeService);
   currencyService = inject(CurrencyService);
   googleMapsService = inject(GoogleMapsService);
+  private readonly authService = inject(AuthService);
+  private hasPrefilledPassengerFromUser = false;
 
   flowerPriceInEuro = 15;
   champagnePriceInEuro = 25;
@@ -156,6 +175,14 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
       this.calculateFlowerPrice();
     });
 
+    effect(() => {
+      const user = this.authService.user();
+      if (user && !this.hasPrefilledPassengerFromUser) {
+        this.prefillPassengerDetailsFromUser(user);
+        this.hasPrefilledPassengerFromUser = true;
+      }
+    });
+
   }
 
   @HostListener('window:resize')
@@ -214,6 +241,10 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      void this.authService.ensureSessionInitialized();
+    }
+
     const initialLocaleCode =
       this.langInput?.code || this.languageService.currentLang()?.code || 'en';
     this.timePickerLocale = this.resolveTimePickerLocale(initialLocaleCode);
@@ -252,10 +283,15 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
       if (popularRouteParam !== undefined) {
         const normalizedValue = popularRouteParam.toString().toLowerCase();
         this.isFromPopularRoute = ['1', 'true', 'yes'].includes(normalizedValue);
-        this.handlePopularRoute(params);
+        // console.log('Popular route param detected:', popularRouteParam);
+        // console.log('isFromPopularRoute:', this.isFromPopularRoute);
+        if (this.isFromPopularRoute) {
+          this.handlePopularRoute(params);
+        }
       } else {
         this.isFromPopularRoute = false;
       }
+      this.ensureAirportShortCodes();
       this.updateRouteMapUrl();
     });
 
@@ -267,69 +303,318 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
     this.childSeatCountChanged(initialChildSeatCount);
 
     const initialFormSub = this.bookingService.bookingInitialForm.valueChanges.subscribe(() => {
+      this.ensureAirportShortCodes();
       this.updateRouteMapUrl();
     });
     this.subscriptions.push(initialFormSub);
 
     this.updateRouteMapUrl();
   }
-private detectUserCountry(): void {
-  this.http
-    .get<{ country_code?: string; country_calling_code?: string }>('https://ipapi.co/json/')
-    .subscribe({
-      next: (data) => {
-        console.log('Geo API response:', data);
 
-        // 1) Try IP country
-        const mappedFromIP = this.resolveCountryISO(data.country_code);
-        if (mappedFromIP) {
-          this.defaultCountry = mappedFromIP;
-          console.log('Detected country from IP:', this.defaultCountry);
-        } else if (typeof navigator !== 'undefined' && navigator.language) {
-          // 2) Fallback to browser language region (e.g. "de-DE" -> "DE")
-          const langIso = navigator.language.split('-')[1];
-          const mappedFromLang = this.resolveCountryISO(langIso);
-          if (mappedFromLang) {
-            this.defaultCountry = mappedFromLang;
-            console.log('Fallback country from language:', this.defaultCountry);
+  private prefillPassengerDetailsFromUser(user: AuthUser): void {
+    const completionForm = this.bookingService.bookingCompletionForm;
+    if (!completionForm) {
+      return;
+    }
+
+    const patch: Record<string, unknown> = {};
+    const currentName = completionForm.get('passenger_name')?.value;
+    const currentEmail = completionForm.get('passenger_email')?.value;
+    const normalizedName = typeof currentName === 'string' ? currentName.trim() : '';
+    const normalizedEmail = typeof currentEmail === 'string' ? currentEmail.trim() : '';
+    const fullName = [user.first_name?.trim(), user.last_name?.trim()]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+
+    if (!normalizedName && fullName) {
+      patch['passenger_name'] = fullName;
+    }
+
+    if (!normalizedEmail && user.email) {
+      patch['passenger_email'] = user.email;
+    }
+
+    if (Object.keys(patch).length > 0) {
+      completionForm.patchValue(patch, { emitEvent: false });
+    }
+
+    const phone =
+      user.customer_profile?.phone_e164 ??
+      user.profile?.phone_e164 ??
+      '';
+    if (phone) {
+      this.applyInitialPassengerPhone(phone);
+    }
+  }
+
+  private applyInitialPassengerPhone(rawPhone: string): void {
+    const phoneControl = this.bookingService.bookingCompletionForm.get('passenger_phone');
+    if (!phoneControl) {
+      return;
+    }
+    const currentValue = phoneControl.value;
+    if (
+      currentValue &&
+      ((typeof currentValue === 'string' && currentValue.trim().length > 0) ||
+        (typeof currentValue === 'object' && currentValue.internationalNumber))
+    ) {
+      return;
+    }
+
+    const parsed = parsePhoneNumberFromString(rawPhone);
+    if (parsed) {
+      const iso = this.resolveCountryISO(parsed.country);
+      if (iso) {
+        this.defaultCountry = iso;
+      }
+      const dialCode = `+${parsed.countryCallingCode}`;
+      this.bookingService.bookingCompletionForm.patchValue(
+        { passenger_country_code: dialCode },
+        { emitEvent: false },
+      );
+      phoneControl.patchValue(
+        {
+          number: parsed.nationalNumber ?? parsed.number,
+          internationalNumber: parsed.formatInternational(),
+          nationalNumber: parsed.nationalNumber ?? parsed.formatNational(),
+          e164Number: parsed.number,
+          countryCode: parsed.country ? parsed.country.toLowerCase() : undefined,
+          dialCode,
+        },
+        { emitEvent: false },
+      );
+      return;
+    }
+
+    phoneControl.patchValue(rawPhone, { emitEvent: false });
+  }
+
+
+  private extractInternationalPhone(raw: unknown): string {
+    if (!raw) {
+      return '';
+    }
+    if (typeof raw === 'string') {
+      return raw.trim();
+    }
+    if (typeof raw === 'object') {
+      const withIntl = (raw as { internationalNumber?: string }).internationalNumber;
+      const withE164 = (raw as { e164Number?: string }).e164Number;
+      const candidate = withIntl ?? withE164;
+      if (typeof candidate === 'string' && candidate.trim().length > 0) {
+        return candidate.trim();
+      }
+      const dialCodeRaw = (raw as { dialCode?: string }).dialCode;
+      const numberRaw =
+        (raw as { nationalNumber?: string }).nationalNumber ??
+        (raw as { number?: string }).number;
+      const dialCode = typeof dialCodeRaw === 'string' ? dialCodeRaw.trim() : '';
+      const number = typeof numberRaw === 'string' ? numberRaw.trim() : '';
+      if (dialCode && number) {
+        const sanitizedDial = dialCode.startsWith('+') ? dialCode : `+${dialCode}`;
+        return `${sanitizedDial} ${number}`.trim();
+      }
+    }
+    return '';
+  }
+
+  private ensureAirportShortCodes(): void {
+    const pickupShortControl = this.bookingService.bookingInitialForm.get('pickup_short');
+    if (this.isBlank(pickupShortControl?.value)) {
+      const pickupFullValue =
+        this.bookingService.bookingCompletionForm.get('pickup_full')?.value ??
+        this.bookingService.bookingInitialForm.get('pickup_full')?.value ??
+        '';
+      const pickupCode = this.resolveAirportShortCode(pickupFullValue);
+      if (pickupCode) {
+        this.setAirportShortCode('pickup_short', pickupCode);
+      }
+    }
+
+    const destShortControl = this.bookingService.bookingInitialForm.get('dest_short');
+    if (this.isBlank(destShortControl?.value)) {
+      const destFullValue =
+        this.bookingService.bookingCompletionForm.get('dest_full')?.value ??
+        this.bookingService.bookingInitialForm.get('dest_full')?.value ??
+        '';
+      const destCode = this.resolveAirportShortCode(destFullValue);
+      if (destCode) {
+        this.setAirportShortCode('dest_short', destCode);
+      }
+    }
+  }
+
+  private setAirportShortCode(controlName: 'pickup_short' | 'dest_short', code: AirportShortCode): void {
+    this.bookingService.bookingInitialForm.get(controlName)?.patchValue(code, { emitEvent: false });
+    const patch = { [controlName]: code } as Record<string, string>;
+    this.bookingService.bookingForm.patchValue(patch, { emitEvent: false });
+  }
+
+  private resolveAirportShortCode(value: unknown): AirportShortCode | null {
+    if (typeof value !== 'string' || !value.trim()) {
+      return null;
+    }
+    const normalized = this.normalizeAirportText(value);
+    if (!normalized) {
+      return null;
+    }
+
+    if (
+      this.containsAll(normalized, ['sabiha', 'gokcen']) ||
+      this.containsAny(normalized, ['sabiha gokcen airport', 'sabiha gokcen istanbul', /\bsaw\b/, 'istanbul sabiha'])
+    ) {
+      return 'SAW';
+    }
+
+    if (
+      this.containsAll(normalized, ['istanbul', 'airport']) ||
+      this.containsAll(normalized, ['istanbul', 'havaliman']) ||
+      (/\bist\b/.test(normalized) && this.containsAny(normalized, ['airport', 'havaliman'])) ||
+      this.containsAll(normalized, ['iga', 'airport'])
+    ) {
+      return 'IST';
+    }
+
+    if (
+      this.containsAll(normalized, ['antalya', 'airport']) ||
+      this.containsAny(normalized, ['antalya havaliman', /\bayt\b/])
+    ) {
+      return 'AYT';
+    }
+
+    if (
+      this.containsAll(normalized, ['gazipasa', 'airport']) ||
+      this.containsAll(normalized, ['gazipasa', 'alanya']) ||
+      this.containsAny(normalized, ['gazipasa havaliman', 'gazi pasa', /\bgzp\b/])
+    ) {
+      return 'GZP';
+    }
+
+    if (
+      this.containsAll(normalized, ['dalaman', 'airport']) ||
+      this.containsAny(normalized, ['dalaman havaliman', 'mugla dalaman', /\bdlm\b/])
+    ) {
+      return 'DLM';
+    }
+
+    return null;
+  }
+
+  private normalizeAirportText(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/ı/g, 'i')
+      .replace(/İ/g, 'i')
+      .toLowerCase();
+  }
+
+  private containsAll(source: string, keywords: string[]): boolean {
+    return keywords.every(keyword => source.includes(keyword));
+  }
+
+  private containsAny(source: string, keywords: (string | RegExp)[]): boolean {
+    return keywords.some(keyword =>
+      typeof keyword === 'string' ? source.includes(keyword) : keyword.test(source),
+    );
+  }
+
+  private isBlank(value: unknown): boolean {
+    return typeof value !== 'string' || value.trim().length === 0;
+  }
+
+  private detectUserCountry(): void {
+    const user = this.authService.user();
+    const userPhone =
+      user?.customer_profile?.phone_e164 ??
+      user?.profile?.phone_e164 ??
+      null;
+    if (userPhone) {
+      return;
+    }
+    this.http
+      .get<{ country_code?: string; country_calling_code?: string }>('https://ipapi.co/json/')
+      .subscribe({
+        next: (data) => {
+          console.log('Geo API response:', data);
+
+          // 1) Try IP country
+          const mappedFromIP = this.resolveCountryISO(data.country_code);
+          if (mappedFromIP) {
+            this.defaultCountry = mappedFromIP;
+            console.log('Detected country from IP:', this.defaultCountry);
+          } else if (typeof navigator !== 'undefined' && navigator.language) {
+            // 2) Fallback to browser language region (e.g. "de-DE" -> "DE")
+            const langIso = navigator.language.split('-')[1];
+            const mappedFromLang = this.resolveCountryISO(langIso);
+            if (mappedFromLang) {
+              this.defaultCountry = mappedFromLang;
+              console.log('Fallback country from language:', this.defaultCountry);
+            }
           }
-        }
 
-        console.log('Default country set to:', this.defaultCountry);
+          console.log('Default country set to:', this.defaultCountry);
 
-        // Optionally set calling code into your form
-        const callingCode = data.country_calling_code; // usually like "+49"
-        console.log('Detected country calling code:', callingCode);
-        if (callingCode) {
-          this.bookingService.bookingCompletionForm.patchValue(
-            { passenger_country_code: callingCode },
-            { emitEvent: false },
-          );
-        } else if (data.country_code) {
-          this.bookingService.bookingCompletionForm.patchValue(
-            { passenger_country_code: data.country_code.toUpperCase() },
-            { emitEvent: false },
-          );
-        }
-      },
-      error: (err) => {
-        console.warn('Failed to resolve country from Geo API:', err);
-
-        // Fallback to browser language region if available
-        if (typeof navigator !== 'undefined' && navigator.language) {
-          const langIso = navigator.language.split('-')[1];
-          const mappedFromLang = this.resolveCountryISO(langIso);
-          if (mappedFromLang) {
-            this.defaultCountry = mappedFromLang;
+          // Optionally set calling code into your form
+          const callingCode = data.country_calling_code; // usually like "+49"
+          console.log('Detected country calling code:', callingCode);
+          if (callingCode) {
             this.bookingService.bookingCompletionForm.patchValue(
-              { passenger_country_code: (langIso ?? '').toUpperCase() },
+              { passenger_country_code: callingCode },
+              { emitEvent: false },
+            );
+          } else if (data.country_code) {
+            this.bookingService.bookingCompletionForm.patchValue(
+              { passenger_country_code: data.country_code.toUpperCase() },
               { emitEvent: false },
             );
           }
-        }
+        },
+        error: (err) => {
+          console.warn('Failed to resolve country from Geo API:', err);
+
+          // Fallback to browser language region if available
+          if (typeof navigator !== 'undefined' && navigator.language) {
+            const langIso = navigator.language.split('-')[1];
+            const mappedFromLang = this.resolveCountryISO(langIso);
+            if (mappedFromLang) {
+              this.defaultCountry = mappedFromLang;
+              this.bookingService.bookingCompletionForm.patchValue(
+                { passenger_country_code: (langIso ?? '').toUpperCase() },
+                { emitEvent: false },
+              );
+            }
+          }
       },
     });
-}
+  }
+
+  private updatePickupFullValidation(): void {
+    const control = this.bookingService.bookingCompletionForm.get('pickup_full');
+    if (!control) {
+      return;
+    }
+    if (this.showCustomPickupFullInput) {
+      control.setValidators(Validators.required);
+    } else {
+      control.clearValidators();
+    }
+    control.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private updateDestFullValidation(): void {
+    const control = this.bookingService.bookingCompletionForm.get('dest_full');
+    if (!control) {
+      return;
+    }
+    if (this.showCustomDestinationFullInput) {
+      control.setValidators(Validators.required);
+    } else {
+      control.clearValidators();
+    }
+    control.updateValueAndValidity({ emitEvent: false });
+  }
 
   private handlePopularRoute(params: Record<string, string>): void {
     let pickup_short = params['pickup_short'] ?? '';
@@ -352,16 +637,22 @@ private detectUserCountry(): void {
         pickup_full: '',
       });
       this.showCustomPickupFullInput = true;
+      this.updatePickupFullValidation();
+      this.updateDestFullValidation();
     } else if (!destinationIsAirport && dest_full) {
       this.bookingService.bookingCompletionForm.patchValue({
         dest_full: '',
       });
       this.showCustomDestinationFullInput = true;
+      this.updateDestFullValidation();
     } else {
       this.showCustomPickupFullInput = false;
       this.showCustomDestinationFullInput = false;
+      this.updatePickupFullValidation();
+      this.updateDestFullValidation();
     }
 
+    this.ensureAirportShortCodes();
     this.updateRouteMapUrl();
   }
 
@@ -438,21 +729,8 @@ private detectUserCountry(): void {
       });
     }
 
-    const phone = this.bookingService.bookingCompletionForm.get('passenger_phone')?.value;
-    if (phone) {
-      console.log(phone.internationalNumber);  // +90 532 123 4567
-      console.log(phone.nationalNumber);       // 5321234567
-      console.log(phone.countryCode);          // 90
-      console.log(phone.iso2);                 // 'tr'
-      this.bookingService.bookingCompletionForm.patchValue({
-        passenger_phone: phone.internationalNumber
-      });
-    } else {
-      this.bookingService.bookingCompletionForm.patchValue({
-        passenger_phone: this.bookingService.bookingCompletionForm.get('passenger_phone')?.value
-      });
-    }
-
+    const phoneValue = this.bookingService.bookingCompletionForm.get('passenger_phone')?.value;
+    const normalizedPhone = this.extractInternationalPhone(phoneValue);
 
     this.hasSubmitted = true;
     this.bookingService.bookingCarTypeSelectionForm.patchValue({
@@ -461,11 +739,17 @@ private detectUserCountry(): void {
     this.bookingService.bookingCompletionForm.patchValue({
       return_trip_amount: this.price + this.childSeatPrice(),
     });
+
+    const completionFormValues = {
+      ...this.bookingService.bookingCompletionForm.value,
+      passenger_phone: normalizedPhone,
+    };
+
     // add 2 other forms into this.bookingService.bookingCompletionForm
     this.bookingService.bookingForm.patchValue({
       ...this.bookingService.bookingInitialForm.value,
       ...this.bookingService.bookingCarTypeSelectionForm.value,
-      ...this.bookingService.bookingCompletionForm.value,
+      ...completionFormValues,
     });
     console.log('Booking Form:', this.bookingService.bookingForm.value);
     console.log([`${this.languageService.currentLang().code}/${this.navbar.bookNow.slug[this.languageService.currentLang().code]}/received/`]);

@@ -74,11 +74,10 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=5)
     preferred_language = serializers.CharField(write_only=True, max_length=2, default='en')
-    marketing_opt_in = serializers.BooleanField(write_only=True, default=False)
 
     class Meta:
         model = Account
-        fields = ('email', 'password', 'first_name', 'last_name', 'preferred_language', 'marketing_opt_in')
+        fields = ('email', 'password', 'first_name', 'last_name', 'preferred_language')
 
     def validate_email(self, value):
         email = Account.objects.normalize_email(value)
@@ -94,7 +93,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         preferred_language = validated_data.pop('preferred_language', 'en')
-        marketing_opt_in = validated_data.pop('marketing_opt_in', False)
         password = validated_data.pop('password')
         account = Account.objects.create_user(
             password=password,
@@ -106,7 +104,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         if profile is None:
             profile, _ = CustomerProfile.objects.get_or_create(user=account)
         profile.preferred_language = preferred_language
-        profile.marketing_opt_in = marketing_opt_in
+        profile.marketing_opt_in = True
         profile.save(update_fields=['preferred_language', 'marketing_opt_in', 'updated_at'])
         return account
 

@@ -2,8 +2,8 @@ import { Routes } from '@angular/router';
 import { AccountShellComponent } from './pages/account-shell/account-shell.component';
 import { AccountDashboardComponent } from './pages/dashboard/account-dashboard.component';
 import { AccountProfileComponent } from './pages/profile/account-profile.component';
-import { ReservationsListComponent } from './pages/reservations/reservations-list.component';
-import { ReservationDetailComponent } from './pages/reservations/reservation-detail.component';
+import { MyReservationsListComponent } from './pages/reservations/my-reservations-list.component';
+import { MyReservationDetailComponent } from './pages/reservations/my-reservation-detail.component';
 import { AccountChangePasswordComponent } from './pages/change-password/account-change-password.component';
 
 export const accountRoutes: Routes = [
@@ -21,11 +21,11 @@ export const accountRoutes: Routes = [
       },
       {
         path: 'reservations',
-        component: ReservationsListComponent,
+        component: MyReservationsListComponent,
       },
       {
         path: 'reservations/:id',
-        component: ReservationDetailComponent,
+        component: MyReservationDetailComponent,
       },
       {
         path: 'reviews',

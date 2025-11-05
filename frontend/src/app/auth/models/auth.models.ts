@@ -9,11 +9,13 @@ export interface AuthUser {
   email: string;
   role: string;
   is_staff: boolean;
+  is_superuser?: boolean;
   is_client: boolean;
   is_company_user: boolean;
   first_name?: string;
   last_name?: string;
   customer_profile?: CustomerProfileDto;
+  profile?: CustomerProfileDto;
 }
 
 export interface LoginResponse {
@@ -34,7 +36,6 @@ export interface RegisterPayload {
   first_name?: string;
   last_name?: string;
   preferred_language: CustomerProfileDto['preferred_language'];
-  marketing_opt_in: boolean;
 }
 
 export interface LoginPayload {
@@ -68,4 +69,5 @@ export interface UpdateProfilePayload {
   first_name?: string;
   last_name?: string;
   customer_profile?: Partial<CustomerProfileDto>;
+  profile?: Partial<CustomerProfileDto>;
 }

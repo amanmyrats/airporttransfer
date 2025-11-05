@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../auth/services/auth.service';
 import { LanguageService } from '../../../services/language.service';
 import { filter, map, startWith } from 'rxjs/operators';
 import { SuperHeaderComponent } from '../../../components/super-header/super-header.component';
@@ -44,11 +44,11 @@ export class AccountShellComponent {
   readonly navItems = computed(() => {
     const lang = this.languageService.extractLangFromUrl(this.currentUrl()) ?? null;
     return [
-      { label: 'Dashboard', link: this.languageService.withLangPrefix('account', lang) },
-      { label: 'Reservations', link: this.languageService.withLangPrefix('account/reservations', lang) },
-      { label: 'Reviews', link: this.languageService.withLangPrefix('account/reviews', lang) },
-      { label: 'Profile', link: this.languageService.withLangPrefix('account/profile', lang) },
-      { label: 'Change Password', link: this.languageService.withLangPrefix('account/change-password', lang) },
+      { label: 'Dashboard', link: this.languageService.withLangPrefix('account', lang), exact: true },
+      { label: 'Reservations', link: this.languageService.withLangPrefix('account/reservations', lang), exact: false },
+      { label: 'Reviews', link: this.languageService.withLangPrefix('account/reviews', lang), exact: false },
+      { label: 'Profile', link: this.languageService.withLangPrefix('account/profile', lang), exact: false },
+      { label: 'Change Password', link: this.languageService.withLangPrefix('account/change-password', lang), exact: false },
     ];
   });
 

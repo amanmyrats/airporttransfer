@@ -22,6 +22,8 @@ export class BookingReceivedComponent implements OnInit {
   navBarMenu: any = NAVBAR_MENU;
   socialIcons: any = SOCIAL_ICONS;
   currentLanguage = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
+  private readonly isLocalhost =
+    typeof window !== 'undefined' && window.location.hostname.includes('localhost');
     
   constructor(
     private route: ActivatedRoute, 
@@ -43,14 +45,16 @@ export class BookingReceivedComponent implements OnInit {
         }
         console.log('One Way Data:', oneWaydata);
 
-        this.callbackService.TtAthNewOrderCallback(oneWaydata).subscribe({
-          next: data => {
-            console.log('New Order Callback:', data);
-          },
-          error: error => {
-            console.error('New Order Callback Error:', error);
-          }
-        });
+        if (!this.isLocalhost) {
+          this.callbackService.TtAthNewOrderCallback(oneWaydata).subscribe({
+            next: data => {
+              console.log('New Order Callback:', data);
+            },
+            error: error => {
+              console.error('New Order Callback Error:', error);
+            }
+          });
+        }
 
         // If there is a return reservation, send a callback for it as well
         const return_number = navigation.extras.state['returnInfo']['number'];
@@ -62,14 +66,16 @@ export class BookingReceivedComponent implements OnInit {
             }
           }
           console.log('Return Data:', return_data);
-          this.callbackService.TtAthNewOrderCallback(return_data).subscribe({
-            next: data => {
-              console.log('New Return Order Callback:', data);
-            },
-            error: error => {
-              console.error('New Return Order Callback Error:', error);
-            }
-          });
+          if (!this.isLocalhost) {
+            this.callbackService.TtAthNewOrderCallback(return_data).subscribe({
+              next: data => {
+                console.log('New Return Order Callback:', data);
+              },
+              error: error => {
+                console.error('New Return Order Callback Error:', error);
+              }
+            });
+          }
         }
       }
   }

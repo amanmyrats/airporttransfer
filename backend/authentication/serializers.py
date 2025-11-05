@@ -132,6 +132,39 @@ class ProfileUpdateSerializer(AccountProfileUpdateSerializer):
     pass
 
 
+class PasswordChangeSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, min_length=6)
+    confirm_password = serializers.CharField(write_only=True, min_length=6)
+
+    default_error_messages = {
+        'password_mismatch': 'New password and confirmation do not match.',
+        'invalid_old_password': 'Current password is incorrect.',
+        'not_authenticated': 'Authentication required.',
+        'password_too_short': 'New password must be at least 6 characters long.',
+    }
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        user = getattr(request, 'user', None)
+        if not user or not user.is_authenticated:
+            raise serializers.ValidationError({'detail': self.error_messages['not_authenticated']})
+
+        new_password = attrs.get('new_password')
+        confirm_password = attrs.get('confirm_password')
+        if new_password != confirm_password:
+            raise serializers.ValidationError({'confirm_password': self.error_messages['password_mismatch']})
+
+        if new_password and len(new_password) < 6:
+            raise serializers.ValidationError({'new_password': self.error_messages['password_too_short']})
+
+        old_password = attrs.get('old_password')
+        if not user.check_password(old_password):
+            raise serializers.ValidationError({'old_password': self.error_messages['invalid_old_password']})
+
+        return attrs
+
+
 class GoogleSocialLoginSerializer(serializers.Serializer):
     id_token = serializers.CharField()
 

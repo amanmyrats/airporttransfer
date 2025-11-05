@@ -23,17 +23,18 @@
 
   <p-card *ngFor="let review of reviews(); trackBy: trackByReviewId" class="reviews__card">
     <ng-template pTemplate="header">
-      <div class="reviews__card-header">
-        <span
-          class="reviews__status"
-          [class.reviews__status--published]="review.status === 'published'"
-          [class.reviews__status--rejected]="review.status === 'rejected'"
-        >
-          {{ statusLabel(review.status) }}
-        </span>
-        <span class="reviews__rating">{{ review.rating }} / 5</span>
-      </div>
-      <div class="reviews__reservation">{{ reviewReservationLabel(review) }}</div>
+      <ng-container *ngIf="statusMeta(review.status) as status">
+        <div class="reviews__card-header">
+          <span
+            class="reviews__status"
+            [ngClass]="{ 'reviews__status--live': status.variant === 'live' }"
+          >
+            {{ status.label }}
+          </span>
+          <span class="reviews__rating">{{ review.rating }} / 5</span>
+        </div>
+        <div class="reviews__reservation">{{ reviewReservationLabel(review) }}</div>
+      </ng-container>
     </ng-template>
 
     <p class="reviews__title" *ngIf="review.title; else untitled">{{ review.title }}</p>
@@ -45,6 +46,10 @@
     <ng-template #noComment>
       <p class="reviews__comment reviews__comment--muted">No comment shared.</p>
     </ng-template>
+
+    <p class="reviews__status-note" *ngIf="statusMeta(review.status).note">
+      {{ statusMeta(review.status).note }}
+    </p>
 
     <div class="reviews__footer">
       <span class="reviews__timestamp">Created {{ review.created_at | date: 'medium' }}</span>

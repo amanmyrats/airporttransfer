@@ -1,5 +1,12 @@
-<app-filter-search [statuses]="statuses" [wantDateFilter]="true" [wantStatusFilter]="true" [first]="first" [rows]="rows"
-    (searchEmitter)="search($event)" (getStatusesEmitter)="getStatuses()">
+<app-filter-search [statuses]="statuses" [changeRequestStatuses]="changeRequestStatuses" [wantDateFilter]="true"
+    [wantDetailedButton]="true"
+    [detailedFilterKeys]="detailedFilterKeys"
+    [wantStatusFilter]="true" [wantChangeRequestStatusFilter]="true" [wantSearchFilter]="true"
+    [wantDateVariationFilter]="true" [wantDateRangeFilter]="true"
+    [wantReservationCreationDateVariationFilter]="true" [wantReservationCreationDateRangeFilter]="true"
+    [first]="first" [rows]="rows"
+    (searchEmitter)="search($event)" (getStatusesEmitter)="getStatuses()"
+    (getChangeRequestStatusesEmitter)="getChangeRequestStatuses()">
 </app-filter-search>
 <app-shared-toolbar [wantExport]="true" [isExporting]="isExporting" (exportEmitter)="export()"
     (searchEmitter)="search()">
@@ -9,9 +16,9 @@
     [loading]="loading" [resizableColumns]="true" columnResizeMode="expand" [reorderableColumns]="true"
     (onColResize)="onColResize($event)" (onColReorder)="onColReorder($event)" [tableStyle]="{'min-width': '70rem'}">
     <ng-template pTemplate="caption">
-        <div style="display: flex; justify-content: space-between;">
-            <div style="font-size: xx-large;">REZERVASYONLAR</div>
-            <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+        <div class="table-caption">
+            <div class="caption__title">REZERVASYONLAR</div>
+            <p-multiSelect class="caption__selector" [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
                 (onChange)="onColumnSelect($event)" selectedItemsLabel="{0} kolon seçildi"
                 placeholder="Kolon seçiniz" />
         </div>
@@ -77,6 +84,19 @@
                                 </svg>
                             </ng-template>
                         </p-button>
+                        <br>
+                        <button
+                            *ngIf="reservation.latest_change_request_status"
+                            pButton
+                            type="button"
+                            class="cr-status-button"
+                            [label]="getChangeRequestStatusLabel(reservation.latest_change_request_status)"
+                            [severity]="getChangeRequestStatusSeverity(reservation.latest_change_request_status)"
+                            [rounded]="true"
+                            size="small"
+                            (click)="openChangeRequests(reservation)"
+                            title="Değişiklik isteğini görüntüle"
+                        ></button>
                     }
 
                     @if (col.field === 'transfer_date') {
@@ -203,8 +223,10 @@ stroke-linecap="round" stroke-linejoin="round"></g>
                 <app-action-buttons [obj]="reservation" [editRole]="'company_rezervasyoncu'"
                     [deleteRole]="'company_rezervasyoncu'" [wantEdit]="reservation.status !== 'confirmed'"
                     [wantDelete]="reservation.status !== 'confirmed'" [wantDownloadPdf]="true" [wantDetail]="true"
+                    [wantChangeRequest]="reservation.has_change_request || !!reservation.latest_change_request_status"
                     (detailEmitter)="detailObj(reservation)" (updateEmitter)="updateObj($event)"
-                    (deleteEmitter)="deleteObj($event)" (downloadPdfEmitter)="downloadPdf($event)">
+                    (deleteEmitter)="deleteObj($event)" (downloadPdfEmitter)="downloadPdf($event)"
+                    (changeRequestEmitter)="openChangeRequests(reservation)">
                 </app-action-buttons>
             </td>
         </tr>

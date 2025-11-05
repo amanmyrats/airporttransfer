@@ -40,7 +40,8 @@ export class RoleService {
   hasRole(roleNameToCheck: string): boolean {
     const roleNameStored = localStorage.getItem('roleName');
     const isSuperuser = localStorage.getItem('isSuperuser');
-    if(isSuperuser === 'true') {
+    const isStaff = localStorage.getItem('isStaff');
+    if(isSuperuser === 'true' || isStaff === 'true') {
       return true;
     } 
     // role hierarchy

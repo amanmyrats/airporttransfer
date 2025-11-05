@@ -17,8 +17,8 @@ export class UserService {
   ) { }
 
   getUsers(queryString: string): Observable<PaginatedResponse<User>> {
-    return this.http.get<PaginatedResponse<User>>(`
-      ${env.baseUrl}${env.apiV1}${this.endpoint}${queryString}`);
+    const url = `${env.baseUrl}${env.apiV1}${this.endpoint}${queryString}`;
+    return this.http.get<PaginatedResponse<User>>(url);
   }
 
   getUser(id: string): Observable<User> { 

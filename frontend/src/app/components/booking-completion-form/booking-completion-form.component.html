@@ -93,6 +93,12 @@
                 id="popular_route_location" 
                 formControlName="pickup_full"
               />
+              <div
+                *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('pickup_full')?.invalid"
+                class="form-alert form-alert--error form-alert--compact"
+              >
+                {{ translations.fieldRequired[langInput.code] }}
+              </div>
             </div>
 
             <div class="form-item" *ngIf="showCustomDestinationFullInput">
@@ -104,6 +110,12 @@
                 id="popular_route_location" 
                 formControlName="dest_full"
               />
+              <div
+                *ngIf="hasSubmitted && bookingService.bookingCompletionForm.get('dest_full')?.invalid"
+                class="form-alert form-alert--error form-alert--compact"
+              >
+                {{ translations.fieldRequired[langInput.code] }}
+              </div>
             </div>
             <div class="form-row">
               <div class="form-item">

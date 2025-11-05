@@ -1,7 +1,7 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Observable } from "rxjs";
-import { AuthService } from "../services/auth.service";
+import { AuthService } from "../auth/services/auth.service";
 
 export const AuthGuard: CanActivateFn = (
     route: ActivatedRouteSnapshot,
@@ -34,7 +34,7 @@ export const AuthGuard: CanActivateFn = (
 // auth.guard.ts
 // import { inject } from '@angular/core';
 // import { CanActivateFn, Router } from '@angular/router';
-// import { AuthService } from '../services/auth.service';
+// import { AuthService } from '../auth/services/auth.service';
 
 // const RETURN_URL_KEY = 'auth.returnUrl';
 // const LOGIN_PATH = '/admin/login';

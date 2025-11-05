@@ -2,32 +2,68 @@
 <p-card header="Profile">
   <form [formGroup]="form" (ngSubmit)="submit()" class="profile-form">
     <div class="grid">
-      <div class="col">
+      <div class="col field">
         <label for="first_name">First name</label>
         <input pInputText id="first_name" formControlName="first_name" autocomplete="given-name" />
+        <span class="error-message" *ngIf="form.get('first_name')?.hasError('required') && form.get('first_name')?.touched">
+          First name is required.
+        </span>
+        <span class="error-message" *ngIf="serverErrors()['first_name']">
+          {{ serverErrors()['first_name'] }}
+        </span>
       </div>
-      <div class="col">
+      <div class="col field">
         <label for="last_name">Last name</label>
         <input pInputText id="last_name" formControlName="last_name" autocomplete="family-name" />
+        <span class="error-message" *ngIf="serverErrors()['last_name']">
+          {{ serverErrors()['last_name'] }}
+        </span>
       </div>
     </div>
     <div class="field">
       <label for="phone_e164">Phone (E.164)</label>
-      <input pInputText id="phone_e164" formControlName="phone_e164" autocomplete="tel" />
+      <ngx-intl-tel-input
+        id="phone_e164"
+        class="ngx-intl-tel-input"
+        [preferredCountries]="preferredCountries"
+        [searchCountryFlag]="true"
+        [searchCountryField]="searchFields"
+        [enableAutoCountrySelect]="false"
+        [selectFirstCountry]="false"
+        [enablePlaceholder]="true"
+        [separateDialCode]="true"
+        [selectedCountryISO]="selectedCountryISO"
+        [phoneValidation]="false"
+        formControlName="phone_e164"
+      ></ngx-intl-tel-input>
+      <span class="error-message" *ngIf="serverErrors()['phone_e164']">
+        {{ serverErrors()['phone_e164'] }}
+      </span>
     </div>
     <div class="field">
       <label for="preferred_language">Preferred language</label>
-      <p-dropdown inputId="preferred_language"
-                  [options]="languages"
-                  optionLabel="label"
-                  optionValue="code"
-                  formControlName="preferred_language">
-      </p-dropdown>
+      <p-select
+        inputId="preferred_language"
+        [options]="languages"
+        optionLabel="label"
+        optionValue="code"
+        formControlName="preferred_language"
+      ></p-select>
+      <span class="error-message" *ngIf="serverErrors()['preferred_language']">
+        {{ serverErrors()['preferred_language'] }}
+      </span>
     </div>
     <div class="field checkbox">
       <p-checkbox inputId="marketing_opt_in" binary="true" formControlName="marketing_opt_in"></p-checkbox>
       <label for="marketing_opt_in">I want to receive promotions.</label>
     </div>
-    <button type="submit" pButton label="Save changes" [loading]="loading()" class="w-full md:w-auto"></button>
+    <button
+      type="submit"
+      pButton
+      label="Save changes"
+      [loading]="loading()"
+      [disabled]="form.invalid || loading()"
+      class="w-full md:w-auto"
+    ></button>
   </form>
 </p-card>

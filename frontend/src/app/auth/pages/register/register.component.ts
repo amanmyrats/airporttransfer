@@ -46,7 +46,6 @@ export class RegisterComponent {
       first_name: [''],
       last_name: [''],
       preferred_language: [this.languages[0].code, Validators.required],
-      marketing_opt_in: [false],
     });
 
     const lang = this.languageService.extractLangFromUrl(this.router.url);
@@ -67,7 +66,6 @@ export class RegisterComponent {
       password: this.form.value.password,
       first_name: this.form.value.first_name || undefined,
       preferred_language: this.form.value.preferred_language,
-      marketing_opt_in: !!this.form.value.marketing_opt_in,
     };
     console.log('Register payload:', payload);
     this.authApi.register(payload).subscribe({

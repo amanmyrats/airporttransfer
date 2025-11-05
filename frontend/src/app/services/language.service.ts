@@ -138,9 +138,12 @@ export class LanguageService {
 
   withLangPrefix(path: string, lang?: string | null): string {
     const normalized = path.replace(/^\/+/, '');
+    // console.log('withLangPrefix called with path:', path, 'and lang:', lang);
     if (lang && SUPPORTED_LANG_CODES.includes(lang as SupportedLangCode)) {
+      // console.log('Returning: ', `/${lang}/${normalized}`.replace(/\/+/g, '/'))
       return `/${lang}/${normalized}`.replace(/\/+/g, '/');
     }
+    // console.log('Returning: ', `/${normalized}`.replace(/\/+/g, '/'))
     return `/${normalized}`.replace(/\/+/g, '/');
   }
 

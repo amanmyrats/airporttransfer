@@ -1,24 +1,62 @@
-<form [formGroup]="filterSearchForm" (ngSubmit)="onSubmit()">
+<form class="filter-search-form" [formGroup]="filterSearchForm" (ngSubmit)="onSubmit()">
+    <div class="detailed-toggle-container" *ngIf="wantDetailedButton">
+        <button
+            type="button"
+            pButton
+            class="p-button-rounded p-button-text"
+            (click)="toggleDetailedFilters()"
+        >
+            {{ showDetailedFilters ? 'Hide Detailed Filters' : 'Show Detailed Filters' }}
+        </button>
+    </div>
     <div class="p-d-flex p-justify-content-center p-align-items-center">
 
         <div class="p-col-12 p-md-3" style="display: flex; justify-content: center;align-items: center;">
-            <span *ngIf="wantDateFilter">
-                <button class="next-prev-button" (click)="prevDay()">
-                <img src="images/icons/arrow-left.svg" alt="Search Icon" width="16" height="16" style="margin-right: 8px;" />
-            </button>
-                <p-datepicker formControlName="transfer_date" inputId="buttondisplay" dateFormat="yy-mm-dd"
-                    (onSelect)="onFilterChange()" (onClear)="onFilterChange()" [inputStyle]="{'width': '170px'}"
-                    [firstDayOfWeek]="1" [showButtonBar]="true" [variant]="'filled'" [showClear]="true">
-
-                </p-datepicker>
-                <button class="next-prev-button" (click)="nextDay()">
-                <img src="images/icons/arrow-right.svg" alt="Search Icon" width="16" height="16" style="margin-right: 8px;" />
-            </button>
+            <span
+                *ngIf="wantDateFilter && shouldDisplayFilter('transfer_date')"
+                class="filter-date-single"
+                [ngClass]="{ 'filter-date-single--mobile-box': wantDetailedButton }"
+            >
+                <span class="filter-section-label" style="font-weight: 600;" *ngIf="dateFilterLabel">
+                    {{ dateFilterLabel }}
+                </span>
+                <div class="filter-date-single__controls">
+                    <button
+                        class="next-prev-button"
+                        type="button"
+                        (click)="prevDay()"
+                        aria-label="Previous day"
+                    >
+                        <i class="pi pi-chevron-left"></i>
+                    </button>
+                    <p-datepicker
+                        formControlName="transfer_date"
+                        inputId="buttondisplay"
+                        dateFormat="yy-mm-dd"
+                        (onSelect)="onFilterChange()"
+                        (onClear)="onFilterChange()"
+                        [firstDayOfWeek]="1"
+                        [showButtonBar]="true"
+                        [variant]="'filled'"
+                        [showClear]="true"
+                        [placeholder]="dateFilterLabel"
+                    >
+                    </p-datepicker>
+                    <button
+                        class="next-prev-button"
+                        type="button"
+                        (click)="nextDay()"
+                        aria-label="Next day"
+                    >
+                        <i class="pi pi-chevron-right"></i>
+                    </button>
+                </div>
             </span>
         </div>
 
-        <span *ngIf="wantDateVariationFilter">
-            <div class="p-col-12 p-md-3" style="display: flex; justify-content: center;align-items: center;">
+        <span *ngIf="wantDateVariationFilter && shouldDisplayFilter('date_variation')" class="filter-date-range">
+            <div class="p-col-12 p-md-3 filter-date-range__inner">
+                <span class="filter-section-label" style="font-weight: 600; margin-top: 1rem;margin-bottom: 0;">{{ dateVariationLabel }}</span>
                 <p-selectButton formControlName="date_filter_option" [options]="dateFilterOptions" optionLabel="label"
                     optionValue="value" (onChange)="onFilterChange()">
 
@@ -32,72 +70,163 @@
                 <p-datepicker *ngIf="filterSearchForm.get('date_filter_option')?.value === 'year' "
                     formControlName="year_date" view="year" dateFormat="yy" [readonlyInput]="true" showClear="true"
                     (onSelect)="onFilterChange()" (onClear)="onYearFilterClear()">
-
-                    <ng-template pTemplate="clearicon">
-                        <i class="pi pi-times custom-clear-icon"></i>
-                    </ng-template>
                 </p-datepicker>
 
                 <p-datepicker *ngIf="filterSearchForm.get('date_filter_option')?.value === 'month' "
                     formControlName="month_date" view="month" dateFormat="mm-yy" [readonlyInput]="true" showClear="true"
                     (onSelect)="onFilterChange()" (onClear)="onMonthFilterClear()">
-
-                    <ng-template pTemplate="clearicon">
-                        <i class="pi pi-times custom-clear-icon"></i>
-                    </ng-template>
                 </p-datepicker>
 
                 <p-datepicker *ngIf="filterSearchForm.get('date_filter_option')?.value === 'date_range' "
                     formControlName="date_range" selectionMode="range" [readonlyInput]="true" [showWeek]="true"
                     showClear="true" (onSelect)="onDateRangeFilterChange()" (onClear)="onDateRangeFilterClear()">
+                </p-datepicker>
+            </div>
+        </span>
 
-                    <ng-template pTemplate="clearicon">
-                        <i class="pi pi-times custom-clear-icon"></i>
+        <span *ngIf="wantReservationCreationDateVariationFilter && shouldDisplayFilter('reservation_date_variation')" class="filter-date-range">
+            <div class="p-col-12 p-md-3 filter-date-range__inner">
+                <span class="filter-section-label" style="font-weight: 600;margin-top: 1;margin-bottom:0;">{{ reservationDateVariationLabel }}</span>
+                <p-selectButton formControlName="reservation_date_filter_option" [options]="reservationDateFilterOptions" optionLabel="label"
+                    optionValue="value" (onChange)="onFilterChange()">
+
+                    <ng-template pTemplate="item" let-option>
+                        <span style="font-weight: bold;">
+                            {{ option.label }}
+                        </span>
                     </ng-template>
+
+                </p-selectButton>
+                <p-datepicker *ngIf="filterSearchForm.get('reservation_date_filter_option')?.value === 'year' "
+                    formControlName="reservation_year_date" view="year" dateFormat="yy" [readonlyInput]="true" showClear="true"
+                    (onSelect)="onFilterChange()" (onClear)="onReservationYearFilterClear()">
+                </p-datepicker>
+
+                <p-datepicker *ngIf="filterSearchForm.get('reservation_date_filter_option')?.value === 'month' "
+                    formControlName="reservation_month_date" view="month" dateFormat="mm-yy" [readonlyInput]="true" showClear="true"
+                    (onSelect)="onFilterChange()" (onClear)="onReservationMonthFilterClear()">
+                </p-datepicker>
+
+                <p-datepicker *ngIf="filterSearchForm.get('reservation_date_filter_option')?.value === 'date_range' "
+                    formControlName="reservation_date_range" selectionMode="range" [readonlyInput]="true" [showWeek]="true"
+                    showClear="true" (onSelect)="onReservationDateRangeFilterChange()" (onClear)="onReservationDateRangeFilterClear()">
                 </p-datepicker>
             </div>
         </span>
 
         <div class="item-wrapper">
 
-            <p-floatlabel variant="on">
-                <p-select class="item" *ngIf="wantMainLocationFilter" [options]="mainLocations" formControlName="main_location"
-                    optionLabel="code" optionValue="code" (onChange)="onFilterChange()" showClear="true"
-                    appendTo="body" 
+            <p-floatlabel
+                variant="on"
+                *ngIf="wantMainLocationFilter && shouldDisplayFilter('main_location')"
+            >
+                <p-select
+                    class="item"
+                    [options]="mainLocations"
+                    formControlName="main_location"
+                    optionLabel="code"
+                    optionValue="code"
+                    (onChange)="onFilterChange()"
+                    showClear="true"
+                    appendTo="body"
                     placeholder="Ana Lokasyon Seçiniz"
-                    />
+                />
                 <label for="buttondisplay">Ana Lokasyon</label>
             </p-floatlabel>
 
-            <p-floatlabel variant="on">
-                <p-select class="item" *ngIf="wantCarTypeFilter" [options]="carTypes" formControlName="car_type"
-                    optionLabel="name" optionValue="id" (onChange)="onFilterChange()" showClear="true"
-                    appendTo="body" 
+            <p-floatlabel
+                variant="on"
+                *ngIf="wantCarTypeFilter && shouldDisplayFilter('car_type')"
+            >
+                <p-select
+                    class="item"
+                    [options]="carTypes"
+                    formControlName="car_type"
+                    optionLabel="name"
+                    optionValue="id"
+                    (onChange)="onFilterChange()"
+                    showClear="true"
+                    appendTo="body"
                     placeholder="Araba Tipi Seçiniz"
-                    />
+                />
                 <label for="buttondisplay">Araba Tipi</label>
             </p-floatlabel>
 
-            <p-floatlabel variant="on">
-                <p-select class="item" *ngIf="wantRoleFilter" [options]="roles" formControlName="role"
-                    optionLabel="role_name" optionValue="id" (onChange)="onFilterChange()" showClear="true"
-                    appendTo="body" 
+            <p-floatlabel
+                variant="on"
+                *ngIf="wantRoleFilter && shouldDisplayFilter('role')"
+            >
+                <p-select
+                    class="item"
+                    [options]="roles"
+                    formControlName="role"
+                    optionLabel="role_name"
+                    optionValue="id"
+                    (onChange)="onFilterChange()"
+                    showClear="true"
+                    appendTo="body"
                     placeholder="Rol Seçiniz"
-                    />
+                />
 
                 <label for="buttondisplay">İzin Seviyesi</label>
             </p-floatlabel>
             
-            <p-floatlabel variant="on">
-                <p-select class="item" *ngIf="wantStatusFilter" [options]="statuses" formControlName="status"
-                    optionLabel="label" optionValue="value" (onChange)="onFilterChange()" showClear="true"
-                    appendTo="body" 
+            <p-floatlabel
+                variant="on"
+                *ngIf="wantStatusFilter && shouldDisplayFilter('status')"
+            >
+                <p-select
+                    class="item"
+                    [options]="statuses"
+                    formControlName="status"
+                    optionLabel="label"
+                    optionValue="value"
+                    (onChange)="onFilterChange()"
+                    showClear="true"
+                    appendTo="body"
                     placeholder="Durumu Seçiniz"
-                    />
+                />
 
                 <label for="buttondisplay">Durumu</label>
             </p-floatlabel>
-            <span *ngIf="wantSearchFilter">
+            
+            <p-floatlabel
+                variant="on"
+                *ngIf="wantChangeRequestStatusFilter && shouldDisplayFilter('latest_change_request_status')"
+            >
+                <p-select
+                    class="item"
+                    [options]="changeRequestStatuses"
+                    formControlName="latest_change_request_status"
+                    optionLabel="label"
+                    optionValue="value"
+                    (onChange)="onFilterChange()"
+                    showClear="true"
+                    appendTo="body"
+                    placeholder="Değişiklik İsteği Durumu"
+                />
+                <label for="changeRequestStatus">Değişiklik İsteği</label>
+            </p-floatlabel>
+            
+            <p-floatlabel
+                variant="on"
+                *ngIf="wantOrdering && shouldDisplayFilter('ordering')"
+            >
+                <p-select
+                    class="item"
+                    [options]="orderingOptions"
+                    formControlName="ordering"
+                    optionLabel="label"
+                    optionValue="value"
+                    (onChange)="onFilterChange()"
+                    showClear="true"
+                    appendTo="body"
+                    placeholder="Sıralama Seçiniz"
+                />
+
+                <label for="ordering">Sıralama</label>
+            </p-floatlabel>
+            <span *ngIf="wantSearchFilter && shouldDisplayFilter('search')">
                 <p-iconfield>
                     <p-inputicon styleClass="pi pi-search" />
                     <p-floatlabel variant="on">
@@ -106,16 +235,18 @@
                     </p-floatlabel>
                 </p-iconfield>
             </span>
-            <button *ngIf="wantSearchFilter" pButton type="submit"
-                class="p-button-raised p-button-rounded p-button-success item">
-                <img src="images/icons/search.svg" alt="Search Icon" width="16" height="16" style="margin-right: 8px;" />
-                Ara
-            </button>
-            <button *ngIf="wantSearchFilter" pButton type="button" 
-                class="p-button-raised p-button-rounded p-button-danger item" (click)="clearSearch()">
-                <img src="images/icons/delete.svg" alt="Search Icon" width="16" height="16" style="margin-right: 8px;" />
-                Temizle
-            </button>
+            <div class="filter-actions" *ngIf="wantSearchFilter && shouldDisplayFilter('search')">
+                <button pButton type="submit"
+                    class="p-button-raised p-button-rounded p-button-success item">
+                    <img src="images/icons/search.svg" alt="Search Icon" width="16" height="16" style="margin-right: 8px;" />
+                    Ara
+                </button>
+                <button pButton type="button" 
+                    class="p-button-raised p-button-rounded p-button-danger item" (click)="clearSearch()">
+                    <img src="images/icons/delete.svg" alt="Search Icon" width="16" height="16" style="margin-right: 8px;" />
+                    Temizle
+                </button>
+            </div>
         </div>
     </div>
 </form>

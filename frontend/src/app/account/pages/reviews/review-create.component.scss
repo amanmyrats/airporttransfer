@@ -25,30 +25,30 @@
     }
   }
 
-  &__rating-options {
+  &__rating-stars {
     display: flex;
-    gap: 0.75rem;
+    align-items: center;
+    gap: 1rem;
 
-    label {
+    .p-rating {
       display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.75rem;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      gap: 0.35rem;
+    }
 
-      &.is-selected {
-        background: #111827;
-        color: #fff;
-        border-color: #111827;
-      }
+    .p-rating-icon {
+      font-size: 1.75rem;
+      color: #d1d5db;
+      transition: color 0.2s ease;
 
-      input {
-        display: none;
+      &.pi-star-fill {
+        color: #fbbf24;
       }
     }
+  }
+
+  &__rating-value {
+    font-weight: 600;
+    color: #374151;
   }
 
   &__field {
@@ -77,4 +77,3 @@
     gap: 1rem;
   }
 }
-

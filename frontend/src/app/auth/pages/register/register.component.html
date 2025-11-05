@@ -38,12 +38,6 @@
             <option *ngFor="let option of languages" [value]="option.code">{{ option.label }}</option>
           </select>
         </div>
-
-        <label class="checkbox">
-          <input type="checkbox" id="marketing_opt_in" formControlName="marketing_opt_in" />
-          <span>I agree to receive occasional marketing emails.</span>
-        </label>
-
         <button type="submit" class="btn btn-primary" [disabled]="loading()">{{ loading() ? 'Creating account…' : 'Register' }}</button>
       </form>
 

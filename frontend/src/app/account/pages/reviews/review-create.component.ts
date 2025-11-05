@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { InputTextarea } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
+import { RatingModule } from 'primeng/rating';
+import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { Subject, takeUntil } from 'rxjs';
 
-import { ReviewsService } from '../../../services/client/reviews.service';
+import { ReviewsService } from '../../../admin/services/reviews.service';
 import { LanguageService } from '../../../services/language.service';
 import { CreateReviewPayload } from '../../models/review.models';
 
@@ -26,7 +28,8 @@ const COMMENT_MAX_LENGTH = 4000;
     CardModule,
     ButtonModule,
     InputTextModule,
-    InputTextarea,
+    RatingModule,
+    TextareaModule,
     ToastModule,
   ],
   providers: [MessageService],
@@ -48,8 +51,6 @@ export class ReviewCreateComponent implements OnInit, OnDestroy {
 
   readonly reservationId = signal<number | null>(null);
   readonly submitting = signal(false);
-  readonly ratingOptions = [1, 2, 3, 4, 5];
-
   readonly form = this.fb.nonNullable.group({
     rating: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
     title: ['', [Validators.maxLength(TITLE_MAX_LENGTH)]],
@@ -90,10 +91,10 @@ export class ReviewCreateComponent implements OnInit, OnDestroy {
       comment: this.form.controls.comment.value?.trim() || undefined,
     };
 
-    this.submitting.set(true);
+    this.setSubmittingState(true);
     this.reviewsService.create(payload).subscribe({
       next: () => {
-        this.submitting.set(false);
+        this.setSubmittingState(false);
         this.messages.add({ severity: 'success', summary: 'Review submitted', detail: 'Thanks for sharing your experience!' });
         this.reviewsService.listMine().subscribe();
         this.router
@@ -101,9 +102,12 @@ export class ReviewCreateComponent implements OnInit, OnDestroy {
           .catch(() => {});
       },
       error: (error) => {
-        this.submitting.set(false);
-        const detail = error?.error?.detail || 'Could not save your review.';
-        this.messages.add({ severity: 'error', summary: 'Submission failed', detail });
+        this.setSubmittingState(false);
+        this.messages.add({
+          severity: 'error',
+          summary: 'Submission failed',
+          detail: this.resolveErrorMessage(error),
+        });
       },
     });
   }
@@ -118,5 +122,54 @@ export class ReviewCreateComponent implements OnInit, OnDestroy {
 
   commentMaxLength(): number {
     return COMMENT_MAX_LENGTH;
+  }
+
+  private setSubmittingState(isSubmitting: boolean): void {
+    this.submitting.set(isSubmitting);
+    if (isSubmitting) {
+      this.form.disable({ emitEvent: false });
+    } else {
+      this.form.enable({ emitEvent: false });
+    }
+  }
+
+  private resolveErrorMessage(error: unknown): string {
+    const fallback = 'Could not save your review.';
+    if (!error || typeof error !== 'object') {
+      return fallback;
+    }
+
+    const response = (error as HttpErrorResponse).error ?? error;
+
+    if (!response) {
+      return fallback;
+    }
+
+    if (typeof response === 'string') {
+      return response;
+    }
+
+    if (typeof response.detail === 'string') {
+      return response.detail;
+    }
+
+    for (const value of Object.values(response)) {
+      if (!value) {
+        continue;
+      }
+
+      if (Array.isArray(value) && value.length) {
+        const message = value.find(item => typeof item === 'string');
+        if (message) {
+          return message;
+        }
+      }
+
+      if (typeof value === 'string') {
+        return value;
+      }
+    }
+
+    return fallback;
   }
 }

@@ -82,7 +82,7 @@ class ReviewApiTests(APITestCase):
         self.assertIn("reservation", response.data)
 
     def test_prevent_create_on_non_completed_reservation(self) -> None:
-        pending_reservation = self._create_reservation(number="RES-2001", status="pending")
+        pending_reservation = self._create_reservation(number="RES-2001", status="draft")
         self.client.force_authenticate(self.user)
         url = reverse("reviews:my-reviews-list")
         payload = {

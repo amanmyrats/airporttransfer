@@ -4,15 +4,23 @@ import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../auth/services/auth.service';
 import { environment } from '../../environments/environment';
 
 const STATIC_EXT = /\.(png|jpe?g|gif|svg|ico|css|js|map|woff2?|ttf|eot)$/i;
 const isStatic = (url: string) => url.includes('/assets/') || STATIC_EXT.test(url);
-const AUTH_PATHS = ['/auth/login', '/auth/register', '/auth/token/refresh', '/auth/password', '/auth/email'];
+const AUTH_PATHS = [
+  '/auth/login',
+  '/auth/register',
+  '/auth/token/refresh',
+  '/auth/password/forgot',
+  '/auth/password/reset',
+  '/auth/email/verify',
+];
 
 function isAuthRequest(req: HttpRequest<unknown>): boolean {
-  return AUTH_PATHS.some((path) => req.url.includes(path));
+  const url = req.url.split('?')[0];
+  return AUTH_PATHS.some(path => url.endsWith(path) || url.includes(`${path}/`));
 }
 
 function shouldAttachToken(url: string): boolean {

@@ -4,24 +4,33 @@ from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import get_object_or_404
+from django.db.models import Q, Exists, OuterRef, Subquery
 
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework import viewsets
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied
+from django.utils import timezone
 
 from common.utils import transform_choices_to_key_value_pairs
 from .serializers import (
     ReservationModelSerializer,
     ReservationStatusModelSerializer, 
     ContactUsMessageModelSerializer,
+    ReservationClientSerializer,
+    ReservationChangeRequestSerializer,
+    ReservationChangeRequestCreateSerializer,
 )
 from .models import (
     Reservation, ContactUsMessage, 
+    ReservationChangeRequest,
+    ReservationChangeRequestStatus,
+    ReservationStatus,
 )
 from .filtersets import (
     ReservationFilterSet, ContactUsMessageFilterSet, 
@@ -29,6 +38,8 @@ from .filtersets import (
 from .resources import (
     ReservationModelResource,
 )
+from .services import apply_change_request
+from reviews.utils import reservation_belongs_to_user
 
 
 logger = logging.getLogger("airporttransfer")
@@ -75,6 +86,23 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
         "dest_full",
     )
 
+    def get_queryset(self):
+        latest_change_request = ReservationChangeRequest.objects.filter(
+            reservation=OuterRef("pk")
+        ).order_by("-created_at")
+        pending_change_request = ReservationChangeRequest.objects.filter(
+            reservation=OuterRef("pk"),
+            status=ReservationChangeRequestStatus.PENDING_REVIEW,
+        )
+        return Reservation.objects.all().annotate(
+            latest_change_request_status=Subquery(
+                latest_change_request.values("status")[:1]
+            ),
+            has_change_request=Exists(
+                pending_change_request
+            ),
+        )
+
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context["request"] = self.request
@@ -83,7 +111,10 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.status in [
-            "confirmed",
+            ReservationStatus.CONFIRMED,
+            ReservationStatus.COMPLETED,
+            ReservationStatus.CANCELLED_BY_OPERATOR,
+            ReservationStatus.CANCELLED_BY_USER,
         ]:
             raise ValidationError("Onaylanmış rezervasyonlar güncellenemez.")
         return super().update(request, *args, **kwargs)
@@ -91,7 +122,10 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.status in [
-            "confirmed",
+            ReservationStatus.CONFIRMED,
+            ReservationStatus.COMPLETED,
+            ReservationStatus.CANCELLED_BY_OPERATOR,
+            ReservationStatus.CANCELLED_BY_USER,
         ]:
             raise ValidationError("Onaylanmış rezervasyonlar güncellenemez.")
         return super().partial_update(request, *args, **kwargs)
@@ -99,7 +133,10 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.status in [
-            "confirmed",
+            ReservationStatus.CONFIRMED,
+            ReservationStatus.COMPLETED,
+            ReservationStatus.CANCELLED_BY_OPERATOR,
+            ReservationStatus.CANCELLED_BY_USER,
         ]:
             raise ValidationError("Onaylanmış rezervasyonlar silinemez.")
         return super().destroy(request, *args, **kwargs)
@@ -151,8 +188,7 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def statuses(self, request, *args, **kwargs):
-        statuses = Reservation.STATUS_CHOICES
-        statuses = [{"value": status[0], "label": status[1]} for status in statuses]
+        statuses = [{"value": choice.value, "label": choice.label} for choice in ReservationStatus]
         return Response(statuses, status=status.HTTP_200_OK)
 
 
@@ -160,10 +196,19 @@ class StatusChoicesAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
-        return Response(
-            transform_choices_to_key_value_pairs(Reservation.STATUS_CHOICES),
-            status=status.HTTP_200_OK,
-        )
+        choices = [(choice.value, choice.label) for choice in ReservationStatus]
+        return Response(transform_choices_to_key_value_pairs(choices), status=status.HTTP_200_OK)
+    
+
+class ChangeRequestStatusChoicesAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        choices = [
+            (choice.value, choice.label)
+            for choice in ReservationChangeRequestStatus
+        ]
+        return Response(transform_choices_to_key_value_pairs(choices), status=status.HTTP_200_OK)
     
 
 class BookingCreateAPIView(APIView):
@@ -248,7 +293,7 @@ class BookingUpdateAPIView(APIView):
 class ContactUsModelViewSet(viewsets.ModelViewSet):
     queryset = ContactUsMessage.objects.all()
     serializer_class = ContactUsMessageModelSerializer
-    filterset_class = ContactUsMessage
+    filterset_class = ContactUsMessageFilterSet
     
 
 class SendMessageAPIView(APIView):
@@ -288,3 +333,212 @@ Message: {serializer.data.get('message')}
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def _ensure_reservation_access(reservation: Reservation, user) -> None:
+    if not reservation_belongs_to_user(reservation, user):
+        raise PermissionDenied("Reservation not found.")
+
+
+class MyReservationListAPIView(ListAPIView):
+    serializer_class = ReservationClientSerializer
+    permission_classes = [IsAuthenticated]
+    filterset_class = ReservationFilterSet
+    search_fields = (
+        "number",
+        "pickup_short",
+        "pickup_full",
+        "dest_short",
+        "dest_full",
+        "passenger_name",
+        "passenger_email",
+        "note",
+    )
+    ordering_fields = (
+        "transfer_date",
+        "transfer_time",
+        "reservation_date",
+        "status",
+        "payment_status",
+        "created_at",
+    )
+    ordering = ("-reservation_date", "-transfer_date", "-transfer_time", "-created_at")
+
+    def get_queryset(self):
+        user = self.request.user
+        field_names = {field.name for field in Reservation._meta.get_fields()}
+        filters = Q()
+
+        email = (getattr(user, "email", "") or "").strip()
+        if email:
+            filters |= Q(passenger_email__iexact=email)
+
+        if "owner" in field_names:
+            filters |= Q(owner=user)
+
+        if "account" in field_names:
+            filters |= Q(account=user)
+
+        if "customer_profile" in field_names and hasattr(user, "customer_profile"):
+            filters |= Q(customer_profile=user.customer_profile)
+
+        if not filters:
+            return Reservation.objects.none()
+
+        return (
+            Reservation.objects.filter(filters)
+            .order_by(*self.ordering)
+            .distinct()
+        )
+
+
+class MyReservationDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk: int, *args, **kwargs):
+        reservation = get_object_or_404(Reservation, pk=pk)
+        _ensure_reservation_access(reservation, request.user)
+        serializer = ReservationClientSerializer(reservation, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MyReservationChangeRequestCollectionAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, reservation_id: int, *args, **kwargs):
+        reservation = get_object_or_404(Reservation, pk=reservation_id)
+        _ensure_reservation_access(reservation, request.user)
+        queryset = reservation.change_requests.order_by("-created_at")
+        serializer = ReservationChangeRequestSerializer(queryset, many=True, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, reservation_id: int, *args, **kwargs):
+        print('reservation_id:', reservation_id)
+        reservation = get_object_or_404(Reservation, pk=reservation_id)
+        print('reservation found:', reservation)
+        _ensure_reservation_access(reservation, request.user)
+        serializer = ReservationChangeRequestCreateSerializer(
+            data=request.data,
+            context={"request": request, "reservation": reservation},
+        )
+        serializer.is_valid(raise_exception=True)
+        print('serializer is valid:', serializer.is_valid())
+        try:
+            change_request = serializer.save()
+        except Exception as e:
+            print('Error saving change request:', e)
+            raise
+        print('change_request created:', change_request)
+        print('change_request status:', change_request.status)
+
+        try:
+            if (
+                change_request.status == ReservationChangeRequestStatus.AUTO_APPROVED
+                and not change_request.requires_manual_review
+            ):
+                apply_change_request(change_request, actor=request.user)
+            change_request.refresh_from_db()
+        except Exception as e:
+            print('Error applying change request:', e)
+            raise
+
+        response_serializer = ReservationChangeRequestSerializer(change_request, context={"request": request})
+        print('response_serializer data:', response_serializer.data)
+        http_status = status.HTTP_200_OK if serializer.validated_data.get("existing_request") else status.HTTP_201_CREATED
+        print('http_status:', http_status)
+        return Response(response_serializer.data, status=http_status)
+
+
+class MyReservationChangeRequestDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk: int, *args, **kwargs):
+        change_request = get_object_or_404(ReservationChangeRequest, pk=pk)
+        _ensure_reservation_access(change_request.reservation, request.user)
+        serializer = ReservationChangeRequestSerializer(change_request, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MyReservationChangeRequestCancelAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    cancellable_statuses = {
+        ReservationChangeRequestStatus.PENDING_REVIEW,
+        ReservationChangeRequestStatus.AUTO_APPROVED,
+        ReservationChangeRequestStatus.AWAITING_USER_PAYMENT,
+    }
+
+    def post(self, request, pk: int, *args, **kwargs):
+        change_request = get_object_or_404(ReservationChangeRequest, pk=pk)
+        _ensure_reservation_access(change_request.reservation, request.user)
+
+        if change_request.status not in self.cancellable_statuses:
+            raise ValidationError({"status": "Only pending change requests can be cancelled."})
+
+        change_request.status = ReservationChangeRequestStatus.CANCELLED
+        change_request.decision_reason = request.data.get("reason", change_request.decision_reason or "")
+        change_request.decided_by = request.user
+        change_request.decided_at = timezone.now()
+        change_request.save(
+            update_fields=["status", "decision_reason", "decided_by", "decided_at", "updated_at"]
+        )
+
+        serializer = ReservationChangeRequestSerializer(change_request, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AdminReservationChangeRequestListAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, *args, **kwargs):
+        queryset = ReservationChangeRequest.objects.all().order_by("-created_at")
+        status_param = request.query_params.get("status")
+        if status_param:
+            queryset = queryset.filter(status=status_param)
+        reservation_param = request.query_params.get("reservation")
+        if reservation_param:
+            queryset = queryset.filter(reservation_id=reservation_param)
+        serializer = ReservationChangeRequestSerializer(queryset, many=True, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AdminReservationChangeRequestApproveAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    ALLOWED_STATUSES = {
+        ReservationChangeRequestStatus.PENDING_REVIEW,
+        ReservationChangeRequestStatus.AUTO_APPROVED,
+        ReservationChangeRequestStatus.AWAITING_USER_PAYMENT,
+    }
+
+    def post(self, request, pk: int, *args, **kwargs):
+        change_request = get_object_or_404(ReservationChangeRequest, pk=pk)
+        if change_request.status not in self.ALLOWED_STATUSES:
+            raise ValidationError({"status": "Change request cannot be approved in its current state."})
+
+        apply_change_request(change_request, actor=request.user)
+        note = request.data.get("note")
+        if note:
+            change_request.decision_reason = note
+            change_request.save(update_fields=["decision_reason", "updated_at"])
+        serializer = ReservationChangeRequestSerializer(change_request, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AdminReservationChangeRequestDeclineAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    DECLINABLE_STATUSES = {
+        ReservationChangeRequestStatus.PENDING_REVIEW,
+        ReservationChangeRequestStatus.AWAITING_USER_PAYMENT,
+    }
+
+    def post(self, request, pk: int, *args, **kwargs):
+        change_request = get_object_or_404(ReservationChangeRequest, pk=pk)
+        if change_request.status not in self.DECLINABLE_STATUSES:
+            raise ValidationError({"status": "Change request cannot be declined in its current state."})
+
+        reason = request.data.get("note")
+        change_request.mark_declined(request.user, reason)
+        serializer = ReservationChangeRequestSerializer(change_request, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)

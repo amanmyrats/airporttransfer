@@ -47,6 +47,271 @@
       </ng-template>
   </p-menubar>
 </div>
+
+@if (showDashboard) {
+  <section class="admin-dashboard">
+    <div class="utility-bar">
+      <form class="global-search" (ngSubmit)="onGlobalSearch()">
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            [(ngModel)]="globalSearchTerm"
+            name="globalSearch"
+            autocomplete="off"
+            placeholder="Search reservations, passengers or emails"
+          />
+        </span>
+        <button
+          pButton
+          type="submit"
+          label="Search"
+          icon="pi pi-arrow-right"
+          [disabled]="!globalSearchTerm.trim()"
+        ></button>
+      </form>
+
+      <p-tag severity="success" [value]="systemStatusMessage"></p-tag>
+    </div>
+
+    @if (dashboardError) {
+      <p class="error-message">{{ dashboardError }}</p>
+    }
+
+    @if (dashboardLoading) {
+      <div class="loading-state">Dashboard verileri yükleniyor…</div>
+    } @else {
+      @if (showKpis && kpis.length) {
+        <section class="kpi-grid">
+          @for (kpi of kpis; track kpi.id) {
+            <p-card class="kpi-card">
+              <div class="kpi-content">
+                <span class="kpi-icon">
+                  <i [class]="kpi.icon"></i>
+                </span>
+                <div class="kpi-text">
+                  <span class="kpi-label">{{ kpi.label }}</span>
+                  <span class="kpi-value">{{ kpi.value }}</span>
+                  @if (kpi.helper) {
+                    <span class="kpi-helper">{{ kpi.helper }}</span>
+                  }
+                </div>
+              </div>
+            </p-card>
+          }
+        </section>
+      }
+
+      <section class="urgent-queues">
+        <div class="urgent-column">
+          <div class="section-heading">
+            <h3>Pending Confirmation</h3>
+            <a
+              class="section-action"
+              [routerLink]="['/admin/reservations']"
+              [queryParams]="pendingConfirmationQueryParams"
+            >
+              See all
+            </a>
+          </div>
+          @if (pendingConfirmationReservations.length) {
+            <table class="plain-table">
+              <tbody>
+                @for (reservation of pendingConfirmationReservations; track reservation.id) {
+                  <tr (click)="openReservation(reservation, $event)">
+                    <td class="primary">
+                      <div class="item-title">
+                        {{ reservation.number || reservation.passenger_name || ('Reservation #' + reservation.id) }}
+                      </div>
+                      <div class="item-subtitle">
+                        {{ reservation.passenger_name || reservation.passenger_email || 'Guest' }}
+                        @if (reservation.status) {
+                          &nbsp;&#8226;&nbsp;{{ reservation.status | titlecase }}
+                        }
+                        @if (reservation.transfer_date || reservation.transfer_time) {
+                          &nbsp;&#8226;&nbsp;{{ reservation.transfer_date || '' }} {{ reservation.transfer_time || '' }}
+                        }
+                      </div>
+                    </td>
+                    <td class="secondary">
+                      <span class="item-created">
+                        {{ reservation.created_at | date: 'MMM d, HH:mm' }}
+                      </span>
+                    </td>
+                    <td class="actions">
+                      <i class="pi pi-arrow-right"></i>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="empty-state">No reservations waiting for confirmation.</p>
+          }
+        </div>
+
+        <div class="urgent-column">
+          <div class="section-heading">
+            <h3>Change Requests</h3>
+            <a
+              class="section-action"
+              [routerLink]="['/admin/reservations']"
+              [queryParams]="changeRequestQueryParams"
+            >
+              See all
+            </a>
+          </div>
+          @if (urgentChangeRequests.length) {
+            <table class="plain-table">
+              <tbody>
+                @for (changeRequest of urgentChangeRequests; track changeRequest.id) {
+                  <tr (click)="openChangeRequest(changeRequest, $event)">
+                    <td class="primary">
+                      <div class="item-title">
+                        {{ changeRequest.reservation_number || ('Request #' + changeRequest.id) }}
+                      </div>
+                      <div class="item-subtitle">
+                        {{ changeRequest.status | titlecase }}
+                      </div>
+                    </td>
+                    <td class="secondary">
+                      <span class="item-created">
+                        {{ changeRequest.created_at | date: 'MMM d, HH:mm' }}
+                      </span>
+                    </td>
+                    <td class="actions">
+                      <i class="pi pi-arrow-right"></i>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="empty-state">No change requests need review.</p>
+          }
+        </div>
+
+        <div class="urgent-column">
+          <div class="section-heading">
+            <h3>Urgent Reviews</h3>
+            <a
+              class="section-action"
+              [routerLink]="['/admin/reviews']"
+              [queryParams]="urgentReviewQueryParams"
+            >
+              See all
+            </a>
+          </div>
+          @if (urgentReviews.length) {
+            <table class="plain-table">
+              <tbody>
+                @for (review of urgentReviews; track review.id) {
+                  <tr (click)="openReview(review, $event)">
+                    <td class="primary">
+                      <div class="item-title">{{ review.title || ('Review #' + review.id) }}</div>
+                      <div class="item-subtitle">
+                        Rating: {{ review.rating }}/5
+                        @if (review.status) {
+                          &nbsp;&#8226;&nbsp;Status: {{ review.status | titlecase }}
+                        }
+                        @if (review.is_flagged) {
+                          &nbsp;&#8226;&nbsp;Flagged
+                        }
+                      </div>
+                    </td>
+                    <td class="secondary">
+                      <span class="item-created">
+                        {{ review.updated_at | date: 'MMM d, HH:mm' }}
+                      </span>
+                    </td>
+                    <td class="actions">
+                      <i class="pi pi-arrow-right"></i>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="empty-state">No urgent reviews at the moment.</p>
+          }
+        </div>
+
+        <div class="urgent-column">
+          <div class="section-heading">
+            <h3>Upcoming Transfers (24h)</h3>
+            <a
+              class="section-action"
+              [routerLink]="['/admin/reservations']"
+              [queryParams]="upcomingTransferQueryParams"
+            >
+              See all
+            </a>
+          </div>
+          @if (upcomingTransfers.length) {
+            <table class="plain-table">
+              <tbody>
+                @for (transfer of upcomingTransfers; track transfer.id) {
+                  <tr (click)="openReservation(transfer, $event)">
+                    <td class="primary">
+                      <div class="item-title">{{ transfer.passenger_name || transfer.passenger_email || 'Unknown passenger' }}</div>
+                      <div class="item-subtitle">
+                        {{ transfer.transfer_date || '—' }} {{ transfer.transfer_time || '' }}
+                      </div>
+                    </td>
+                    <td class="secondary">
+                      <span class="route">
+                        {{ transfer.pickup_short || 'Pickup TBD' }} → {{ transfer.dest_short || 'Dropoff TBD' }}
+                      </span>
+                    </td>
+                    <td class="actions">
+                      <i class="pi pi-arrow-right"></i>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="empty-state">No transfers in the next 24 hours.</p>
+          }
+        </div>
+      </section>
+
+      <section class="activity-feed">
+        <div class="section-heading">
+          <h3>Recent Activity</h3>
+        </div>
+        @if (activityFeed.length) {
+          <ul class="activity-list">
+            @for (activity of activityFeed; track activity.id) {
+              <li
+                (click)="openActivityItem(activity, $event)"
+                role="button"
+                tabindex="0"
+                (keydown.enter)="openActivityItem(activity, $event)"
+                (keydown.space)="openActivityItem(activity, $event)"
+              >
+                <span class="activity-icon">
+                  <i [class]="activity.icon"></i>
+                </span>
+                <div class="activity-details">
+                  <div class="activity-title">{{ activity.title }}</div>
+                  <div class="activity-meta">
+                    <span>{{ activity.subtitle }}</span>
+                    <span class="bullet">•</span>
+                    <span>{{ activity.relativeTime }}</span>
+                  </div>
+                </div>
+                <i class="pi pi-arrow-right activity-action"></i>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="empty-state">No recent activity recorded.</p>
+        }
+      </section>
+    }
+  </section>
+}
 } @else {
   <app-auth-login></app-auth-login>
 }

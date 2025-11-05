@@ -9,6 +9,44 @@
 :host ::ng-deep .p-progressbar {
     height:.5rem;
 }
+
+.status-btn,
+.cr-status-button {
+  margin-top: 0.5rem;
+}
+
+.cr-status-button {
+  cursor: pointer;
+}
+
+.table-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.caption__title {
+  font-size: clamp(1.5rem, 2vw + 1rem, 2.5rem);
+  font-weight: 700;
+}
+
+.caption__selector {
+  min-width: 220px;
+}
+
+@media screen and (max-width: 768px) {
+  .table-caption {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .caption__selector {
+    width: 100%;
+  }
+}
 .pending {
   background-color: #e2e3f3; /* Soft lavender/blue */
   color: #383d56; /* Muted navy text */

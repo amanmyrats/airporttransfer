@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from '../../services/auth-api.service';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { take } from 'rxjs/operators';
 import { LanguageService } from '../../../services/language.service';
 import { SuperHeaderComponent } from '../../../components/super-header/super-header.component';

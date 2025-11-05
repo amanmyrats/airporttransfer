@@ -56,3 +56,63 @@ export interface PaginatedResponse<T> {
   results: T[];
 }
 
+export interface AdminReview {
+  id: number;
+  reservation: number | null;
+  reservation_id: number | null;
+  reservation_obj: ReservationSummary | null;
+  route: number | null;
+  route_id: number | null;
+  rating: number;
+  title: string | null;
+  comment: string | null;
+  is_public: boolean;
+  is_verified: boolean;
+  is_flagged: boolean;
+  status: ReviewStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateAdminReviewPayload {
+  reservation: number;
+  route?: number | null;
+  rating: number;
+  title?: string | null;
+  comment?: string | null;
+  is_public?: boolean;
+  is_verified?: boolean;
+  is_flagged?: boolean;
+  status?: ReviewStatus;
+}
+
+export interface UpdateAdminReviewPayload {
+  reservation?: number | null;
+  route?: number | null;
+  rating?: number;
+  title?: string | null;
+  comment?: string | null;
+  is_public?: boolean;
+  is_verified?: boolean;
+  is_flagged?: boolean;
+  status?: ReviewStatus;
+}
+
+export interface ReviewReply {
+  id: number;
+  review: number;
+  author: number;
+  author_name: string;
+  body: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateReviewReplyPayload {
+  review: number;
+  body: string;
+}
+
+export interface UpdateReviewReplyPayload {
+  body?: string;
+}

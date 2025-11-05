@@ -1,0 +1,219 @@
+.review-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .review-id {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #0f172a;
+    }
+
+    .rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-weight: 600;
+      color: #f59e0b;
+
+      i {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .flag-indicator {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: rgba(251, 191, 36, 0.2);
+      color: #d97706;
+    }
+
+    .close-button {
+      min-width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+    }
+  }
+}
+
+.review-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 0.06em;
+  }
+
+  .value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+  }
+}
+
+.comment-card {
+  background: #f8fafc;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  h3 {
+    margin: 0;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 0;
+    color: #475569;
+    line-height: 1.5;
+  }
+}
+
+.moderation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.divider-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.reply-form {
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    textarea {
+      border-radius: 0.75rem;
+    }
+
+    .error {
+      color: #dc2626;
+      font-size: 0.75rem;
+    }
+
+    .reply-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}
+
+.replies {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  li {
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: #ffffff;
+  }
+
+  .reply-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+
+    .author {
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .timestamp {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+  }
+
+  .reply-body {
+    margin: 0;
+    color: #475569;
+    white-space: pre-line;
+  }
+
+  .reply-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .empty-replies,
+  .loading-replies {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2rem 0;
+    color: #94a3b8;
+  }
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem 0;
+  color: #64748b;
+
+  i {
+    font-size: 1.5rem;
+  }
+}

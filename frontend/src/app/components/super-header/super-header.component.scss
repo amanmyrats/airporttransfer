@@ -69,6 +69,7 @@
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         font-size: 0.95rem;
+        position: relative;
     }
 
     .dashboard-link:hover {
@@ -92,6 +93,24 @@
             height: 100%;
             fill: currentColor;
         }
+    }
+
+    .dashboard-link.loading,
+    .dashboard-link:disabled {
+        cursor: default;
+        transform: none;
+        box-shadow: 0 3px 10px rgba(37, 99, 235, 0.2);
+        opacity: 0.9;
+    }
+
+    .dashboard-link .spinner {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.45);
+        border-top-color: #ffffff;
+        animation: super-header-spin 0.7s linear infinite;
     }
 }
 
@@ -131,4 +150,10 @@
         font-size: 0.7rem;
     }
     
+}
+
+@keyframes super-header-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

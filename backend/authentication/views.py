@@ -12,6 +12,7 @@ from .serializers import (
     PasswordResetConfirmSerializer,
     EmailVerificationConfirmSerializer,
     ProfileUpdateSerializer,
+    PasswordChangeSerializer,
     GoogleSocialLoginSerializer,
     AppleSocialLoginSerializer,
     login_success_payload,
@@ -138,6 +139,22 @@ class MeView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+class PasswordChangeView(APIView):
+    permission_classes = [IsAuthenticated]
+    throttle_classes = [AuthSensitiveRateThrottle]
+
+    def post(self, request):
+        serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        new_password = serializer.validated_data['new_password']
+        user.set_password(new_password)
+        user.save(update_fields=['password'])
+
+        return Response({'detail': 'Password updated successfully.'}, status=status.HTTP_200_OK)
 
 
 class GoogleSocialLoginView(APIView):

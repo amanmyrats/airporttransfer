@@ -1,17 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, effect, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { InputTextarea } from 'primeng/inputtextarea';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
+import { RatingModule } from 'primeng/rating';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { Subject, takeUntil } from 'rxjs';
+import { TextareaModule } from 'primeng/textarea';
 
-import { ReviewsService } from '../../../services/client/reviews.service';
+import { ReviewsService } from '../../../admin/services/reviews.service';
 import { LanguageService } from '../../../services/language.service';
 import { MyReview, ReviewStatus, UpdateReviewPayload } from '../../models/review.models';
 
@@ -34,7 +35,9 @@ const STATUS_LABELS: Record<ReviewStatus, string> = {
     CardModule,
     ButtonModule,
     InputTextModule,
-    InputTextarea,
+    RatingModule,
+    FormsModule,
+    TextareaModule,
     ToastModule,
     TagModule,
   ],
@@ -88,7 +91,10 @@ export class ReviewDetailComponent implements OnInit, OnDestroy {
         },
         { emitEvent: false },
       );
-      if (!this.isEditable()) {
+    });
+
+    effect(() => {
+      if (!this.isEditable() || this.loading()) {
         this.form.disable({ emitEvent: false });
       } else {
         this.form.enable({ emitEvent: false });

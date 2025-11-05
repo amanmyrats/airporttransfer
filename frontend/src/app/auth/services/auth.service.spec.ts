@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AuthService } from './auth.service';
-import { AuthApiService } from '../auth/services/auth-api.service';
 
-class MockAuthApiService {} 
+import { AuthApiService } from './auth-api.service';
+import { AuthService } from './auth.service';
+
+class MockAuthApiService {}
 
 describe('AuthService', () => {
   let service: AuthService;

@@ -13,6 +13,7 @@ import { BlogPostSectionListComponent } from './blogs/components/blog-post-secti
 import { BlogPostDetailComponent } from './blogs/components/blog-post-detail/blog-post-detail.component';
 import { BlogPostPreviewComponent } from './blogs/components/blog-post-preview/blog-post-preview.component';
 import { FaqLibraryListComponent } from './blogs/components/faq-library-list/faq-library-list.component';
+import { ReviewListComponent } from './pages/review-list/review-list.component';
 
 export const adminRoutes: Routes = [
     {
@@ -37,6 +38,10 @@ export const adminRoutes: Routes = [
     {
         path: 'reservations',
         component: ReservationListComponent,
+    },
+    {
+        path: 'reviews',
+        component: ReviewListComponent,
     },
     {
         path: 'popularroutes',

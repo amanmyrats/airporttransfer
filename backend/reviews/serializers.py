@@ -97,9 +97,12 @@ class MyReviewSerializer(BaseReviewSerializer):
         return value
 
     def validate(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
-        reservation = attrs.get("reservation") or getattr(self.instance, "reservation", None)
-        if reservation is None and not self.instance:
-            raise serializers.ValidationError({"reservation": "Reservation is required."})
+        try:
+            reservation = attrs.get("reservation") or getattr(self.instance, "reservation", None)
+            if reservation is None and not self.instance:
+                raise serializers.ValidationError({"reservation": "Reservation is required."})
+        except Exception as e:
+            print("Error accessing reservation:", e)
         return super().validate(attrs)
 
 

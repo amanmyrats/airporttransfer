@@ -1,0 +1,181 @@
+<section class="reservations">
+  <header class="reservations__header">
+    <div>
+      <h1>My Reservations</h1>
+      <p class="reservations__subhead" *ngIf="!loading() && totalRecords() > 0">
+        {{ totalRecords() }} reservation{{ totalRecords() === 1 ? '' : 's' }} found
+      </p>
+      <p class="reservations__subhead" *ngIf="!loading() && totalRecords() === 0">
+        Bookings you complete will be listed here.
+      </p>
+    </div>
+    <button
+      pButton
+      type="button"
+      label="Refresh"
+      icon="pi pi-refresh"
+      class="p-button-text reservations__refresh"
+      (click)="refresh()"
+      [disabled]="loading()"
+    ></button>
+  </header>
+
+  <app-filter-search
+    class="reservations__filters"
+    [wantDetailedButton]="true"
+    [detailedFilterKeys]="detailedFilterKeys"
+    [wantSearchFilter]="true"
+    [wantDateFilter]="true"
+    [wantDateVariationFilter]="true"
+    [wantDateRangeFilter]="true"
+    [wantStatusFilter]="true"
+    [wantReservationCreationDateVariationFilter]="true"
+    [wantReservationCreationDateRangeFilter]="true"
+    [wantOrdering]="true"
+    [dateFilterLabel]="'Transfer Date'"
+    [dateVariationLabel]="'Transfer Date Range'"
+    [reservationDateVariationLabel]="'Reservation Date Range'"
+    [orderingOptions]="reservationOrderingOptions"
+    [defaultOrdering]="defaultOrdering"
+    [statuses]="statusOptions"
+    [first]="firstIndex()"
+    [rows]="pageSize()"
+    [totalRecords]="totalRecords()"
+    (searchEmitter)="onSearch($event)"
+    (getStatusesEmitter)="onStatusesRequested()"
+  ></app-filter-search>
+
+  <section *ngIf="loading(); else listContent" class="reservations__loading">
+    <p-card class="reservation-card reservation-card--loading" *ngFor="let skeleton of [0, 1, 2]">
+      <ng-template pTemplate="content">
+        <div class="reservation-card__skeleton">
+          <p-skeleton width="65%" height="1.5rem"></p-skeleton>
+          <p-skeleton width="40%" height="1rem"></p-skeleton>
+          <p-skeleton width="85%" height="1rem"></p-skeleton>
+        </div>
+      </ng-template>
+    </p-card>
+  </section>
+
+  <ng-template #listContent>
+    <section *ngIf="hasResults(); else emptyState" class="reservations__grid">
+      <p-card
+        *ngFor="let reservation of reservations(); trackBy: trackByReservationId"
+        class="reservation-card"
+      >
+        <ng-template pTemplate="header">
+          <div class="reservation-card__header">
+            <div>
+              <h3>
+                Reservation {{ reservation.number ?? ('#' + reservation.id) }}
+              </h3>
+              <p class="reservation-card__route">
+                {{ tripTitle(reservation) }}
+              </p>
+            </div>
+            <p-tag
+              [value]="statusLabel(reservation.status)"
+              [severity]="statusSeverity(reservation.status)"
+            ></p-tag>
+          </div>
+        </ng-template>
+
+        <div class="reservation-card__body">
+          <dl>
+            <div>
+              <dt>Transfer</dt>
+              <dd>{{ transferDateLabel(reservation) }}</dd>
+            </div>
+            <div *ngIf="reservation.flight_number">
+              <dt>Flight</dt>
+              <dd>
+                {{ reservation.flight_number }}
+                <span *ngIf="reservation.flight_date">
+                  • {{ reservation.flight_date | date: 'mediumDate' }}
+                </span>
+                <span *ngIf="reservation.flight_time"> • {{ reservation.flight_time }} </span>
+              </dd>
+            </div>
+            <div>
+              <dt>Passengers</dt>
+              <dd>{{ passengerSummary(reservation) }}</dd>
+            </div>
+            <div *ngIf="reservation.passenger_phone || reservation.passenger_email">
+              <dt>Contact</dt>
+              <dd>
+                <span *ngIf="reservation.passenger_name">{{ reservation.passenger_name }}<br /></span>
+                <span *ngIf="reservation.passenger_phone">{{ reservation.passenger_phone }}<br /></span>
+                <span *ngIf="reservation.passenger_email">{{ reservation.passenger_email }}</span>
+              </dd>
+            </div>
+            <div *ngIf="reservation.note">
+              <dt>Notes</dt>
+              <dd>{{ reservation.note }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <ng-template pTemplate="footer">
+          <div class="reservation-card__actions">
+            <button
+              pButton
+              type="button"
+              label="View details"
+              [routerLink]="detailLink(reservation)"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="p-button-secondary"
+              label="Write a review"
+              *ngIf="canWriteReview(reservation)"
+              [routerLink]="reviewLink(reservation)"
+            ></button>
+            <div class="reservation-card__contact-options">
+              <a
+                class="reservation-card__contact-link reservation-card__contact-link--whatsapp"
+                [href]="whatsappHref(reservation)"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Contact us via WhatsApp about this reservation"
+              >
+                <i class="pi pi-whatsapp" aria-hidden="true"></i>
+                <span>
+                  <strong>WhatsApp</strong>
+                  <small>{{ whatsappDisplay }}</small>
+                </span>
+              </a>
+              <a
+                class="reservation-card__contact-link reservation-card__contact-link--email"
+                [href]="emailHref(reservation)"
+                aria-label="Email support about this reservation"
+              >
+                <i class="pi pi-envelope" aria-hidden="true"></i>
+                <span>
+                  <strong>Email</strong>
+                  <small>{{ supportEmail }}</small>
+                </span>
+              </a>
+            </div>
+          </div>
+        </ng-template>
+      </p-card>
+    </section>
+  </ng-template>
+
+  <ng-template #emptyState>
+    <section class="reservations__empty">
+      <h3>No reservations yet</h3>
+      <p>Once you book a transfer, it will appear in this list.</p>
+    </section>
+  </ng-template>
+
+  <app-shared-paginator
+    *ngIf="hasResults()"
+    [first]="firstIndex()"
+    [rows]="pageSize()"
+    [totalRecords]="totalRecords()"
+    [rowsPerPageOptions]="[5, 10, 20, 50]"
+    (onPageChangeEmitter)="onPageChange($event)"
+  ></app-shared-paginator>
+</section>

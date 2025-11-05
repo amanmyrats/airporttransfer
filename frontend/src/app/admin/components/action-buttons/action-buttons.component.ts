@@ -17,17 +17,20 @@ export class ActionButtonsComponent implements OnInit{
   @Input() wantDetail: boolean = false;
   @Input() wantAssignDriver: boolean = false;
   @Input() wantDownloadPdf: boolean = false;
+  @Input() wantChangeRequest: boolean = false;
   @Input() editRole: string = 'company_yonetici';
   @Input() deleteRole: string = 'company_yonetici';
   @Input() detailRole: string = 'company_yonetici';
   @Input() assignDriverRole: string = 'company_operasyoncu';
   @Input() downloadPdfRole: string = 'company_operasyoncu';
+  @Input() changeRequestRole: string = 'company_rezervasyoncu';
   @Input() obj: any;
   @Output() updateEmitter: EventEmitter<any> = new EventEmitter();
   @Output() deleteEmitter: EventEmitter<any> = new EventEmitter();
   @Output() detailEmitter: EventEmitter<any> = new EventEmitter();
   @Output() assignDriverEmitter: EventEmitter<any> = new EventEmitter();
   @Output() downloadPdfEmitter: EventEmitter<any> = new EventEmitter();
+  @Output() changeRequestEmitter: EventEmitter<any> = new EventEmitter();
 
   constructor(
     public roleService: RoleService,
@@ -54,6 +57,10 @@ export class ActionButtonsComponent implements OnInit{
 
   downloadPdf() {
     this.downloadPdfEmitter.emit(this.obj);
+  }
+
+  onChangeRequest(): void {
+    this.changeRequestEmitter.emit(this.obj);
   }
 
   hasPermission(roleName: string): boolean {

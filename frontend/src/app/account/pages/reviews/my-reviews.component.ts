@@ -4,14 +4,33 @@ import { Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
-import { ReviewsService } from '../../../services/client/reviews.service';
+import { ReviewsService } from '../../../admin/services/reviews.service';
 import { LanguageService } from '../../../services/language.service';
 import { MyReview, ReviewStatus } from '../../models/review.models';
 
-const STATUS_LABELS: Record<ReviewStatus, string> = {
-  pending: 'Pending review',
-  published: 'Published',
-  rejected: 'Rejected',
+type StatusVariant = 'live' | 'pending';
+
+interface StatusMeta {
+  label: string;
+  variant: StatusVariant;
+  note?: string;
+}
+
+const STATUS_META: Record<ReviewStatus, StatusMeta> = {
+  pending: {
+    label: 'Under review',
+    variant: 'pending',
+    note: 'Thanks for sharing your experience. Our team is reviewing it now—no further action needed.',
+  },
+  published: {
+    label: 'Published',
+    variant: 'live',
+  },
+  rejected: {
+    label: 'Under review',
+    variant: 'pending',
+    note: 'This feedback isn’t on the public site, but we still use it to improve future trips.',
+  },
 };
 
 @Component({
@@ -41,8 +60,8 @@ export class MyReviewsComponent implements OnInit {
     return review.id;
   }
 
-  statusLabel(status: ReviewStatus): string {
-    return STATUS_LABELS[status] ?? status;
+  statusMeta(status: ReviewStatus): StatusMeta {
+    return STATUS_META[status] ?? STATUS_META['pending'];
   }
 
   detailLink(review: MyReview): any[] {
@@ -71,4 +90,3 @@ export class MyReviewsComponent implements OnInit {
     this.reviewsService.listMine().subscribe();
   }
 }
-

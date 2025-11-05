@@ -11,16 +11,13 @@
   <form [formGroup]="form" (ngSubmit)="submit()" class="review-form__body">
     <fieldset class="review-form__rating" [attr.aria-required]="true">
       <legend>Rating</legend>
-      <div class="review-form__rating-options">
-        <label *ngFor="let score of ratingOptions" [class.is-selected]="form.controls.rating.value === score">
-          <input
-            type="radio"
-            [value]="score"
-            formControlName="rating"
-            [disabled]="submitting()"
-          />
-          <span>{{ score }}</span>
-        </label>
+      <div class="review-form__rating-stars">
+        <p-rating
+          formControlName="rating"
+          [stars]="5"
+          [readonly]="submitting()"
+        ></p-rating>
+        <span class="review-form__rating-value">{{ form.controls.rating.value }} / 5</span>
       </div>
       <div class="review-form__validation" *ngIf="form.controls.rating.invalid && form.controls.rating.touched">
         Please select a rating between 1 and 5.
@@ -34,7 +31,6 @@
         type="text"
         formControlName="title"
         [maxlength]="titleMaxLength()"
-        [disabled]="submitting()"
       />
       <div class="review-form__validation" *ngIf="form.controls.title.invalid && form.controls.title.touched">
         Title must be at most {{ titleMaxLength() }} characters.
@@ -44,11 +40,10 @@
     <label class="review-form__field">
       <span>Comment <small>(optional, up to {{ commentMaxLength() }} characters)</small></span>
       <textarea
-        pInputTextarea
+        pTextarea
         rows="6"
         formControlName="comment"
         [maxlength]="commentMaxLength()"
-        [disabled]="submitting()"
       ></textarea>
       <div class="review-form__meta">{{ commentCharsLeft() }} characters left</div>
       <div class="review-form__validation" *ngIf="form.controls.comment.invalid && form.controls.comment.touched">

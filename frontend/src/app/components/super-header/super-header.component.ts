@@ -5,7 +5,8 @@ import { CurrencySelectionComponent } from '../currency-selection/currency-selec
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
 import { LanguageService } from '../../services/language.service';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../auth/services/auth.service';
+import { AuthUser } from '../../auth/models/auth.models';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -26,6 +27,7 @@ export class SuperHeaderComponent implements OnInit {
   @Input() trailingMultilingualBlogSlug: { [key: string]: string } | null = null; // e.g., 'blogs/turkey-airport-transfer-blogs/multilingual-slug'
   socialIcons = SOCIAL_ICONS;
   currentLanguage: any = { code: 'en', name: 'English' };
+  dashboardLoading = false;
   private languageService!: LanguageService;
   private authService!: AuthService;
   private router!: Router;
@@ -55,16 +57,29 @@ export class SuperHeaderComponent implements OnInit {
   }
 
   async goToDashboard(): Promise<void> {
-    const languageCode = this.currentLanguage?.code ?? 'en';
-    const target = this.languageService?.withLangPrefix('account', languageCode) ?? '/account';
-    if (this.authService?.isLoggedIn()) {
-      await this.router?.navigateByUrl(target).catch(() => {});
+    if (this.dashboardLoading) {
       return;
     }
-    const loginTarget = this.languageService?.withLangPrefix('auth/login', languageCode) ?? '/auth/login';
-    await this.router?.navigateByUrl(loginTarget, {
-      state: { returnUrl: target },
-    }).catch(() => {});
+    this.dashboardLoading = true;
+    const languageCode = this.currentLanguage?.code ?? 'en';
+    const accountTarget = this.languageService?.withLangPrefix('account', languageCode) ?? '/account';
+    const user = this.authService?.user() ?? null;
+    try {
+      if (user && this.isAdminUser(user)) {
+        await this.router?.navigateByUrl('/admin').catch(() => {});
+        return;
+      }
+      if (this.authService?.isLoggedIn()) {
+        await this.router?.navigateByUrl(accountTarget).catch(() => {});
+        return;
+      }
+      const loginTarget = this.languageService?.withLangPrefix('auth/login', languageCode) ?? '/auth/login';
+      await this.router?.navigateByUrl(loginTarget, {
+        state: { returnUrl: accountTarget },
+      }).catch(() => {});
+    } finally {
+      this.dashboardLoading = false;
+    }
   }
 
   private isAccountOrAdmin(path: string): boolean {
@@ -80,5 +95,20 @@ export class SuperHeaderComponent implements OnInit {
       return segments[1] === 'account' || segments[1] === 'admin';
     }
     return false;
+  }
+
+  private isAdminUser(user: AuthUser | null | undefined): boolean {
+    if (!user) {
+      return false;
+    }
+    const role = user.role ?? '';
+    return (
+      user.is_staff ||
+      user.is_company_user ||
+      role.startsWith('company_') ||
+      role === 'admin' ||
+      role === 'superuser' ||
+      role === 'super_user'
+    );
   }
 }

@@ -37,21 +37,26 @@ class MyReviewsViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer: MyReviewSerializer) -> None:
         reservation = serializer.validated_data["reservation"]
-        if not reservation_belongs_to_user(reservation, self.request.user):
-            raise PermissionDenied(_("You can only review your own reservations."))
+        print('Creating review for reservation:', reservation)
+        try:
+            if not reservation_belongs_to_user(reservation, self.request.user):
+                raise PermissionDenied(_("You can only review your own reservations."))
 
-        if not reservation_is_completed(reservation):
-            raise ValidationError({"reservation": _("Reservation is not yet completed.")})
+            if not reservation_is_completed(reservation):
+                raise ValidationError({"reservation": _("Reservation is not yet completed.")})
 
-        if Review.objects.filter(reservation=reservation).exists():
-            raise ValidationError({"reservation": _("This reservation already has a review.")})
+            if Review.objects.filter(reservation=reservation).exists():
+                raise ValidationError({"reservation": _("This reservation already has a review.")})
 
-        route = getattr(reservation, "route", None)
-        serializer.save(
-            user=self.request.user,
-            route=route,
-            is_verified=reservation_is_completed(reservation),
-        )
+            route = getattr(reservation, "route", None)
+            serializer.save(
+                user=self.request.user,
+                route=route,
+                is_verified=reservation_is_completed(reservation),
+            )
+        except Exception as e:
+            print('Error during review creation:', e)
+            raise
 
     def create(self, request, *args, **kwargs):
         if "reservation" not in request.data:

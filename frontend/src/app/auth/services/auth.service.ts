@@ -1,17 +1,18 @@
-import { Injectable, PLATFORM_ID, inject, computed, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, throwError, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom, of, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
-import { AuthApiService } from '../auth/services/auth-api.service';
+
+import { environment } from '../../../environments/environment';
+import { AuthApiService } from './auth-api.service';
 import {
   AuthUser,
   LoginPayload,
   LoginResponse,
   RegisterPayload,
   UpdateProfilePayload,
-} from '../auth/models/auth.models';
+} from '../models/auth.models';
 
 const STORAGE_KEYS = {
   access: 'auth.accessToken',
@@ -53,29 +54,24 @@ export class AuthService {
       this.refreshToken.set(refresh);
     }
     if (user) {
-      this.user.set(user);
+      const normalized = this.normalizeUser(user);
+      if (normalized) {
+        this.user.set(normalized);
+      }
     }
     this.bootstrapped = true;
   }
 
   setSession(response: LoginResponse): void {
-    console.log('Setting session with response:', response);
+    const normalizedUser = this.normalizeUser(response.user);
     this.accessToken.set(response.access);
-    console.log('Access token set to:', response.access);
     this.refreshToken.set(response.refresh);
-    console.log('Refresh token set to:', response.refresh);
-    this.user.set(response.user);
-    console.log('User set to:', response.user);
+    if (normalizedUser) {
+      this.persistUser(normalizedUser);
+    }
     if (this.isBrowser()) {
       localStorage.setItem(STORAGE_KEYS.access, response.access);
       localStorage.setItem(STORAGE_KEYS.refresh, response.refresh);
-      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(response.user));
-      localStorage.setItem('userId', String(response.user.id ?? ''));
-      localStorage.setItem('email', response.user.email ?? '');
-      localStorage.setItem('firstName', response.user.first_name ?? '');
-      localStorage.setItem('roleName', response.user.role ?? '');
-      localStorage.setItem('isStaff', String(response.user.is_staff ?? false));
-      localStorage.setItem('profile', JSON.stringify(response.user.customer_profile ?? {}));
     }
   }
 
@@ -93,6 +89,7 @@ export class AuthService {
       localStorage.removeItem('roleName');
       localStorage.removeItem('isStaff');
       localStorage.removeItem('profile');
+      localStorage.removeItem('isSuperuser');
     }
   }
 
@@ -112,13 +109,13 @@ export class AuthService {
   login(email: string, password: string): Observable<boolean> {
     const payload: LoginPayload = { email, password };
     return this.authApi.login(payload).pipe(
-      tap((res) => this.setSession(res)),
-      map(() => true)
+      tap(res => this.setSession(res)),
+      map(() => true),
     );
   }
 
   loginWithResponse(payload: LoginPayload): Observable<LoginResponse> {
-    return this.authApi.login(payload).pipe(tap((res) => this.setSession(res)));
+    return this.authApi.login(payload).pipe(tap(res => this.setSession(res)));
   }
 
   register(payload: RegisterPayload): Observable<{ detail: string }> {
@@ -134,7 +131,7 @@ export class AuthService {
       return this.refreshInFlight;
     }
     const refresh$ = this.authApi.refresh(refresh).pipe(
-      tap((res) => {
+      tap(res => {
         const nextRefresh = res.refresh ?? refresh;
         const nextUser = res.user ?? this.user();
         if (res.user) {
@@ -152,11 +149,11 @@ export class AuthService {
           localStorage.setItem(STORAGE_KEYS.refresh, nextRefresh);
         }
       }),
-      catchError((error) => {
+      catchError(error => {
         this.clearSession();
         return throwError(() => error);
       }),
-      map((res) => {
+      map(res => {
         const nextUser = res.user ?? this.user();
         if (!nextUser) {
           return null;
@@ -169,7 +166,7 @@ export class AuthService {
       }),
       finalize(() => {
         this.refreshInFlight = null;
-      })
+      }),
     );
     this.refreshInFlight = refresh$;
     return refresh$;
@@ -177,11 +174,13 @@ export class AuthService {
 
   logout(): Observable<void> {
     const refresh = this.refreshToken();
-    const apiCall = refresh ? this.authApi.logout(refresh).pipe(catchError(() => of({ detail: 'ok' }))) : of({ detail: 'ok' });
+    const apiCall = refresh
+      ? this.authApi.logout(refresh).pipe(catchError(() => of({ detail: 'ok' })))
+      : of({ detail: 'ok' });
     return apiCall.pipe(
       map(() => {
         this.clearSession();
-      })
+      }),
     );
   }
 
@@ -190,41 +189,35 @@ export class AuthService {
       return of(null);
     }
     return this.authApi.me().pipe(
-      tap((user) => {
-        this.user.set(user);
-        if (this.isBrowser()) {
-          localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
-          localStorage.setItem('userId', String(user.id ?? ''));
-          localStorage.setItem('email', user.email ?? '');
-          localStorage.setItem('firstName', user.first_name ?? '');
-          localStorage.setItem('roleName', user.role ?? '');
-          localStorage.setItem('isStaff', String(user.is_staff ?? false));
-          localStorage.setItem('profile', JSON.stringify(user.customer_profile ?? {}));
+      tap(user => {
+        const normalized = this.normalizeUser(user);
+        if (normalized) {
+          this.persistUser(normalized);
         }
       }),
-      map((user) => user),
-      catchError((error) => {
+      map(user => user),
+      catchError(error => {
         if (error?.status === 401) {
           this.clearSession();
         }
         return of(null);
-      })
+      }),
     );
   }
 
   updateMe(body: UpdateProfilePayload): Observable<AuthUser> {
     return this.authApi.updateMe(body).pipe(
-      tap((user) => {
-        this.user.set(user);
-        if (this.isBrowser()) {
-          localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
+      tap(user => {
+        const normalized = this.normalizeUser(user);
+        if (normalized) {
+          this.persistUser(normalized);
         }
-      })
+      }),
     );
   }
 
   changePassword(oldPassword: string, newPassword: string, confirmPassword: string): Observable<any> {
-    return this.http.post<any>(`${this.authBase}changepassword/`, {
+    return this.http.post<any>(`${this.authBase}password/change/`, {
       old_password: oldPassword,
       new_password: newPassword,
       confirm_password: confirmPassword,
@@ -252,5 +245,32 @@ export class AuthService {
 
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
+  }
+
+  private normalizeUser(user: (AuthUser & { profile?: AuthUser['customer_profile'] }) | AuthUser | null | undefined): AuthUser | null {
+    if (!user) {
+      return null;
+    }
+    const customerProfile = user.customer_profile ?? user.profile ?? null;
+    return {
+      ...user,
+      customer_profile: customerProfile ?? undefined,
+      profile: customerProfile ?? undefined,
+    };
+  }
+
+  private persistUser(user: AuthUser): void {
+    this.user.set(user);
+    if (!this.isBrowser()) {
+      return;
+    }
+    localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
+    localStorage.setItem('userId', String(user.id ?? ''));
+    localStorage.setItem('email', user.email ?? '');
+    localStorage.setItem('firstName', user.first_name ?? '');
+    localStorage.setItem('roleName', user.role ?? '');
+    localStorage.setItem('isStaff', String(user.is_staff ?? false));
+    localStorage.setItem('profile', JSON.stringify(user.customer_profile ?? {}));
+    localStorage.setItem('isSuperuser', String(user.is_superuser ?? false));
   }
 }

@@ -19,64 +19,103 @@
     </span>
   </section>
 
-  <form [formGroup]="form" (ngSubmit)="submit()" class="review-detail__form">
-    <fieldset class="review-detail__rating">
-      <legend>Rating</legend>
-      <div class="review-detail__stars">
-        <label *ngFor="let score of [1, 2, 3, 4, 5]" [class.is-selected]="form.controls.rating.value === score">
-          <input type="radio" [value]="score" formControlName="rating" [disabled]="!isEditable() || loading()" />
-          <span>{{ score }}</span>
-        </label>
-      </div>
-      <div class="review-detail__validation" *ngIf="form.controls.rating.invalid && form.controls.rating.touched">
-        Rating must be between 1 and 5.
-      </div>
-    </fieldset>
+  <ng-container *ngIf="isEditable(); else reviewReadOnly">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="review-detail__form">
+      <fieldset class="review-detail__rating">
+        <legend>Rating</legend>
+        <div class="review-detail__stars">
+          <p-rating
+            formControlName="rating"
+            [stars]="5"
+            [readonly]="loading()"
+          ></p-rating>
+          <span class="review-detail__rating-value">{{ form.controls.rating.value }} / 5</span>
+        </div>
+        <div class="review-detail__validation" *ngIf="form.controls.rating.invalid && form.controls.rating.touched">
+          Rating must be between 1 and 5.
+        </div>
+      </fieldset>
 
-    <label class="review-detail__field">
-      <span>Title <small>(optional)</small></span>
-      <input
-        pInputText
-        type="text"
-        formControlName="title"
-        [maxlength]="titleMaxLength()"
-        [disabled]="!isEditable() || loading()"
-      />
-      <div class="review-detail__validation" *ngIf="form.controls.title.invalid && form.controls.title.touched">
-        Title must be at most {{ titleMaxLength() }} characters.
-      </div>
-    </label>
+      <label class="review-detail__field">
+        <span>Title <small>(optional)</small></span>
+        <input
+          pInputText
+          type="text"
+          formControlName="title"
+          [maxlength]="titleMaxLength()"
+        />
+        <div class="review-detail__validation" *ngIf="form.controls.title.invalid && form.controls.title.touched">
+          Title must be at most {{ titleMaxLength() }} characters.
+        </div>
+      </label>
 
-    <label class="review-detail__field">
-      <span>Comment <small>(optional)</small></span>
-      <textarea
-        pInputTextarea
-        rows="6"
-        formControlName="comment"
-        [maxlength]="commentMaxLength()"
-        [disabled]="!isEditable() || loading()"
-      ></textarea>
-      <div class="review-detail__meta-text">{{ commentCharsLeft() }} characters left</div>
-      <div class="review-detail__validation" *ngIf="form.controls.comment.invalid && form.controls.comment.touched">
-        Comment must be at most {{ commentMaxLength() }} characters.
-      </div>
-    </label>
+      <label class="review-detail__field">
+        <span>Comment <small>(optional)</small></span>
+        <textarea
+          pTextarea
+          rows="6"
+          formControlName="comment"
+          [maxlength]="commentMaxLength()"
+        ></textarea>
+        <div class="review-detail__meta-text">{{ commentCharsLeft() }} characters left</div>
+        <div class="review-detail__validation" *ngIf="form.controls.comment.invalid && form.controls.comment.touched">
+          Comment must be at most {{ commentMaxLength() }} characters.
+        </div>
+      </label>
 
-    <div class="review-detail__actions">
-      <button
-        pButton
-        type="button"
-        label="Back"
-        class="p-button-text"
-        (click)="backToList()"
-      ></button>
-      <button
-        pButton
-        type="submit"
-        label="Update review"
-        [disabled]="!isEditable() || loading()"
-        [loading]="loading()"
-      ></button>
-    </div>
-  </form>
+      <div class="review-detail__actions">
+        <button
+          pButton
+          type="button"
+          label="Back"
+          class="p-button-text"
+          (click)="backToList()"
+        ></button>
+        <button
+          pButton
+          type="submit"
+          label="Update review"
+          [disabled]="loading()"
+          [loading]="loading()"
+        ></button>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-template #reviewReadOnly>
+    <section *ngIf="review() as current" class="review-detail__readonly">
+      <div class="review-detail__rating">
+        <h2>Rating</h2>
+        <div class="review-detail__stars review-detail__stars--readonly">
+          <p-rating
+            [ngModel]="current.rating"
+            [ngModelOptions]="{ standalone: true }"
+            [stars]="5"
+            [readonly]="true"
+          ></p-rating>
+          <span class="review-detail__rating-value">{{ current.rating }} / 5</span>
+        </div>
+      </div>
+
+      <div class="review-detail__field">
+        <span>Title</span>
+        <p class="review-detail__value">{{ current.title || 'Not provided' }}</p>
+      </div>
+
+      <div class="review-detail__field">
+        <span>Comment</span>
+        <p class="review-detail__value">{{ current.comment || 'Not provided' }}</p>
+      </div>
+
+      <div class="review-detail__actions review-detail__actions--readonly">
+        <button
+          pButton
+          type="button"
+          label="Back"
+          class="p-button-text"
+          (click)="backToList()"
+        ></button>
+      </div>
+    </section>
+  </ng-template>
 </p-card>

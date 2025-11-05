@@ -1,0 +1,130 @@
+<div class="change-requests-container" *ngIf="reservation">
+  <header class="dialog-header">
+    <div class="title-group">
+      <!-- <h2>Rezervasyon {{ reservation.number || ('#' + reservation.id) }} değişiklik istekleri</h2> -->
+      <p class="subtitle">
+        Son durum: {{ reservation.latest_change_request_status ? statusLabel(reservation.latest_change_request_status) : 'İstek bulunmuyor' }}
+      </p>
+    </div>
+    <!-- <button
+      type="button"
+      pButton
+      class="close-button p-button-rounded p-button-text"
+      icon="pi pi-times"
+      aria-label="Kapat"
+      (click)="close({ refresh: hasChanges })"
+    ></button> -->
+  </header>
+
+  <section class="state" *ngIf="loading">
+    <p-progressSpinner styleClass="loader"></p-progressSpinner>
+  </section>
+
+  <section class="state error" *ngIf="!loading && error">
+    {{ error }}
+  </section>
+
+  <section class="state empty" *ngIf="!loading && !error && !requests.length">
+    Bu rezervasyon için kayıtlı değişiklik isteği bulunmuyor.
+  </section>
+
+  <section class="reservation-summary" *ngIf="!loading && !error">
+    <div class="summary-item">
+      <span class="summary-label">Transfer Tarihi</span>
+      <span class="summary-value">{{ reservation.transfer_date || '—' }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-label">Transfer Saati</span>
+      <span class="summary-value">{{ reservation.transfer_time || '—' }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-label">Kalkış</span>
+      <span class="summary-value">{{ reservation.pickup_short || reservation.pickup_full || '—' }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-label">Varış</span>
+      <span class="summary-value">{{ reservation.dest_short || reservation.dest_full || '—' }}</span>
+    </div>
+  </section>
+
+  <section *ngIf="!loading && !error && requests.length">
+    <article
+      class="change-request-card"
+      *ngFor="let request of requests; trackBy: trackByRequestId"
+      [attr.id]="'cr-' + request.id"
+    >
+      <header class="card-header">
+        <div>
+          <h3>#{{ request.id }}</h3>
+          <span class="meta">Oluşturma: {{ request.created_at | date: 'medium' }}</span>
+          <span class="meta" *ngIf="request.pricing_delta && request.pricing_delta !== '0.00'">
+            Fiyat farkı: {{ request.pricing_delta }}
+          </span>
+        </div>
+        <p-tag [value]="statusLabel(request.status)" [severity]="statusSeverity(request.status)"></p-tag>
+      </header>
+
+      <p-divider />
+
+      <section class="body">
+        <h4>Önerilen Değişiklikler</h4>
+        <ng-container *ngIf="getChangeEntries(request) as entries">
+          <ng-container *ngIf="entries.length; else fallbackChanges">
+            <div class="change-row" *ngFor="let entry of entries">
+              <div class="change-label">{{ entry.label }}</div>
+              <div class="change-values">
+                <span class="change-old">{{ entry.current }}</span>
+                <span class="change-arrow">→</span>
+                <span class="change-new">{{ entry.proposed }}</span>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <ng-template #fallbackChanges>
+          <pre class="preformatted">{{ request.proposed_changes | json }}</pre>
+        </ng-template>
+
+        <div *ngIf="request.applied_changes && (request.applied_changes | keyvalue).length">
+          <h5>Uygulanan Değişiklikler</h5>
+          <pre class="preformatted">{{ request.applied_changes | json }}</pre>
+        </div>
+      </section>
+
+      <section class="note-section">
+        <label [for]="'note-' + request.id">Not (opsiyonel)</label>
+        <textarea
+          pTextarea
+          [id]="'note-' + request.id"
+          [(ngModel)]="noteDrafts[request.id]"
+          [autoResize]="true"
+          rows="3"
+        ></textarea>
+      </section>
+
+      <footer class="card-actions">
+        <p-button
+          label="Onayla"
+          icon="pi pi-check"
+          severity="success"
+          [disabled]="!canApprove(request.status)"
+          [loading]="actionLoading[request.id]"
+          (onClick)="approve(request)"
+        ></p-button>
+
+        <p-button
+          label="Reddet"
+          icon="pi pi-times"
+          severity="danger"
+          [disabled]="!canDecline(request.status)"
+          [loading]="actionLoading[request.id]"
+          (onClick)="decline(request)"
+        ></p-button>
+      </footer>
+    </article>
+  </section>
+</div>
+
+<footer class="dialog-footer">
+  <p-button label="Kapat" icon="pi pi-times" (onClick)="close({ refresh: hasChanges })"></p-button>
+</footer>
