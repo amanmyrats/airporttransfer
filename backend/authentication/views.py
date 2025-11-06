@@ -40,7 +40,10 @@ class RegisterView(APIView):
         print('RegisterView created user:', user)
         token = build_email_verification_token(user)
         print('RegisterView generated token:', token)
-        verification_url = frontend_url('email/verify', {'token': token}) or ''
+        profile = getattr(user, 'customer_profile', None)
+        preferred_language = (getattr(profile, 'preferred_language', '') or '').strip().lower() or 'en'
+        verify_path = f'{preferred_language}/auth/verify-email'
+        verification_url = frontend_url(verify_path, {'key': token}) or ''
         print('RegisterView generated verification URL:', verification_url)
         context = {
             'user': user,
