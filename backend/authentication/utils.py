@@ -1,4 +1,5 @@
 import json
+import logging
 from urllib.parse import urlencode, urljoin
 
 import requests
@@ -8,6 +9,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.template.exceptions import TemplateDoesNotExist
 from django.utils import timezone
 
 from accounts.models import Account, CustomerProfile
@@ -22,6 +24,7 @@ except ImportError:  # pragma: no cover
 
 APPLE_KEYS_CACHE_KEY = 'authentication.apple_keys'
 APPLE_KEYS_TTL = 60 * 60
+logger = logging.getLogger(__name__)
 
 
 def frontend_url(path: str = '', query: dict | None = None) -> str:
@@ -34,26 +37,39 @@ def frontend_url(path: str = '', query: dict | None = None) -> str:
     return url
 
 
-def send_templated_email(subject: str, template: str, to_email: str, context: dict) -> None:
+def send_templated_email(subject: str, template: str, to_email: str, context: dict) -> bool:
+    """
+    Render a template pair and send it via the configured email backend.
+    Returns True if the message is handed off to the backend successfully.
+    """
     try:
         plaintext = render_to_string(f'emails/{template}.txt', context)
-        print('send_templated_email plaintext:', plaintext)
-        html = render_to_string(f'emails/{template}.html',  context)
-        print('send_templated_email html:', html)
-        message = EmailMultiAlternatives(
-            subject=subject,
-            body=plaintext,
-            from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', None),
-            to=[to_email],
-        )
-        print('send_templated_email message created')
-        message.attach_alternative(html, 'text/html')
-        print('send_templated_email sending email to:', to_email)
-        message.send()
-        print('send_templated_email email sent')
-    except Exception as e:
-        print('send_templated_email failed with exception:', e)
-        raise e
+        html = render_to_string(f'emails/{template}.html', context)
+    except TemplateDoesNotExist:
+        logger.exception('Email template "%s" is missing', template)
+        return False
+    except Exception:
+        logger.exception('Failed to render email template "%s"', template)
+        return False
+
+    message = EmailMultiAlternatives(
+        subject=subject,
+        body=plaintext,
+        from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', None),
+        to=[to_email],
+    )
+    message.attach_alternative(html, 'text/html')
+
+    try:
+        sent = message.send()
+    except Exception:
+        logger.exception('Failed to send email "%s" to %s', template, to_email)
+        return False
+
+    if sent == 0:
+        logger.warning('Email backend returned 0 for message "%s" to %s', template, to_email)
+        return False
+    return True
 
 
 def mark_email_as_verified(user: Account) -> None:

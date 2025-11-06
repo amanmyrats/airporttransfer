@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -23,6 +25,9 @@ from .throttles import AuthBurstRateThrottle, AuthSensitiveRateThrottle
 from .utils import frontend_url, send_templated_email
 
 
+logger = logging.getLogger(__name__)
+
+
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     throttle_classes = [AuthBurstRateThrottle]
@@ -43,16 +48,14 @@ class RegisterView(APIView):
             'token': token,
         }
         print('RegisterView email context:', context)
-        try:
-            send_templated_email(
-                subject='Verify your email',
-                template='verify_email',
-                to_email=user.email,
-                context=context,
-            )
-        except Exception as e:
-            print('RegisterView email sending failed:', e)
-            raise e
+        email_sent = send_templated_email(
+            subject='Verify your email',
+            template='verify_email',
+            to_email=user.email,
+            context=context,
+        )
+        if not email_sent:
+            logger.warning('Verification email could not be sent for user_id=%s', user.id)
         return Response({'detail': 'verification_email_sent'}, status=status.HTTP_201_CREATED)
 
 
