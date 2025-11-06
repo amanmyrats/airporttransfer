@@ -239,12 +239,12 @@ SIMPLE_JWT = {
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'info@airporttransferhub.com')
 
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
-EMAIL_HOST = os.getenv('EMAIL_HOST', os.getenv('EMAIL_HOST_AIRPORTTRANSFERHUB', ''))
-EMAIL_PORT = env_int('EMAIL_PORT', env_int('EMAIL_PORT_AIRPORTTRANSFERHUB', 587)) or 587
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() == 'true'
-EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'false').lower() == 'true'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', os.getenv('EMAIL_HOST_USER_AIRPORTTRANSFERHUB', ''))
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', os.getenv('EMAIL_HOST_PASSWORD_AIRPORTTRANSFERHUB', ''))
+EMAIL_HOST = os.getenv('EMAIL_HOST_AIRPORTTRANSFERHUB', os.getenv('EMAIL_HOST', ''))
+EMAIL_PORT = env_int('EMAIL_PORT_AIRPORTTRANSFERHUB', env_int('EMAIL_PORT', 587)) or 587
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS_AIRPORTTRANSFERHUB', os.getenv('EMAIL_USE_TLS', 'true')).lower() == 'true'
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL_AIRPORTTRANSFERHUB', os.getenv('EMAIL_USE_SSL', 'false')).lower() == 'true'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER_AIRPORTTRANSFERHUB', os.getenv('EMAIL_HOST_USER', ''))
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD_AIRPORTTRANSFERHUB', os.getenv('EMAIL_HOST_PASSWORD', ''))
 EMAIL_TIMEOUT = env_int('EMAIL_TIMEOUT', 10) or 10
 
 SITE_ID = env_int('SITE_ID', 1) or 1

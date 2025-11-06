@@ -7,7 +7,7 @@ import jwt
 
 from django.conf import settings
 from django.core.cache import cache
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
 from django.template.exceptions import TemplateDoesNotExist
 from django.utils import timezone
@@ -37,6 +37,17 @@ def frontend_url(path: str = '', query: dict | None = None) -> str:
     return url
 
 
+def _smtp_details_configured() -> bool:
+    backend = getattr(settings, 'EMAIL_BACKEND', '')
+    host = getattr(settings, 'EMAIL_HOST', '')
+    if 'smtp' not in backend.lower():
+        return True
+    if not host:
+        logger.warning('EMAIL_HOST is not configured; skipping SMTP email send')
+        return False
+    return True
+
+
 def send_templated_email(subject: str, template: str, to_email: str, context: dict) -> bool:
     """
     Render a template pair and send it via the configured email backend.
@@ -52,6 +63,9 @@ def send_templated_email(subject: str, template: str, to_email: str, context: di
         logger.exception('Failed to render email template "%s"', template)
         return False
 
+    if not _smtp_details_configured():
+        return False
+
     message = EmailMultiAlternatives(
         subject=subject,
         body=plaintext,
@@ -61,9 +75,11 @@ def send_templated_email(subject: str, template: str, to_email: str, context: di
     message.attach_alternative(html, 'text/html')
 
     try:
-        sent = message.send()
+        with get_connection(fail_silently=True) as connection:
+            message.connection = connection
+            sent = message.send(fail_silently=True)
     except Exception:
-        logger.exception('Failed to send email "%s" to %s', template, to_email)
+        logger.exception('Unexpected failure getting connection for email "%s" to %s', template, to_email)
         return False
 
     if sent == 0:
