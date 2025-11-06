@@ -40,6 +40,18 @@ def frontend_url(path: str = '', query: dict | None = None) -> str:
 def _smtp_details_configured() -> bool:
     backend = getattr(settings, 'EMAIL_BACKEND', '')
     host = getattr(settings, 'EMAIL_HOST', '')
+    port = getattr(settings, 'EMAIL_PORT', '')
+    user = getattr(settings, 'EMAIL_HOST_USER', '')
+    password = getattr(settings, 'EMAIL_HOST_PASSWORD', '')
+    email_use_tls = getattr(settings, 'EMAIL_USE_TLS', '')
+    email_use_ssl = getattr(settings, 'EMAIL_USE_SSL', '')
+    print('Email backend:', backend)
+    print('Email host:', host)
+    print('Email port:', port)
+    print('Email user:', user)
+    print('Email password:', password)
+    print('Email use TLS:', email_use_tls)
+    print('Email use SSL:', email_use_ssl)
     if 'smtp' not in backend.lower():
         return True
     if not host:

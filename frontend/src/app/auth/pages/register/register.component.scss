@@ -41,6 +41,14 @@
   color: #b91c1c;
 }
 
+.alert__list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -83,6 +91,34 @@
   margin: 0;
   font-size: 0.85rem;
   color: #dc2626;
+}
+
+.form-error-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.85rem;
+  color: #dc2626;
+  list-style: disc;
+}
+
+.form-error-list li + li {
+  margin-top: 0.25rem;
+}
+
+.form-field--invalid label {
+  color: #b91c1c;
+}
+
+.form-field--invalid input,
+.form-field--invalid select,
+.input-invalid {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.1);
+}
+
+.input-invalid:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
 }
 
 .btn {
