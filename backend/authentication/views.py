@@ -26,6 +26,8 @@ from .utils import frontend_url, send_templated_email
 
 
 logger = logging.getLogger(__name__)
+SUPPORTED_LANG_CODES = {'en', 'de', 'ru', 'tr'}
+DEFAULT_LANG_CODE = 'en'
 
 
 class RegisterView(APIView):
@@ -41,7 +43,8 @@ class RegisterView(APIView):
         token = build_email_verification_token(user)
         print('RegisterView generated token:', token)
         profile = getattr(user, 'customer_profile', None)
-        preferred_language = (getattr(profile, 'preferred_language', '') or '').strip().lower() or 'en'
+        preferred_language = (getattr(profile, 'preferred_language', '') or '').strip().lower()
+        preferred_language = preferred_language if preferred_language in SUPPORTED_LANG_CODES else DEFAULT_LANG_CODE
         verify_path = f'{preferred_language}/auth/verify-email'
         verification_url = frontend_url(verify_path, {'key': token}) or ''
         print('RegisterView generated verification URL:', verification_url)
@@ -95,7 +98,11 @@ class ForgotPasswordView(APIView):
         user = serializer.validated_data.get('user')
         if user:
             payload = build_password_reset_payload(user)
-            reset_url = frontend_url('password/reset', payload) or ''
+            profile = getattr(user, 'customer_profile', None)
+            preferred_language = (getattr(profile, 'preferred_language', '') or '').strip().lower()
+            preferred_language = preferred_language if preferred_language in SUPPORTED_LANG_CODES else DEFAULT_LANG_CODE
+            reset_path = f'{preferred_language}/auth/reset-password'
+            reset_url = frontend_url(reset_path, payload) or ''
             context = {
                 'user': user,
                 'reset_url': reset_url,
