@@ -35,16 +35,25 @@ def frontend_url(path: str = '', query: dict | None = None) -> str:
 
 
 def send_templated_email(subject: str, template: str, to_email: str, context: dict) -> None:
-    plaintext = render_to_string(f'emails/{template}.txt', context)
-    html = render_to_string(f'emails/{template}.html', context)
-    message = EmailMultiAlternatives(
-        subject=subject,
-        body=plaintext,
-        from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', None),
-        to=[to_email],
-    )
-    message.attach_alternative(html, 'text/html')
-    message.send()
+    try:
+        plaintext = render_to_string(f'emails/{template}.txt', context)
+        print('send_templated_email plaintext:', plaintext)
+        html = render_to_string(f'emails/{template}.html',  context)
+        print('send_templated_email html:', html)
+        message = EmailMultiAlternatives(
+            subject=subject,
+            body=plaintext,
+            from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', None),
+            to=[to_email],
+        )
+        print('send_templated_email message created')
+        message.attach_alternative(html, 'text/html')
+        print('send_templated_email sending email to:', to_email)
+        message.send()
+        print('send_templated_email email sent')
+    except Exception as e:
+        print('send_templated_email failed with exception:', e)
+        raise e
 
 
 def mark_email_as_verified(user: Account) -> None:

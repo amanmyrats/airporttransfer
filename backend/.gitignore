@@ -4,6 +4,7 @@
 
 # Django stuff:
 *.log
+*.log.*
 /logs/*
 !/logs/.gitkeep
 
