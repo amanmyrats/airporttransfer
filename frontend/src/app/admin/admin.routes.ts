@@ -26,6 +26,10 @@ export const adminRoutes: Routes = [
         loadComponent: () => import('../auth/pages/logout/logout.component').then(m => m.LogoutComponent),
     },
     {
+        path: 'payments',
+        loadChildren: () => import('./payment/payment-admin.routes').then(m => m.paymentAdminRoutes),
+    },
+    {
         path: 'profile', 
         component: UserDetailComponent,
     },

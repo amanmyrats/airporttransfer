@@ -22,6 +22,7 @@ from .models import (
     ReservationChangeRequest,
     ReservationChangeRequestStatus,
     ReservationStatus,
+    ReservationPassenger,
 )
 from .services import (
     ALLOWED_CHANGE_FIELDS,
@@ -129,6 +130,102 @@ class ReservationClientSerializer(ModelSerializer):
     def get_can_review(self, obj: Reservation) -> bool:
         status = (getattr(obj, "status", "") or "").lower()
         return status in {"confirmed", "completed"}
+
+
+class ReservationDuePaymentSerializer(ReservationClientSerializer):
+    due_minor = serializers.SerializerMethodField()
+    due_currency = serializers.SerializerMethodField()
+
+    class Meta(ReservationClientSerializer.Meta):
+        fields = ReservationClientSerializer.Meta.fields + (
+            "due_minor",
+            "due_currency",
+        )
+        read_only_fields = fields
+
+    def get_due_minor(self, obj: Reservation):
+        payload = self._get_due_payload(obj)
+        return payload.get("due_minor")
+
+    def get_due_currency(self, obj: Reservation):
+        payload = self._get_due_payload(obj)
+        return payload.get("due_currency")
+
+    def _get_due_payload(self, obj: Reservation) -> dict:
+        due_map = self.context.get("due_map") or {}
+        reference = (obj.number or "").strip()
+        if not reference:
+            return {}
+        return due_map.get(reference, {})
+
+
+class ReservationPassengerReminderSerializer(ReservationClientSerializer):
+    class Meta(ReservationClientSerializer.Meta):
+        fields = ReservationClientSerializer.Meta.fields
+        read_only_fields = fields
+
+
+class ReservationPassengerSerializer(ModelSerializer):
+    class Meta:
+        model = ReservationPassenger
+        fields = ('id', 'full_name', 'is_child', 'order')
+        read_only_fields = ('id', 'order')
+
+
+class ReservationPassengerInputSerializer(serializers.Serializer):
+    full_name = serializers.CharField(max_length=255, allow_blank=False)
+    is_child = serializers.BooleanField()
+
+
+class ReservationPassengerListSerializer(serializers.Serializer):
+    passengers = ReservationPassengerInputSerializer(many=True)
+
+    def validate(self, attrs):
+        reservation: Reservation = self.context['reservation']
+        passengers = attrs.get('passengers') or []
+        for passenger in passengers:
+            passenger['full_name'] = passenger['full_name'].strip()
+            if not passenger['full_name']:
+                raise ValidationError('Passenger full names cannot be blank.')
+        expected_adults = max((reservation.passenger_count or 0) - 1, 0)
+        expected_children = reservation.passenger_count_child or 0
+        expected_total = expected_adults + expected_children
+
+        if expected_total == 0:
+            if passengers:
+                raise ValidationError('No additional passengers are expected for this reservation.')
+            return attrs
+
+        if len(passengers) != expected_total:
+            raise ValidationError(
+                f'Expected {expected_total} passenger entries (excluding the primary passenger), '
+                f'but received {len(passengers)}.'
+            )
+
+        actual_adults = sum(1 for passenger in passengers if not passenger['is_child'])
+        actual_children = len(passengers) - actual_adults
+
+        if actual_adults != expected_adults:
+            raise ValidationError('Adult passenger count does not match the reservation.')
+        if actual_children != expected_children:
+            raise ValidationError('Child passenger count does not match the reservation.')
+
+        return attrs
+
+    def save(self, **kwargs):
+        reservation: Reservation = self.context['reservation']
+        passengers = self.validated_data.get('passengers') or []
+        ReservationPassenger.objects.filter(reservation=reservation).delete()
+        instances = [
+            ReservationPassenger(
+                reservation=reservation,
+                full_name=passenger['full_name'].strip(),
+                is_child=passenger['is_child'],
+                order=index,
+            )
+            for index, passenger in enumerate(passengers)
+        ]
+        return ReservationPassenger.objects.bulk_create(instances)
 
 
 class ReservationChangeRequestSerializer(ModelSerializer):

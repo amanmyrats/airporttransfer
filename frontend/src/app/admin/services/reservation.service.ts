@@ -9,9 +9,12 @@ import { PaginatedResponse } from '../../models/paginated-response.model';
 import {
   CancelChangeRequestPayload,
   CreateChangeRequestPayload,
+  DuePaymentReservation,
   MyReservation,
   Reservation,
   ReservationChangeRequest,
+  ReservationPassengerEntry,
+  ReservationPassengerInput,
 } from '../models/reservation.model';
 
 interface PaginationMeta {
@@ -65,6 +68,8 @@ export class ReservationService {
       tap(response => {
         const items = response.results ?? [];
         this.myReservations.set(items);
+        console.log("items:");
+        console.log(items);
         this.myReservationsMeta.set({
           count: response.count ?? items.length,
           next: response.next ?? null,
@@ -83,6 +88,54 @@ export class ReservationService {
         this.upsertMyReservation(reservation);
       }),
       finalize(() => this.currentReservationLoading.set(false)),
+    );
+  }
+
+  listMyDuePayments(limit?: number): Observable<DuePaymentReservation[]> {
+    let params = new HttpParams();
+    if (typeof limit === 'number' && Number.isFinite(limit)) {
+      params = params.set('limit', String(limit));
+    }
+    const options: { params?: HttpParams } = {};
+    if (typeof limit === 'number' && Number.isFinite(limit)) {
+      options.params = params;
+    }
+    return this.http.get<DuePaymentReservation[]>(
+      `${this.accountApiBase}/me/reservations/due-payments/`,
+      options,
+    );
+  }
+
+  listMyReservationPassengers(reservationId: number): Observable<ReservationPassengerEntry[]> {
+    return this.http.get<ReservationPassengerEntry[]>(
+      `${this.accountApiBase}/me/reservations/${reservationId}/passengers/`,
+    );
+  }
+
+  saveMyReservationPassengers(
+    reservationId: number,
+    passengers: ReservationPassengerInput[],
+  ): Observable<ReservationPassengerEntry[]> {
+    return this.http.put<ReservationPassengerEntry[]>(
+      `${this.accountApiBase}/me/reservations/${reservationId}/passengers/`,
+      {
+        passengers,
+      },
+    );
+  }
+
+  listMyMissingPassengerReservations(limit?: number): Observable<MyReservation[]> {
+    let params = new HttpParams();
+    if (typeof limit === 'number' && Number.isFinite(limit)) {
+      params = params.set('limit', String(limit));
+    }
+    const options: { params?: HttpParams } = {};
+    if (typeof limit === 'number' && Number.isFinite(limit)) {
+      options.params = params;
+    }
+    return this.http.get<MyReservation[]>(
+      `${this.accountApiBase}/me/reservations/missing-passengers/`,
+      options,
     );
   }
 

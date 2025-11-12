@@ -84,6 +84,5 @@ class LedgerEntryAdmin(admin.ModelAdmin):
 
 @admin.register(BankTransferInstruction)
 class BankTransferInstructionAdmin(admin.ModelAdmin):
-    list_display = ("payment_intent", "bank_name", "iban", "expires_at")
-    search_fields = ("payment_intent__booking_ref", "iban", "bank_name")
-
+    list_display = ("payment_intent", "bank_name", "iban", "phone_number", "expires_at")
+    search_fields = ("payment_intent__booking_ref", "iban", "phone_number", "bank_name")

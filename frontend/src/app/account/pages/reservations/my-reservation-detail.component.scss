@@ -49,6 +49,35 @@ p-card {
   margin-bottom: 2rem;
 }
 
+.reservation-detail__passengers {
+  margin-bottom: 2rem;
+
+  .passenger-owner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    border: 1px solid var(--surface-border, #e5e7eb);
+    border-radius: 0.75rem;
+    background: var(--surface-overlay, #f9fafb);
+    margin-bottom: 1rem;
+
+    .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--surface-500, #6b7280);
+      letter-spacing: 0.04em;
+    }
+  }
+
+  .passenger-form__controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
 .reservation-detail__form h3,
 .reservation-detail__timeline h3 {
   margin: 0 0 1rem;

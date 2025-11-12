@@ -1,11 +1,11 @@
 <div class="stripe-payment" *ngIf="publishableKey && clientSecret; else missingConfig">
   <div id="payment-element"></div>
   <button type="button" (click)="confirm()" [disabled]="processing">
-    {{ processing ? 'Processing…' : 'Pay now' }}
+    {{ processing ? copy.processingLabel : copy.payNowLabel }}
   </button>
   <p class="status" *ngIf="message">{{ message }}</p>
 </div>
 
 <ng-template #missingConfig>
-  <p class="status">Card payments are not available at the moment.</p>
+  <p class="status">{{ copy.unavailable }}</p>
 </ng-template>

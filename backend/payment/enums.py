@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Iterable, Tuple
 
-BANK_SUPPORTED_CURRENCIES: Tuple[str, ...] = ("EUR", "USD", "TRY", "GBP")
+BANK_SUPPORTED_CURRENCIES: Tuple[str, ...] = ("EUR", "USD", "TRY", "GBP", "RUB")
 RUB_PHONE_CURRENCIES: Tuple[str, ...] = ("RUB",)
 
 class ChoiceEnum(StrEnum):

@@ -4,7 +4,20 @@ from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from django.db.models import Q, Exists, OuterRef, Subquery
+from django.db.models import (
+    Q,
+    Exists,
+    OuterRef,
+    Subquery,
+    Case,
+    When,
+    IntegerField,
+    Value,
+    Count,
+    F,
+    ExpressionWrapper,
+)
+from django.db.models.functions import Coalesce
 
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework import viewsets
@@ -23,6 +36,10 @@ from .serializers import (
     ReservationStatusModelSerializer, 
     ContactUsMessageModelSerializer,
     ReservationClientSerializer,
+    ReservationDuePaymentSerializer,
+    ReservationPassengerReminderSerializer,
+    ReservationPassengerSerializer,
+    ReservationPassengerListSerializer,
     ReservationChangeRequestSerializer,
     ReservationChangeRequestCreateSerializer,
 )
@@ -31,6 +48,7 @@ from .models import (
     ReservationChangeRequest,
     ReservationChangeRequestStatus,
     ReservationStatus,
+    ReservationPassenger,
 )
 from .filtersets import (
     ReservationFilterSet, ContactUsMessageFilterSet, 
@@ -40,6 +58,7 @@ from .resources import (
 )
 from .services import apply_change_request
 from reviews.utils import reservation_belongs_to_user
+from payment.models import PaymentIntent
 
 
 logger = logging.getLogger("airporttransfer")
@@ -340,6 +359,40 @@ def _ensure_reservation_access(reservation: Reservation, user) -> None:
         raise PermissionDenied("Reservation not found.")
 
 
+def _reservations_queryset_for_user(user):
+    field_names = {field.name for field in Reservation._meta.get_fields()}
+    filters = Q()
+
+    email = (getattr(user, "email", "") or "").strip()
+    if email:
+        filters |= Q(passenger_email__iexact=email)
+
+    if "owner" in field_names:
+        filters |= Q(owner=user)
+
+    if "account" in field_names:
+        filters |= Q(account=user)
+
+    if "customer_profile" in field_names and hasattr(user, "customer_profile"):
+        filters |= Q(customer_profile=user.customer_profile)
+
+    if not filters:
+        return Reservation.objects.none()
+
+    return Reservation.objects.filter(filters).distinct()
+
+
+STATUS_PRIORITY_SEQUENCE = [
+    ReservationStatus.DRAFT,
+    ReservationStatus.AWAITING_PAYMENT,
+    ReservationStatus.CONFIRMED,
+    ReservationStatus.COMPLETED,
+    ReservationStatus.CANCELLED_BY_USER,
+    ReservationStatus.CANCELLED_BY_OPERATOR,
+    ReservationStatus.NO_SHOW,
+]
+
+
 class MyReservationListAPIView(ListAPIView):
     serializer_class = ReservationClientSerializer
     permission_classes = [IsAuthenticated]
@@ -359,37 +412,160 @@ class MyReservationListAPIView(ListAPIView):
         "transfer_time",
         "reservation_date",
         "status",
+        "status_priority",
         "payment_status",
         "created_at",
     )
-    ordering = ("-reservation_date", "-transfer_date", "-transfer_time", "-created_at")
+    ordering = ("status_priority", "status", "-reservation_date", "-transfer_date", "-transfer_time", "-created_at")
 
     def get_queryset(self):
-        user = self.request.user
-        field_names = {field.name for field in Reservation._meta.get_fields()}
-        filters = Q()
-
-        email = (getattr(user, "email", "") or "").strip()
-        if email:
-            filters |= Q(passenger_email__iexact=email)
-
-        if "owner" in field_names:
-            filters |= Q(owner=user)
-
-        if "account" in field_names:
-            filters |= Q(account=user)
-
-        if "customer_profile" in field_names and hasattr(user, "customer_profile"):
-            filters |= Q(customer_profile=user.customer_profile)
-
-        if not filters:
-            return Reservation.objects.none()
-
-        return (
-            Reservation.objects.filter(filters)
-            .order_by(*self.ordering)
-            .distinct()
+        base_queryset = _reservations_queryset_for_user(self.request.user)
+        priority_case = Case(
+            *[
+                When(status=status_value, then=Value(index))
+                for index, status_value in enumerate(STATUS_PRIORITY_SEQUENCE)
+            ],
+            default=Value(len(STATUS_PRIORITY_SEQUENCE)),
+            output_field=IntegerField(),
         )
+        return (
+            base_queryset.annotate(status_priority=priority_case)
+            .order_by(*self.ordering)
+        )
+
+
+class MyReservationDuePaymentListAPIView(ListAPIView):
+    serializer_class = ReservationDuePaymentSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = None
+
+    DUE_RESERVATION_STATUSES = [
+        ReservationStatus.DRAFT,
+        ReservationStatus.AWAITING_PAYMENT,
+    ]
+    DUE_PAYMENT_STATES = ["unpaid"]
+
+    def get_queryset(self):
+        base_queryset = _reservations_queryset_for_user(self.request.user)
+        return (
+            base_queryset.filter(
+                status__in=self.DUE_RESERVATION_STATUSES,
+                payment_status__in=self.DUE_PAYMENT_STATES,
+            )
+            .order_by("-updated_at", "-created_at")
+        )
+
+    def list(self, request, *args, **kwargs):
+        queryset = list(self.get_queryset()[: self._limit()])
+        due_map = self._build_due_map(res.number for res in queryset)
+        serializer = self.get_serializer(
+            queryset,
+            many=True,
+            context={
+                **self.get_serializer_context(),
+                "due_map": due_map,
+            },
+        )
+        return Response(serializer.data)
+
+    def _limit(self) -> int:
+        raw_limit = self.request.query_params.get("limit")
+        try:
+            limit = int(raw_limit) if raw_limit is not None else 5
+        except (TypeError, ValueError):
+            limit = 5
+        return max(1, min(limit, 10))
+
+    def _build_due_map(self, booking_refs_iterable):
+        booking_refs = list({reference for reference in booking_refs_iterable if reference})
+        if not booking_refs:
+            return {}
+
+        intents = (
+            PaymentIntent.objects.filter(booking_ref__in=booking_refs)
+            .order_by("booking_ref", "-created_at")
+        )
+        due_map = {}
+        for intent in intents:
+            reference = intent.booking_ref
+            if reference in due_map:
+                continue
+            due_map[reference] = {
+                "due_minor": intent.due_minor,
+                "due_currency": intent.currency,
+            }
+        return due_map
+
+
+class MyReservationMissingPassengerListAPIView(ListAPIView):
+    serializer_class = ReservationPassengerReminderSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = None
+    MAX_RESULTS = 5
+    ACTIVE_STATUSES = [
+        ReservationStatus.DRAFT,
+        ReservationStatus.AWAITING_PAYMENT,
+        ReservationStatus.CONFIRMED,
+    ]
+
+    def get_queryset(self):
+        reservation_qs = _reservations_queryset_for_user(self.request.user).filter(
+            status__in=self.ACTIVE_STATUSES,
+        )
+        extra_adults = Case(
+            When(passenger_count__gt=1, then=F('passenger_count') - 1),
+            default=Value(0),
+            output_field=IntegerField(),
+        )
+        expected_extra = ExpressionWrapper(
+            extra_adults + Coalesce(F('passenger_count_child'), Value(0)),
+            output_field=IntegerField(),
+        )
+        annotated = reservation_qs.annotate(
+            passenger_names_count=Count('passengers', distinct=True),
+            expected_extra=expected_extra,
+        )
+        pending = annotated.filter(
+            expected_extra__gt=0,
+            passenger_names_count__lt=F('expected_extra'),
+        ).order_by('-updated_at', '-created_at')
+        return pending[: self._limit()]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True, context=self.get_serializer_context())
+        return Response(serializer.data)
+
+    def _limit(self) -> int:
+        raw = self.request.query_params.get('limit')
+        try:
+            value = int(raw) if raw is not None else self.MAX_RESULTS
+        except (TypeError, ValueError):
+            value = self.MAX_RESULTS
+        return max(1, min(value, self.MAX_RESULTS))
+
+
+class MyReservationPassengersAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, reservation_id: int, *args, **kwargs):
+        reservation = get_object_or_404(Reservation, pk=reservation_id)
+        _ensure_reservation_access(reservation, request.user)
+        passengers = ReservationPassenger.objects.filter(reservation=reservation).order_by('order', 'id')
+        serializer = ReservationPassengerSerializer(passengers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, reservation_id: int, *args, **kwargs):
+        reservation = get_object_or_404(Reservation, pk=reservation_id)
+        _ensure_reservation_access(reservation, request.user)
+        serializer = ReservationPassengerListSerializer(
+            data=request.data or {},
+            context={'reservation': reservation},
+        )
+        serializer.is_valid(raise_exception=True)
+        passengers = serializer.save()
+        response_serializer = ReservationPassengerSerializer(passengers, many=True)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
 
 
 class MyReservationDetailAPIView(APIView):

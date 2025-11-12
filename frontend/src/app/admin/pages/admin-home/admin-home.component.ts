@@ -35,6 +35,9 @@ import { ChangeRequestService } from '../../services/change-request.service';
 import { ContactUsMessageService } from '../../services/contact-us-message.service';
 import { ReviewsService } from '../../services/reviews.service';
 import { AdminReview } from '../../../account/models/review.models';
+import { PendingSettlementIntent } from '../../../payment/models/payment.models';
+import { PaymentAdminService } from '../../payment/services/payment-admin.service';
+import { formatMinor } from '../../../payment/utils/money.util';
 
 interface DashboardKpi {
   id: string;
@@ -92,6 +95,7 @@ export class AdminHomeComponent implements OnInit {
   showDashboard = false;
   private hasLoadedDashboard = false;
 
+  readonly pendingSettlementLimit = 5;
   readonly upcomingTransferLimit = 5;
   readonly urgentChangeRequestLimit = 5;
   readonly urgentReviewLimit = 5;
@@ -103,6 +107,9 @@ export class AdminHomeComponent implements OnInit {
   readonly pendingConfirmationQueryParams: Record<string, unknown> = {
     status: 'draft',
   };
+  readonly pendingSettlementQueryParams: Record<string, string> = {
+    status: 'processing',
+  };
   readonly changeRequestQueryParams: Record<string, unknown> = {
     has_change_request: true,
   };
@@ -113,6 +120,7 @@ export class AdminHomeComponent implements OnInit {
 
   kpis: DashboardKpi[] = [];
   showKpis = false;
+  pendingSettlementIntents: PendingSettlementIntent[] = [];
   upcomingTransfers: Reservation[] = [];
   urgentChangeRequests: ReservationChangeRequest[] = [];
   urgentReviews: AdminReview[] = [];
@@ -135,6 +143,7 @@ export class AdminHomeComponent implements OnInit {
     private meta: Meta,
     private reservationService: ReservationService,
     private changeRequestService: ChangeRequestService,
+    private paymentAdminService: PaymentAdminService,
     private contactUsMessageService: ContactUsMessageService,
     private reviewsService: ReviewsService,
   ) {
@@ -221,6 +230,20 @@ export class AdminHomeComponent implements OnInit {
     });
   }
 
+  openPendingIntent(intent: PendingSettlementIntent, event?: Event): void {
+    event?.preventDefault();
+    event?.stopPropagation();
+    const queryParams: Record<string, string> = {
+      ...this.pendingSettlementQueryParams,
+    };
+    if (intent.booking_ref) {
+      queryParams['search'] = intent.booking_ref;
+    }
+    this.router.navigate(['/admin/payments/intents'], {
+      queryParams,
+    });
+  }
+
   private setSuperAdminMenu() {
     this.items = [
       {
@@ -247,6 +270,32 @@ export class AdminHomeComponent implements OnInit {
         label: 'Kurlar',
         icon: 'pi pi-dollar',
         routerLink: '/admin/rates/'
+      },
+      {
+        label: 'Ödemeler',
+        icon: 'pi pi-credit-card',
+        items: [
+          {
+            label: 'Ödeme Niyetleri',
+            icon: 'pi pi-check',
+            routerLink: '/admin/payments/intents'
+          },
+          {
+            label: 'İşlem Kayıtları',
+            icon: 'pi pi-list',
+            routerLink: '/admin/payments/transactions'
+          },
+          {
+            label: 'Manuel Tahsilat',
+            icon: 'pi pi-check-square',
+            routerLink: '/admin/payments/offline-settlement'
+          },
+          {
+            label: 'İade Oluştur',
+            icon: 'pi pi-refresh',
+            routerLink: '/admin/payments/refund-issue'
+          },
+        ],
       },
       {
         label: 'Kullanıcılar',
@@ -362,6 +411,10 @@ export class AdminHomeComponent implements OnInit {
       page_size: this.pendingConfirmationLimit,
     });
 
+    const pendingSettlementIntents$ = this.paymentAdminService.listPendingSettlementIntents(
+      this.pendingSettlementLimit,
+    );
+
     const recentReservations$ = this.reservationService.listAdmin({
       ordering: '-created_at',
       page_size: this.activityItemLimit,
@@ -381,6 +434,7 @@ export class AdminHomeComponent implements OnInit {
       flaggedReviews: flaggedReviews$,
       pendingReviews: pendingReviews$,
       pendingConfirmationReservations: pendingConfirmationReservations$,
+      pendingSettlementIntents: pendingSettlementIntents$,
       recentReservations: recentReservations$,
       recentReviews: recentReviews$,
     })
@@ -406,6 +460,7 @@ export class AdminHomeComponent implements OnInit {
           flaggedReviews,
           pendingReviews,
           pendingConfirmationReservations,
+          pendingSettlementIntents,
           recentReservations,
           recentReviews,
         } = results;
@@ -438,6 +493,11 @@ export class AdminHomeComponent implements OnInit {
         this.pendingConfirmationReservations = (pendingConfirmationReservations.results ?? []).slice(
           0,
           this.pendingConfirmationLimit,
+        );
+
+        this.pendingSettlementIntents = (pendingSettlementIntents ?? []).slice(
+          0,
+          this.pendingSettlementLimit,
         );
 
         this.activityFeed = this.buildActivityFeed(
@@ -644,5 +704,12 @@ export class AdminHomeComponent implements OnInit {
       transfer_date_time_to: next24h.toISOString(),
       ordering: 'transfer_date,transfer_time',
     };
+  }
+
+  formatCurrency(amountMinor: number | null | undefined, currency: string | null | undefined): string {
+    if (typeof amountMinor !== 'number' || !currency) {
+      return '—';
+    }
+    return formatMinor(amountMinor, currency);
   }
 }

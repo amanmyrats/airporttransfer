@@ -1,5 +1,6 @@
 export class Language {
-    code?: string;
-    name?: string;
-    flag?: string;
+    code!: string;
+    name!: string;
+    flag!: string;
+    url?: string;
 }

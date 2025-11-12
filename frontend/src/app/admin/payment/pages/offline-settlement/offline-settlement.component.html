@@ -1,0 +1,65 @@
+<section class="admin-card">
+  <h1>Offline settlement</h1>
+  <p>Record manual transfers for pending intents. Enter the intent public ID and the amount in minor units.</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="publicId">Intent public ID</label>
+      <div class="field-inline">
+        <input id="publicId" type="text" pInputText formControlName="publicId" placeholder="e.g. 1f2a..." />
+        <button
+          type="button"
+          pButton
+          class="p-button-outlined"
+          icon="pi pi-clipboard"
+          label="Paste"
+          (click)="pastePublicId()"
+        ></button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="amountMinor">Amount (minor units)</label>
+      <input id="amountMinor" type="number" formControlName="amountMinor" [min]="1" placeholder="15000" />
+      <small *ngIf="amountPreview()">Preview: {{ amountPreview() }}</small>
+    </div>
+
+    <div class="field">
+      <label for="currency">Preview currency</label>
+      <select id="currency" formControlName="previewCurrency">
+        <option *ngFor="let currency of currencyOptions" [value]="currency">{{ currency }}</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="note">Internal note</label>
+      <textarea id="note" pInputTextarea formControlName="note" rows="3"></textarea>
+    </div>
+
+    <button pButton type="submit" label="Settle payment" [disabled]="form.invalid || submitting()" [loading]="submitting()"></button>
+  </form>
+
+  <p class="error" *ngIf="error()">{{ error() }}</p>
+
+  <section class="result" *ngIf="result() as payment">
+    <h2>Payment recorded</h2>
+    <dl>
+      <div>
+        <dt>Provider payment ID</dt>
+        <dd>{{ payment.provider_payment_id }}</dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd>{{ payment.status }}</dd>
+      </div>
+      <div>
+        <dt>Amount</dt>
+        <dd>{{ payment.amount_minor }} {{ payment.currency }}</dd>
+      </div>
+      <div>
+        <dt>Refundable amount</dt>
+        <dd>{{ payment.refundable_minor }}</dd>
+      </div>
+    </dl>
+  </section>
+</section>

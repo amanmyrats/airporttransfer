@@ -62,22 +62,28 @@ def list_available_methods() -> list[AvailableMethod]:
         "PAYMENT_OFFLINE_CHANNELS",
         [m.value for m in PaymentMethod if m.is_offline],
     )
+    default_currencies = ("EUR", "USD", "TRY", "GBP", "RUB")
     for method_value in offline_methods:
         method = PaymentMethod(method_value)
+        provider_currencies = tuple(_provider_currencies(ProviderSlug.OFFLINE.value)) or default_currencies
+        method_currencies = tuple(
+            currency for currency in provider_currencies if method.supports_currency(currency)
+        ) or default_currencies
         enabled.append(
             AvailableMethod(
                 method=method,
-                currencies=tuple(_provider_currencies(ProviderSlug.OFFLINE.value)) or ("EUR", "USD", "TRY"),
+                currencies=method_currencies,
                 provider=ProviderSlug.OFFLINE.value,
                 metadata={},
             )
         )
 
     if getattr(settings, "PAYMENT_ENABLE_CARD", False):
+        provider_currencies = tuple(_provider_currencies(ProviderSlug.STRIPE.value)) or default_currencies
         enabled.append(
             AvailableMethod(
                 method=PaymentMethod.CARD,
-                currencies=tuple(_provider_currencies(ProviderSlug.STRIPE.value)) or ("EUR", "USD", "TRY"),
+                currencies=provider_currencies,
                 provider=ProviderSlug.STRIPE.value,
                 metadata={
                     "publishable_key": getattr(

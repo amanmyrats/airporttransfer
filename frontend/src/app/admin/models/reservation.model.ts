@@ -97,6 +97,36 @@ export interface MyReservation {
   updated_at: string;
 }
 
+export type DuePaymentReservation = Pick<
+  MyReservation,
+  | 'id'
+  | 'number'
+  | 'status'
+  | 'payment_status'
+  | 'transfer_date'
+  | 'transfer_time'
+  | 'pickup_short'
+  | 'pickup_full'
+  | 'dest_short'
+  | 'dest_full'
+> & {
+  due_minor: number | null;
+  due_currency: string | null;
+};
+
+export interface ReservationPassengerEntry {
+  id: number;
+  full_name: string;
+  is_child: boolean;
+  order: number;
+}
+
+export interface ReservationPassengerInput {
+  full_name: string;
+  is_child: boolean;
+  order: number;
+}
+
 export interface ReservationChangeSet {
   transfer_date?: string | null;
   transfer_time?: string | null;

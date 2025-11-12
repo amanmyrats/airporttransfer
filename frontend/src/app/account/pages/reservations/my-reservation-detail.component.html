@@ -1,3 +1,5 @@
+<p-toast position="bottom-right" [life]="8000"></p-toast>
+
 <p-card header="Reservation detail" class="reservation-detail">
   <ng-container *ngIf="reservation() as reservation; else loading">
     <section class="reservation-detail__summary">
@@ -34,6 +36,42 @@
           <span>{{ reservation.note || '—' }}</span>
         </div>
       </div>
+    </section>
+
+    <section class="reservation-detail__passengers">
+      <h3>Passenger list</h3>
+      <div class="passenger-owner">
+        <span class="label">Primary passenger</span>
+        <span>{{ primaryPassengerName() }}</span>
+      </div>
+      <ng-container *ngIf="hasAdditionalPassengers(); else standalonePassenger">
+        <p class="reservation-detail__info">
+          Provide the full names for the remaining passengers so your driver knows who to expect.
+        </p>
+        <form [formGroup]="passengerListForm" (ngSubmit)="savePassengerList()" class="passenger-form">
+          <div class="passenger-form__controls" formArrayName="passengers">
+            <label *ngFor="let descriptor of passengerDescriptors(); let i = index">
+              <span>{{ descriptor.label }} <small *ngIf="descriptor.isChild">(Child)</small></span>
+              <input type="text" [formControlName]="i" placeholder="Full name" />
+            </label>
+          </div>
+          <div class="form-actions">
+            <button
+              pButton
+              type="submit"
+              label="Save passenger list"
+              [disabled]="passengerFormDisabled()"
+              [loading]="passengerSaving()"
+            ></button>
+          </div>
+        </form>
+        <p class="reservation-detail__info" *ngIf="passengerLoading()">Loading passenger names…</p>
+      </ng-container>
+      <ng-template #standalonePassenger>
+        <p class="reservation-detail__info">
+          This reservation only lists the primary passenger above. No additional names are required.
+        </p>
+      </ng-template>
     </section>
 
     <section class="reservation-detail__form">
@@ -101,7 +139,8 @@
               pButton
               type="submit"
               label="Submit change request"
-              [disabled]="changeRequestsLoading()"
+              [disabled]="changeRequestsLoading() || changeRequestSubmitting()"
+              [loading]="changeRequestSubmitting()"
             ></button>
           </div>
         </form>

@@ -8,20 +8,23 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { take, tap } from 'rxjs/operators';
+import { FormArray, FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { finalize, take, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 import { ReservationService } from '../../../admin/services/reservation.service';
 import { LanguageService } from '../../../services/language.service';
-import { NotificationService } from '../../../services/notification.service';
 import {
   ChangeRequestStatus,
   ReservationChangeRequest,
   ReservationChangeSet,
   MyReservation,
+  ReservationPassengerEntry,
+  ReservationPassengerInput,
 } from '../../../admin/models/reservation.model';
 
 const PENDING_STATUSES: ChangeRequestStatus[] = [
@@ -29,20 +32,27 @@ const PENDING_STATUSES: ChangeRequestStatus[] = [
   'awaiting_user_payment',
 ];
 
+interface PassengerDescriptor {
+  label: string;
+  isChild: boolean;
+  order: number;
+}
+
 @Component({
   selector: 'app-my-reservation-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, CardModule, ButtonModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, CardModule, ButtonModule, ToastModule, ReactiveFormsModule],
   templateUrl: './my-reservation-detail.component.html',
   styleUrl: './my-reservation-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [MessageService],
 })
 export class MyReservationDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly reservationService = inject(ReservationService);
   private readonly languageService = inject(LanguageService);
-  private readonly notificationService = inject(NotificationService);
+  private readonly messageService = inject(MessageService);
   private readonly fb = inject(FormBuilder);
 
   readonly reservationId = signal<number | null>(null);
@@ -94,6 +104,25 @@ export class MyReservationDetailComponent {
     child_seat_count: [{ value: 0, disabled: true }],
     note: [''],
   });
+  readonly passengerListForm = this.fb.group({
+    passengers: this.fb.array([]),
+  });
+  readonly passengerEntries = signal<ReservationPassengerEntry[]>([]);
+  readonly passengerLoading = signal(false);
+  readonly passengerSaving = signal(false);
+  readonly passengerDescriptors = computed<PassengerDescriptor[]>(() =>
+    this.buildPassengerDescriptors(this.reservation()),
+  );
+  readonly hasAdditionalPassengers = computed(() => this.passengerDescriptors().length > 0);
+  readonly primaryPassengerName = computed(() => {
+    const reservation = this.reservation();
+    return (
+      reservation?.passenger_name?.trim() ||
+      reservation?.passenger_email?.trim() ||
+      'Primary passenger'
+    );
+  });
+  readonly changeRequestSubmitting = signal(false);
 
   private readonly patchEffect = effect(() => {
     const reservation = this.reservation();
@@ -115,6 +144,38 @@ export class MyReservationDetailComponent {
       { emitEvent: false },
     );
     this.syncChildSeatCount(Boolean(reservation.need_child_seat));
+  });
+  private passengerSnapshotKey: string | null = null;
+  private readonly passengerFormEffect = effect(() => {
+    const descriptors = this.passengerDescriptors();
+    this.syncPassengerControls(descriptors.length);
+    const entries = this.passengerEntries();
+    descriptors.forEach((descriptor, index) => {
+      const control = this.passengerArray.at(index) as FormControl | null;
+      if (!control) {
+        return;
+      }
+      const match = entries.find(
+        entry => entry.order === descriptor.order && entry.is_child === descriptor.isChild,
+      );
+      const nextValue = match?.full_name ?? '';
+      if (control.value !== nextValue) {
+        control.patchValue(nextValue, { emitEvent: false });
+      }
+    });
+  });
+  private readonly passengerLoadEffect = effect(() => {
+    const reservation = this.reservation();
+    const reservationId = this.reservationId();
+    if (!reservation || !reservationId) {
+      return;
+    }
+    const snapshotKey = `${reservationId}:${reservation.passenger_count ?? 0}:${reservation.passenger_count_child ?? 0}:${reservation.updated_at ?? ''}`;
+    if (snapshotKey === this.passengerSnapshotKey) {
+      return;
+    }
+    this.passengerSnapshotKey = snapshotKey;
+    this.loadPassengers(reservationId);
   });
 
   constructor() {
@@ -157,7 +218,7 @@ export class MyReservationDetailComponent {
     }
     const changes = this.buildChangeSet();
     if (Object.keys(changes).length === 0) {
-      this.notificationService.add({
+      this.messageService.add({
         severity: 'warn',
         detail: 'Please adjust at least one field before submitting a change request.',
       });
@@ -168,22 +229,30 @@ export class MyReservationDetailComponent {
       changes,
     };
 
-    this.reservationService.createMyChangeRequest(reservationId, payload).subscribe({
-      next: changeRequest => {
-        this.notificationService.add({
-          severity: 'success',
-          detail:
-            changeRequest.status === 'approved_applied'
-              ? 'Your changes have been applied.'
-              : 'Change request submitted for review.',
-        });
-        this.refreshReservation(reservationId);
-      },
-      error: error => {
-        const detail = error?.error?.detail || 'Unable to submit change request.';
-        this.notificationService.add({ severity: 'error', detail });
-      },
+    this.changeRequestSubmitting.set(true);
+    this.messageService.add({
+      severity: 'info',
+      detail: 'Submitting your change request…',
     });
+    this.reservationService
+      .createMyChangeRequest(reservationId, payload)
+      .pipe(finalize(() => this.changeRequestSubmitting.set(false)))
+      .subscribe({
+        next: changeRequest => {
+          this.messageService.add({
+            severity: 'success',
+            detail:
+              changeRequest.status === 'approved_applied'
+                ? 'Your changes have been applied.'
+                : 'Change request submitted for review.',
+          });
+          this.refreshReservation(reservationId);
+        },
+        error: error => {
+          const detail = error?.error?.detail || 'Unable to submit change request.';
+          this.messageService.add({ severity: 'error', detail });
+        },
+      });
   }
 
   cancelChangeRequest(request: ReservationChangeRequest): void {
@@ -192,7 +261,7 @@ export class MyReservationDetailComponent {
     }
     this.reservationService.cancelMyChangeRequest(request.id, {}).subscribe({
       next: () => {
-        this.notificationService.add({
+        this.messageService.add({
           severity: 'info',
           detail: 'Change request cancelled.',
         });
@@ -200,7 +269,7 @@ export class MyReservationDetailComponent {
       },
       error: error => {
         const detail = error?.error?.detail || 'Unable to cancel change request.';
-        this.notificationService.add({ severity: 'error', detail });
+        this.messageService.add({ severity: 'error', detail });
       },
     });
   }
@@ -227,13 +296,13 @@ export class MyReservationDetailComponent {
     this.reservationService.getMyReservation(id).subscribe({
       error: error => {
         const detail = error?.error?.detail || 'Unable to load reservation.';
-        this.notificationService.add({ severity: 'error', detail });
+        this.messageService.add({ severity: 'error', detail });
       },
     });
     this.reservationService.listMyChangeRequests(id).subscribe({
       error: error => {
         const detail = error?.error?.detail || 'Unable to load change requests.';
-        this.notificationService.add({ severity: 'error', detail });
+        this.messageService.add({ severity: 'error', detail });
       },
     });
   }
@@ -309,5 +378,112 @@ export class MyReservationDetailComponent {
 
   needChildSeatSelected(): boolean {
     return Boolean(this.form.get('need_child_seat')?.value);
+  }
+
+  passengerFormDisabled(): boolean {
+    return this.passengerSaving() || this.passengerLoading();
+  }
+
+  savePassengerList(): void {
+    const reservationId = this.reservationId();
+    const descriptors = this.passengerDescriptors();
+    if (!reservationId || descriptors.length === 0) {
+      return;
+    }
+    const values = (this.passengerArray.value as Array<string | null | undefined>).map(value =>
+      (value ?? '').trim(),
+    );
+    const missingIndex = values.findIndex(value => !value);
+    if (missingIndex !== -1) {
+      this.messageService.add({
+        severity: 'warn',
+        detail: 'Please enter the full name for every passenger.',
+      });
+      return;
+    }
+    const payload: ReservationPassengerInput[] = descriptors.map((descriptor, index) => ({
+      full_name: values[index] ?? '',
+      is_child: descriptor.isChild,
+      order: descriptor.order,
+    }));
+    this.passengerSaving.set(true);
+    this.messageService.add({
+      severity: 'info',
+      detail: 'Saving passenger list…',
+    });
+    this.reservationService
+      .saveMyReservationPassengers(reservationId, payload)
+      .pipe(finalize(() => this.passengerSaving.set(false)))
+      .subscribe({
+        next: passengers => {
+          this.passengerEntries.set(passengers ?? []);
+          this.messageService.add({
+            severity: 'success',
+            detail: 'Passenger list updated.',
+          });
+        },
+        error: error => {
+          const detail = error?.error?.detail || 'Unable to update passenger list.';
+          this.messageService.add({ severity: 'error', detail });
+        },
+      });
+  }
+
+  private buildPassengerDescriptors(reservation: MyReservation | null): PassengerDescriptor[] {
+    if (!reservation) {
+      return [];
+    }
+    const totalAdults = Math.max(reservation.passenger_count ?? 0, 0);
+    const totalChildren = Math.max(reservation.passenger_count_child ?? 0, 0);
+    const additionalAdults = Math.max(totalAdults - 1, 0);
+    const descriptors: PassengerDescriptor[] = [];
+    for (let i = 0; i < additionalAdults; i += 1) {
+      descriptors.push({
+        label: `Passenger ${i + 2}`,
+        isChild: false,
+        order: descriptors.length,
+      });
+    }
+    for (let i = 0; i < totalChildren; i += 1) {
+      descriptors.push({
+        label: `Child ${i + 1}`,
+        isChild: true,
+        order: descriptors.length,
+      });
+    }
+    return descriptors;
+  }
+
+  private loadPassengers(reservationId: number): void {
+    this.passengerLoading.set(true);
+    this.reservationService.listMyReservationPassengers(reservationId).subscribe({
+      next: passengers => {
+        this.passengerEntries.set(passengers ?? []);
+        this.passengerLoading.set(false);
+      },
+      error: error => {
+        this.passengerEntries.set([]);
+        this.passengerLoading.set(false);
+        const detail = error?.error?.detail || 'Unable to load passenger names.';
+        this.messageService.add({ severity: 'warn', detail });
+      },
+    });
+  }
+
+  private syncPassengerControls(expected: number): void {
+    const array = this.passengerArray;
+    if (array.length > expected) {
+      while (array.length > expected) {
+        array.removeAt(array.length - 1);
+      }
+    } else {
+      while (array.length < expected) {
+        array.push(new FormControl(''));
+      }
+    }
+  }
+
+  private get passengerArray(): FormArray {
+    return this.passengerListForm.get('passengers') as FormArray;
   }
 }

@@ -20,6 +20,7 @@ from .validators import (
     validate_currency,
     validate_payment_method,
 )
+from transfer.models import Reservation
 
 
 class CustomerSerializer(serializers.Serializer):
@@ -28,6 +29,8 @@ class CustomerSerializer(serializers.Serializer):
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    intent = serializers.SerializerMethodField()
+
     class Meta:
         model = Payment
         fields = (
@@ -42,7 +45,18 @@ class PaymentSerializer(serializers.ModelSerializer):
             "captured_at",
             "refundable_minor",
             "metadata",
+            "intent",
         )
+
+    def get_intent(self, obj: Payment):
+        intent = obj.payment_intent
+        if not intent:
+            return None
+        return {
+            "public_id": str(intent.public_id),
+            "booking_ref": intent.booking_ref,
+            "method": intent.method,
+        }
 
 
 class RefundSerializer(serializers.ModelSerializer):
@@ -75,6 +89,7 @@ class BankTransferInstructionSerializer(serializers.ModelSerializer):
         model = BankTransferInstruction
         fields = (
             "iban",
+            "phone_number",
             "account_name",
             "bank_name",
             "reference_text",
@@ -87,6 +102,9 @@ class PaymentIntentDetailSerializer(serializers.ModelSerializer):
     offline_receipts = OfflineReceiptSerializer(many=True, read_only=True)
     bank_transfer_instruction = BankTransferInstructionSerializer(read_only=True)
     ledger_entries = serializers.SerializerMethodField()
+    paid_minor = serializers.SerializerMethodField()
+    refunded_minor = serializers.SerializerMethodField()
+    due_minor = serializers.SerializerMethodField()
 
     class Meta:
         model = PaymentIntent
@@ -111,6 +129,9 @@ class PaymentIntentDetailSerializer(serializers.ModelSerializer):
             "offline_receipts",
             "bank_transfer_instruction",
             "ledger_entries",
+            "paid_minor",
+            "refunded_minor",
+            "due_minor",
         )
 
     def get_ledger_entries(self, obj: PaymentIntent) -> list[dict[str, Any]]:
@@ -127,6 +148,15 @@ class PaymentIntentDetailSerializer(serializers.ModelSerializer):
             }
             for entry in entries
         ]
+
+    def get_paid_minor(self, obj: PaymentIntent) -> int:
+        return obj.paid_minor
+
+    def get_refunded_minor(self, obj: PaymentIntent) -> int:
+        return obj.refunded_minor
+
+    def get_due_minor(self, obj: PaymentIntent) -> int:
+        return obj.due_minor
 
 
 class PaymentIntentCreateSerializer(serializers.Serializer):
@@ -169,6 +199,10 @@ class PaymentIntentCreateSerializer(serializers.Serializer):
         if validated_data["method"] == PaymentMethod.BANK_TRANSFER.value:
             offline_instructions = (
                 getattr(settings, "PAYMENT_BANK_TRANSFER_INSTRUCTIONS", None) or {}
+            )
+        elif validated_data["method"] == PaymentMethod.RUB_PHONE_TRANSFER.value:
+            offline_instructions = (
+                getattr(settings, "PAYMENT_RUB_PHONE_TRANSFER_INSTRUCTIONS", None) or {}
             )
         return services.create_payment_intent(
             customer=customer,
@@ -234,6 +268,19 @@ class OfflineSettleSerializer(serializers.Serializer):
         )
 
 
+class OfflineDeclineSerializer(serializers.Serializer):
+    reason = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+
+    def save(self, **kwargs) -> PaymentIntent:
+        public_id = kwargs.get("public_id")
+        if not public_id:
+            raise serializers.ValidationError("Missing payment intent identifier.")
+        return services.decline_offline_intent(
+            public_id=public_id,
+            reason=self.validated_data.get("reason"),
+        )
+
+
 class RefundCreateSerializer(serializers.Serializer):
     payment_id = serializers.IntegerField()
     amount_minor = serializers.IntegerField(required=False, allow_null=True)
@@ -247,6 +294,63 @@ class RefundCreateSerializer(serializers.Serializer):
             reason=self.validated_data.get("reason"),
             idempotency_key=self.validated_data.get("idempotency_key"),
         )
+
+
+class PendingIntentReservationSerializer(serializers.ModelSerializer):
+    transfer_time = serializers.TimeField(format="%H:%M", allow_null=True)
+
+    class Meta:
+        model = Reservation
+        fields = (
+            "id",
+            "number",
+            "passenger_name",
+            "passenger_email",
+            "passenger_phone",
+            "transfer_date",
+            "transfer_time",
+            "pickup_short",
+            "dest_short",
+            "status",
+            "payment_status",
+        )
+
+
+class PendingSettlementIntentSerializer(serializers.ModelSerializer):
+    reservation = serializers.SerializerMethodField()
+    paid_minor = serializers.SerializerMethodField()
+    due_minor = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PaymentIntent
+        fields = (
+            "public_id",
+            "booking_ref",
+            "amount_minor",
+            "currency",
+            "method",
+            "status",
+            "customer_name",
+            "customer_email",
+            "created_at",
+            "updated_at",
+            "paid_minor",
+            "due_minor",
+            "reservation",
+        )
+
+    def get_reservation(self, obj: PaymentIntent):
+        reservations = self.context.get("reservations") or {}
+        reservation = reservations.get(obj.booking_ref)
+        if not reservation:
+            return None
+        return PendingIntentReservationSerializer(reservation).data
+
+    def get_paid_minor(self, obj: PaymentIntent) -> int:
+        return obj.paid_minor
+
+    def get_due_minor(self, obj: PaymentIntent) -> int:
+        return obj.due_minor
 
 
 class PaymentIntentResponseSerializer(PaymentIntentDetailSerializer):

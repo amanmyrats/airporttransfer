@@ -27,6 +27,7 @@ export interface BankTransferInstruction {
   bank_name: string;
   reference_text: string;
   expires_at: string | null;
+  phone_number?: string | null;
 }
 
 export interface OfflineReceipt {
@@ -37,7 +38,7 @@ export interface OfflineReceipt {
   created_at: string;
 }
 
-export interface PaymentRecord {
+export interface PaymentDto {
   id: number;
   provider_payment_id: string;
   amount_minor: number;
@@ -49,9 +50,14 @@ export interface PaymentRecord {
   captured_at: string | null;
   refundable_minor: number;
   metadata: Record<string, unknown> | null;
+  intent?: {
+    public_id: string;
+    booking_ref: string;
+    method: PaymentMethod;
+  } | null;
 }
 
-export interface PaymentIntent {
+export interface PaymentIntentDto {
   public_id: string;
   booking_ref: string;
   amount_minor: number;
@@ -68,18 +74,57 @@ export interface PaymentIntent {
   metadata: Record<string, unknown> | null;
   created_at: string;
   updated_at: string;
-  payments: PaymentRecord[];
+  payments: PaymentDto[];
   offline_receipts: OfflineReceipt[];
   bank_transfer_instruction: BankTransferInstruction | null;
   ledger_entries: LedgerEntry[];
+  paid_minor?: number;
+  refunded_minor?: number;
+  due_minor?: number;
 }
 
-export interface PaymentMethodDescriptor {
-  method: PaymentMethod;
-  currencies: string[];
-  provider: string;
-  metadata: Record<string, unknown> | null;
+export interface PendingIntentReservationSummary {
+  id: number;
+  number: string;
+  passenger_name: string | null;
+  passenger_email: string | null;
+  passenger_phone: string | null;
+  transfer_date: string | null;
+  transfer_time: string | null;
+  pickup_short: string | null;
+  dest_short: string | null;
+  status: string | null;
+  payment_status: string | null;
 }
+
+export interface PendingSettlementIntent {
+  public_id: string;
+  booking_ref: string;
+  amount_minor: number;
+  currency: string;
+  method: PaymentMethod;
+  status: IntentStatus;
+  customer_name: string | null;
+  customer_email: string | null;
+  created_at: string;
+  updated_at: string;
+  paid_minor: number;
+  due_minor: number;
+  reservation: PendingIntentReservationSummary | null;
+}
+
+export interface PaymentMethodDto {
+  code: PaymentMethod;
+  label: string;
+  supportedCurrencies: string[];
+  provider: string;
+  metadata?: Record<string, unknown> | null;
+}
+
+// Backward compatibility aliases (to be removed once callers migrate to the DTO names).
+export type PaymentIntent = PaymentIntentDto;
+export type PaymentRecord = PaymentDto;
+export type PaymentMethodDescriptor = PaymentMethodDto;
 
 export interface CreatePaymentIntentPayload {
   booking_ref: string;
@@ -93,6 +138,7 @@ export interface CreatePaymentIntentPayload {
   return_url?: string | null;
   capture_method?: 'automatic' | 'manual';
   idempotency_key: string;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ConfirmPaymentIntentPayload {
@@ -111,12 +157,13 @@ export interface OfflineSettlementPayload {
 
 export interface PaymentIntentState {
   booking: ReservationSummary | null;
-  intent: PaymentIntent | null;
-  methods: PaymentMethodDescriptor[];
+  intent: PaymentIntentDto | null;
+  methods: PaymentMethodDto[];
   selectedMethod: PaymentMethod | null;
   isLoading: boolean;
   error: string | null;
   step: CheckoutStep;
+  intentHistory: PaymentIntentDto[];
 }
 
 export type CheckoutStep = 'method' | 'details' | 'processing' | 'result';

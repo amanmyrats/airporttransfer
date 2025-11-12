@@ -1,9 +1,71 @@
 <div class="dashboard">
-  <h2>Welcome back, {{ user()?.first_name || user()?.email }}</h2>
+  <h2>{{ copy.header.welcomeBack }}, {{ user()?.first_name || user()?.email }}</h2>
   <div class="cards">
-    <p-card header="Upcoming reservations">
+    <p-card [header]="copy.cards.duePayments" *ngIf="duePaymentReservations().length > 0">
+      <ng-container *ngIf="duePaymentsLoading(); else duePaymentsLoaded">
+        <p class="card-placeholder">{{ copy.placeholders.duePaymentsLoading }}</p>
+      </ng-container>
+      <ng-template #duePaymentsLoaded>
+        <ul class="reservation-list">
+          <li *ngFor="let reservation of duePaymentReservations(); trackBy: trackByReservationId">
+            <a [routerLink]="checkoutLink(reservation)" class="reservation-link">
+              <div class="reservation-title">{{ tripTitle(reservation) }}</div>
+              <div class="reservation-meta">
+                <span>{{ transferDateLabel(reservation) }}</span>
+                <span>
+                  • {{ paymentStatusLabel(reservation.payment_status) }}
+                  <ng-container *ngIf="dueAmountLabel(reservation) as dueLabel">
+                    • {{ copy.labels.duePrefix }} {{ dueLabel }}
+                  </ng-container>
+                </span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </ng-template>
+    </p-card>
+
+    <p-card [header]="copy.cards.passengerDetails" *ngIf="passengerReminderReservations().length > 0">
+      <ng-container *ngIf="passengerReminderLoading(); else passengerReminderLoaded">
+        <p class="card-placeholder">{{ copy.placeholders.passengerDetailsLoading }}</p>
+      </ng-container>
+      <ng-template #passengerReminderLoaded>
+        <ul class="reservation-list">
+          <li *ngFor="let reservation of passengerReminderReservations(); trackBy: trackByReservationId">
+            <a [routerLink]="reservationLink(reservation)" class="reservation-link">
+              <div class="reservation-title">{{ tripTitle(reservation) }}</div>
+              <div class="reservation-meta">
+                <span>{{ transferDateLabel(reservation) }}</span>
+                <span>• {{ copy.placeholders.passengerNamesMissing }}</span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </ng-template>
+    </p-card>
+
+    <p-card [header]="copy.cards.pendingConfirmation" *ngIf="pendingConfirmationReservations().length > 0">
+      <ng-container *ngIf="pendingLoading(); else pendingLoaded">
+        <p class="card-placeholder">{{ copy.placeholders.pendingLoading }}</p>
+      </ng-container>
+      <ng-template #pendingLoaded>
+        <ul class="reservation-list">
+          <li *ngFor="let reservation of pendingConfirmationReservations(); trackBy: trackByReservationId">
+            <a [routerLink]="reservationLink(reservation)" class="reservation-link">
+              <div class="reservation-title">{{ tripTitle(reservation) }}</div>
+              <div class="reservation-meta">
+                <span>{{ transferDateLabel(reservation) }}</span>
+                <span>• {{ statusLabel(reservation.status) }}</span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </ng-template>
+    </p-card>
+
+    <p-card [header]="copy.cards.upcoming">
       <ng-container *ngIf="upcomingLoading(); else upcomingLoaded">
-        <p class="card-placeholder">Loading upcoming reservations…</p>
+        <p class="card-placeholder">{{ copy.placeholders.upcomingLoading }}</p>
       </ng-container>
       <ng-template #upcomingLoaded>
         <ng-container *ngIf="upcomingReservations().length; else noUpcoming">
@@ -21,38 +83,14 @@
         </ng-container>
       </ng-template>
       <ng-template #noUpcoming>
-        <p>No upcoming reservations yet. Book your next transfer!</p>
+        <p>{{ copy.placeholders.noUpcoming }}</p>
       </ng-template>
     </p-card>
 
-    <p-card header="Pending confirmation">
-      <ng-container *ngIf="pendingLoading(); else pendingLoaded">
-        <p class="card-placeholder">Loading pending confirmations…</p>
-      </ng-container>
-      <ng-template #pendingLoaded>
-        <ng-container *ngIf="pendingConfirmationReservations().length; else noPending">
-          <ul class="reservation-list">
-            <li *ngFor="let reservation of pendingConfirmationReservations(); trackBy: trackByReservationId">
-              <a [routerLink]="reservationLink(reservation)" class="reservation-link">
-                <div class="reservation-title">{{ tripTitle(reservation) }}</div>
-                <div class="reservation-meta">
-                  <span>{{ transferDateLabel(reservation) }}</span>
-                  <span>• {{ statusLabel(reservation.status) }}</span>
-                </div>
-              </a>
-            </li>
-          </ul>
-        </ng-container>
-      </ng-template>
-      <ng-template #noPending>
-        <p>All reservations are confirmed.</p>
-      </ng-template>
-    </p-card>
-
-    <p-card header="Profile completeness">
+    <p-card [header]="copy.cards.profileCompleteness">
       <p>
-        {{ user()?.customer_profile?.preferred_language | uppercase }} • Marketing opt-in:
-        {{ user()?.customer_profile?.marketing_opt_in ? 'Yes' : 'No' }}
+        {{ user()?.customer_profile?.preferred_language | uppercase }} • {{ copy.labels.marketingOptIn }}:
+        {{ user()?.customer_profile?.marketing_opt_in ? copy.labels.yes : copy.labels.no }}
       </p>
     </p-card>
   </div>

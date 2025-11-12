@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { PaymentIntentStore } from '../../services/payment-intent.store';
-import { intentIsFinal } from '../../utils/payment-utils';
 
 @Component({
   selector: 'app-three-ds-return',
@@ -13,11 +12,9 @@ import { intentIsFinal } from '../../utils/payment-utils';
   styleUrls: ['./three-ds-return.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ThreeDsReturnComponent implements OnInit, OnDestroy {
+export class ThreeDsReturnComponent implements OnInit {
   readonly status = signal<'pending' | 'success' | 'failed'>('pending');
   readonly message = signal('Checking payment status…');
-
-  private intervalId: ReturnType<typeof setInterval> | null = null;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -26,16 +23,37 @@ export class ThreeDsReturnComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    const intentId = this.route.snapshot.queryParamMap.get('intent');
-    if (intentId) {
-      await this.store.loadIntent(intentId);
-    }
-    this.pollUntilFinal();
-  }
+    const bookingRef = this.route.parent?.snapshot.paramMap.get('bookingRef');
+    const intentId =
+      this.route.snapshot.queryParamMap.get('intent') ?? this.store.intent()?.public_id ?? null;
 
-  ngOnDestroy(): void {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
+    if (!intentId) {
+      this.status.set('failed');
+      this.message.set('Missing payment reference.');
+      return;
+    }
+
+    await this.store.loadIntent(intentId);
+    const intent = await this.store.pollUntilTerminal(intentId);
+    if (!intent) {
+      this.status.set('failed');
+      this.message.set('Unable to confirm payment at this time.');
+      return;
+    }
+
+    if (intent.status === 'succeeded') {
+      this.status.set('success');
+      this.message.set('Payment confirmed. Thank you!');
+    } else {
+      this.status.set('failed');
+      this.message.set('Payment could not be completed. Please try again.');
+    }
+
+    if (bookingRef) {
+      await this.router.navigate(['../result'], {
+        relativeTo: this.route,
+        queryParams: { intent: intent.public_id },
+      });
     }
   }
 
@@ -43,27 +61,4 @@ export class ThreeDsReturnComponent implements OnInit, OnDestroy {
     const bookingRef = this.route.parent?.snapshot.paramMap.get('bookingRef');
     await this.router.navigate(['/checkout', bookingRef]);
   }
-
-  private pollUntilFinal() {
-    this.intervalId = setInterval(async () => {
-      const intent = await this.store.refreshIntent();
-      if (!intent) {
-        return;
-      }
-      if (intent.status === 'succeeded') {
-        this.status.set('success');
-        this.message.set('Payment confirmed. Thank you!');
-        if (this.intervalId) {
-          clearInterval(this.intervalId);
-        }
-      } else if (intent.status === 'failed' || intent.status === 'canceled') {
-        this.status.set('failed');
-        this.message.set('Payment could not be completed. Please try again.');
-        if (this.intervalId) {
-          clearInterval(this.intervalId);
-        }
-      }
-    }, 4000);
-  }
 }
-

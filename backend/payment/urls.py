@@ -9,6 +9,22 @@ app_name = "payment"
 urlpatterns = [
     path("intents/", views.PaymentIntentCreateView.as_view(), name="intent-create"),
     path(
+        "intents/pending-settlement/",
+        views.PendingSettlementIntentListView.as_view(),
+        name="intent-pending-settlement",
+    ),
+    path("intents/all/", views.PaymentIntentListView.as_view(), name="intent-list"),
+    path(
+        "intents/by-booking/<str:booking_ref>/",
+        views.PaymentIntentByBookingView.as_view(),
+        name="intent-by-booking",
+    ),
+    path(
+        "intents/history/<str:booking_ref>/",
+        views.PaymentIntentHistoryView.as_view(),
+        name="intent-history",
+    ),
+    path(
         "intents/<uuid:public_id>/",
         views.PaymentIntentDetailView.as_view(),
         name="intent-detail",
@@ -28,7 +44,13 @@ urlpatterns = [
         views.OfflineSettlementView.as_view(),
         name="intent-offline-settle",
     ),
+    path(
+        "intents/<uuid:public_id>/decline-offline/",
+        views.OfflineDeclineView.as_view(),
+        name="intent-offline-decline",
+    ),
     path("refunds/", views.RefundCreateView.as_view(), name="refund-create"),
+    path("payments/", views.PaymentListView.as_view(), name="payment-list"),
     path("methods/", views.PaymentMethodsListView.as_view(), name="methods"),
     path("webhooks/stripe/", webhooks.StripeWebhookView.as_view(), name="stripe-webhook"),
     path(
@@ -42,4 +64,3 @@ urlpatterns = [
         name="paytr-webhook",
     ),
 ]
-

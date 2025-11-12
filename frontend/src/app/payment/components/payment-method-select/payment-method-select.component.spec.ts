@@ -14,8 +14,8 @@ describe('PaymentMethodSelectComponent', () => {
     fixture = TestBed.createComponent(PaymentMethodSelectComponent);
     component = fixture.componentInstance;
     component.methods = [
-      { method: 'CASH', currencies: ['EUR'], provider: 'offline', metadata: {} },
-      { method: 'CARD', currencies: ['EUR'], provider: 'stripe', metadata: {} },
+      { code: 'CASH', label: 'Cash', supportedCurrencies: ['EUR'], provider: 'offline', metadata: {} },
+      { code: 'CARD', label: 'Card', supportedCurrencies: ['EUR'], provider: 'stripe', metadata: {} },
     ];
     fixture.detectChanges();
   });

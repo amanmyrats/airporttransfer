@@ -17,4 +17,10 @@ export const SUPPORTED_CURRENCIES = [
         name: 'British Pound',
         rate: 0.9,
     },
+    { 
+        code: 'RUB', 
+        sign: '₽', 
+        name: 'Russian Ruble',
+        rate: 100,
+    },
 ];

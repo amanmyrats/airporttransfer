@@ -5,10 +5,12 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import PaymentIntent
+from .enums import IntentStatus
+from .models import Payment, PaymentIntent
 from .permissions import IsAuthenticatedPaymentUser, IsPaymentStaff
 from .selectors import list_available_methods, list_offline_pending
 from .serializers import (
+    OfflineDeclineSerializer,
     OfflineReceiptSerializer,
     OfflineReceiptUploadSerializer,
     OfflineSettleSerializer,
@@ -16,12 +18,14 @@ from .serializers import (
     PaymentIntentCreateSerializer,
     PaymentIntentDetailSerializer,
     PaymentIntentResponseSerializer,
+    PendingSettlementIntentSerializer,
     PaymentMethodSerializer,
     PaymentSerializer,
     RefundCreateSerializer,
 )
 from .throttles import PaymentIntentConfirmThrottle, PaymentIntentCreateThrottle
 from .schema import payment_schema
+from transfer.models import Reservation
 
 
 class PaymentIntentCreateView(generics.CreateAPIView):
@@ -34,6 +38,11 @@ class PaymentIntentCreateView(generics.CreateAPIView):
         if self.request.method == "GET":
             return [IsPaymentStaff()]
         return super().get_permissions()
+
+    def get_throttles(self):
+        if self.request.method == "GET":
+            return []
+        return super().get_throttles()
 
     @payment_schema(
         summary="Create a payment intent",
@@ -116,6 +125,20 @@ class OfflineSettlementView(APIView):
         return Response(PaymentSerializer(payment).data, status=status.HTTP_200_OK)
 
 
+class OfflineDeclineView(APIView):
+    permission_classes = [IsPaymentStaff]
+
+    @payment_schema(
+        summary="Decline an offline payment intent",
+        request=OfflineDeclineSerializer,
+    )
+    def post(self, request, public_id: str):
+        serializer = OfflineDeclineSerializer(data=request.data or {})
+        serializer.is_valid(raise_exception=True)
+        intent = serializer.save(public_id=public_id)
+        return Response(PaymentIntentResponseSerializer(intent).data, status=status.HTTP_200_OK)
+
+
 class RefundCreateView(generics.CreateAPIView):
     serializer_class = RefundCreateSerializer
     permission_classes = [IsPaymentStaff]
@@ -150,3 +173,111 @@ class PaymentMethodsListView(APIView):
             for available in list_available_methods()
         ]
         return Response(methods)
+
+
+class PaymentIntentByBookingView(APIView):
+    permission_classes = [IsAuthenticatedPaymentUser]
+
+    def get(self, request, booking_ref: str):
+        intent = (
+            PaymentIntent.objects.prefetch_related("payments", "offline_receipts", "ledger_entries")
+            .filter(booking_ref=booking_ref)
+            .order_by("-created_at")
+            .first()
+        )
+        if not intent:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = PaymentIntentDetailSerializer(intent)
+        return Response(serializer.data)
+
+
+class PaymentIntentHistoryView(APIView):
+    permission_classes = [IsAuthenticatedPaymentUser]
+
+    def get(self, request, booking_ref: str):
+        intents = (
+            PaymentIntent.objects.prefetch_related("payments", "offline_receipts", "ledger_entries")
+            .filter(booking_ref=booking_ref)
+            .order_by("-created_at")
+        )
+        serializer = PaymentIntentDetailSerializer(intents, many=True)
+        return Response(serializer.data)
+
+
+class PaymentIntentListView(generics.ListAPIView):
+    queryset = PaymentIntent.objects.prefetch_related("payments", "offline_receipts", "ledger_entries")
+    serializer_class = PaymentIntentDetailSerializer
+    permission_classes = [IsPaymentStaff]
+    pagination_class = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        status_param = self.request.query_params.get("status")
+        method = self.request.query_params.get("method")
+        booking_ref = self.request.query_params.get("booking_ref")
+
+        if status_param:
+            statuses = [value.strip() for value in status_param.split(",") if value.strip()]
+            if statuses:
+                queryset = queryset.filter(status__in=statuses)
+        if method:
+            queryset = queryset.filter(method__iexact=method)
+        if booking_ref:
+            queryset = queryset.filter(booking_ref__icontains=booking_ref)
+        return queryset.order_by("-updated_at")
+
+
+class PendingSettlementIntentListView(APIView):
+    permission_classes = [IsPaymentStaff]
+
+    def get(self, request):
+        limit_param = request.query_params.get("limit")
+        try:
+            limit = int(limit_param) if limit_param is not None else 10
+        except (TypeError, ValueError):
+            limit = 10
+        limit = max(1, min(limit, 50))
+
+        queryset = (
+            PaymentIntent.objects.pending_offline()
+            .filter(status=IntentStatus.PROCESSING.value)
+            .order_by("-updated_at")
+        )
+        intents = list(queryset[:limit])
+        booking_refs = [intent.booking_ref for intent in intents if intent.booking_ref]
+        reservations = {}
+        if booking_refs:
+            reservations = {
+                reservation.number: reservation
+                for reservation in Reservation.objects.filter(number__in=booking_refs)
+            }
+
+        serializer = PendingSettlementIntentSerializer(
+            intents,
+            many=True,
+            context={"reservations": reservations},
+        )
+        return Response(serializer.data)
+
+
+class PaymentListView(generics.ListAPIView):
+    queryset = Payment.objects.select_related("payment_intent")
+    serializer_class = PaymentSerializer
+    permission_classes = [IsPaymentStaff]
+    pagination_class = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        status_param = self.request.query_params.get("status")
+        booking_ref = self.request.query_params.get("booking_ref")
+        method = self.request.query_params.get("method")
+
+        if status_param:
+            statuses = [value.strip() for value in status_param.split(",") if value.strip()]
+            if statuses:
+                queryset = queryset.filter(status__in=statuses)
+        if booking_ref:
+            queryset = queryset.filter(payment_intent__booking_ref__icontains=booking_ref)
+        if method:
+            queryset = queryset.filter(payment_intent__method__iexact=method)
+        return queryset.order_by("-created_at")

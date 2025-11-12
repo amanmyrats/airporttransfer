@@ -189,6 +189,25 @@
 
                 <label for="buttondisplay">Durumu</label>
             </p-floatlabel>
+
+            <p-floatlabel
+                variant="on"
+                *ngIf="wantPaymentMethodFilter && shouldDisplayFilter('method')"
+            >
+                <p-select
+                    class="item"
+                    [options]="paymentMethods"
+                    formControlName="method"
+                    optionLabel="label"
+                    optionValue="value"
+                    (onChange)="onFilterChange()"
+                    showClear="true"
+                    appendTo="body"
+                    placeholder="Ödeme Yöntemi"
+                />
+
+                <label for="buttondisplay">Ödeme Yöntemi</label>
+            </p-floatlabel>
             
             <p-floatlabel
                 variant="on"

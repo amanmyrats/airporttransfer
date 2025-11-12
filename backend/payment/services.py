@@ -181,11 +181,12 @@ def create_payment_intent(
 
     intent.save()
 
-    if method_enum is PaymentMethod.BANK_TRANSFER and offline_instructions:
+    if method_enum in {PaymentMethod.BANK_TRANSFER, PaymentMethod.RUB_PHONE_TRANSFER} and offline_instructions:
         BankTransferInstruction.objects.update_or_create(
             payment_intent=intent,
             defaults={
                 "iban": offline_instructions.get("iban", ""),
+                "phone_number": offline_instructions.get("phone_number", ""),
                 "account_name": offline_instructions.get("account_name", ""),
                 "bank_name": offline_instructions.get("bank_name", ""),
                 "reference_text": offline_instructions.get(
@@ -210,7 +211,7 @@ def confirm_payment_intent(
     payment_method_payload: Mapping[str, Any] | None = None,
 ) -> PaymentIntent:
     intent = (
-        PaymentIntent.objects.select_for_update()
+        PaymentIntent.objects.select_for_update(of=("self",))
         .select_related("provider_account")
         .get(public_id=public_id)
     )
@@ -219,6 +220,7 @@ def confirm_payment_intent(
     if method.is_offline:
         intent.status = IntentStatus.PROCESSING.value
         intent.save(update_fields=["status", "updated_at"])
+        intent.refresh_status_from_payments()
         _log_ledger(
             kind=LedgerEntryKind.INTENT_UPDATED,
             intent=intent,
@@ -276,6 +278,7 @@ def confirm_payment_intent(
         payment=payment,
         delta_minor=0,
     )
+    intent.refresh_status_from_payments()
     return intent
 
 
@@ -286,7 +289,7 @@ def sync_intent_from_provider(
     provider_intent_id: str,
 ) -> PaymentIntent:
     intent = (
-        PaymentIntent.objects.select_for_update()
+        PaymentIntent.objects.select_for_update(of=("self",))
         .select_related("provider_account")
         .get(provider=provider, provider_intent_id=provider_intent_id)
     )
@@ -348,6 +351,7 @@ def sync_intent_from_provider(
         payment=payment,
         delta_minor=0,
     )
+    intent.refresh_status_from_payments()
     return intent
 
 
@@ -406,8 +410,7 @@ def record_offline_settlement(
         metadata={"note": note} if note else {},
     )
 
-    intent.status = IntentStatus.SUCCEEDED.value
-    intent.save(update_fields=["status", "updated_at"])
+    intent.refresh_status_from_payments()
 
     _log_ledger(
         kind=LedgerEntryKind.PAYMENT_SUCCEEDED,
@@ -416,6 +419,36 @@ def record_offline_settlement(
         delta_minor=amount_minor,
     )
     return payment
+
+
+@transaction.atomic
+def decline_offline_intent(
+    *,
+    public_id: str,
+    reason: str | None = None,
+) -> PaymentIntent:
+    intent = (
+        PaymentIntent.objects.select_for_update()
+        .get(public_id=public_id)
+    )
+    method = PaymentMethod(intent.method)
+    if not method.is_offline:
+        raise PaymentError("Decline is only supported for offline payment methods.")
+
+    metadata = dict(intent.metadata or {})
+    if reason:
+        metadata["decline_reason"] = reason
+    intent.metadata = metadata
+    intent.status = IntentStatus.FAILED.value
+    intent.updated_at = timezone.now()
+    intent.save(update_fields=["status", "metadata", "updated_at"])
+
+    _log_ledger(
+        kind=LedgerEntryKind.INTENT_UPDATED,
+        intent=intent,
+        delta_minor=0,
+    )
+    return intent
 
 
 @transaction.atomic

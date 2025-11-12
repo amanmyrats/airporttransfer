@@ -28,11 +28,22 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    this.currentLanguage.code = this.resolveLanguageFromRoute();
   }
 
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
+  }
+
+  private resolveLanguageFromRoute(): string {
+    let currentRoute: ActivatedRoute | null = this.route;
+    while (currentRoute) {
+      const language = currentRoute.snapshot.data['language'];
+      if (language) {
+        return language;
+      }
+      currentRoute = currentRoute.parent;
+    }
+    return 'en';
   }
 }

@@ -17,7 +17,7 @@
         <span></span>
         <span></span>
       </span>
-      <span class="label">Menu</span>
+      <span class="label">{{ copy().menuLabel }}</span>
     </button>
   </header>
 
@@ -35,7 +35,7 @@
         {{ item.label }}
       </a>
     </nav>
-    <button pButton label="Logout" class="p-button-danger" (click)="logout()"></button>
+    <button pButton class="p-button-danger" [label]="copy().logout" (click)="logout()"></button>
   </aside>
   <div class="backdrop" *ngIf="mobileMenuOpen()" (click)="closeMobileNav()"></div>
   <main class="content">

@@ -9,6 +9,66 @@ import { filter, map, startWith } from 'rxjs/operators';
 import { SuperHeaderComponent } from '../../../components/super-header/super-header.component';
 import { NavbarComponent } from '../../../components/navbar/navbar.component';
 import { FooterComponent } from '../../../components/footer/footer.component';
+import { ACCOUNT_FALLBACK_LANGUAGE, AccountLanguageCode, normalizeAccountLanguage } from '../../constants/account-language.constants';
+
+const ACCOUNT_SHELL_TRANSLATIONS = {
+  menuLabel: {
+    en: 'Menu',
+    de: 'Menü',
+    ru: 'Меню',
+    tr: 'Menü',
+  },
+  logout: {
+    en: 'Logout',
+    de: 'Abmelden',
+    ru: 'Выйти',
+    tr: 'Çıkış yap',
+  },
+  nav: {
+    dashboard: {
+      en: 'Dashboard',
+      de: 'Dashboard',
+      ru: 'Панель',
+      tr: 'Panel',
+    },
+    reservations: {
+      en: 'Reservations',
+      de: 'Reservierungen',
+      ru: 'Бронирования',
+      tr: 'Rezervasyonlar',
+    },
+    reviews: {
+      en: 'Reviews',
+      de: 'Bewertungen',
+      ru: 'Отзывы',
+      tr: 'Değerlendirmeler',
+    },
+    profile: {
+      en: 'Profile',
+      de: 'Profil',
+      ru: 'Профиль',
+      tr: 'Profil',
+    },
+    changePassword: {
+      en: 'Change Password',
+      de: 'Passwort ändern',
+      ru: 'Смена пароля',
+      tr: 'Şifre değiştir',
+    },
+  },
+} as const;
+
+interface AccountShellCopy {
+  menuLabel: string;
+  logout: string;
+  nav: {
+    dashboard: string;
+    reservations: string;
+    reviews: string;
+    profile: string;
+    changePassword: string;
+  };
+}
 
 @Component({
   selector: 'app-account-shell',
@@ -41,14 +101,18 @@ export class AccountShellComponent {
     { initialValue: this.router.url },
   );
 
+  private readonly activeLang = computed(() => this.detectLanguage());
+  readonly copy = computed(() => this.buildCopy(this.activeLang()));
+
   readonly navItems = computed(() => {
-    const lang = this.languageService.extractLangFromUrl(this.currentUrl()) ?? null;
+    const lang = this.activeLang();
+    const navCopy = this.copy().nav;
     return [
-      { label: 'Dashboard', link: this.languageService.withLangPrefix('account', lang), exact: true },
-      { label: 'Reservations', link: this.languageService.withLangPrefix('account/reservations', lang), exact: false },
-      { label: 'Reviews', link: this.languageService.withLangPrefix('account/reviews', lang), exact: false },
-      { label: 'Profile', link: this.languageService.withLangPrefix('account/profile', lang), exact: false },
-      { label: 'Change Password', link: this.languageService.withLangPrefix('account/change-password', lang), exact: false },
+      { label: navCopy.dashboard, link: this.languageService.withLangPrefix('account', lang), exact: true },
+      { label: navCopy.reservations, link: this.languageService.withLangPrefix('account/reservations', lang), exact: false },
+      { label: navCopy.reviews, link: this.languageService.withLangPrefix('account/reviews', lang), exact: false },
+      { label: navCopy.profile, link: this.languageService.withLangPrefix('account/profile', lang), exact: false },
+      { label: navCopy.changePassword, link: this.languageService.withLangPrefix('account/change-password', lang), exact: false },
     ];
   });
 
@@ -83,5 +147,29 @@ export class AccountShellComponent {
         this.router.navigateByUrl(target).catch(() => {});
       },
     });
+  }
+
+  private detectLanguage(): AccountLanguageCode {
+    const urlLang = this.languageService.extractLangFromUrl(this.currentUrl()) ?? null;
+    const serviceLang = this.languageService.currentLang?.()?.code ?? null;
+    return normalizeAccountLanguage(urlLang ?? serviceLang ?? null);
+  }
+
+  private buildCopy(lang: AccountLanguageCode): AccountShellCopy {
+    const fallback = ACCOUNT_FALLBACK_LANGUAGE;
+    const pick = (entry: Record<AccountLanguageCode, string>): string =>
+      entry[lang] ?? entry[fallback];
+    const navEntries = ACCOUNT_SHELL_TRANSLATIONS.nav;
+    return {
+      menuLabel: pick(ACCOUNT_SHELL_TRANSLATIONS.menuLabel),
+      logout: pick(ACCOUNT_SHELL_TRANSLATIONS.logout),
+      nav: {
+        dashboard: pick(navEntries.dashboard),
+        reservations: pick(navEntries.reservations),
+        reviews: pick(navEntries.reviews),
+        profile: pick(navEntries.profile),
+        changePassword: pick(navEntries.changePassword),
+      },
+    };
   }
 }

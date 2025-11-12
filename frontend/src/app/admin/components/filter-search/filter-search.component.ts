@@ -48,6 +48,7 @@ export class FilterSearchComponent implements OnInit, OnChanges{
   @Input() wantStatusFilter: boolean = false;
   @Input() wantChangeRequestStatusFilter: boolean = false;
   @Input() wantMainLocationFilter: boolean = false;
+  @Input() wantPaymentMethodFilter: boolean = false;
   
   @Input() wantDateFilter: boolean = false;
   @Input() dateFilterLabel: string = 'Transfer Date';
@@ -79,6 +80,7 @@ export class FilterSearchComponent implements OnInit, OnChanges{
   @Input() roles: any[] = [];
   @Input() statuses: any[] = [];
   @Input() changeRequestStatuses: any[] = [];
+  @Input() paymentMethods: { label: string; value: string | null }[] = [];
   @Input() filterTodayByDefault: boolean = false;
 
   // Blog specific inputs
@@ -128,6 +130,7 @@ export class FilterSearchComponent implements OnInit, OnChanges{
       car_type: [''],
       role: [''],
       status: [''],
+      method: [''],
       latest_change_request_status: [''],
       has_change_request: [''],
       search: [''], 
@@ -371,6 +374,7 @@ export class FilterSearchComponent implements OnInit, OnChanges{
       date_filter_option: 'year',
       reservation_date_filter_option: 'year',
       status: '',
+      method: '',
       latest_change_request_status: '',
       has_change_request: '',
     });

@@ -1,0 +1,38 @@
+<section class="checkout-result" *ngIf="intent() as intent; else missingIntent">
+  <header>
+    <h1>{{ statusLabel(intent) }}</h1>
+    <p>{{ statusCopy(intent) }}</p>
+  </header>
+
+  <article class="card">
+    <div>
+      <span>Booking</span>
+      <strong>{{ intent.booking_ref }}</strong>
+    </div>
+    <div>
+      <span>Total paid</span>
+      <strong>{{ formattedTotal() }}</strong>
+    </div>
+    <div>
+      <span>Method</span>
+      <strong>{{ intent.method }}</strong>
+    </div>
+    <div>
+      <span>Status</span>
+      <strong class="status-chip status-{{ intent.status }}">{{ intent.status }}</strong>
+    </div>
+  </article>
+
+  <p *ngIf="receiptUrl() as receipt" class="receipt">
+    <a [href]="receipt" target="_blank" rel="noopener">Download receipt</a>
+  </p>
+
+  <div class="actions">
+    <a routerLink="/" class="btn secondary">Go to homepage</a>
+    <a routerLink="../" class="btn primary">Try another payment method</a>
+  </div>
+</section>
+
+<ng-template #missingIntent>
+  <p class="empty">We could not find payment details for this booking.</p>
+</ng-template>

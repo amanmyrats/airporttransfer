@@ -1,0 +1,49 @@
+<section class="payments-wrapper">
+  <header>
+    <h1>Payment Transactions</h1>
+  </header>
+
+  <div class="filter-search-container">
+    <app-filter-search
+      [rows]="filterRows"
+      [wantSearchFilter]="true"
+      [wantStatusFilter]="true"
+      [wantPaymentMethodFilter]="true"
+      [statuses]="statusOptions"
+      [paymentMethods]="methodOptions"
+      (searchEmitter)="onFilterSearch($event)"
+    ></app-filter-search>
+  </div>
+
+  <p-table
+    [value]="payments()"
+    [loading]="loading()"
+    [paginator]="true"
+    [rows]="15"
+    [responsiveLayout]="'stack'"
+    dataKey="id"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Provider Payment ID</th>
+        <th>Booking</th>
+        <th>Method</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Captured</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-payment>
+      <tr>
+        <td>{{ payment.provider_payment_id }}</td>
+        <td>
+          <small>{{ payment.intent?.booking_ref || '—' }}</small>
+        </td>
+        <td>{{ payment.intent?.method || '—' }}</td>
+        <td>{{ formattedAmount(payment) }}</td>
+        <td>{{ payment.status }}</td>
+        <td>{{ payment.captured_at | date: 'medium' }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</section>

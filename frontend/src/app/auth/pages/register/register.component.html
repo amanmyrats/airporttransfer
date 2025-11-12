@@ -3,8 +3,8 @@
 
 <main class="auth-page" aria-labelledby="register-title">
   <section class="auth-card">
-    <h1 id="register-title">Create your account</h1>
-    <p class="auth-subtitle">Register to book transfers, manage reservations, and update your profile.</p>
+    <h1 id="register-title">{{ copy.title }}</h1>
+    <p class="auth-subtitle">{{ copy.subtitle }}</p>
 
     <section
       *ngIf="serverGeneralErrors().length"
@@ -20,7 +20,7 @@
     <ng-container *ngIf="!success(); else successTpl">
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form">
         <div class="form-field" [class.form-field--invalid]="controlInvalid('email')">
-          <label for="email">Email</label>
+          <label for="email">{{ copy.labels.email }}</label>
           <input
             id="email"
             type="email"
@@ -39,7 +39,7 @@
         </div>
 
         <div class="form-field" [class.form-field--invalid]="controlInvalid('password')">
-          <label for="password">Password</label>
+          <label for="password">{{ copy.labels.password }}</label>
           <input
             id="password"
             type="password"
@@ -58,7 +58,7 @@
         </div>
 
         <div class="form-field" [class.form-field--invalid]="controlInvalid('first_name')">
-          <label for="first_name">First name</label>
+          <label for="first_name">{{ copy.labels.firstName }}</label>
           <input
             id="first_name"
             formControlName="first_name"
@@ -75,7 +75,7 @@
         </div>
 
         <div class="form-field" [class.form-field--invalid]="controlInvalid('last_name')">
-          <label for="last_name">Last name</label>
+          <label for="last_name">{{ copy.labels.lastName }}</label>
           <input
             id="last_name"
             formControlName="last_name"
@@ -92,7 +92,7 @@
         </div>
 
         <div class="form-field" [class.form-field--invalid]="controlInvalid('preferred_language')">
-          <label for="preferred_language">Preferred language</label>
+          <label for="preferred_language">{{ copy.labels.preferredLanguage }}</label>
           <select
             id="preferred_language"
             formControlName="preferred_language"
@@ -108,19 +108,19 @@
             </ul>
           </ng-container>
         </div>
-        <button type="submit" class="btn btn-primary" [disabled]="loading()">{{ loading() ? 'Creating account…' : 'Register' }}</button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading()">{{ loading() ? copy.submitBusy : copy.submitIdle }}</button>
       </form>
 
       <footer class="auth-footer">
-        <p>Already have an account? <button type="button" class="link-button" (click)="navigateToLogin()">Login</button></p>
+        <p>{{ copy.footerPrompt }} <button type="button" class="link-button" (click)="navigateToLogin()">{{ copy.footerLink }}</button></p>
       </footer>
     </ng-container>
 
     <ng-template #successTpl>
       <div class="success-state">
-        <h2>Verify your email</h2>
-        <p>We sent a verification link to your inbox. Confirm your email to activate the account.</p>
-        <button type="button" class="btn btn-primary" (click)="navigateToLogin()">Back to login</button>
+        <h2>{{ copy.successTitle }}</h2>
+        <p>{{ copy.successMessage }}</p>
+        <button type="button" class="btn btn-primary" (click)="navigateToLogin()">{{ copy.successBack }}</button>
       </div>
     </ng-template>
   </section>

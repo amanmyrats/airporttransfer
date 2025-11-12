@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnChanges, OnInit, SimpleChanges, inject, Input } from '@angular/core';
 import { LanguageSelectionComponent } from '../language-selection/language-selection.component';
 import { CurrencySelectionComponent } from '../currency-selection/currency-selection.component';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -22,7 +22,7 @@ const LANG_PREFIXES = ['en', 'de', 'ru', 'tr'];
   templateUrl: './super-header.component.html',
   styleUrl: './super-header.component.scss'
 })
-export class SuperHeaderComponent implements OnInit {
+export class SuperHeaderComponent implements OnInit, OnChanges {
   @Input() langInput: any | null = null; // Input property for language selection
   @Input() trailingMultilingualBlogSlug: { [key: string]: string } | null = null; // e.g., 'blogs/turkey-airport-transfer-blogs/multilingual-slug'
   socialIcons = SOCIAL_ICONS;
@@ -51,9 +51,15 @@ export class SuperHeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.langInput?.code ?? this.resolveLanguageFromRoute();
+    this.currentLanguage = { ...this.currentLanguage, ...(this.langInput ?? {}), code: languageCode };
     this.showDashboardCta = !this.isAccountOrAdmin(this.router?.url ?? '');
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('langInput' in changes && this.langInput?.code) {
+      this.currentLanguage = { ...this.currentLanguage, ...this.langInput };
+    }
   }
 
   async goToDashboard(): Promise<void> {
@@ -110,5 +116,17 @@ export class SuperHeaderComponent implements OnInit {
       role === 'superuser' ||
       role === 'super_user'
     );
+  }
+
+  private resolveLanguageFromRoute(): string {
+    let currentRoute: ActivatedRoute | null = this.route;
+    while (currentRoute) {
+      const language = currentRoute.snapshot.data['language'];
+      if (language) {
+        return language;
+      }
+      currentRoute = currentRoute.parent;
+    }
+    return 'en';
   }
 }

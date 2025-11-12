@@ -1,13 +1,13 @@
 <section class="reviews">
   <header class="reviews__header">
     <div>
-      <h1>My Reviews</h1>
-      <p class="reviews__subhead">Track the status of your ride feedback.</p>
+      <h1>{{ copy.title }}</h1>
+      <p class="reviews__subhead">{{ copy.subtitle }}</p>
     </div>
     <button
       pButton
       type="button"
-      label="Refresh"
+      [label]="copy.refresh"
       icon="pi pi-refresh"
       class="p-button-text"
       (click)="refresh()"
@@ -15,10 +15,10 @@
     ></button>
   </header>
 
-  <p class="reviews__hint">Reviews become editable for 15 minutes after submission.</p>
+  <p class="reviews__hint">{{ copy.hint }}</p>
 
   <p *ngIf="!loading() && reviews().length === 0" class="reviews__empty">
-    You have not submitted any reviews yet. View a completed reservation to write your first review.
+    {{ copy.empty }}
   </p>
 
   <p-card *ngFor="let review of reviews(); trackBy: trackByReviewId" class="reviews__card">
@@ -39,12 +39,12 @@
 
     <p class="reviews__title" *ngIf="review.title; else untitled">{{ review.title }}</p>
     <ng-template #untitled>
-      <p class="reviews__title reviews__title--muted">No title provided</p>
+      <p class="reviews__title reviews__title--muted">{{ copy.noTitle }}</p>
     </ng-template>
 
     <p class="reviews__comment" *ngIf="review.comment; else noComment">{{ review.comment }}</p>
     <ng-template #noComment>
-      <p class="reviews__comment reviews__comment--muted">No comment shared.</p>
+      <p class="reviews__comment reviews__comment--muted">{{ copy.noComment }}</p>
     </ng-template>
 
     <p class="reviews__status-note" *ngIf="statusMeta(review.status).note">
@@ -52,13 +52,13 @@
     </p>
 
     <div class="reviews__footer">
-      <span class="reviews__timestamp">Created {{ review.created_at | date: 'medium' }}</span>
+      <span class="reviews__timestamp">{{ copy.createdLabel }} {{ review.created_at | date: 'medium' }}</span>
       <a
         pButton
         type="button"
         class="p-button-sm"
         [routerLink]="detailLink(review)"
-        label="View"
+        [label]="copy.view"
       ></a>
     </div>
   </p-card>

@@ -37,5 +37,47 @@
     font-size: 0.875rem;
     color: #475467;
   }
-}
 
+  .extra-content {
+    margin: 1rem 0;
+  }
+
+  .cta-row {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .cta {
+    margin: 0;
+    padding: 0.65rem 1.25rem;
+    border-radius: 999px;
+    border: none;
+    background: #0f6cbd;
+    color: #fff;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .status {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #039855;
+  }
+
+  .link-cta {
+    border: none;
+    background: transparent;
+    color: #0f6cbd;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+  }
+}

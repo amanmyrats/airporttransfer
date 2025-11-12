@@ -452,3 +452,10 @@ PAYMENT_BANK_TRANSFER_INSTRUCTIONS = {
     "bank_name": os.getenv("PAYMENT_BANK_NAME", ""),
     "reference_text": os.getenv("PAYMENT_BANK_REFERENCE", ""),
 }
+
+PAYMENT_RUB_PHONE_TRANSFER_INSTRUCTIONS = {
+    "phone_number": os.getenv("PAYMENT_RUB_PHONE_NUMBER", ""),
+    "account_name": os.getenv("PAYMENT_RUB_ACCOUNT_NAME", ""),
+    "bank_name": os.getenv("PAYMENT_RUB_BANK_NAME", ""),
+    "reference_text": os.getenv("PAYMENT_RUB_REFERENCE", ""),
+}

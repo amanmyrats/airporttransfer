@@ -85,14 +85,23 @@ const accountRouteEntries: Routes = [
     })),
 ];
 
-export const routes: Routes = [
-    ...authRouteEntries,
-    ...accountRouteEntries,
+const checkoutRouteEntries: Routes = [
     {
         path: 'checkout/:bookingRef',
         // canActivate: [SessionInitGuard, ClientAuthGuard],
         loadChildren: () => import('./payment/payment.routes').then(m => m.paymentRoutes),
     },
+    ...LANG_CODES.map(lang => ({
+        path: `${lang}/checkout/:bookingRef`,
+        data: { language: lang },
+        loadChildren: () => import('./payment/payment.routes').then(m => m.paymentRoutes),
+    })),
+];
+
+export const routes: Routes = [
+    ...authRouteEntries,
+    ...accountRouteEntries,
+    ...checkoutRouteEntries,
     // {   path: 'en/aboutus/',component: AboutUsComponent, data: { language: 'en' }  },
     // {   path: 'de/aboutus/',component: AboutUsComponent, data: { language: 'de' }  },
     // {   path: 'ru/aboutus/',component: AboutUsComponent, data: { language: 'ru' }  },

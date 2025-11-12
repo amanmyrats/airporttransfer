@@ -1,14 +1,14 @@
-<form class="upload-receipt" [formGroup]="form" (ngSubmit)="submit()">
+<div class="upload-receipt" [formGroup]="form">
   <label class="file-picker">
-    <span>Select receipt (PDF/JPG/PNG)</span>
-    <input type="file" (change)="onFileSelected($event)" accept="application/pdf,image/*" required />
+    <span>{{ copy.chooseLabel }}</span>
+    <input type="file" (change)="onFileSelected($event)" accept="application/pdf,image/*" />
     <span class="file-name" *ngIf="file">{{ file.name }}</span>
   </label>
 
   <label class="note">
-    <span>Optional note</span>
-    <textarea formControlName="note" rows="3" placeholder="Add any extra context"></textarea>
+    <span>{{ copy.optionalNote }}</span>
+    <textarea formControlName="note" rows="3" [placeholder]="copy.placeholder"></textarea>
   </label>
 
-  <button type="submit" [disabled]="!file || isSubmitting">Submit Receipt</button>
-</form>
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+</div>

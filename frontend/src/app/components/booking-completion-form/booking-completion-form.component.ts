@@ -766,12 +766,14 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
               oneWayInfo = {
                 number: createdReservation.one_way.number,
                 status: createdReservation.one_way.status,
+                id: createdReservation.one_way.id,
               }
             }
             if (createdReservation.return) {
               returnInfo = {
                 number: createdReservation.return.number,
                 status: createdReservation.return.status,
+                id: createdReservation.return.id,
               }
             }
 
@@ -1364,10 +1366,10 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
       tr: 'yaşında',
     }, 
     completeReservation: {
-      en: 'Send Reservation Request', 
-      de: 'Reservierung abschließen',
-      ru: 'Завершить бронирование',
-      tr: 'Rezervasyonu Tamamla',
+      en: 'Complete reservation & continue', 
+      de: 'Reservierung abschließen & weiter',
+      ru: 'Завершить бронирование и продолжить',
+      tr: 'Rezervasyonu tamamla ve devam et',
     }, 
     returnTripPrice: {
       en: 'Return Trip Price', 

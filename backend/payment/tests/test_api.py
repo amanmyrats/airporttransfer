@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from accounts.models import Account
+from payment.enums import IntentStatus
 from payment.models import PaymentIntent
 from transfer.models import Reservation
 
@@ -77,3 +78,57 @@ class PaymentApiTests(APITestCase):
         response = self.client.get(methods_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(response.data), 1)
+
+    def test_pending_settlement_requires_staff(self):
+        url = reverse('payment:intent-pending-settlement')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_pending_settlement_returns_reservations(self):
+        PaymentIntent.objects.create(
+            booking_ref=self.reservation.number,
+            amount_minor=15000,
+            currency='EUR',
+            method='BANK_TRANSFER',
+            status=IntentStatus.PROCESSING.value,
+            provider='OFFLINE',
+            idempotency_key='pending-1',
+        )
+        PaymentIntent.objects.create(
+            booking_ref='OTHER-1',
+            amount_minor=10000,
+            currency='EUR',
+            method='BANK_TRANSFER',
+            status=IntentStatus.REQUIRES_ACTION.value,
+            provider='OFFLINE',
+            idempotency_key='pending-2',
+        )
+
+        url = reverse('payment:intent-pending-settlement')
+        self.client.force_authenticate(user=self.staff_user)
+        response = self.client.get(url, {'limit': 5})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        item = response.data[0]
+        self.assertEqual(item['booking_ref'], self.reservation.number)
+        self.assertEqual(item['due_minor'], 15000)
+        self.assertIn('reservation', item)
+        self.assertEqual(item['reservation']['number'], self.reservation.number)
+
+    def test_pending_settlement_respects_limit(self):
+        for idx in range(3):
+            PaymentIntent.objects.create(
+                booking_ref=f'{self.reservation.number}-{idx}',
+                amount_minor=10000 + idx,
+                currency='EUR',
+                method='BANK_TRANSFER',
+                status=IntentStatus.PROCESSING.value,
+                provider='OFFLINE',
+                idempotency_key=f'limit-{idx}',
+            )
+
+        url = reverse('payment:intent-pending-settlement')
+        self.client.force_authenticate(user=self.staff_user)
+        response = self.client.get(url, {'limit': 1})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)

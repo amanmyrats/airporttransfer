@@ -139,6 +139,31 @@ class Reservation(models.Model):
         return f"{self.transfer_date} - [{self.pickup_short}-{self.dest_short}] - {self.transfer_time}"
 
 
+class ReservationPassenger(models.Model):
+    reservation = models.ForeignKey(
+        Reservation,
+        related_name='passengers',
+        on_delete=models.CASCADE,
+    )
+    full_name = models.CharField(max_length=255)
+    is_child = models.BooleanField(default=False)
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['reservation', 'order'],
+                name='unique_passenger_order_per_reservation',
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.full_name} ({'Child' if self.is_child else 'Adult'})"
+
+
 class ReservationChangeRequestStatus(models.TextChoices):
     PENDING_REVIEW = 'pending_review', 'Pending Review'
     AUTO_APPROVED = 'auto_approved', 'Auto Approved'

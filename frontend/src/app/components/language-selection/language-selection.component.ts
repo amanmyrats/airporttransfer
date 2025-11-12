@@ -1,8 +1,8 @@
-import { afterNextRender, afterRender, ChangeDetectorRef, Component, effect, Inject, inject, Input, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, Input, PLATFORM_ID } from '@angular/core';
 import { LanguageService } from '../../services/language.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
@@ -23,40 +23,14 @@ export class LanguageSelectionComponent {
   translatedUrlWithoutLang: string = '';
 
   isDropdownVisible = false; // Tracks the visibility of the dropdown menu
-  private languageService!: LanguageService;
-  private router!: Router;
-
   constructor(
-    private route: ActivatedRoute, 
+    private languageService: LanguageService,
+    private router: Router,
     @Inject(PLATFORM_ID) private platformId: any,
-    private cd: ChangeDetectorRef,
-  ) {
-    
-    if (typeof window !== 'undefined') {
-      this.languageService = inject(LanguageService);
-      this.router = inject(Router);
-
-      //   effect(() => {
-      //     this.selectedLanguage = this.languageService.currentLang();
-      //     this.translatedUrlWithoutLang = this.getTranslatedUrlWithoutLang(this.selectedLanguage.code);
-      // });
-    }
-    afterNextRender(() => {
-      console.log('afterRender in language selection');
-      console.log(this.route.snapshot);
-      const lang = this.languageService.detectLanguageFromRoute(this.route);
-      if (lang) {
-        if (lang.code !== this.selectedLanguage.code) {
-          this.selectedLanguage = lang;
-          this.onLanguageSelect(lang);
-          this.cd.detectChanges(); // 👈 Fixes the error
-        }
-      }
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
-    if (typeof window !== 'undefined') {
+    if (isPlatformBrowser(this.platformId)) {
       this.selectedLanguage = this.languageService.currentLang();
       this.translatedUrlWithoutLang = this.getTranslatedUrlWithoutLang(this.selectedLanguage.code);
     }
@@ -74,7 +48,7 @@ export class LanguageSelectionComponent {
   }
 
   getTranslatedUrlWithoutLang(langCode: string): string {
-    if (typeof window !== 'undefined') {
+    if (isPlatformBrowser(this.platformId)) {
       const currentUrl = this.router.url; // Get the current URL
       // ex: http://localhost:4200/en/turkey-airport-transfer-blogs/test-2
       const segments = currentUrl.split('/'); // Split URL into segments

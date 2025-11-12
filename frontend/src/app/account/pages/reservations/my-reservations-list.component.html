@@ -1,18 +1,18 @@
 <section class="reservations">
   <header class="reservations__header">
     <div>
-      <h1>My Reservations</h1>
+      <h1>{{ copy.header.title }}</h1>
       <p class="reservations__subhead" *ngIf="!loading() && totalRecords() > 0">
-        {{ totalRecords() }} reservation{{ totalRecords() === 1 ? '' : 's' }} found
+        {{ resultsLabel(totalRecords()) }}
       </p>
       <p class="reservations__subhead" *ngIf="!loading() && totalRecords() === 0">
-        Bookings you complete will be listed here.
+        {{ copy.header.resultsEmpty }}
       </p>
     </div>
     <button
       pButton
       type="button"
-      label="Refresh"
+      [label]="copy.actions.refresh"
       icon="pi pi-refresh"
       class="p-button-text reservations__refresh"
       (click)="refresh()"
@@ -32,9 +32,9 @@
     [wantReservationCreationDateVariationFilter]="true"
     [wantReservationCreationDateRangeFilter]="true"
     [wantOrdering]="true"
-    [dateFilterLabel]="'Transfer Date'"
-    [dateVariationLabel]="'Transfer Date Range'"
-    [reservationDateVariationLabel]="'Reservation Date Range'"
+    [dateFilterLabel]="copy.filters.transferDate"
+    [dateVariationLabel]="copy.filters.transferDateRange"
+    [reservationDateVariationLabel]="copy.filters.reservationDateRange"
     [orderingOptions]="reservationOrderingOptions"
     [defaultOrdering]="defaultOrdering"
     [statuses]="statusOptions"
@@ -67,7 +67,7 @@
           <div class="reservation-card__header">
             <div>
               <h3>
-                Reservation {{ reservation.number ?? ('#' + reservation.id) }}
+                {{ reservationHeading(reservation) }}
               </h3>
               <p class="reservation-card__route">
                 {{ tripTitle(reservation) }}
@@ -83,11 +83,11 @@
         <div class="reservation-card__body">
           <dl>
             <div>
-              <dt>Transfer</dt>
+              <dt>{{ copy.fields.transfer }}</dt>
               <dd>{{ transferDateLabel(reservation) }}</dd>
             </div>
             <div *ngIf="reservation.flight_number">
-              <dt>Flight</dt>
+              <dt>{{ copy.fields.flight }}</dt>
               <dd>
                 {{ reservation.flight_number }}
                 <span *ngIf="reservation.flight_date">
@@ -97,11 +97,11 @@
               </dd>
             </div>
             <div>
-              <dt>Passengers</dt>
+              <dt>{{ copy.fields.passengers }}</dt>
               <dd>{{ passengerSummary(reservation) }}</dd>
             </div>
             <div *ngIf="reservation.passenger_phone || reservation.passenger_email">
-              <dt>Contact</dt>
+              <dt>{{ copy.fields.contact }}</dt>
               <dd>
                 <span *ngIf="reservation.passenger_name">{{ reservation.passenger_name }}<br /></span>
                 <span *ngIf="reservation.passenger_phone">{{ reservation.passenger_phone }}<br /></span>
@@ -109,7 +109,7 @@
               </dd>
             </div>
             <div *ngIf="reservation.note">
-              <dt>Notes</dt>
+              <dt>{{ copy.fields.notes }}</dt>
               <dd>{{ reservation.note }}</dd>
             </div>
           </dl>
@@ -120,14 +120,14 @@
             <button
               pButton
               type="button"
-              label="View details"
+              [label]="copy.actions.viewDetails"
               [routerLink]="detailLink(reservation)"
             ></button>
             <button
               pButton
               type="button"
               class="p-button-secondary"
-              label="Write a review"
+              [label]="copy.actions.writeReview"
               *ngIf="canWriteReview(reservation)"
               [routerLink]="reviewLink(reservation)"
             ></button>
@@ -137,22 +137,22 @@
                 [href]="whatsappHref(reservation)"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Contact us via WhatsApp about this reservation"
+                [attr.aria-label]="copy.contact.whatsappAria"
               >
                 <i class="pi pi-whatsapp" aria-hidden="true"></i>
                 <span>
-                  <strong>WhatsApp</strong>
+                  <strong>{{ copy.contact.whatsappLabel }}</strong>
                   <small>{{ whatsappDisplay }}</small>
                 </span>
               </a>
               <a
                 class="reservation-card__contact-link reservation-card__contact-link--email"
                 [href]="emailHref(reservation)"
-                aria-label="Email support about this reservation"
+                [attr.aria-label]="copy.contact.emailAria"
               >
                 <i class="pi pi-envelope" aria-hidden="true"></i>
                 <span>
-                  <strong>Email</strong>
+                  <strong>{{ copy.contact.emailLabel }}</strong>
                   <small>{{ supportEmail }}</small>
                 </span>
               </a>
@@ -165,8 +165,8 @@
 
   <ng-template #emptyState>
     <section class="reservations__empty">
-      <h3>No reservations yet</h3>
-      <p>Once you book a transfer, it will appear in this list.</p>
+      <h3>{{ copy.empty.title }}</h3>
+      <p>{{ copy.empty.body }}</p>
     </section>
   </ng-template>
 

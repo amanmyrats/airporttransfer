@@ -105,6 +105,64 @@
       <section class="urgent-queues">
         <div class="urgent-column">
           <div class="section-heading">
+            <h3>Onaylanmayı Bekleyen Ödemeler</h3>
+            <a
+              class="section-action"
+              [routerLink]="['/admin/payments/intents']"
+              [queryParams]="pendingSettlementQueryParams"
+            >
+              See all
+            </a>
+          </div>
+          @if (pendingSettlementIntents.length) {
+            <table class="plain-table">
+              <tbody>
+                @for (intent of pendingSettlementIntents; track intent.public_id) {
+                  <tr (click)="openPendingIntent(intent, $event)">
+                    <td class="primary">
+                      <div class="item-title">
+                        {{ intent.reservation?.passenger_name || intent.customer_name || intent.booking_ref }}
+                      </div>
+                      <div class="item-subtitle">
+                        {{ intent.booking_ref }}
+                        @if (intent.reservation?.transfer_date || intent.reservation?.transfer_time) {
+                          &nbsp;&#8226;&nbsp;
+                          {{ intent.reservation?.transfer_date || '' }}
+                          {{ intent.reservation?.transfer_time || '' }}
+                        }
+                      </div>
+                      @if (intent.reservation?.pickup_short || intent.reservation?.dest_short) {
+                        <div class="item-subtitle">
+                          {{ intent.reservation?.pickup_short || 'Pickup TBD' }}
+                          →
+                          {{ intent.reservation?.dest_short || 'Dropoff TBD' }}
+                        </div>
+                      }
+                    </td>
+                    <td class="secondary">
+                      <div class="item-created">
+                        {{ formatCurrency(intent.amount_minor, intent.currency) }}
+                      </div>
+                      @if (intent.due_minor > 0) {
+                        <div class="item-subtitle">
+                          Due {{ formatCurrency(intent.due_minor, intent.currency) }}
+                        </div>
+                      }
+                    </td>
+                    <td class="actions">
+                      <i class="pi pi-arrow-right"></i>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="empty-state">No payments awaiting approval.</p>
+          }
+        </div>
+
+        <div class="urgent-column">
+          <div class="section-heading">
             <h3>Pending Confirmation</h3>
             <a
               class="section-action"

@@ -1,7 +1,86 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, Output, PLATFORM_ID, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  PLATFORM_ID,
+  SimpleChanges,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { loadStripe, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
+
+interface PaymentButtonCopy {
+  processingLabel: string;
+  payNowLabel: string;
+  unavailable: string;
+  messages: {
+    failed: string;
+    success: string;
+    requiresAction: string;
+    processing: string;
+    stripeInit: string;
+  };
+}
+
+const SUPPORTED_LANGUAGES = ['en', 'de', 'ru', 'tr'] as const;
+type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number];
+const FALLBACK_LANGUAGE: LanguageCode = 'en';
+const PAYMENT_BUTTON_TRANSLATIONS = {
+  processingLabel: {
+    en: 'Processing...',
+    de: 'Wird verarbeitet...',
+    ru: 'Выполняется...',
+    tr: 'İşleniyor...',
+  },
+  payNowLabel: {
+    en: 'Pay now',
+    de: 'Jetzt bezahlen',
+    ru: 'Оплатить',
+    tr: 'Şimdi öde',
+  },
+  unavailable: {
+    en: 'Card payments are not available at the moment.',
+    de: 'Kartenzahlungen sind derzeit nicht verfügbar.',
+    ru: 'Оплата картой сейчас недоступна.',
+    tr: 'Kart ödemeleri şu anda kullanılamıyor.',
+  },
+  messageFailed: {
+    en: 'Payment failed. Please try again.',
+    de: 'Zahlung fehlgeschlagen. Bitte erneut versuchen.',
+    ru: 'Платеж не выполнен. Попробуйте еще раз.',
+    tr: 'Ödeme başarısız. Lütfen tekrar deneyin.',
+  },
+  messageSuccess: {
+    en: 'Payment succeeded!',
+    de: 'Zahlung erfolgreich!',
+    ru: 'Платеж прошел успешно!',
+    tr: 'Ödeme başarılı!',
+  },
+  messageRequiresAction: {
+    en: 'Additional authentication required.',
+    de: 'Zusätzliche Authentifizierung erforderlich.',
+    ru: 'Требуется дополнительная аутентификация.',
+    tr: 'Ek kimlik doğrulaması gerekiyor.',
+  },
+  messageProcessing: {
+    en: 'Payment processing. Please wait.',
+    de: 'Zahlung wird verarbeitet. Bitte warten.',
+    ru: 'Платеж обрабатывается. Пожалуйста, подождите.',
+    tr: 'Ödeme işleniyor. Lütfen bekleyin.',
+  },
+  messageStripeInit: {
+    en: 'Unable to initialise Stripe.',
+    de: 'Stripe konnte nicht initialisiert werden.',
+    ru: 'Не удалось инициализировать Stripe.',
+    tr: 'Stripe başlatılamadı.',
+  },
+} as const;
+type TranslationKey = keyof typeof PAYMENT_BUTTON_TRANSLATIONS;
 
 @Component({
   selector: 'app-payment-button',
@@ -17,10 +96,13 @@ export class PaymentButtonComponent implements OnChanges, OnDestroy {
   @Input() returnUrl: string | null = null;
   @Input() bookingRef: string | null = null;
   @Input() intentId: string | null = null;
+  @Input() languageCode: string | null = 'en';
   @Output() statusChange = new EventEmitter<'succeeded' | 'requires_action' | 'failed'>();
 
   processing = false;
   message: string | null = null;
+  protected copy: PaymentButtonCopy = this.buildCopy(FALLBACK_LANGUAGE);
+  private readonly fallbackLanguage: LanguageCode = FALLBACK_LANGUAGE;
 
   private stripe: Stripe | null = null;
   private elements: StripeElements | null = null;
@@ -32,6 +114,9 @@ export class PaymentButtonComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['languageCode']) {
+      this.setCopy(changes['languageCode'].currentValue);
+    }
     if ((changes['clientSecret'] || changes['publishableKey']) && this.isBrowser) {
       void this.setupElements();
     }
@@ -60,7 +145,7 @@ export class PaymentButtonComponent implements OnChanges, OnDestroy {
     this.processing = false;
 
     if (result.error) {
-      this.message = result.error.message ?? 'Payment failed. Please try again.';
+      this.message = result.error.message ?? this.copy.messages.failed;
       this.statusChange.emit('failed');
       return;
     }
@@ -68,13 +153,13 @@ export class PaymentButtonComponent implements OnChanges, OnDestroy {
     const status = result.paymentIntent?.status;
     if (status === 'succeeded') {
       this.statusChange.emit('succeeded');
-      this.message = 'Payment succeeded!';
+      this.message = this.copy.messages.success;
     } else if (status === 'requires_action') {
       this.statusChange.emit('requires_action');
-      this.message = 'Additional authentication required.';
+      this.message = this.copy.messages.requiresAction;
     } else {
       this.statusChange.emit('failed');
-      this.message = 'Payment processing. Please wait.';
+      this.message = this.copy.messages.processing;
     }
   }
 
@@ -84,7 +169,7 @@ export class PaymentButtonComponent implements OnChanges, OnDestroy {
     }
     this.stripe = await loadStripe(this.publishableKey);
     if (!this.stripe) {
-      this.message = 'Unable to initialise Stripe.';
+      this.message = this.copy.messages.stripeInit;
       return;
     }
     this.elements = this.stripe.elements({
@@ -101,8 +186,40 @@ export class PaymentButtonComponent implements OnChanges, OnDestroy {
       return undefined;
     }
     const url = new URL(window.location.href);
-    url.pathname = `/checkout/${this.bookingRef}/3ds-return`;
+    url.pathname = `/checkout/${this.bookingRef}/three-ds-return`;
     url.searchParams.set('intent', this.intentId);
     return url.toString();
+  }
+
+  private setCopy(lang?: string | null): void {
+    const normalized = this.normalizeLanguage(lang);
+    this.copy = this.buildCopy(normalized);
+  }
+
+  private buildCopy(lang: LanguageCode): PaymentButtonCopy {
+    return {
+      processingLabel: this.translate('processingLabel', lang),
+      payNowLabel: this.translate('payNowLabel', lang),
+      unavailable: this.translate('unavailable', lang),
+      messages: {
+        failed: this.translate('messageFailed', lang),
+        success: this.translate('messageSuccess', lang),
+        requiresAction: this.translate('messageRequiresAction', lang),
+        processing: this.translate('messageProcessing', lang),
+        stripeInit: this.translate('messageStripeInit', lang),
+      },
+    };
+  }
+
+  private translate(key: TranslationKey, lang: LanguageCode): string {
+    const entry = PAYMENT_BUTTON_TRANSLATIONS[key];
+    return entry[lang] ?? entry[this.fallbackLanguage];
+  }
+
+  private normalizeLanguage(code?: string | null): LanguageCode {
+    if (code && SUPPORTED_LANGUAGES.includes(code as LanguageCode)) {
+      return code as LanguageCode;
+    }
+    return this.fallbackLanguage;
   }
 }

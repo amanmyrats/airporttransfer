@@ -8,6 +8,7 @@ class EuroRate(models.Model):
         ('EUR', '€'),
         ('USD', '$'),
         ('GBP', '£'),
+        ('RUB', '₽'),
     )
     currency_code = models.CharField(max_length=3, choices=CURRENCY_CHOICES, unique=True)
     euro_rate = models.DecimalField(max_digits=10, decimal_places=4, default=1.00)
@@ -51,5 +52,4 @@ class PopularRoute(models.Model):
 
     def __str__(self):
         return f"{self.main_location} - {self.to} - {self.euro_price}"
-
 

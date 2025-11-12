@@ -7,6 +7,8 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 
 from .enums import IntentStatus, LedgerEntryKind, PaymentMethod, PaymentStatus, ProviderSlug, RefundStatus
@@ -149,6 +151,60 @@ class PaymentIntent(models.Model):
         self.updated_at = timezone.now()
         self.save(update_fields=["status", "updated_at"])
 
+    def _sum_successful_payments(self) -> int:
+        return (
+            self.payments.filter(status=PaymentStatus.SUCCEEDED.value)
+            .aggregate(total=Coalesce(Sum("amount_minor"), 0))
+            .get("total")
+            or 0
+        )
+
+    def _sum_successful_refunds(self) -> int:
+        return (
+            Refund.objects.filter(payment__payment_intent=self, status=RefundStatus.SUCCEEDED.value)
+            .aggregate(total=Coalesce(Sum("amount_minor"), 0))
+            .get("total")
+            or 0
+        )
+
+    def recompute_financials(self) -> tuple[int, int, int]:
+        paid = self._sum_successful_payments()
+        refunded = self._sum_successful_refunds()
+        due = max(self.amount_minor - (paid - refunded), 0)
+        self._paid_minor_cache = paid
+        self._refunded_minor_cache = refunded
+        self._due_minor_cache = due
+        return paid, refunded, due
+
+    @property
+    def paid_minor(self) -> int:
+        if not hasattr(self, "_paid_minor_cache"):
+            self.recompute_financials()
+        return getattr(self, "_paid_minor_cache", 0)
+
+    @property
+    def refunded_minor(self) -> int:
+        if not hasattr(self, "_refunded_minor_cache"):
+            self.recompute_financials()
+        return getattr(self, "_refunded_minor_cache", 0)
+
+    @property
+    def due_minor(self) -> int:
+        if not hasattr(self, "_due_minor_cache"):
+            self.recompute_financials()
+        return getattr(self, "_due_minor_cache", max(self.amount_minor, 0))
+
+    def refresh_status_from_payments(self) -> None:
+        paid, refunded, due = self.recompute_financials()
+        net_paid = paid - refunded
+        if due <= 0 and self.status != IntentStatus.SUCCEEDED.value:
+            self.mark_status(IntentStatus.SUCCEEDED)
+        elif due > 0 and net_paid > 0 and self.status != IntentStatus.PROCESSING.value:
+            self.mark_status(IntentStatus.PROCESSING)
+
+    def _aggregate_payments(self) -> int:
+        from .models import Payment  # circular? we are in same file. can't import.
+
 
 class Payment(models.Model):
     payment_intent = models.ForeignKey(
@@ -286,7 +342,8 @@ class BankTransferInstruction(models.Model):
         on_delete=models.CASCADE,
         related_name="bank_transfer_instruction",
     )
-    iban = models.CharField(max_length=64)
+    iban = models.CharField(max_length=64, blank=True)
+    phone_number = models.CharField(max_length=64, blank=True)
     account_name = models.CharField(max_length=255)
     bank_name = models.CharField(max_length=255)
     reference_text = models.CharField(max_length=255)

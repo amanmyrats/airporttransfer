@@ -1,0 +1,37 @@
+<section class="admin-card">
+  <h1>Issue refund</h1>
+  <p>Trigger a manual refund for a captured payment. Partial refunds are supported by specifying the amount in minor units.</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="paymentId">Payment ID</label>
+      <input id="paymentId" type="number" formControlName="paymentId" placeholder="123" [min]="1" />
+    </div>
+
+    <div class="field">
+      <label for="amountMinor">Amount (minor units, optional)</label>
+      <input
+        id="amountMinor"
+        type="number"
+        formControlName="amountMinor"
+        placeholder="Leave empty for full refund"
+        [min]="1"
+      />
+    </div>
+
+    <div class="field">
+      <label for="reason">Reason</label>
+      <textarea id="reason" pInputTextarea formControlName="reason" rows="3" placeholder="Optional note"></textarea>
+    </div>
+
+    <button pButton type="submit" label="Issue refund" [disabled]="form.invalid || submitting()" [loading]="submitting()"></button>
+  </form>
+
+  <p class="error" *ngIf="error()">{{ error() }}</p>
+
+  <section class="result" *ngIf="response() as res">
+    <h2>Refund queued</h2>
+    <p>Refund ID: <strong>{{ res.refund }}</strong></p>
+    <p>Status: <strong>{{ res.status }}</strong></p>
+  </section>
+</section>

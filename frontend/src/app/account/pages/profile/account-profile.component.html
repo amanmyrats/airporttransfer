@@ -1,19 +1,19 @@
 <p-toast></p-toast>
-<p-card header="Profile">
+<p-card [header]="copy.cardTitle">
   <form [formGroup]="form" (ngSubmit)="submit()" class="profile-form">
     <div class="grid">
       <div class="col field">
-        <label for="first_name">First name</label>
+        <label for="first_name">{{ copy.labels.firstName }}</label>
         <input pInputText id="first_name" formControlName="first_name" autocomplete="given-name" />
         <span class="error-message" *ngIf="form.get('first_name')?.hasError('required') && form.get('first_name')?.touched">
-          First name is required.
+          {{ copy.errors.firstNameRequired }}
         </span>
         <span class="error-message" *ngIf="serverErrors()['first_name']">
           {{ serverErrors()['first_name'] }}
         </span>
       </div>
       <div class="col field">
-        <label for="last_name">Last name</label>
+        <label for="last_name">{{ copy.labels.lastName }}</label>
         <input pInputText id="last_name" formControlName="last_name" autocomplete="family-name" />
         <span class="error-message" *ngIf="serverErrors()['last_name']">
           {{ serverErrors()['last_name'] }}
@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="field">
-      <label for="phone_e164">Phone (E.164)</label>
+      <label for="phone_e164">{{ copy.labels.phone }}</label>
       <ngx-intl-tel-input
         id="phone_e164"
         class="ngx-intl-tel-input"
@@ -41,7 +41,7 @@
       </span>
     </div>
     <div class="field">
-      <label for="preferred_language">Preferred language</label>
+      <label for="preferred_language">{{ copy.labels.preferredLanguage }}</label>
       <p-select
         inputId="preferred_language"
         [options]="languages"
@@ -55,12 +55,12 @@
     </div>
     <div class="field checkbox">
       <p-checkbox inputId="marketing_opt_in" binary="true" formControlName="marketing_opt_in"></p-checkbox>
-      <label for="marketing_opt_in">I want to receive promotions.</label>
+      <label for="marketing_opt_in">{{ copy.labels.marketing }}</label>
     </div>
     <button
       type="submit"
       pButton
-      label="Save changes"
+      [label]="copy.submitIdle"
       [loading]="loading()"
       [disabled]="form.invalid || loading()"
       class="w-full md:w-auto"

@@ -2,6 +2,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, Inject, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { NgxIntlTelInputModule, CountryISO, SearchCountryField } from 'ngx-intl-tel-input';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -14,10 +15,82 @@ import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageService } from '../../../services/language.service';
+import { ACCOUNT_FALLBACK_LANGUAGE, AccountLanguageCode, normalizeAccountLanguage } from '../../constants/account-language.constants';
 
 interface LanguageOption {
-  code: 'en' | 'de' | 'ru' | 'tr';
+  code: AccountLanguageCode;
   label: string;
+}
+
+const ACCOUNT_PROFILE_TRANSLATIONS = {
+  cardTitle: {
+    en: 'Profile information',
+    de: 'Profilinformationen',
+    ru: 'Информация профиля',
+    tr: 'Profil bilgileri',
+  },
+  labels: {
+    firstName: {
+      en: 'First name',
+      de: 'Vorname',
+      ru: 'Имя',
+      tr: 'Ad',
+    },
+    lastName: {
+      en: 'Last name',
+      de: 'Nachname',
+      ru: 'Фамилия',
+      tr: 'Soyad',
+    },
+    phone: {
+      en: 'Phone number',
+      de: 'Telefonnummer',
+      ru: 'Номер телефона',
+      tr: 'Telefon numarası',
+    },
+    preferredLanguage: {
+      en: 'Preferred language',
+      de: 'Bevorzugte Sprache',
+      ru: 'Предпочитаемый язык',
+      tr: 'Tercih edilen dil',
+    },
+    marketing: {
+      en: 'Send me travel news and offers',
+      de: 'Reisenews und Angebote erhalten',
+      ru: 'Получать новости и предложения',
+      tr: 'Seyahat haberleri ve teklifleri gönder',
+    },
+  },
+  errors: {
+    firstNameRequired: {
+      en: 'First name is required.',
+      de: 'Vorname ist erforderlich.',
+      ru: 'Имя обязательно.',
+      tr: 'Ad zorunludur.',
+    },
+  },
+  submitIdle: {
+    en: 'Save changes',
+    de: 'Änderungen speichern',
+    ru: 'Сохранить изменения',
+    tr: 'Değişiklikleri kaydet',
+  },
+} as const;
+
+interface AccountProfileCopy {
+  cardTitle: string;
+  labels: {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    preferredLanguage: string;
+    marketing: string;
+  };
+  errors: {
+    firstNameRequired: string;
+  };
+  submitIdle: string;
 }
 
 @Component({
@@ -46,10 +119,13 @@ export class AccountProfileComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
+  private readonly languageService = inject(LanguageService);
   readonly user = this.authService.user;
   readonly form: FormGroup;
   readonly loading = signal(false);
   readonly serverErrors = signal<Record<string, string>>({});
+  protected copy: AccountProfileCopy = this.buildCopy(this.detectLanguage());
 
   defaultCountry: CountryISO = CountryISO.UnitedStates;
   selectedCountryISO: CountryISO = this.defaultCountry;
@@ -200,6 +276,34 @@ export class AccountProfileComponent implements OnInit {
           this.applyBrowserLanguageFallback();
         },
       });
+  }
+
+  private detectLanguage(): AccountLanguageCode {
+    const urlLang = this.languageService.extractLangFromUrl(this.router.url);
+    const serviceLang = this.languageService.currentLang?.()?.code ?? null;
+    return normalizeAccountLanguage(urlLang ?? serviceLang ?? null);
+  }
+
+  private buildCopy(lang: AccountLanguageCode): AccountProfileCopy {
+    const fallback = ACCOUNT_FALLBACK_LANGUAGE;
+    return {
+      cardTitle: ACCOUNT_PROFILE_TRANSLATIONS.cardTitle[lang] ?? ACCOUNT_PROFILE_TRANSLATIONS.cardTitle[fallback],
+      labels: {
+        firstName: ACCOUNT_PROFILE_TRANSLATIONS.labels.firstName[lang] ?? ACCOUNT_PROFILE_TRANSLATIONS.labels.firstName[fallback],
+        lastName: ACCOUNT_PROFILE_TRANSLATIONS.labels.lastName[lang] ?? ACCOUNT_PROFILE_TRANSLATIONS.labels.lastName[fallback],
+        phone: ACCOUNT_PROFILE_TRANSLATIONS.labels.phone[lang] ?? ACCOUNT_PROFILE_TRANSLATIONS.labels.phone[fallback],
+        preferredLanguage:
+          ACCOUNT_PROFILE_TRANSLATIONS.labels.preferredLanguage[lang] ??
+          ACCOUNT_PROFILE_TRANSLATIONS.labels.preferredLanguage[fallback],
+        marketing: ACCOUNT_PROFILE_TRANSLATIONS.labels.marketing[lang] ?? ACCOUNT_PROFILE_TRANSLATIONS.labels.marketing[fallback],
+      },
+      errors: {
+        firstNameRequired:
+          ACCOUNT_PROFILE_TRANSLATIONS.errors.firstNameRequired[lang] ??
+          ACCOUNT_PROFILE_TRANSLATIONS.errors.firstNameRequired[fallback],
+      },
+      submitIdle: ACCOUNT_PROFILE_TRANSLATIONS.submitIdle[lang] ?? ACCOUNT_PROFILE_TRANSLATIONS.submitIdle[fallback],
+    };
   }
 
   private applyBrowserLanguageFallback(): void {
