@@ -191,7 +191,7 @@ export class BookingReceivedComponent implements OnInit {
         }
         console.log('One Way Data:', oneWaydata);
 
-        if (!this.isLocalhost) {
+        if (!this.isLocalhost || !this.isDevEnvironment) {
           if (this.isDevEnvironment) {
             this.callbackService.TtAthNewOrderCallback(
               oneWaydata, 
