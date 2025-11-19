@@ -52,6 +52,26 @@ urlpatterns = [
     path("refunds/", views.RefundCreateView.as_view(), name="refund-create"),
     path("payments/", views.PaymentListView.as_view(), name="payment-list"),
     path("methods/", views.PaymentMethodsListView.as_view(), name="methods"),
+    path(
+        "bank-transfer-instructions/",
+        views.BankTransferInstructionListCreateView.as_view(),
+        name="bank-transfer-instruction-list",
+    ),
+    path(
+        "bank-transfer-instructions/<int:pk>/",
+        views.BankTransferInstructionDetailView.as_view(),
+        name="bank-transfer-instruction-detail",
+    ),
+    path(
+        "bank-accounts/",
+        views.PaymentBankAccountListCreateView.as_view(),
+        name="bank-account-list",
+    ),
+    path(
+        "bank-accounts/<int:pk>/",
+        views.PaymentBankAccountDetailView.as_view(),
+        name="bank-account-detail",
+    ),
     path("webhooks/stripe/", webhooks.StripeWebhookView.as_view(), name="stripe-webhook"),
     path(
         "webhooks/iyzico/",

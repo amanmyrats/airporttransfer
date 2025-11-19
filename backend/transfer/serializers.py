@@ -91,6 +91,8 @@ class ReservationClientSerializer(ModelSerializer):
         fields = (
             "id",
             "number",
+            "amount",
+            "currency_code",
             "status",
             "reservation_date",
             "transfer_date",

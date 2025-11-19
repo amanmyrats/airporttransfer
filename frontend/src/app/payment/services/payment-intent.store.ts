@@ -464,13 +464,13 @@ export class PaymentIntentStore {
       return methods;
     }
     return methods.filter(method => {
-      if (method.code === 'RUB_PHONE_TRANSFER') {
+      if (method.code === 'CASH') {
         return true;
       }
-      return (
-        !method.supportedCurrencies?.length ||
-        method.supportedCurrencies.includes(currency)
-      );
+      if (!method.supportedCurrencies?.length) {
+        return true;
+      }
+      return method.supportedCurrencies.includes(currency);
     });
   }
 

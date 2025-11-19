@@ -37,6 +37,13 @@ export const paymentAdminRoutes: Routes = [
             m => m.PaymentTransactionsComponent,
           ),
       },
+      {
+        path: 'bank-accounts',
+        loadComponent: () =>
+          import('./pages/bank-accounts/bank-accounts.component').then(
+            m => m.BankAccountsComponent,
+          ),
+      },
     ],
   },
 ];

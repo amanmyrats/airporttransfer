@@ -5,8 +5,8 @@
                 <div class="p-col-12 p-float-label">
                     <p-floatlabel variant="on">
                         <p-select [fluid]="true" [options]="mainLocations" 
-                            formControlName="main_location" optionLabel="name"
-                            optionValue="code" appendTo="body" id="main_location">
+                            formControlName="airport" optionLabel="name"
+                            optionValue="code" appendTo="body" id="airport">
                             <ng-template let-mainLocation pTemplate="item">
                                 <div class="flex align-items-center gap-2">
                                     <div>{{ mainLocation.code }} 
@@ -16,7 +16,7 @@
                                 </div>
                             </ng-template>
                         </p-select>
-                        <label for="main_location">Ana Lokasyon*</label>
+                        <label for="airport">Ana Lokasyon*</label>
                     </p-floatlabel>
                 </div>
 

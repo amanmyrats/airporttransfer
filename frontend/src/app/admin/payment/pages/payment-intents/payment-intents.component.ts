@@ -6,7 +6,8 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 import { PaymentDto, PaymentIntentDto, PaymentMethod, ReservationSummary } from '../../../../payment/models/payment.models';
 import { PaymentAdminService } from '../../services/payment-admin.service';
@@ -42,12 +43,13 @@ type SettlementContext = {
     ButtonModule,
     DialogModule,
     ToastModule,
+    ConfirmDialogModule,
     FilterSearchComponent,
   ],
   templateUrl: './payment-intents.component.html',
   styleUrls: ['./payment-intents.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
 })
 
 export class PaymentIntentsComponent {
@@ -57,6 +59,7 @@ export class PaymentIntentsComponent {
   private readonly paymentService = inject(PaymentService);
   private readonly commonService = inject(CommonService);
   private readonly messages = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
 
   readonly intents = signal<PaymentIntentDto[]>([]);
   readonly loading = signal(false);
@@ -283,7 +286,12 @@ export class PaymentIntentsComponent {
       return;
     }
     const confirmationMessage = `Mark ${formatMinor(amountMinor, intent.currency)} as paid for booking ${intent.booking_ref}?`;
-    if (typeof window !== 'undefined' && !window.confirm(confirmationMessage)) {
+    const confirmed = await this.requestConfirmation({
+      header: 'Approve payment intent',
+      message: confirmationMessage,
+      acceptLabel: 'Approve & Settle',
+    });
+    if (!confirmed) {
       return;
     }
     this.settlingIntent.set(intent.public_id);
@@ -320,7 +328,12 @@ export class PaymentIntentsComponent {
       return;
     }
     const confirmationMessage = `Decline payment intent for booking ${intent.booking_ref}?`;
-    if (typeof window !== 'undefined' && !window.confirm(confirmationMessage)) {
+    const confirmed = await this.requestConfirmation({
+      header: 'Decline payment intent',
+      message: confirmationMessage,
+      acceptLabel: 'Decline',
+    });
+    if (!confirmed) {
       return;
     }
     this.decliningIntent.set(intent.public_id);
@@ -361,5 +374,26 @@ export class PaymentIntentsComponent {
       method: method || undefined,
       booking_ref: bookingRef || undefined,
     };
+  }
+
+  private requestConfirmation(options: {
+    message: string;
+    header: string;
+    acceptLabel: string;
+    rejectLabel?: string;
+    icon?: string;
+  }): Promise<boolean> {
+    return new Promise(resolve => {
+      this.confirmationService.confirm({
+        key: 'paymentIntentConfirm',
+        header: options.header,
+        message: options.message,
+        icon: options.icon ?? 'pi pi-exclamation-triangle',
+        acceptLabel: options.acceptLabel,
+        rejectLabel: options.rejectLabel ?? 'Cancel',
+        accept: () => resolve(true),
+        reject: () => resolve(false),
+      });
+    });
   }
 }

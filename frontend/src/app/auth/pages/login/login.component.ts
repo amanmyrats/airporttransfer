@@ -192,6 +192,8 @@ interface LoginCopy {
 export class LoginComponent {
   readonly form: FormGroup;
   readonly loading = signal(false);
+  readonly googleLoading = signal(false);
+  readonly appleLoading = signal(false);
   readonly statusMessage = signal<{ type: 'info' | 'success' | 'error'; text: string } | null>(null);
   readonly appleEnabled = this.isAppleConfigured();
   private returnUrl = '/account';
@@ -274,20 +276,33 @@ export class LoginComponent {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
+    if (this.googleLoading() || this.loading()) {
+      return;
+    }
     this.socialService.loadGoogle();
     if (typeof google === 'undefined' || !environment.googleClientId) {
       this.statusMessage.set({ type: 'info', text: this.copy.statusMessages.googleUnavailable });
       return;
     }
-    google.accounts.id.initialize({
-      client_id: environment.googleClientId,
-      callback: (response: { credential: string }) => this.exchangeGoogleCredential(response?.credential),
-    });
-    google.accounts.id.prompt();
+    this.googleLoading.set(true);
+    try {
+      google.accounts.id.initialize({
+        client_id: environment.googleClientId,
+        callback: (response: { credential: string }) => this.exchangeGoogleCredential(response?.credential),
+      });
+      google.accounts.id.prompt();
+    } catch (error) {
+      this.googleLoading.set(false);
+      this.statusMessage.set({ type: 'error', text: this.copy.statusMessages.googleFailed });
+      console.error('Google sign-in failed to initialize', error);
+    }
   }
 
   handleAppleSignIn(): void {
     if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    if (this.appleLoading() || this.loading()) {
       return;
     }
     this.socialService.loadApple();
@@ -295,6 +310,7 @@ export class LoginComponent {
       this.statusMessage.set({ type: 'info', text: this.copy.statusMessages.appleUnavailable });
       return;
     }
+    this.appleLoading.set(true);
     AppleID.auth
       .signIn()
       .then((data: any) => {
@@ -305,12 +321,14 @@ export class LoginComponent {
         this.exchangeAppleToken(token);
       })
       .catch(() => {
+        this.appleLoading.set(false);
         this.statusMessage.set({ type: 'error', text: this.copy.statusMessages.appleFailedRetry });
       });
   }
 
   private exchangeGoogleCredential(idToken: string | undefined): void {
     if (!idToken) {
+      this.googleLoading.set(false);
       this.statusMessage.set({ type: 'error', text: this.copy.statusMessages.googleMissingCredential });
       return;
     }
@@ -319,6 +337,7 @@ export class LoginComponent {
       next: (res) => {
         this.authService.setSession(res);
         this.loading.set(false);
+        this.googleLoading.set(false);
         this.navigatePostLogin(res.user);
         if (isPlatformBrowser(this.platformId)) {
           localStorage.removeItem('auth.returnUrl');
@@ -326,6 +345,7 @@ export class LoginComponent {
       },
       error: () => {
         this.loading.set(false);
+        this.googleLoading.set(false);
         this.statusMessage.set({ type: 'error', text: this.copy.statusMessages.googleFailed });
       },
     });
@@ -337,10 +357,12 @@ export class LoginComponent {
       next: (res) => {
         this.authService.setSession(res);
         this.loading.set(false);
+        this.appleLoading.set(false);
         this.navigatePostLogin(res.user);
       },
       error: () => {
         this.loading.set(false);
+        this.appleLoading.set(false);
         this.statusMessage.set({ type: 'error', text: this.copy.statusMessages.appleFailedAnother });
       },
     });

@@ -18,6 +18,15 @@
   list-style: none;
 }
 
+.reservation-item {
+  border-radius: 0.5rem;
+}
+
+.reservation-item--loading .reservation-link {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 .reservation-link {
   display: flex;
   flex-direction: column;
@@ -28,11 +37,16 @@
   color: inherit;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
 }
 
 .reservation-link:hover,
 .reservation-link:focus-visible {
   background-color: rgba(15, 118, 110, 0.08);
+  outline: none;
 }
 
 .reservation-title {
@@ -48,9 +62,45 @@
   color: var(--text-color-secondary, #6b7280);
 }
 
+.reservation-spinner {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid rgba(15, 23, 42, 0.2);
+  border-top-color: #2563eb;
+  animation: reservation-spin 0.8s linear infinite;
+  align-self: flex-end;
+  margin-top: 0.25rem;
+}
+
+@keyframes reservation-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .card-placeholder,
 .cards p {
   margin: 0;
   color: var(--text-color-secondary, #6b7280);
   font-size: 0.875rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .reservation-link {
+    color: #e2e8f0;
+  }
+
+  .reservation-link:hover,
+  .reservation-link:focus-visible {
+    background-color: rgba(226, 232, 240, 0.08);
+  }
+
+  .reservation-title {
+    color: #f8fafc;
+  }
+
+  .reservation-meta {
+    color: #cbd5f5;
+  }
 }

@@ -35,6 +35,10 @@ export class MainLocationService {
    */
   getMainLocationNameInLanguage(code: string, lang: keyof MainLocation): string | undefined {
     const location = this.getMainLocationByCode(code);
-    return location ? location[lang] : undefined;
+    if (!location) {
+      return undefined;
+    }
+    const value = location[lang];
+    return typeof value === 'string' ? value : undefined;
   }
 }

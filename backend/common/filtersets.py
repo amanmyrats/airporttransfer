@@ -1,7 +1,9 @@
 from django_filters import rest_framework as filters
 
 from .models import (
-   EuroRate, PopularRoute
+    EuroRate,
+    PopularRoute,
+    Currency,
 ) 
 
 
@@ -12,6 +14,24 @@ class EuroRateFilterSet(filters.FilterSet):
 
 
 class PopularRouteFilterSet(filters.FilterSet):
+    main_location = filters.CharFilter(field_name='airport__iata_code', lookup_expr='iexact')
+    airport = filters.CharFilter(field_name='airport__iata_code', lookup_expr='iexact')
+
     class Meta:
         model = PopularRoute
-        fields = '__all__'
+        fields = (
+            'airport',
+            'main_location',
+            'destination',
+            'car_type',
+        )
+
+
+class CurrencyFilterSet(filters.FilterSet):
+    class Meta:
+        model = Currency
+        fields = (
+            'code',
+            'is_active',
+            'is_default',
+        )

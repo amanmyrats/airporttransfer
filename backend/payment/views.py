@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from django.db.models import Q
 from rest_framework import generics, permissions, status
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .enums import IntentStatus
-from .models import Payment, PaymentIntent
+from .models import BankTransferInstruction, Payment, PaymentBankAccount, PaymentIntent
 from .permissions import IsAuthenticatedPaymentUser, IsPaymentStaff
 from .selectors import list_available_methods, list_offline_pending
 from .serializers import (
@@ -14,6 +15,8 @@ from .serializers import (
     OfflineReceiptSerializer,
     OfflineReceiptUploadSerializer,
     OfflineSettleSerializer,
+    BankTransferInstructionAdminSerializer,
+    PaymentBankAccountSerializer,
     PaymentIntentConfirmSerializer,
     PaymentIntentCreateSerializer,
     PaymentIntentDetailSerializer,
@@ -202,6 +205,70 @@ class PaymentIntentHistoryView(APIView):
         )
         serializer = PaymentIntentDetailSerializer(intents, many=True)
         return Response(serializer.data)
+
+
+class BankTransferInstructionListCreateView(generics.ListCreateAPIView):
+    serializer_class = BankTransferInstructionAdminSerializer
+    permission_classes = [IsPaymentStaff]
+    pagination_class = None
+
+    def get_queryset(self):
+        queryset = (
+            BankTransferInstruction.objects.select_related("payment_intent")
+            .prefetch_related("bank_accounts")
+            .order_by("-created_at")
+        )
+        booking_ref = self.request.query_params.get("booking_ref")
+        method = self.request.query_params.get("method")
+        search = self.request.query_params.get("search")
+        if booking_ref:
+            queryset = queryset.filter(payment_intent__booking_ref__icontains=booking_ref)
+        if method:
+            queryset = queryset.filter(payment_intent__method=method)
+        if search:
+            queryset = queryset.filter(
+                Q(bank_accounts__iban__icontains=search)
+                | Q(bank_accounts__account_name__icontains=search)
+                | Q(bank_accounts__bank_name__icontains=search)
+                | Q(bank_accounts__phone_number__icontains=search)
+                | Q(reference_text__icontains=search)
+            )
+        return queryset.distinct()
+
+
+class BankTransferInstructionDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = BankTransferInstruction.objects.select_related("payment_intent").prefetch_related("bank_accounts")
+    serializer_class = BankTransferInstructionAdminSerializer
+    permission_classes = [IsPaymentStaff]
+
+
+class PaymentBankAccountListCreateView(generics.ListCreateAPIView):
+    queryset = PaymentBankAccount.objects.all()
+    serializer_class = PaymentBankAccountSerializer
+    permission_classes = [IsPaymentStaff]
+    pagination_class = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        method = self.request.query_params.get("method")
+        currency = self.request.query_params.get("currency")
+        is_active = self.request.query_params.get("is_active")
+        if method:
+            queryset = queryset.filter(method=method)
+        if currency:
+            queryset = queryset.filter(currency__iexact=currency)
+        if is_active is not None:
+            if str(is_active).lower() in {"true", "1"}:
+                queryset = queryset.filter(is_active=True)
+            elif str(is_active).lower() in {"false", "0"}:
+                queryset = queryset.filter(is_active=False)
+        return queryset.order_by("-is_active", "-priority", "label")
+
+
+class PaymentBankAccountDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PaymentBankAccount.objects.all()
+    serializer_class = PaymentBankAccountSerializer
+    permission_classes = [IsPaymentStaff]
 
 
 class PaymentIntentListView(generics.ListAPIView):

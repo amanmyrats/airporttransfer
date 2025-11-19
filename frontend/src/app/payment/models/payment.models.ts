@@ -21,13 +21,31 @@ export interface LedgerEntry {
   created_at: string;
 }
 
-export interface BankTransferInstruction {
-  iban: string;
+export interface PaymentBankAccount {
+  id: number;
+  label: string;
+  method: PaymentMethod;
+  currency: string;
   account_name: string;
   bank_name: string;
+  iban: string;
+  account_number: string;
+  swift_code: string;
+  branch_code: string;
+  phone_number: string;
+  reference_hint: string | null;
+  metadata: Record<string, unknown> | null;
+  priority: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BankTransferInstruction {
   reference_text: string;
   expires_at: string | null;
-  phone_number?: string | null;
+  metadata: Record<string, unknown> | null;
+  bank_accounts: PaymentBankAccount[];
 }
 
 export interface OfflineReceipt {

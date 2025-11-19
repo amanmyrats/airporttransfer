@@ -1,7 +1,8 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   computed,
   effect,
   inject,
@@ -9,15 +10,20 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormArray, FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { finalize, take, tap } from 'rxjs/operators';
+import { finalize, take, tap, catchError } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
 import { MessageService } from 'primeng/api';
 
 import { ReservationService } from '../../../admin/services/reservation.service';
 import { LanguageService } from '../../../services/language.service';
+import { PaymentService } from '../../../payment/services/payment.service';
+import { CurrencyService } from '../../../services/currency.service';
+import { formatMinor, majorToMinor, minorToMajor } from '../../../payment/utils/money.util';
 import {
   ChangeRequestStatus,
   ReservationChangeRequest,
@@ -26,6 +32,7 @@ import {
   ReservationPassengerEntry,
   ReservationPassengerInput,
 } from '../../../admin/models/reservation.model';
+import { IntentStatus, PaymentIntentDto, PaymentMethod } from '../../../payment/models/payment.models';
 
 const PENDING_STATUSES: ChangeRequestStatus[] = [
   'pending_review',
@@ -41,7 +48,15 @@ interface PassengerDescriptor {
 @Component({
   selector: 'app-my-reservation-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, CardModule, ButtonModule, ToastModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    CardModule,
+    ButtonModule,
+    ToastModule,
+    ReactiveFormsModule,
+    DialogModule,
+  ],
   templateUrl: './my-reservation-detail.component.html',
   styleUrl: './my-reservation-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,6 +69,11 @@ export class MyReservationDetailComponent {
   private readonly languageService = inject(LanguageService);
   private readonly messageService = inject(MessageService);
   private readonly fb = inject(FormBuilder);
+  private readonly paymentService = inject(PaymentService);
+  private readonly currencyService = inject(CurrencyService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly document = inject(DOCUMENT);
+  private changeRequestQueryHandled = false;
 
   readonly reservationId = signal<number | null>(null);
   readonly reservation = this.reservationService.reservation;
@@ -110,10 +130,18 @@ export class MyReservationDetailComponent {
   readonly passengerEntries = signal<ReservationPassengerEntry[]>([]);
   readonly passengerLoading = signal(false);
   readonly passengerSaving = signal(false);
+  readonly paymentIntent = signal<PaymentIntentDto | null>(null);
+  readonly paymentHistory = signal<PaymentIntentDto[]>([]);
+  readonly paymentSummaryLoading = signal(false);
   readonly passengerDescriptors = computed<PassengerDescriptor[]>(() =>
     this.buildPassengerDescriptors(this.reservation()),
   );
   readonly hasAdditionalPassengers = computed(() => this.passengerDescriptors().length > 0);
+  readonly allowReservationChanges = computed(() =>
+    ['draft', 'awaiting_payment', 'confirmed'].includes(this.reservation()?.status ?? ''),
+  );
+  changeRequestDialogVisible = false;
+  private readonly passengerFocusRequest = signal(false);
   readonly primaryPassengerName = computed(() => {
     const reservation = this.reservation();
     return (
@@ -123,6 +151,49 @@ export class MyReservationDetailComponent {
     );
   });
   readonly changeRequestSubmitting = signal(false);
+  protected readonly paymentSummary = computed(() => {
+    const reservation = this.reservation();
+    if (!reservation) {
+      return null;
+    }
+    const currency = (reservation.currency_code ?? '').trim().toUpperCase();
+    const rawAmount = reservation.amount;
+    const amountValue =
+      typeof rawAmount === 'string' ? Number(rawAmount) : typeof rawAmount === 'number' ? rawAmount : 0;
+    if (!currency || Number.isNaN(amountValue)) {
+      return null;
+    }
+    const totalMinor = majorToMinor(amountValue, currency);
+    const summaryIntent = this.paymentIntent() ?? this.paymentHistory()[0] ?? null;
+    const paymentCurrency = summaryIntent?.currency ?? currency;
+    const paidMinorRaw = summaryIntent?.paid_minor ?? 0;
+    const paidInBooking =
+      paidMinorRaw && paymentCurrency ? this.convertMinor(paidMinorRaw, paymentCurrency, currency) : 0;
+    const dueMinor =
+      typeof summaryIntent?.due_minor === 'number' && paymentCurrency
+        ? this.convertMinor(summaryIntent.due_minor, paymentCurrency, currency)
+        : Math.max(totalMinor - paidInBooking, 0);
+    const processing =
+      summaryIntent && this.isProcessingStatus(summaryIntent.status)
+        ? {
+            statusLabel: this.intentStatusLabel(summaryIntent.status),
+            methodLabel: this.paymentMethodLabel(summaryIntent.method),
+            amount: this.safeFormatMinor(summaryIntent.amount_minor, summaryIntent.currency),
+          }
+        : null;
+    const latestPayment = this.latestSuccessfulPayment(summaryIntent);
+    return {
+      total: this.safeFormatMinor(totalMinor, currency),
+      paid: paidInBooking > 0 ? this.safeFormatMinor(paidInBooking, currency) : null,
+      due: dueMinor > 0 ? this.safeFormatMinor(dueMinor, currency) : null,
+      dueMinor,
+      currency,
+      paymentStatus: reservation.payment_status || null,
+      methodLabel: summaryIntent ? this.paymentMethodLabel(summaryIntent.method) : null,
+      processing,
+      latestPayment,
+    };
+  });
 
   private readonly patchEffect = effect(() => {
     const reservation = this.reservation();
@@ -146,18 +217,29 @@ export class MyReservationDetailComponent {
     this.syncChildSeatCount(Boolean(reservation.need_child_seat));
   });
   private passengerSnapshotKey: string | null = null;
+  private paymentSnapshotRef: string | null = null;
   private readonly passengerFormEffect = effect(() => {
     const descriptors = this.passengerDescriptors();
     this.syncPassengerControls(descriptors.length);
     const entries = this.passengerEntries();
+    const adultEntries = entries
+      .filter(entry => !entry.is_child)
+      .slice()
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    const childEntries = entries
+      .filter(entry => entry.is_child)
+      .slice()
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    let adultIndex = 0;
+    let childIndex = 0;
     descriptors.forEach((descriptor, index) => {
       const control = this.passengerArray.at(index) as FormControl | null;
       if (!control) {
         return;
       }
-      const match = entries.find(
-        entry => entry.order === descriptor.order && entry.is_child === descriptor.isChild,
-      );
+      const pool = descriptor.isChild ? childEntries : adultEntries;
+      const poolIndex = descriptor.isChild ? childIndex++ : adultIndex++;
+      const match = pool[poolIndex] ?? null;
       const nextValue = match?.full_name ?? '';
       if (control.value !== nextValue) {
         control.patchValue(nextValue, { emitEvent: false });
@@ -177,6 +259,35 @@ export class MyReservationDetailComponent {
     this.passengerSnapshotKey = snapshotKey;
     this.loadPassengers(reservationId);
   });
+  private readonly passengerFocusEffect = effect(() => {
+    if (!this.passengerFocusRequest()) {
+      return;
+    }
+    if (this.passengerLoading()) {
+      return;
+    }
+    queueMicrotask(() => {
+      this.focusPassengerList();
+      this.passengerFocusRequest.set(false);
+    });
+  });
+  private readonly paymentLoadEffect = effect(() => {
+    const reservation = this.reservation();
+    const reference = reservation?.number?.trim();
+    if (!reservation || !reference) {
+      this.paymentSnapshotRef = null;
+      this.paymentIntent.set(null);
+      this.paymentHistory.set([]);
+      this.paymentSummaryLoading.set(false);
+      return;
+    }
+    const snapshotKey = `${reference}:${reservation.updated_at ?? ''}`;
+    if (snapshotKey === this.paymentSnapshotRef) {
+      return;
+    }
+    this.paymentSnapshotRef = snapshotKey;
+    this.loadPaymentDetails(reference);
+  });
 
   constructor() {
     this.route.paramMap.pipe(take(1)).subscribe(params => {
@@ -187,6 +298,20 @@ export class MyReservationDetailComponent {
         this.bootstrapData(id);
       }
     });
+
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        const shouldOpen = params.get('change_request');
+        const focusPassengers = params.get('focus') === 'passengers';
+        if (shouldOpen && !this.changeRequestQueryHandled) {
+          this.changeRequestQueryHandled = true;
+          setTimeout(() => this.openChangeRequestDialog(), 0);
+        }
+        if (focusPassengers) {
+          this.passengerFocusRequest.set(true);
+        }
+      });
 
     this.form
       .get('need_child_seat')
@@ -209,6 +334,14 @@ export class MyReservationDetailComponent {
   listLink(): any[] {
     const lang = this.languageService.extractLangFromUrl(this.router.url);
     return this.languageService.commandsWithLang(lang, 'account', 'reservations');
+  }
+
+  goToCheckout(reservation: MyReservation): void {
+    const commands = this.checkoutCommands(reservation);
+    if (!commands) {
+      return;
+    }
+    this.router.navigate(commands);
   }
 
   submitChangeRequest(): void {
@@ -246,6 +379,7 @@ export class MyReservationDetailComponent {
                 ? 'Your changes have been applied.'
                 : 'Change request submitted for review.',
           });
+          this.closeChangeRequestDialog();
           this.refreshReservation(reservationId);
         },
         error: error => {
@@ -384,6 +518,51 @@ export class MyReservationDetailComponent {
     return this.passengerSaving() || this.passengerLoading();
   }
 
+  hasMissingPassengerNames(): boolean {
+    if (!this.hasAdditionalPassengers()) {
+      return false;
+    }
+    const descriptors = this.passengerDescriptors();
+    if (descriptors.length === 0) {
+      return false;
+    }
+    const values = (this.passengerArray.value as Array<string | null | undefined>) ?? [];
+    if (values.length < descriptors.length) {
+      return true;
+    }
+    return values.some(value => !(value ?? '').trim());
+  }
+
+  private pendingPassengerScrollAttempts = 0;
+
+  focusPassengerList(): void {
+    this.scrollToPassengerList();
+  }
+
+  openChangeRequestDialog(): void {
+    if (this.hasPendingChangeRequest()) {
+      this.messageService.add({
+        severity: 'warn',
+        detail: 'A change request is already pending. Cancel it below to submit a new one.',
+      });
+      return;
+    }
+    this.changeRequestDialogVisible = true;
+  }
+
+  closeChangeRequestDialog(): void {
+    this.changeRequestDialogVisible = false;
+  }
+
+  isPassengerNameMissing(index: number): boolean {
+    const control = this.passengerArray.at(index);
+    if (!control) {
+      return false;
+    }
+    const value = (control.value ?? '') as string;
+    return !value.trim();
+  }
+
   savePassengerList(): void {
     const reservationId = this.reservationId();
     const descriptors = this.passengerDescriptors();
@@ -429,6 +608,35 @@ export class MyReservationDetailComponent {
       });
   }
 
+  private checkoutCommands(reservation: MyReservation): any[] | null {
+    const bookingRef = (reservation.number ?? '').trim();
+    if (!bookingRef) {
+      return null;
+    }
+    const lang = this.languageService.extractLangFromUrl(this.router.url);
+    return this.languageService.commandsWithLang(lang, 'checkout', bookingRef);
+  }
+
+  private scrollToPassengerList(): void {
+    if (!this.document) {
+      return;
+    }
+    const container = this.document.querySelector('.reservation-detail__passengers');
+    if (!(container instanceof HTMLElement)) {
+      if (this.pendingPassengerScrollAttempts < 10) {
+        this.pendingPassengerScrollAttempts += 1;
+        setTimeout(() => this.scrollToPassengerList(), 50);
+      } else {
+        this.pendingPassengerScrollAttempts = 0;
+      }
+      return;
+    }
+    this.pendingPassengerScrollAttempts = 0;
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    container.classList.add('highlight');
+    setTimeout(() => container.classList.remove('highlight'), 2000);
+  }
+
   private buildPassengerDescriptors(reservation: MyReservation | null): PassengerDescriptor[] {
     if (!reservation) {
       return [];
@@ -470,6 +678,27 @@ export class MyReservationDetailComponent {
     });
   }
 
+  private loadPaymentDetails(bookingRef: string): void {
+    this.paymentSummaryLoading.set(true);
+    forkJoin({
+      current: this.paymentService.getIntentByBooking(bookingRef).pipe(catchError(() => of(null))),
+      history: this.paymentService.getIntentHistory(bookingRef).pipe(catchError(() => of([]))),
+    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ current, history }) => {
+          this.paymentIntent.set(current);
+          this.paymentHistory.set(history ?? []);
+          this.paymentSummaryLoading.set(false);
+        },
+        error: () => {
+          this.paymentIntent.set(null);
+          this.paymentHistory.set([]);
+          this.paymentSummaryLoading.set(false);
+        },
+      });
+  }
+
   private syncPassengerControls(expected: number): void {
     const array = this.passengerArray;
     if (array.length > expected) {
@@ -485,5 +714,104 @@ export class MyReservationDetailComponent {
 
   private get passengerArray(): FormArray {
     return this.passengerListForm.get('passengers') as FormArray;
+  }
+
+  protected extrasAvailable(reservation: MyReservation | null): boolean {
+    if (!reservation) {
+      return false;
+    }
+    return Boolean(
+      reservation.need_child_seat ||
+        (reservation.child_seat_count && Number(reservation.child_seat_count) > 0) ||
+        reservation.greet_with_flower ||
+        reservation.greet_with_champagne,
+    );
+  }
+
+  private safeFormatMinor(amountMinor: number, currency: string): string {
+    try {
+      return formatMinor(amountMinor, currency);
+    } catch {
+      const fallback = amountMinor / 100;
+      return `${fallback.toFixed(2)} ${currency}`;
+    }
+  }
+
+  private convertMinor(amountMinor: number, fromCurrency: string, toCurrency: string): number {
+    if (!fromCurrency || !toCurrency || fromCurrency === toCurrency) {
+      return amountMinor;
+    }
+    const from = this.currencyService.getCurrencyByCode(fromCurrency);
+    const to = this.currencyService.getCurrencyByCode(toCurrency);
+    if (!from || !to) {
+      return amountMinor;
+    }
+    const amountMajor = minorToMajor(amountMinor, fromCurrency);
+    const convertedMajor = this.currencyService.convert(amountMajor, from, to);
+    return majorToMinor(convertedMajor, toCurrency);
+  }
+
+  private paymentMethodLabel(method: PaymentMethod | null | undefined): string | null {
+    switch (method) {
+      case 'CARD':
+        return 'Card';
+      case 'BANK_TRANSFER':
+        return 'Bank transfer';
+      case 'CASH':
+        return 'Cash';
+      case 'RUB_PHONE_TRANSFER':
+        return 'RUB phone transfer';
+      default:
+        return method ?? null;
+    }
+  }
+
+  private isProcessingStatus(status: IntentStatus | string | null | undefined): boolean {
+    if (!status) {
+      return false;
+    }
+    return ['processing', 'requires_action', 'requires_payment_method'].includes(status);
+  }
+
+  private intentStatusLabel(status: IntentStatus | string | null | undefined): string {
+    if (!status) {
+      return 'Unknown';
+    }
+    switch (status) {
+      case 'requires_payment_method':
+        return 'Awaiting payment method';
+      case 'requires_action':
+        return 'Action required';
+      case 'processing':
+        return 'Processing';
+      case 'succeeded':
+        return 'Succeeded';
+      case 'failed':
+        return 'Failed';
+      case 'canceled':
+        return 'Canceled';
+      default:
+        return status;
+    }
+  }
+
+  private latestSuccessfulPayment(intent: PaymentIntentDto | null): {
+    amount: string;
+    methodLabel: string | null;
+    capturedAt: string | null;
+  } | null {
+    const payments = intent?.payments ?? [];
+    for (let i = payments.length - 1; i >= 0; i -= 1) {
+      const payment = payments[i];
+      if (payment.status !== 'succeeded') {
+        continue;
+      }
+      return {
+        amount: this.safeFormatMinor(payment.amount_minor, payment.currency),
+        methodLabel: this.paymentMethodLabel(payment.intent?.method ?? intent?.method),
+        capturedAt: payment.captured_at ?? null,
+      };
+    }
+    return null;
   }
 }

@@ -129,6 +129,7 @@ export class AdminHomeComponent implements OnInit {
 
   dashboardLoading = false;
   dashboardError: string | null = null;
+  private cardNavigationKey: string | null = null;
 
   globalSearchTerm = '';
   systemStatusMessage = 'All systems operational';
@@ -196,52 +197,98 @@ export class AdminHomeComponent implements OnInit {
   }
 
   openActivityItem(item: ActivityItem, event?: Event): void {
-    event?.preventDefault();
-    event?.stopPropagation();
-    this.router.navigate([item.route], {
-      queryParams: item.queryParams,
-    });
+    if (!this.beginCardNavigation(event, 'activity', item.id)) {
+      return;
+    }
+    this.router.navigate([item.route], { queryParams: item.queryParams }).catch(() => this.resetCardNavigation());
   }
 
   openReservation(reservation: Reservation, event?: Event): void {
-    event?.preventDefault();
-    event?.stopPropagation();
+    if (!this.beginCardNavigation(event, 'reservation', reservation.id ?? reservation.number ?? reservation.passenger_email)) {
+      return;
+    }
     const searchToken = reservation.number ?? reservation.passenger_email ?? reservation.passenger_name;
-    this.router.navigate(['/admin/reservations'], {
-      queryParams: searchToken ? { search: searchToken } : undefined,
-    });
+    this.router
+      .navigate(['/admin/reservations'], {
+        queryParams: searchToken ? { search: searchToken } : undefined,
+      })
+      .catch(() => this.resetCardNavigation());
   }
 
   openChangeRequest(request: ReservationChangeRequest, event?: Event): void {
-    event?.preventDefault();
-    event?.stopPropagation();
-    this.router.navigate(['/admin/reservations'], {
-      queryParams: request.reservation_number ? { search: request.reservation_number } : undefined,
-      fragment: request.id ? `cr-${request.id}` : undefined,
-    });
+    if (!this.beginCardNavigation(event, 'change-request', request.id)) {
+      return;
+    }
+    this.router
+      .navigate(['/admin/reservations'], {
+        queryParams: request.reservation_number ? { search: request.reservation_number } : undefined,
+        fragment: request.id ? `cr-${request.id}` : undefined,
+      })
+      .catch(() => this.resetCardNavigation());
   }
 
   openReview(review: AdminReview, event?: Event): void {
-    event?.preventDefault();
-    event?.stopPropagation();
+    if (!this.beginCardNavigation(event, 'review', review.id)) {
+      return;
+    }
     const searchToken = review.reservation_obj?.number || review.id.toString();
-    this.router.navigate(['/admin/reviews'], {
-      queryParams: searchToken ? { search: searchToken } : undefined,
-    });
+    this.router
+      .navigate(['/admin/reviews'], {
+        queryParams: searchToken ? { search: searchToken } : undefined,
+      })
+      .catch(() => this.resetCardNavigation());
   }
 
   openPendingIntent(intent: PendingSettlementIntent, event?: Event): void {
-    event?.preventDefault();
-    event?.stopPropagation();
+    const identifier = intent.public_id ?? intent.booking_ref ?? intent.reservation?.id;
+    if (!this.beginCardNavigation(event, 'pending-intent', identifier)) {
+      return;
+    }
     const queryParams: Record<string, string> = {
       ...this.pendingSettlementQueryParams,
     };
     if (intent.booking_ref) {
       queryParams['search'] = intent.booking_ref;
     }
-    this.router.navigate(['/admin/payments/intents'], {
-      queryParams,
-    });
+    this.router.navigate(['/admin/payments/intents'], { queryParams }).catch(() => this.resetCardNavigation());
+  }
+
+  isCardLoading(section: string, id: string | number | null | undefined): boolean {
+    const key = this.buildLoadingKey(section, id);
+    return Boolean(key && key === this.cardNavigationKey);
+  }
+
+  private beginCardNavigation(event: Event | undefined, section: string, id: string | number | null | undefined): boolean {
+    const key = this.buildLoadingKey(section, id);
+    if (!key) {
+      event?.preventDefault();
+      event?.stopPropagation();
+      return false;
+    }
+    if (this.cardNavigationKey) {
+      event?.preventDefault();
+      event?.stopPropagation();
+      return false;
+    }
+    event?.preventDefault();
+    event?.stopPropagation();
+    this.cardNavigationKey = key;
+    return true;
+  }
+
+  private buildLoadingKey(section: string, id: string | number | null | undefined): string | null {
+    if (id === null || id === undefined) {
+      return null;
+    }
+    const normalized = String(id).trim();
+    if (!normalized) {
+      return null;
+    }
+    return `${section}:${normalized}`;
+  }
+
+  private resetCardNavigation(): void {
+    this.cardNavigationKey = null;
   }
 
   private setSuperAdminMenu() {
@@ -295,6 +342,11 @@ export class AdminHomeComponent implements OnInit {
             icon: 'pi pi-refresh',
             routerLink: '/admin/payments/refund-issue'
           },
+          {
+            label: 'Banka Profilleri',
+            icon: 'pi pi-building',
+            routerLink: '/admin/payments/bank-accounts'
+          },
         ],
       },
       {
@@ -338,7 +390,11 @@ export class AdminHomeComponent implements OnInit {
 
   private updateDashboardVisibility(url: string): void {
     const normalized = this.normalizeUrl(url);
-    this.showDashboard = normalized === '/admin' || normalized === '';
+    const shouldShowDashboard = normalized === '/admin' || normalized === '';
+    this.showDashboard = shouldShowDashboard;
+    if (shouldShowDashboard) {
+      this.resetCardNavigation();
+    }
     if (this.showDashboard && !this.hasLoadedDashboard && this.authService.isLoggedIn()) {
       this.loadDashboardData();
       this.hasLoadedDashboard = true;

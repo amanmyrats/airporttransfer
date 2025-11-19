@@ -14,11 +14,30 @@ describe('OfflineInstructionsComponent', () => {
     fixture = TestBed.createComponent(OfflineInstructionsComponent);
     component = fixture.componentInstance;
     component.instruction = {
-      iban: 'TR000',
-      account_name: 'Airport Transfer',
-      bank_name: 'Example Bank',
       reference_text: 'BOOK123',
       expires_at: null,
+      metadata: null,
+      bank_accounts: [
+        {
+          id: 1,
+          label: 'Primary Account',
+          method: 'BANK_TRANSFER',
+          currency: 'EUR',
+          account_name: 'Airport Transfer',
+          bank_name: 'Example Bank',
+          iban: 'TR000',
+          account_number: 'ACC123',
+          swift_code: 'SWIFTBIC',
+          branch_code: '001',
+          phone_number: '',
+          reference_hint: null,
+          metadata: null,
+          priority: 0,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ],
     };
     component.amountMinor = 15000;
     component.currency = 'EUR';

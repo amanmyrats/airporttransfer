@@ -58,7 +58,14 @@ export class PopularRouteService {
   getPopularRoutesByMainLocationCodeAndCarType(
     mainLocationCode: string, carTypeCode: string, limitBy: number = 100): PopularRoute[] {
     return this.popularRoutesSignal().filter(
-      (popularRoute: PopularRoute) => popularRoute.main_location === mainLocationCode && popularRoute.car_type === carTypeCode).slice(0, limitBy);
+      (popularRoute: PopularRoute) => {
+        const matchesLocation =
+          popularRoute.main_location === mainLocationCode ||
+          popularRoute.airport === mainLocationCode ||
+          popularRoute.airport_detail?.code === mainLocationCode ||
+          popularRoute.airport_detail?.iata_code === mainLocationCode;
+        return matchesLocation && popularRoute.car_type === carTypeCode;
+      }).slice(0, limitBy);
   }
 
   export(queryString: string, format?: string): Observable<any> {

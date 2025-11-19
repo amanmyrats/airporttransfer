@@ -24,3 +24,22 @@ export const SUPPORTED_CURRENCIES = [
         rate: 100,
     },
 ];
+
+export const EURO_RATES = [
+    { 
+        code: 'EUR', 
+        rate: 1,
+    },
+    { 
+        code: 'USD', 
+        rate: 1.18,
+    },
+    { 
+        code: 'GBP', 
+        rate: 0.9,
+    },
+    { 
+        code: 'RUB', 
+        rate: 100,
+    },
+]

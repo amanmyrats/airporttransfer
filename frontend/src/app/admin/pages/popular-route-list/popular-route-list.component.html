@@ -35,7 +35,12 @@
     </ng-template>
     <ng-template pTemplate="body" let-popularRoute>
         <tr>
-            <td>{{popularRoute.main_location}}</td>
+            <td>
+                {{ popularRoute.airport_detail?.name || popularRoute.main_location }}
+                <span *ngIf="popularRoute.airport_detail?.code">
+                    ({{ popularRoute.airport_detail?.code }})
+                </span>
+            </td>
             <td>{{popularRoute.destination }}</td>
             <td>{{popularRoute.car_type }}</td>
             <td>{{popularRoute.euro_price }} € </td>

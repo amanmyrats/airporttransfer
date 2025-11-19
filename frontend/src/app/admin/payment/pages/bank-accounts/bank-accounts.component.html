@@ -1,0 +1,223 @@
+<p-toast />
+<p-confirmDialog />
+
+<section class="page-header">
+  <div>
+    <h1>Bank & Phone Payment Profiles</h1>
+    <p>Configure the credentials that appear on offline payment instructions.</p>
+  </div>
+  <button
+    pButton
+    type="button"
+    label="Add Profile"
+    icon="pi pi-plus"
+    (click)="openCreateDialog()"
+  ></button>
+</section>
+
+<section class="filters-card">
+  <app-filter-search
+    [wantSearchFilter]="false"
+    [wantPaymentMethodFilter]="true"
+    [wantCurrencyFilter]="true"
+    [wantStatusFilter]="true"
+    [paymentMethods]="methodOptions"
+    [currencyPlaceholder]="'Currency (e.g. EUR)'"
+    [statuses]="statusOptions"
+    (searchEmitter)="onFilterSearch($event)"
+  ></app-filter-search>
+</section>
+
+@if (error()) {
+  <p class="error-message">{{ error() }}</p>
+}
+
+<p-table
+  [value]="accounts()"
+  dataKey="id"
+  [loading]="loading()"
+  responsiveLayout="scroll"
+  class="accounts-table"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Label</th>
+      <th>Method</th>
+      <th>Currency</th>
+      <th>Account</th>
+      <th>Bank</th>
+      <th>Numbers</th>
+      <th>Branch</th>
+      <th>Phone</th>
+      <th>Priority</th>
+      <th>Status</th>
+      <th class="actions-column">Actions</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-account>
+    <tr>
+      <td>
+        <div class="label">{{ account.label }}</div>
+        <div class="reference" *ngIf="account.reference_hint">
+          Ref: {{ account.reference_hint }}
+        </div>
+      </td>
+      <td>{{ account.method }}</td>
+      <td>{{ account.currency }}</td>
+      <td>
+        <div class="detail-line">
+          <strong>{{ account.account_name }}</strong>
+        </div>
+      </td>
+      <td>
+        <div class="detail-line">{{ account.bank_name || '—' }}</div>
+      </td>
+      <td>
+        <div class="detail-line mono" *ngIf="account.iban">IBAN: {{ account.iban }}</div>
+        <div class="detail-line mono" *ngIf="account.account_number">Acct: {{ account.account_number }}</div>
+        <div class="detail-line mono" *ngIf="account.swift_code">SWIFT: {{ account.swift_code }}</div>
+      </td>
+      <td>
+        <div class="detail-line">{{ account.branch_code || '—' }}</div>
+      </td>
+      <td>{{ account.phone_number || '—' }}</td>
+      <td>{{ account.priority }}</td>
+      <td>
+        <span class="status-chip" [class.active]="account.is_active" [class.inactive]="!account.is_active">
+          {{ account.is_active ? 'Active' : 'Inactive' }}
+        </span>
+      </td>
+      <td class="actions-column">
+        <app-action-buttons
+          [wantEdit]="true"
+          [wantDelete]="true"
+          [wantDetail]="false"
+          [obj]="account"
+          (updateEmitter)="openEditDialog($event)"
+          (deleteEmitter)="confirmDeleteById($event)"
+        ></app-action-buttons>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="10">
+        @if (loading()) {
+          Loading bank profiles…
+        } @else {
+          No bank profiles found.
+        }
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [visible]="dialogVisible()"
+  [modal]="true"
+  [closable]="false"
+  [style]="{ width: '720px' }"
+  (onHide)="closeDialog()"
+>
+  <ng-template pTemplate="header">
+    {{ dialogTitle() }}
+  </ng-template>
+  <form class="account-form" [formGroup]="accountForm" (ngSubmit)="submitAccount()">
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="label">Label</label>
+        <input id="label" pInputText formControlName="label" />
+        @if (controlInvalid('label')) {
+          <p class="field-error">Label is required.</p>
+        }
+      </div>
+      <div class="form-field">
+        <label for="method">Method</label>
+        <p-dropdown
+          id="method"
+          formControlName="method"
+          [options]="methodOptions"
+          optionLabel="label"
+          optionValue="value"
+        ></p-dropdown>
+      </div>
+      <div class="form-field">
+        <label for="currency">Currency</label>
+        <input id="currency" pInputText formControlName="currency" maxlength="3" />
+        @if (controlInvalid('currency')) {
+          <p class="field-error">Currency code is required.</p>
+        }
+      </div>
+      <div class="form-field">
+        <label for="priority">Priority</label>
+        <input id="priority" type="number" pInputText formControlName="priority" />
+      </div>
+      <div class="form-field switch-field">
+        <label for="isActive">Active</label>
+        <p-inputSwitch id="isActive" formControlName="is_active"></p-inputSwitch>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="accountName">Account Holder</label>
+        <input id="accountName" pInputText formControlName="account_name" />
+        @if (controlInvalid('account_name')) {
+          <p class="field-error">Account holder is required.</p>
+        }
+      </div>
+      <div class="form-field">
+        <label for="bankName">Bank Name</label>
+        <input id="bankName" pInputText formControlName="bank_name" />
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="iban">IBAN</label>
+        <input id="iban" pInputText formControlName="iban" class="mono" />
+      </div>
+      <div class="form-field">
+        <label for="accountNumber">Account Number</label>
+        <input id="accountNumber" pInputText formControlName="account_number" class="mono" />
+      </div>
+      <div class="form-field">
+        <label for="swift">SWIFT / BIC</label>
+        <input id="swift" pInputText formControlName="swift_code" />
+      </div>
+      <div class="form-field">
+        <label for="branch">Branch Code</label>
+        <input id="branch" pInputText formControlName="branch_code" />
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="phone">Phone Number</label>
+        <input id="phone" pInputText formControlName="phone_number" placeholder="+79..." />
+      </div>
+      <div class="form-field">
+        <label for="reference">Reference Text</label>
+        <input id="reference" pInputText formControlName="reference_hint" />
+      </div>
+    </div>
+
+    <div class="dialog-actions">
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        class="p-button-text"
+        (click)="closeDialog()"
+        [disabled]="formSubmitting()"
+      ></button>
+      <button
+        pButton
+        type="submit"
+        label="Save"
+        icon="pi pi-check"
+        [disabled]="formSubmitting()"
+      ></button>
+    </div>
+  </form>
+</p-dialog>

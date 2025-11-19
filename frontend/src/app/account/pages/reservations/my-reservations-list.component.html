@@ -126,37 +126,29 @@
             <button
               pButton
               type="button"
+              class="p-button-outlined"
+              *ngIf="showChangeRequestAction(reservation)"
+              [label]="copy.actions.requestChange"
+              [routerLink]="detailLink(reservation)"
+              [queryParams]="{ change_request: '1' }"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="p-button-warning"
+              *ngIf="shouldCompletePassengerList(reservation)"
+              [label]="copy.actions.completePassengers"
+              [routerLink]="detailLink(reservation)"
+              [queryParams]="{ focus: 'passengers' }"
+            ></button>
+            <button
+              pButton
+              type="button"
               class="p-button-secondary"
               [label]="copy.actions.writeReview"
               *ngIf="canWriteReview(reservation)"
               [routerLink]="reviewLink(reservation)"
             ></button>
-            <div class="reservation-card__contact-options">
-              <a
-                class="reservation-card__contact-link reservation-card__contact-link--whatsapp"
-                [href]="whatsappHref(reservation)"
-                target="_blank"
-                rel="noopener noreferrer"
-                [attr.aria-label]="copy.contact.whatsappAria"
-              >
-                <i class="pi pi-whatsapp" aria-hidden="true"></i>
-                <span>
-                  <strong>{{ copy.contact.whatsappLabel }}</strong>
-                  <small>{{ whatsappDisplay }}</small>
-                </span>
-              </a>
-              <a
-                class="reservation-card__contact-link reservation-card__contact-link--email"
-                [href]="emailHref(reservation)"
-                [attr.aria-label]="copy.contact.emailAria"
-              >
-                <i class="pi pi-envelope" aria-hidden="true"></i>
-                <span>
-                  <strong>{{ copy.contact.emailLabel }}</strong>
-                  <small>{{ supportEmail }}</small>
-                </span>
-              </a>
-            </div>
           </div>
         </ng-template>
       </p-card>

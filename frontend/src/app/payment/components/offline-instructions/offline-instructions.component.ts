@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 
 import { EventEmitter, Output } from '@angular/core';
 
@@ -33,6 +41,8 @@ interface OfflineInstructionsCopy {
     changeMethod: string;
     reviewing: string;
   };
+  copied: string;
+  copyPrompt: string;
 }
 
 const SUPPORTED_LANGUAGES = ['en', 'de', 'ru', 'tr'] as const;
@@ -171,6 +181,18 @@ const OFFLINE_TRANSLATIONS = {
     ru: 'Мы проверяем ваш платеж.',
     tr: 'Ödemenizi inceliyoruz.',
   },
+  copiedLabel: {
+    en: 'Copied',
+    de: 'Kopiert',
+    ru: 'Скопировано',
+    tr: 'Kopyalandı',
+  },
+  copyPromptLabel: {
+    en: 'Click to copy',
+    de: 'Zum Kopieren klicken',
+    ru: 'Нажмите, чтобы скопировать',
+    tr: 'Kopyalamak için tıklayın',
+  },
 } as const;
 type TranslationKey = keyof typeof OFFLINE_TRANSLATIONS;
 
@@ -183,6 +205,7 @@ type TranslationKey = keyof typeof OFFLINE_TRANSLATIONS;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OfflineInstructionsComponent implements OnChanges {
+  private readonly cdr = inject(ChangeDetectorRef);
   @Input() instruction: BankTransferInstruction | null = null;
   @Input() amountMinor = 0;
   @Input() currency = 'EUR';
@@ -195,6 +218,8 @@ export class OfflineInstructionsComponent implements OnChanges {
   @Output() changeMethod = new EventEmitter<void>();
   protected copy: OfflineInstructionsCopy = this.buildCopy(FALLBACK_LANGUAGE);
   private readonly fallbackLanguage: LanguageCode = FALLBACK_LANGUAGE;
+  protected copiedKey: string | null = null;
+  private copyResetHandle: ReturnType<typeof setTimeout> | null = null;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['languageCode']) {
@@ -208,10 +233,6 @@ export class OfflineInstructionsComponent implements OnChanges {
 
   protected isRubPhoneTransfer(): boolean {
     return this.method === 'RUB_PHONE_TRANSFER';
-  }
-
-  protected phoneValue(details: BankTransferInstruction): string | null {
-    return details.phone_number || details.iban || null;
   }
 
   private setCopy(lang?: string | null): void {
@@ -247,6 +268,8 @@ export class OfflineInstructionsComponent implements OnChanges {
         changeMethod: this.translate('genericChangeMethod', lang),
         reviewing: this.translate('genericReviewing', lang),
       },
+      copied: this.translate('copiedLabel', lang),
+      copyPrompt: this.translate('copyPromptLabel', lang),
     };
   }
 
@@ -260,5 +283,93 @@ export class OfflineInstructionsComponent implements OnChanges {
       return code as LanguageCode;
     }
     return this.fallbackLanguage;
+  }
+
+  protected maskSensitiveValue(value: string | null | undefined): string {
+    if (!value) {
+      return '—';
+    }
+    const trimmed = value.toString().trim();
+    if (trimmed.length <= 4) {
+      return trimmed;
+    }
+    const visible = trimmed.slice(0, 4);
+    const maskedLength = Math.max(4, trimmed.length - 4);
+    return `${visible}${'*'.repeat(maskedLength)}`;
+  }
+
+  protected copyValue(value: string | null | undefined, key: string): void {
+    if (!value) {
+      return;
+    }
+    const text = value.toString().trim();
+    if (!text) {
+      return;
+    }
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => this.handleCopied(key))
+        .catch(error => {
+          console.warn('Clipboard API failed, falling back to execCommand copy.', error);
+          this.fallbackCopy(text, key);
+        });
+      return;
+    }
+    this.fallbackCopy(text, key);
+  }
+
+  protected buildCopyKey(
+    account: { id?: number | string | null; label?: string | null },
+    field: string,
+    index: number,
+  ): string {
+    if (account?.id !== undefined && account?.id !== null) {
+      return `${account.id}-${field}`;
+    }
+    const label = account?.label ? account.label.replace(/\s+/g, '-').toLowerCase() : 'account';
+    return `${label}-${index}-${field}`;
+  }
+
+  private fallbackCopy(value: string, key: string): void {
+    const textarea = document.createElement('textarea');
+    textarea.value = value;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      this.handleCopied(key);
+    } catch (error) {
+      console.error('Copy failed', error);
+    } finally {
+      document.body.removeChild(textarea);
+    }
+  }
+
+  private handleCopied(key: string): void {
+    this.copiedKey = key;
+    if (this.copyResetHandle) {
+      clearTimeout(this.copyResetHandle);
+    }
+    this.copyResetHandle = setTimeout(() => {
+      this.copiedKey = null;
+      this.copyResetHandle = null;
+      this.cdr.markForCheck();
+    }, 2000);
+    this.cdr.markForCheck();
+  }
+
+  protected copyLabelFor(key: string | null | undefined): string {
+    if (!key) {
+      return '';
+    }
+    return this.copiedKey === key ? this.copy.copied : this.copy.copyPrompt;
+  }
+
+  protected copyLabelActiveFor(key: string | null | undefined): boolean {
+    return !!key && this.copiedKey === key;
   }
 }

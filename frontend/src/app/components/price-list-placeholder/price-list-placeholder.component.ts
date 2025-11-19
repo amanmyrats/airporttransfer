@@ -143,13 +143,14 @@ export class PriceListPlaceholderComponent implements OnInit {
 
     const routesByLocation = new Map<string, PopularRoute[]>();
     routes.forEach((route) => {
-      if (!route?.main_location) {
+      const locationCode = this.getRouteLocationCode(route);
+      if (!locationCode) {
         return;
       }
-      if (!routesByLocation.has(route.main_location)) {
-        routesByLocation.set(route.main_location, []);
+      if (!routesByLocation.has(locationCode)) {
+        routesByLocation.set(locationCode, []);
       }
-      routesByLocation.get(route.main_location)!.push(route);
+      routesByLocation.get(locationCode)!.push(route);
     });
 
     return this.mainLocationService
@@ -185,6 +186,16 @@ export class PriceListPlaceholderComponent implements OnInit {
         };
       })
       .filter((summary) => summary.routes.length > 0);
+  }
+
+  private getRouteLocationCode(route: PopularRoute): string | undefined {
+    return (
+      route.main_location ||
+      route.airport ||
+      route.airport_detail?.code ||
+      route.airport_detail?.iata_code ||
+      undefined
+    );
   }
 
   private toNumeric(value: unknown): number | null {

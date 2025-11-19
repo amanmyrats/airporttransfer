@@ -15,13 +15,19 @@ from django.utils import timezone
 
 from common.utils import transform_choices_to_key_value_pairs, clean_csv_file
 from .serializers import (
-    EuroRateModelSerializer, PopularRouteModelSerializer, 
+    EuroRateModelSerializer,
+    PopularRouteModelSerializer,
+    AirportModelSerializer,
+    CurrencyModelSerializer,
 )
 from .models import (
-    EuroRate, PopularRoute,
+    EuroRate,
+    PopularRoute,
+    Airport,
+    Currency,
 )
 from .filtersets import (
-    EuroRateFilterSet, PopularRouteFilterSet
+    EuroRateFilterSet, PopularRouteFilterSet, CurrencyFilterSet
 )
 from .resources import PopularRouteModelResource
 
@@ -42,15 +48,42 @@ class EuroRateModelViewSet(viewsets.ModelViewSet):
             return []
         # Use default authentication classes for other actions
         return super().get_authenticators()
-    
+
+
+class AirportModelViewSet(viewsets.ModelViewSet):
+    queryset = Airport.objects.all()
+    serializer_class = AirportModelSerializer
+    search_fields = ('iata_code', 'icao_code', 'name', 'city', 'country')
+    ordering_fields = ('iata_code', 'name', 'city', 'country', 'created_at')
+    ordering = ('iata_code',)
+
+    def get_authenticators(self):
+        if self.request.resolver_match.view_name.endswith('list'):
+            return []
+        return super().get_authenticators()
+
+
+class CurrencyModelViewSet(viewsets.ModelViewSet):
+    queryset = Currency.objects.prefetch_related('rates')
+    serializer_class = CurrencyModelSerializer
+    filterset_class = CurrencyFilterSet
+    search_fields = ('code', 'name', 'symbol')
+    ordering_fields = ('code', 'name', 'is_default', 'updated_at')
+    ordering = ('-is_default', 'code')
+
+    def get_authenticators(self):
+        if self.request.resolver_match.view_name.endswith('list'):
+            return []
+        return super().get_authenticators()
+
 
 class PopularRouteModelViewSet(viewsets.ModelViewSet):
-    queryset = PopularRoute.objects.all()
+    queryset = PopularRoute.objects.select_related('airport')
     serializer_class = PopularRouteModelSerializer
     filterset_class = PopularRouteFilterSet
-    search_fields = ('main_location', 'destination', 'car_type',)
-    ordering_fields = ('main_location', 'destination', 'car_type',)
-    ordering = ('main_location', 'car_type', 'euro_price', 'destination',)
+    search_fields = ('airport__iata_code', 'airport__name', 'destination', 'car_type',)
+    ordering_fields = ('airport__iata_code', 'airport__name', 'destination', 'car_type', 'euro_price',)
+    ordering = ('airport__iata_code', 'car_type', 'euro_price', 'destination',)
 
     def get_authenticators(self):
         if self.request.resolver_match.view_name.endswith('list'):
@@ -141,9 +174,9 @@ class MainLocationChoicesAPIView(APIView):
     authentication_classes = []
 
     def get(self, request, *args, **kwargs):
-        return Response(
-            transform_choices_to_key_value_pairs(PopularRoute.MAIN_LOCATION_CHOICES), 
-            status=status.HTTP_200_OK)
+        airports = Airport.objects.filter(is_active=True).order_by('iata_code')
+        serializer = AirportModelSerializer(airports, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class CarTypeChoicesAPIView(APIView):

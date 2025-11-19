@@ -38,6 +38,12 @@ export class FilterSearchComponent implements OnInit, OnChanges{
     { label: 'Gün', value: 'date_range' },
   ];
 
+  readonly yesNoOptions = [
+    { label: 'Any', value: '' },
+    { label: 'Yes', value: 'true' },
+    { label: 'No', value: 'false' },
+  ];
+
   dateFilterOptions = [...this.baseDateFilterOptions];
   reservationDateFilterOptions = [...this.baseDateFilterOptions];
   date: Date = new Date();
@@ -49,6 +55,12 @@ export class FilterSearchComponent implements OnInit, OnChanges{
   @Input() wantChangeRequestStatusFilter: boolean = false;
   @Input() wantMainLocationFilter: boolean = false;
   @Input() wantPaymentMethodFilter: boolean = false;
+  @Input() wantKeyFilter: boolean = false;
+  @Input() wantFeaturedFilter: boolean = false;
+  @Input() wantExpandedFilter: boolean = false;
+  @Input() wantCurrencyFilter: boolean = false;
+  @Input() currencyPlaceholder: string = 'Currency';
+  @Input() currencyMaxlength: number = 3;
   
   @Input() wantDateFilter: boolean = false;
   @Input() dateFilterLabel: string = 'Transfer Date';
@@ -136,6 +148,10 @@ export class FilterSearchComponent implements OnInit, OnChanges{
       search: [''], 
       main_location: [''],
       ordering: [''],
+      key: [''],
+      currency: [''],
+      is_featured: [''],
+      is_expanded_by_default: [''],
     });
   }
 
@@ -375,8 +391,12 @@ export class FilterSearchComponent implements OnInit, OnChanges{
       reservation_date_filter_option: 'year',
       status: '',
       method: '',
+      currency: '',
       latest_change_request_status: '',
       has_change_request: '',
+      key: '',
+      is_featured: '',
+      is_expanded_by_default: '',
     });
     if (this.filterTodayByDefault) {
       this.filterSearchForm.patchValue({ transfer_date: new Date() });

@@ -3,37 +3,198 @@
 <p-card header="Reservation detail" class="reservation-detail">
   <ng-container *ngIf="reservation() as reservation; else loading">
     <section class="reservation-detail__summary">
-      <div>
-        <h3 class="reservation-detail__number">{{ reservation.number || ('#' + reservation.id) }}</h3>
-        <p class="reservation-detail__status">
-          Status:
-          <span>{{ reservationStatusLabels[reservation.status] || reservation.status }}</span>
-        </p>
+      <div class="reservation-detail__header">
+        <div>
+          <h3 class="reservation-detail__number">{{ reservation.number || ('#' + reservation.id) }}</h3>
+          <p class="reservation-detail__status">
+            Status:
+            <span>{{ reservationStatusLabels[reservation.status] || reservation.status }}</span>
+          </p>
+        </div>
+        <div class="reservation-detail__actions">
+          <button
+            pButton
+            type="button"
+            label="Request a change"
+            class="p-button-outlined"
+            *ngIf="allowReservationChanges()"
+            (click)="openChangeRequestDialog()"
+            [disabled]="changeRequestsLoading() || hasPendingChangeRequest()"
+          ></button>
+          <button
+            pButton
+            type="button"
+            label="Complete passenger list"
+            class="p-button-warning"
+            *ngIf="allowReservationChanges() && hasMissingPassengerNames()"
+            (click)="focusPassengerList()"
+          ></button>
+          <small class="reservation-detail__pending-note" *ngIf="hasPendingChangeRequest()">
+            A change request is already pending review.
+          </small>
+        </div>
       </div>
       <div class="reservation-detail__grid">
-        <div>
-          <span class="label">Pickup</span>
-          <span>{{ reservation.pickup_full || reservation.pickup_short || '—' }}</span>
+        <div class="reservation-detail__group">
+          <h4>Locations</h4>
+          <div>
+            <span class="label">Pickup</span>
+            <span>{{ reservation.pickup_full || reservation.pickup_short || '—' }}</span>
+          </div>
+          <div>
+            <span class="label">Destination</span>
+            <span>{{ reservation.dest_full || reservation.dest_short || '—' }}</span>
+          </div>
         </div>
-        <div>
-          <span class="label">Destination</span>
-          <span>{{ reservation.dest_full || reservation.dest_short || '—' }}</span>
+
+        <div class="reservation-detail__group">
+          <h4>Date & Time</h4>
+          <div>
+            <span class="label">Reservation date</span>
+            <span>{{ reservation.reservation_date || '—' }}</span>
+          </div>
+          <div>
+            <span class="label">Transfer date</span>
+            <span>{{ reservation.transfer_date || '—' }}</span>
+          </div>
+          <div>
+            <span class="label">Transfer time</span>
+            <span>{{ reservation.transfer_time || '—' }}</span>
+          </div>
+          <div *ngIf="reservation.created_at">
+            <span class="label">Created at</span>
+            <span>{{ reservation.created_at | date: 'medium' }}</span>
+          </div>
+          <div *ngIf="reservation.updated_at">
+            <span class="label">Last updated</span>
+            <span>{{ reservation.updated_at | date: 'medium' }}</span>
+          </div>
         </div>
-        <div>
-          <span class="label">Transfer date</span>
-          <span>{{ reservation.transfer_date || '—' }}</span>
+
+        <div class="reservation-detail__group">
+          <h4>Flight details</h4>
+          <div *ngIf="reservation.flight_date">
+            <span class="label">Flight date</span>
+            <span>{{ reservation.flight_date }}</span>
+          </div>
+          <div *ngIf="reservation.flight_time">
+            <span class="label">Flight time</span>
+            <span>{{ reservation.flight_time }}</span>
+          </div>
+          <div *ngIf="reservation.flight_number">
+            <span class="label">Flight number</span>
+            <span>{{ reservation.flight_number }}</span>
+          </div>
+          <p *ngIf="!reservation.flight_date && !reservation.flight_time && !reservation.flight_number">No flight information recorded.</p>
         </div>
-        <div>
-          <span class="label">Transfer time</span>
-          <span>{{ reservation.transfer_time || '—' }}</span>
+
+        <div class="reservation-detail__group">
+          <h4>Passenger details</h4>
+          <div>
+            <span class="label">Passengers</span>
+            <span>{{ reservation.passenger_count }} adult(s) / {{ reservation.passenger_count_child }} child(ren)</span>
+          </div>
+          <div *ngIf="reservation.passenger_name">
+            <span class="label">Name</span>
+            <span>{{ reservation.passenger_name }}</span>
+          </div>
+          <div *ngIf="reservation.passenger_email">
+            <span class="label">Email</span>
+            <span>{{ reservation.passenger_email }}</span>
+          </div>
+          <div *ngIf="reservation.passenger_phone">
+            <span class="label">Phone</span>
+            <span>{{ reservation.passenger_phone }}</span>
+          </div>
         </div>
-        <div>
-          <span class="label">Passengers</span>
-          <span>{{ reservation.passenger_count }} adult(s) / {{ reservation.passenger_count_child }} child(ren)</span>
+
+        <div class="reservation-detail__group" *ngIf="extrasAvailable(reservation); else noExtras">
+          <h4>Extras</h4>
+          <div *ngIf="reservation.need_child_seat">
+            <span class="label">Child seat</span>
+            <span>Requested</span>
+          </div>
+          <div *ngIf="reservation.child_seat_count">
+            <span class="label">Child seat count</span>
+            <span>{{ reservation.child_seat_count }}</span>
+          </div>
+          <div *ngIf="reservation.greet_with_flower">
+            <span class="label">Greet with flower</span>
+            <span>Yes</span>
+          </div>
+          <div *ngIf="reservation.greet_with_champagne">
+            <span class="label">Greet with champagne</span>
+            <span>Yes</span>
+          </div>
         </div>
-        <div>
-          <span class="label">Notes</span>
-          <span>{{ reservation.note || '—' }}</span>
+        <ng-template #noExtras>
+          <div class="reservation-detail__group">
+            <h4>Extras</h4>
+            <p>No extra services requested.</p>
+          </div>
+        </ng-template>
+
+        <div class="reservation-detail__group payment-summary">
+          <h4>Payment</h4>
+          <div class="payment-summary__row">
+            <span class="label">Status</span>
+            <span class="payment-summary__status">{{ reservation.payment_status || '—' }}</span>
+          </div>
+          <ng-container *ngIf="paymentSummaryLoading(); else paymentSummaryLoaded">
+            <p class="payment-summary__note">Loading payment information…</p>
+          </ng-container>
+          <ng-template #paymentSummaryLoaded>
+            <ng-container *ngIf="paymentSummary() as payment; else paymentSummaryEmpty">
+              <div class="payment-summary__row">
+                <span class="label">Total</span>
+                <span>{{ payment.total }}</span>
+              </div>
+              <div class="payment-summary__row" *ngIf="payment.paid">
+                <span class="label">Paid</span>
+                <span>{{ payment.paid }}</span>
+              </div>
+              <div class="payment-summary__row" *ngIf="payment.processing">
+                <span class="label">Processing</span>
+                <span class="payment-summary__status">
+                  {{ payment.processing.statusLabel }}
+                  <ng-container *ngIf="payment.processing.methodLabel">• {{ payment.processing.methodLabel }}</ng-container>
+                  <ng-container *ngIf="payment.processing.amount">• {{ payment.processing.amount }}</ng-container>
+                </span>
+              </div>
+              <div class="payment-summary__row payment-summary__due" *ngIf="payment.due">
+                <div>
+                  <span class="label">Due</span>
+                  <strong>{{ payment.due }}</strong>
+                </div>
+                <div class="payment-summary__actions" *ngIf="reservation.number">
+                  <button type="button" (click)="goToCheckout(reservation)">Go to checkout</button>
+                </div>
+              </div>
+              <div class="payment-summary__row" *ngIf="payment.latestPayment">
+                <span class="label">Last payment</span>
+                <span class="payment-summary__status">
+                  {{ payment.latestPayment.amount }}
+                  <ng-container *ngIf="payment.latestPayment.methodLabel">
+                    • {{ payment.latestPayment.methodLabel }}
+                  </ng-container>
+                  <ng-container *ngIf="payment.latestPayment.capturedAt">
+                    • {{ payment.latestPayment.capturedAt | date: 'medium' }}
+                  </ng-container>
+                </span>
+              </div>
+            </ng-container>
+            <ng-template #paymentSummaryEmpty>
+              <p class="payment-summary__note">Payment information is not available yet.</p>
+            </ng-template>
+          </ng-template>
+        </div>
+
+        <div class="reservation-detail__group">
+          <h4>Notes</h4>
+          <div>
+            <span class="label">Customer note</span>
+            <span>{{ reservation.note || '—' }}</span>
+          </div>
         </div>
       </div>
     </section>
@@ -48,11 +209,31 @@
         <p class="reservation-detail__info">
           Provide the full names for the remaining passengers so your driver knows who to expect.
         </p>
-        <form [formGroup]="passengerListForm" (ngSubmit)="savePassengerList()" class="passenger-form">
+        <form
+          [formGroup]="passengerListForm"
+          (ngSubmit)="savePassengerList()"
+          class="passenger-form"
+          [class.passenger-form--disabled]="!allowReservationChanges()"
+        >
           <div class="passenger-form__controls" formArrayName="passengers">
-            <label *ngFor="let descriptor of passengerDescriptors(); let i = index">
-              <span>{{ descriptor.label }} <small *ngIf="descriptor.isChild">(Child)</small></span>
-              <input type="text" [formControlName]="i" placeholder="Full name" />
+            <label
+              *ngFor="let descriptor of passengerDescriptors(); let i = index"
+              class="passenger-form__row"
+              [class.passenger-form__row--warning]="isPassengerNameMissing(i)"
+            >
+              <span class="passenger-form__label">
+                {{ descriptor.label }}
+                <small *ngIf="descriptor.isChild">(Child)</small>
+              </span>
+              <span class="passenger-form__input-wrapper">
+                <input type="text" [formControlName]="i" placeholder="Full name" [readonly]="!allowReservationChanges()" />
+                <span
+                  class="passenger-form__warning"
+                  *ngIf="allowReservationChanges() && isPassengerNameMissing(i)"
+                >
+                  Please enter a passenger name.
+                </span>
+              </span>
             </label>
           </div>
           <div class="form-actions">
@@ -60,7 +241,7 @@
               pButton
               type="submit"
               label="Save passenger list"
-              [disabled]="passengerFormDisabled()"
+              [disabled]="passengerFormDisabled() || !allowReservationChanges()"
               [loading]="passengerSaving()"
             ></button>
           </div>
@@ -71,84 +252,6 @@
         <p class="reservation-detail__info">
           This reservation only lists the primary passenger above. No additional names are required.
         </p>
-      </ng-template>
-    </section>
-
-    <section class="reservation-detail__form">
-      <h3>Request a change</h3>
-      <ng-container *ngIf="!hasPendingChangeRequest(); else pendingNotice">
-        <form [formGroup]="form" (ngSubmit)="submitChangeRequest()" novalidate>
-          <div class="form-grid">
-            <label>
-              <span>Transfer date</span>
-              <input type="date" formControlName="transfer_date" />
-            </label>
-            <label>
-              <span>Transfer time</span>
-              <input type="time" formControlName="transfer_time" />
-            </label>
-            <label>
-              <span>Flight date</span>
-              <input type="date" formControlName="flight_date" />
-            </label>
-            <label>
-              <span>Flight time</span>
-              <input type="time" formControlName="flight_time" />
-            </label>
-            <label>
-              <span>Flight number</span>
-              <input type="text" formControlName="flight_number" />
-            </label>
-            <label>
-              <span>Adult passengers</span>
-              <input type="number" formControlName="passenger_count" min="1" />
-            </label>
-            <label>
-              <span>Child passengers</span>
-              <input type="number" formControlName="passenger_count_child" min="0" />
-            </label>
-            <div class="child-seat-group">
-              <label class="checkbox child-seat-toggle">
-                <input type="checkbox" formControlName="need_child_seat" />
-                <span>Need child seat?</span>
-              </label>
-              <label
-                class="child-seat-count"
-                [class.has-hint]="needChildSeatSelected()"
-                [attr.data-hint]="needChildSeatSelected() ? childSeatHint : null"
-              >
-                <span>Child seat count</span>
-                <input
-                  type="number"
-                  formControlName="child_seat_count"
-                  min="0"
-                  tabindex="-1"
-                />
-              </label>
-            </div>
-          </div>
-          <label class="full-width">
-            <span>Notes for the operator</span>
-            <textarea rows="3" formControlName="note"></textarea>
-          </label>
-          <p class="reservation-detail__info">
-            If you want to change other info not listed here, please contact support via WhatsApp or email.
-          </p>
-          <div class="form-actions">
-            <button
-              pButton
-              type="submit"
-              label="Submit change request"
-              [disabled]="changeRequestsLoading() || changeRequestSubmitting()"
-              [loading]="changeRequestSubmitting()"
-            ></button>
-          </div>
-        </form>
-      </ng-container>
-      <ng-template #pendingNotice>
-        <div class="reservation-detail__info">
-          A change request is already pending. You can cancel it below to submit a new one.
-        </div>
       </ng-template>
     </section>
 
@@ -197,6 +300,89 @@
     <a [routerLink]="listLink()">Back to list</a>
   </ng-container>
 </p-card>
+
+<p-dialog
+  header="Request a change"
+  [(visible)]="changeRequestDialogVisible"
+  [modal]="true"
+  [style]="{ width: 'min(720px, 95vw)' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="closeChangeRequestDialog()"
+>
+  <ng-container *ngIf="!hasPendingChangeRequest(); else pendingDialogNotice">
+    <div class="reservation-detail__form reservation-detail__form--dialog">
+      <form [formGroup]="form" (ngSubmit)="submitChangeRequest()" novalidate>
+        <div class="form-grid">
+          <label>
+            <span>Transfer date</span>
+            <input type="date" formControlName="transfer_date" />
+          </label>
+          <label>
+            <span>Transfer time</span>
+            <input type="time" formControlName="transfer_time" />
+          </label>
+          <label>
+            <span>Flight date</span>
+            <input type="date" formControlName="flight_date" />
+          </label>
+          <label>
+            <span>Flight time</span>
+            <input type="time" formControlName="flight_time" />
+          </label>
+          <label>
+            <span>Flight number</span>
+            <input type="text" formControlName="flight_number" />
+          </label>
+          <label>
+            <span>Adult passengers</span>
+            <input type="number" formControlName="passenger_count" min="1" />
+          </label>
+          <label>
+            <span>Child passengers</span>
+            <input type="number" formControlName="passenger_count_child" min="0" />
+          </label>
+          <div class="child-seat-group">
+            <label class="checkbox child-seat-toggle">
+              <input type="checkbox" formControlName="need_child_seat" />
+              <span>Need child seat?</span>
+            </label>
+            <label
+              class="child-seat-count"
+              [class.has-hint]="needChildSeatSelected()"
+              [attr.data-hint]="needChildSeatSelected() ? childSeatHint : null"
+            >
+              <span>Child seat count</span>
+              <input type="number" formControlName="child_seat_count" min="0" tabindex="-1" />
+            </label>
+          </div>
+        </div>
+        <label class="full-width">
+          <span>Notes for the operator</span>
+          <textarea rows="3" formControlName="note"></textarea>
+        </label>
+        <p class="reservation-detail__info">
+          If you want to change other info not listed here, please contact support via WhatsApp or email.
+        </p>
+        <div class="form-actions">
+          <button
+            pButton
+            type="submit"
+            label="Submit change request"
+            [disabled]="changeRequestsLoading() || changeRequestSubmitting()"
+            [loading]="changeRequestSubmitting()"
+          ></button>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+  <ng-template #pendingDialogNotice>
+    <p class="reservation-detail__info">
+      A change request is already pending. You can cancel it from the list below before submitting a new
+      one.
+    </p>
+  </ng-template>
+</p-dialog>
 
 <ng-template #loading>
   <div class="reservation-detail__loading">

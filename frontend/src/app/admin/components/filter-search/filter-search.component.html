@@ -208,6 +208,66 @@
 
                 <label for="buttondisplay">Ödeme Yöntemi</label>
             </p-floatlabel>
+
+            <p-floatlabel
+                variant="on"
+                *ngIf="wantCurrencyFilter && shouldDisplayFilter('currency')"
+            >
+                <input
+                    type="text"
+                    pInputText
+                    class="item"
+                    formControlName="currency"
+                    [maxlength]="currencyMaxlength"
+                    [placeholder]="currencyPlaceholder"
+                    (input)="onFilterChange()"
+                />
+                <label for="currency">{{ currencyPlaceholder }}</label>
+            </p-floatlabel>
+
+            <p-floatlabel
+                variant="on"
+                *ngIf="wantKeyFilter && shouldDisplayFilter('key')"
+            >
+                <input type="text" pInputText formControlName="key" class="item" />
+                <label for="key">Key</label>
+            </p-floatlabel>
+
+            <p-floatlabel
+                variant="on"
+                *ngIf="wantFeaturedFilter && shouldDisplayFilter('is_featured')"
+            >
+                <p-select
+                    class="item"
+                    [options]="yesNoOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    formControlName="is_featured"
+                    (onChange)="onFilterChange()"
+                    showClear="true"
+                    appendTo="body"
+                    placeholder="Featured"
+                />
+                <label for="is_featured">Featured</label>
+            </p-floatlabel>
+
+            <p-floatlabel
+                variant="on"
+                *ngIf="wantExpandedFilter && shouldDisplayFilter('is_expanded_by_default')"
+            >
+                <p-select
+                    class="item"
+                    [options]="yesNoOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    formControlName="is_expanded_by_default"
+                    (onChange)="onFilterChange()"
+                    showClear="true"
+                    appendTo="body"
+                    placeholder="Expanded?"
+                />
+                <label for="is_expanded_by_default">Expanded by default</label>
+            </p-floatlabel>
             
             <p-floatlabel
                 variant="on"

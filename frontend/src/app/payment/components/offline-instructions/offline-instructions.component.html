@@ -10,23 +10,227 @@
         <dt>{{ copy.detailed.reference }}</dt>
         <dd>{{ details.reference_text || bookingRef }}</dd>
       </div>
-      <div>
-        <dt>{{ isRubPhoneTransfer() ? copy.detailed.phoneNumber : copy.detailed.iban }}</dt>
-        <dd>{{ phoneValue(details) }}</dd>
-      </div>
-      <div>
-        <dt>{{ isRubPhoneTransfer() ? copy.detailed.accountHolder : copy.detailed.accountName }}</dt>
-        <dd>{{ details.account_name }}</dd>
-      </div>
-      <div>
-        <dt>{{ isRubPhoneTransfer() ? copy.detailed.bankName : copy.detailed.bank }}</dt>
-        <dd>{{ details.bank_name }}</dd>
-      </div>
       <div *ngIf="details.expires_at">
         <dt>{{ copy.detailed.expires }}</dt>
         <dd>{{ details.expires_at | date:'medium' }}</dd>
       </div>
     </dl>
+
+    <div class="accounts-list" *ngIf="details.bank_accounts?.length; else noAccounts">
+      <article
+        class="account-card"
+        *ngFor="let account of details.bank_accounts; index as i; let count = count"
+        [class.account-card--grouped]="count > 1"
+      >
+        <header class="account-card__header" *ngIf="count > 1">
+          <div class="account-card__label">
+            <span class="label">{{ account.label || (isRubPhoneTransfer() ? copy.detailed.bank : copy.detailed.bankName) }}</span>
+            <small>#{{ i + 1 }}</small>
+          </div>
+          <span class="account-card__currency">{{ account.currency }}</span>
+        </header>
+        <dl>
+          <div>
+            <dt>{{ isRubPhoneTransfer() ? copy.detailed.phoneNumber : copy.detailed.iban }}</dt>
+            <dd>
+              <div class="value-with-copy">
+                <span>
+                  {{
+                    maskSensitiveValue(
+                      isRubPhoneTransfer() ? account.phone_number || null : account.iban || null
+                    )
+                  }}
+                </span>
+                <ng-container
+                  *ngIf="
+                    (isRubPhoneTransfer() ? account.phone_number : account.iban) as primaryValue
+                  "
+                >
+                  <ng-container
+                    *ngIf="
+                      buildCopyKey(account, isRubPhoneTransfer() ? 'phone' : 'iban', i) as primaryKey
+                    "
+                  >
+                    <button
+                      type="button"
+                      class="copy-button"
+                      (click)="copyValue(primaryValue, primaryKey)"
+                    >
+                      <span class="copy-icon" aria-hidden="true"></span>
+                      <span class="sr-only">
+                        Copy {{ isRubPhoneTransfer() ? copy.detailed.phoneNumber : copy.detailed.iban }}
+                      </span>
+                    </button>
+                    <span
+                      class="copy-feedback"
+                      [class.active]="copyLabelActiveFor(primaryKey)"
+                    >
+                      {{ copyLabelFor(primaryKey) }}
+                    </span>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </dd>
+          </div>
+          <div>
+            <dt>{{ isRubPhoneTransfer() ? copy.detailed.accountHolder : copy.detailed.accountName }}</dt>
+            <dd>
+              <div class="value-with-copy">
+                <span>{{ maskSensitiveValue(account.account_name || null) }}</span>
+                <ng-container *ngIf="account.account_name as accountName">
+                  <ng-container *ngIf="buildCopyKey(account, 'account-name', i) as accountNameKey">
+                    <button
+                      type="button"
+                      class="copy-button"
+                      (click)="copyValue(accountName, accountNameKey)"
+                    >
+                      <span class="copy-icon" aria-hidden="true"></span>
+                      <span class="sr-only">
+                        Copy
+                        {{
+                          isRubPhoneTransfer() ? copy.detailed.accountHolder : copy.detailed.accountName
+                        }}
+                      </span>
+                    </button>
+                    <span
+                      class="copy-feedback"
+                      [class.active]="copyLabelActiveFor(accountNameKey)"
+                    >
+                      {{ copyLabelFor(accountNameKey) }}
+                    </span>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </dd>
+          </div>
+          <div>
+            <dt>{{ copy.detailed.bankName }}</dt>
+            <dd>
+              <div class="value-with-copy">
+                <span>{{ account.bank_name || '—' }}</span>
+                <ng-container *ngIf="account.bank_name as bankName">
+                  <ng-container *ngIf="buildCopyKey(account, 'bank-name', i) as bankNameKey">
+                    <button
+                      type="button"
+                      class="copy-button"
+                      (click)="copyValue(bankName, bankNameKey)"
+                    >
+                      <span class="copy-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Copy {{ copy.detailed.bankName }}</span>
+                    </button>
+                    <span
+                      class="copy-feedback"
+                      [class.active]="copyLabelActiveFor(bankNameKey)"
+                    >
+                      {{ copyLabelFor(bankNameKey) }}
+                    </span>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </dd>
+          </div>
+          <div *ngIf="!isRubPhoneTransfer() && account.account_number">
+            <dt>Account Number</dt>
+            <dd>
+              <div class="value-with-copy">
+                <span>{{ maskSensitiveValue(account.account_number) }}</span>
+                <ng-container *ngIf="buildCopyKey(account, 'account-number', i) as accountNumberKey">
+                  <button
+                    type="button"
+                    class="copy-button"
+                    (click)="copyValue(account.account_number, accountNumberKey)"
+                  >
+                    <span class="copy-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Copy account number</span>
+                  </button>
+                  <span
+                    class="copy-feedback"
+                    [class.active]="copyLabelActiveFor(accountNumberKey)"
+                  >
+                    {{ copyLabelFor(accountNumberKey) }}
+                  </span>
+                </ng-container>
+              </div>
+            </dd>
+          </div>
+          <div *ngIf="account.swift_code">
+            <dt>SWIFT / BIC</dt>
+            <dd>
+              <div class="value-with-copy">
+                <span>{{ maskSensitiveValue(account.swift_code) }}</span>
+                <ng-container *ngIf="buildCopyKey(account, 'swift', i) as swiftKey">
+                  <button
+                    type="button"
+                    class="copy-button"
+                    (click)="copyValue(account.swift_code, swiftKey)"
+                  >
+                    <span class="copy-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Copy SWIFT / BIC</span>
+                  </button>
+                  <span
+                    class="copy-feedback"
+                    [class.active]="copyLabelActiveFor(swiftKey)"
+                  >
+                    {{ copyLabelFor(swiftKey) }}
+                  </span>
+                </ng-container>
+              </div>
+            </dd>
+          </div>
+          <div *ngIf="account.branch_code">
+            <dt>Branch Code</dt>
+            <dd>
+              <div class="value-with-copy">
+                <span>{{ account.branch_code }}</span>
+                <ng-container *ngIf="buildCopyKey(account, 'branch', i) as branchKey">
+                  <button
+                    type="button"
+                    class="copy-button"
+                    (click)="copyValue(account.branch_code, branchKey)"
+                  >
+                    <span class="copy-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Copy branch code</span>
+                  </button>
+                  <span
+                    class="copy-feedback"
+                    [class.active]="copyLabelActiveFor(branchKey)"
+                  >
+                    {{ copyLabelFor(branchKey) }}
+                  </span>
+                </ng-container>
+              </div>
+            </dd>
+          </div>
+          <div *ngIf="isRubPhoneTransfer() && account.reference_hint">
+            <dt>{{ copy.detailed.reference }}</dt>
+            <dd>
+              <div class="value-with-copy">
+                <span>{{ maskSensitiveValue(account.reference_hint) }}</span>
+                <ng-container *ngIf="buildCopyKey(account, 'reference', i) as referenceKey">
+                  <button
+                    type="button"
+                    class="copy-button"
+                    (click)="copyValue(account.reference_hint, referenceKey)"
+                  >
+                    <span class="copy-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Copy reference</span>
+                  </button>
+                  <span
+                    class="copy-feedback"
+                    [class.active]="copyLabelActiveFor(referenceKey)"
+                  >
+                    {{ copyLabelFor(referenceKey) }}
+                  </span>
+                </ng-container>
+              </div>
+            </dd>
+          </div>
+        </dl>
+      </article>
+    </div>
+    <ng-template #noAccounts>
+      <p class="note">No active bank accounts are available for this method.</p>
+    </ng-template>
 
     <p class="note">{{ copy.detailed.note }}</p>
     <div class="extra-content">

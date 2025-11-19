@@ -35,7 +35,7 @@
               /> -->
               <i class="pi pi-user" 
               style="font-size: 1.5rem; margin-left: 3px;">
-                <img src="images/icons/user.svg" alt="user" style="width: 1.5rem; height: 1.5rem;">
+                <!-- <img src="images/icons/user.svg" alt="user" style="width: 1.5rem; height: 1.5rem;"> -->
             </i>
 
           </div>
@@ -103,6 +103,7 @@
       }
 
       <section class="urgent-queues">
+        @if (pendingSettlementIntents.length) {
         <div class="urgent-column">
           <div class="section-heading">
             <h3>Onaylanmayı Bekleyen Ödemeler</h3>
@@ -114,53 +115,63 @@
               See all
             </a>
           </div>
-          @if (pendingSettlementIntents.length) {
-            <table class="plain-table">
-              <tbody>
-                @for (intent of pendingSettlementIntents; track intent.public_id) {
-                  <tr (click)="openPendingIntent(intent, $event)">
-                    <td class="primary">
-                      <div class="item-title">
-                        {{ intent.reservation?.passenger_name || intent.customer_name || intent.booking_ref }}
-                      </div>
+          <table class="plain-table">
+            <tbody>
+              @for (intent of pendingSettlementIntents; track intent.public_id) {
+                <tr
+                  (click)="openPendingIntent(intent, $event)"
+                  [class.row-loading]="isCardLoading('pending-intent', intent.public_id || intent.booking_ref || intent.reservation?.id)"
+                  [attr.aria-busy]="isCardLoading('pending-intent', intent.public_id || intent.booking_ref || intent.reservation?.id)"
+                >
+                  <td class="primary">
+                    <div class="item-title">
+                      {{ intent.reservation?.passenger_name || intent.customer_name || intent.booking_ref }}
+                    </div>
+                    <div class="item-subtitle">
+                      {{ intent.booking_ref }}
+                      @if (intent.reservation?.transfer_date || intent.reservation?.transfer_time) {
+                        &nbsp;&#8226;&nbsp;
+                        {{ intent.reservation?.transfer_date || '' }}
+                        {{ intent.reservation?.transfer_time || '' }}
+                      }
+                    </div>
+                    @if (intent.reservation?.pickup_short || intent.reservation?.dest_short) {
                       <div class="item-subtitle">
-                        {{ intent.booking_ref }}
-                        @if (intent.reservation?.transfer_date || intent.reservation?.transfer_time) {
-                          &nbsp;&#8226;&nbsp;
-                          {{ intent.reservation?.transfer_date || '' }}
-                          {{ intent.reservation?.transfer_time || '' }}
-                        }
+                        {{ intent.reservation?.pickup_short || 'Pickup TBD' }}
+                        →
+                        {{ intent.reservation?.dest_short || 'Dropoff TBD' }}
                       </div>
-                      @if (intent.reservation?.pickup_short || intent.reservation?.dest_short) {
-                        <div class="item-subtitle">
-                          {{ intent.reservation?.pickup_short || 'Pickup TBD' }}
-                          →
-                          {{ intent.reservation?.dest_short || 'Dropoff TBD' }}
-                        </div>
-                      }
-                    </td>
-                    <td class="secondary">
-                      <div class="item-created">
-                        {{ formatCurrency(intent.amount_minor, intent.currency) }}
+                    }
+                  </td>
+                  <td class="secondary">
+                    <div class="item-created">
+                      {{ formatCurrency(intent.amount_minor, intent.currency) }}
+                    </div>
+                    @if (intent.due_minor > 0) {
+                      <div class="item-subtitle">
+                        Due {{ formatCurrency(intent.due_minor, intent.currency) }}
                       </div>
-                      @if (intent.due_minor > 0) {
-                        <div class="item-subtitle">
-                          Due {{ formatCurrency(intent.due_minor, intent.currency) }}
-                        </div>
-                      }
-                    </td>
-                    <td class="actions">
-                      <i class="pi pi-arrow-right"></i>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          } @else {
-            <p class="empty-state">No payments awaiting approval.</p>
-          }
+                    }
+                  </td>
+                  <td class="actions">
+                    <span
+                      class="row-spinner"
+                      *ngIf="isCardLoading('pending-intent', intent.public_id || intent.booking_ref || intent.reservation?.id)"
+                      aria-hidden="true"
+                    ></span>
+                    <i
+                      class="pi pi-arrow-right"
+                      *ngIf="!isCardLoading('pending-intent', intent.public_id || intent.booking_ref || intent.reservation?.id)"
+                    ></i>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
+        }
 
+        @if (pendingConfirmationReservations.length) {
         <div class="urgent-column">
           <div class="section-heading">
             <h3>Pending Confirmation</h3>
@@ -172,42 +183,52 @@
               See all
             </a>
           </div>
-          @if (pendingConfirmationReservations.length) {
-            <table class="plain-table">
-              <tbody>
-                @for (reservation of pendingConfirmationReservations; track reservation.id) {
-                  <tr (click)="openReservation(reservation, $event)">
-                    <td class="primary">
-                      <div class="item-title">
-                        {{ reservation.number || reservation.passenger_name || ('Reservation #' + reservation.id) }}
-                      </div>
-                      <div class="item-subtitle">
-                        {{ reservation.passenger_name || reservation.passenger_email || 'Guest' }}
-                        @if (reservation.status) {
-                          &nbsp;&#8226;&nbsp;{{ reservation.status | titlecase }}
-                        }
-                        @if (reservation.transfer_date || reservation.transfer_time) {
-                          &nbsp;&#8226;&nbsp;{{ reservation.transfer_date || '' }} {{ reservation.transfer_time || '' }}
-                        }
-                      </div>
-                    </td>
-                    <td class="secondary">
-                      <span class="item-created">
-                        {{ reservation.created_at | date: 'MMM d, HH:mm' }}
-                      </span>
-                    </td>
-                    <td class="actions">
-                      <i class="pi pi-arrow-right"></i>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          } @else {
-            <p class="empty-state">No reservations waiting for confirmation.</p>
-          }
+          <table class="plain-table">
+            <tbody>
+              @for (reservation of pendingConfirmationReservations; track reservation.id) {
+                <tr
+                  (click)="openReservation(reservation, $event)"
+                  [class.row-loading]="isCardLoading('reservation', reservation.id || reservation.number || reservation.passenger_email)"
+                  [attr.aria-busy]="isCardLoading('reservation', reservation.id || reservation.number || reservation.passenger_email)"
+                >
+                  <td class="primary">
+                    <div class="item-title">
+                      {{ reservation.number || reservation.passenger_name || ('Reservation #' + reservation.id) }}
+                    </div>
+                    <div class="item-subtitle">
+                      {{ reservation.passenger_name || reservation.passenger_email || 'Guest' }}
+                      @if (reservation.status) {
+                        &nbsp;&#8226;&nbsp;{{ reservation.status | titlecase }}
+                      }
+                      @if (reservation.transfer_date || reservation.transfer_time) {
+                        &nbsp;&#8226;&nbsp;{{ reservation.transfer_date || '' }} {{ reservation.transfer_time || '' }}
+                      }
+                    </div>
+                  </td>
+                  <td class="secondary">
+                    <span class="item-created">
+                      {{ reservation.created_at | date: 'MMM d, HH:mm' }}
+                    </span>
+                  </td>
+                  <td class="actions">
+                    <span
+                      class="row-spinner"
+                      *ngIf="isCardLoading('reservation', reservation.id || reservation.number || reservation.passenger_email)"
+                      aria-hidden="true"
+                    ></span>
+                    <i
+                      class="pi pi-arrow-right"
+                      *ngIf="!isCardLoading('reservation', reservation.id || reservation.number || reservation.passenger_email)"
+                    ></i>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
+        }
 
+        @if (urgentChangeRequests.length) {
         <div class="urgent-column">
           <div class="section-heading">
             <h3>Change Requests</h3>
@@ -219,36 +240,39 @@
               See all
             </a>
           </div>
-          @if (urgentChangeRequests.length) {
-            <table class="plain-table">
-              <tbody>
-                @for (changeRequest of urgentChangeRequests; track changeRequest.id) {
-                  <tr (click)="openChangeRequest(changeRequest, $event)">
-                    <td class="primary">
-                      <div class="item-title">
-                        {{ changeRequest.reservation_number || ('Request #' + changeRequest.id) }}
-                      </div>
-                      <div class="item-subtitle">
-                        {{ changeRequest.status | titlecase }}
-                      </div>
-                    </td>
-                    <td class="secondary">
-                      <span class="item-created">
-                        {{ changeRequest.created_at | date: 'MMM d, HH:mm' }}
-                      </span>
-                    </td>
-                    <td class="actions">
-                      <i class="pi pi-arrow-right"></i>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          } @else {
-            <p class="empty-state">No change requests need review.</p>
-          }
+          <table class="plain-table">
+            <tbody>
+              @for (changeRequest of urgentChangeRequests; track changeRequest.id) {
+                <tr
+                  (click)="openChangeRequest(changeRequest, $event)"
+                  [class.row-loading]="isCardLoading('change-request', changeRequest.id)"
+                  [attr.aria-busy]="isCardLoading('change-request', changeRequest.id)"
+                >
+                  <td class="primary">
+                    <div class="item-title">
+                      {{ changeRequest.reservation_number || ('Request #' + changeRequest.id) }}
+                    </div>
+                    <div class="item-subtitle">
+                      {{ changeRequest.status | titlecase }}
+                    </div>
+                  </td>
+                  <td class="secondary">
+                    <span class="item-created">
+                      {{ changeRequest.created_at | date: 'MMM d, HH:mm' }}
+                    </span>
+                  </td>
+                  <td class="actions">
+                    <span class="row-spinner" *ngIf="isCardLoading('change-request', changeRequest.id)" aria-hidden="true"></span>
+                    <i class="pi pi-arrow-right" *ngIf="!isCardLoading('change-request', changeRequest.id)"></i>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
+        }
 
+        @if (urgentReviews.length) {
         <div class="urgent-column">
           <div class="section-heading">
             <h3>Urgent Reviews</h3>
@@ -260,40 +284,43 @@
               See all
             </a>
           </div>
-          @if (urgentReviews.length) {
-            <table class="plain-table">
-              <tbody>
-                @for (review of urgentReviews; track review.id) {
-                  <tr (click)="openReview(review, $event)">
-                    <td class="primary">
-                      <div class="item-title">{{ review.title || ('Review #' + review.id) }}</div>
-                      <div class="item-subtitle">
-                        Rating: {{ review.rating }}/5
-                        @if (review.status) {
-                          &nbsp;&#8226;&nbsp;Status: {{ review.status | titlecase }}
-                        }
-                        @if (review.is_flagged) {
-                          &nbsp;&#8226;&nbsp;Flagged
-                        }
-                      </div>
-                    </td>
-                    <td class="secondary">
-                      <span class="item-created">
-                        {{ review.updated_at | date: 'MMM d, HH:mm' }}
-                      </span>
-                    </td>
-                    <td class="actions">
-                      <i class="pi pi-arrow-right"></i>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          } @else {
-            <p class="empty-state">No urgent reviews at the moment.</p>
-          }
+          <table class="plain-table">
+            <tbody>
+              @for (review of urgentReviews; track review.id) {
+                <tr
+                  (click)="openReview(review, $event)"
+                  [class.row-loading]="isCardLoading('review', review.id)"
+                  [attr.aria-busy]="isCardLoading('review', review.id)"
+                >
+                  <td class="primary">
+                    <div class="item-title">{{ review.title || ('Review #' + review.id) }}</div>
+                    <div class="item-subtitle">
+                      Rating: {{ review.rating }}/5
+                      @if (review.status) {
+                        &nbsp;&#8226;&nbsp;Status: {{ review.status | titlecase }}
+                      }
+                      @if (review.is_flagged) {
+                        &nbsp;&#8226;&nbsp;Flagged
+                      }
+                    </div>
+                  </td>
+                  <td class="secondary">
+                    <span class="item-created">
+                      {{ review.updated_at | date: 'MMM d, HH:mm' }}
+                    </span>
+                  </td>
+                  <td class="actions">
+                    <span class="row-spinner" *ngIf="isCardLoading('review', review.id)" aria-hidden="true"></span>
+                    <i class="pi pi-arrow-right" *ngIf="!isCardLoading('review', review.id)"></i>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
+        }
 
+        @if (upcomingTransfers.length) {
         <div class="urgent-column">
           <div class="section-heading">
             <h3>Upcoming Transfers (24h)</h3>
@@ -305,40 +332,48 @@
               See all
             </a>
           </div>
-          @if (upcomingTransfers.length) {
-            <table class="plain-table">
-              <tbody>
-                @for (transfer of upcomingTransfers; track transfer.id) {
-                  <tr (click)="openReservation(transfer, $event)">
-                    <td class="primary">
-                      <div class="item-title">{{ transfer.passenger_name || transfer.passenger_email || 'Unknown passenger' }}</div>
-                      <div class="item-subtitle">
-                        {{ transfer.transfer_date || '—' }} {{ transfer.transfer_time || '' }}
-                      </div>
-                    </td>
-                    <td class="secondary">
-                      <span class="route">
-                        {{ transfer.pickup_short || 'Pickup TBD' }} → {{ transfer.dest_short || 'Dropoff TBD' }}
-                      </span>
-                    </td>
-                    <td class="actions">
-                      <i class="pi pi-arrow-right"></i>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          } @else {
-            <p class="empty-state">No transfers in the next 24 hours.</p>
-          }
+          <table class="plain-table">
+            <tbody>
+              @for (transfer of upcomingTransfers; track transfer.id) {
+                <tr
+                  (click)="openReservation(transfer, $event)"
+                  [class.row-loading]="isCardLoading('reservation', transfer.id || transfer.number || transfer.passenger_email)"
+                  [attr.aria-busy]="isCardLoading('reservation', transfer.id || transfer.number || transfer.passenger_email)"
+                >
+                  <td class="primary">
+                    <div class="item-title">{{ transfer.passenger_name || transfer.passenger_email || 'Unknown passenger' }}</div>
+                    <div class="item-subtitle">
+                      {{ transfer.transfer_date || '—' }} {{ transfer.transfer_time || '' }}
+                    </div>
+                  </td>
+                  <td class="secondary">
+                    <span class="route">
+                      {{ transfer.pickup_short || 'Pickup TBD' }} → {{ transfer.dest_short || 'Dropoff TBD' }}
+                    </span>
+                  </td>
+                  <td class="actions">
+                    <span
+                      class="row-spinner"
+                      *ngIf="isCardLoading('reservation', transfer.id || transfer.number || transfer.passenger_email)"
+                      aria-hidden="true"
+                    ></span>
+                    <i
+                      class="pi pi-arrow-right"
+                      *ngIf="!isCardLoading('reservation', transfer.id || transfer.number || transfer.passenger_email)"
+                    ></i>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
+        }
       </section>
-
+      @if (activityFeed.length) {
       <section class="activity-feed">
         <div class="section-heading">
           <h3>Recent Activity</h3>
         </div>
-        @if (activityFeed.length) {
           <ul class="activity-list">
             @for (activity of activityFeed; track activity.id) {
               <li
@@ -347,6 +382,8 @@
                 tabindex="0"
                 (keydown.enter)="openActivityItem(activity, $event)"
                 (keydown.space)="openActivityItem(activity, $event)"
+                [class.row-loading]="isCardLoading('activity', activity.id)"
+                [attr.aria-busy]="isCardLoading('activity', activity.id)"
               >
                 <span class="activity-icon">
                   <i [class]="activity.icon"></i>
@@ -359,14 +396,13 @@
                     <span>{{ activity.relativeTime }}</span>
                   </div>
                 </div>
-                <i class="pi pi-arrow-right activity-action"></i>
+                <span class="row-spinner" *ngIf="isCardLoading('activity', activity.id)" aria-hidden="true"></span>
+                <i class="pi pi-arrow-right activity-action" *ngIf="!isCardLoading('activity', activity.id)"></i>
               </li>
             }
           </ul>
-        } @else {
-          <p class="empty-state">No recent activity recorded.</p>
-        }
       </section>
+      }
     }
   </section>
 }

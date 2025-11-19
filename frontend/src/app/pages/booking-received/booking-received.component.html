@@ -9,26 +9,44 @@
     <h1 class="success-title">{{ pageCopy.successTitle }}</h1>
     <div class="next-steps" *ngIf="hasNextActions">
       <div class="next-steps__buttons">
-        <a
+        <button
           *ngFor="let checkout of checkoutLinks"
-          [routerLink]="checkout.commands"
+          type="button"
           class="btn-next primary"
-          >{{ checkout.label }}</a
+          (click)="openCheckoutLink(checkout, $event)"
+          [disabled]="isButtonLoading('checkout', checkout.reference)"
+          [attr.aria-busy]="isButtonLoading('checkout', checkout.reference)"
         >
-        <a
+          <span>{{ checkout.label }}</span>
+          <span class="btn-spinner" *ngIf="isButtonLoading('checkout', checkout.reference)" aria-hidden="true"></span>
+        </button>
+        <button
           *ngIf="dashboardCommands?.length"
-          [routerLink]="dashboardCommands"
+          type="button"
           class="btn-next secondary"
-          >{{ pageCopy.nextSteps.dashboardButton }}</a
+          (click)="openDashboard($event)"
+          [disabled]="isButtonLoading('dashboard', 'main')"
+          [attr.aria-busy]="isButtonLoading('dashboard', 'main')"
         >
+          <span>{{ pageCopy.nextSteps.dashboardButton }}</span>
+          <span class="btn-spinner" *ngIf="isButtonLoading('dashboard', 'main')" aria-hidden="true"></span>
+        </button>
         <ng-container *ngFor="let checkout of checkoutLinks">
-          <a
-            [routerLink]="reservationDetailCommands(checkout.reference, checkout.id)"
+          <button
+            type="button"
             class="btn-next tertiary"
+            (click)="openDetails(checkout, $event)"
+            [disabled]="isButtonLoading('details', checkout.id || checkout.reference)"
+            [attr.aria-busy]="isButtonLoading('details', checkout.id || checkout.reference)"
           >
             <span class="reservation-code">{{ checkout.reference }}</span>
             <span class="reservation-desc">{{ pageCopy.nextSteps.detailsButton }}</span>
-          </a>
+            <span
+              class="btn-spinner"
+              *ngIf="isButtonLoading('details', checkout.id || checkout.reference)"
+              aria-hidden="true"
+            ></span>
+          </button>
           <div class="reservation-code-copy">
             <span class="reservation-code">{{ checkout.reference }}</span>
             <button type="button" (click)="copyReference(checkout.reference)">
@@ -71,7 +89,16 @@
     </div>
 
     <div class="success-actions">
-      <a href="/" class="btn-home">{{ pageCopy.homeButton }}</a>
+      <button
+        type="button"
+        class="btn-home"
+        (click)="openHome($event)"
+        [disabled]="isButtonLoading('home', 'root')"
+        [attr.aria-busy]="isButtonLoading('home', 'root')"
+      >
+        <span>{{ pageCopy.homeButton }}</span>
+        <span class="btn-spinner" *ngIf="isButtonLoading('home', 'root')" aria-hidden="true"></span>
+      </button>
       <!-- <a href="/my-reservations" class="btn-my-reservations">View My Reservations</a> -->
     </div>
   </div>

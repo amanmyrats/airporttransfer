@@ -68,6 +68,32 @@
   padding-inline: 1.5rem;
 }
 
+.row-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.row-spinner {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid rgba(15, 23, 42, 0.2);
+  border-top-color: #2563eb;
+  animation: row-spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+:host-context(.dark) .row-spinner {
+  border-color: rgba(148, 163, 184, 0.3);
+  border-top-color: #93c5fd;
+}
+
+@keyframes row-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 :host-context(.dark) .global-search button.p-button {
   background: #22c55e;
   border: none;

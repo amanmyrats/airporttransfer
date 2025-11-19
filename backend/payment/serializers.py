@@ -11,6 +11,7 @@ from .models import (
     BankTransferInstruction,
     OfflineReceipt,
     Payment,
+    PaymentBankAccount,
     PaymentIntent,
     Refund,
 )
@@ -84,17 +85,111 @@ class OfflineReceiptSerializer(serializers.ModelSerializer):
         )
 
 
+class PaymentBankAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentBankAccount
+        fields = (
+            "id",
+            "label",
+            "method",
+            "currency",
+            "account_name",
+            "bank_name",
+            "iban",
+            "account_number",
+            "swift_code",
+            "branch_code",
+            "phone_number",
+            "reference_hint",
+            "metadata",
+            "priority",
+            "is_active",
+            "created_at",
+            "updated_at",
+        )
+
+
 class BankTransferInstructionSerializer(serializers.ModelSerializer):
+    bank_accounts = PaymentBankAccountSerializer(many=True, read_only=True)
+
     class Meta:
         model = BankTransferInstruction
         fields = (
-            "iban",
-            "phone_number",
-            "account_name",
-            "bank_name",
             "reference_text",
+            "metadata",
             "expires_at",
+            "bank_accounts",
         )
+
+
+class BankTransferInstructionAdminSerializer(serializers.ModelSerializer):
+    payment_intent = serializers.SlugRelatedField(
+        slug_field="public_id",
+        queryset=PaymentIntent.objects.all(),
+        write_only=True,
+        required=False,
+    )
+    payment_intent_public_id = serializers.UUIDField(source="payment_intent.public_id", read_only=True)
+    booking_ref = serializers.CharField(source="payment_intent.booking_ref", read_only=True)
+    method = serializers.CharField(source="payment_intent.method", read_only=True)
+    method_label = serializers.CharField(source="payment_intent.get_method_display", read_only=True)
+    bank_accounts = PaymentBankAccountSerializer(many=True, read_only=True)
+    bank_account_ids = serializers.PrimaryKeyRelatedField(
+        queryset=PaymentBankAccount.objects.all(),
+        many=True,
+        write_only=True,
+        required=False,
+    )
+
+    class Meta:
+        model = BankTransferInstruction
+        fields = (
+            "id",
+            "payment_intent",
+            "payment_intent_public_id",
+            "booking_ref",
+            "method",
+            "method_label",
+            "bank_accounts",
+            "bank_account_ids",
+            "reference_text",
+            "metadata",
+            "expires_at",
+            "created_at",
+            "updated_at",
+        )
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        intent = attrs.get("payment_intent") or getattr(getattr(self, "instance", None), "payment_intent", None)
+        if intent is None:
+            raise serializers.ValidationError({"payment_intent": "This field is required."})
+        method = PaymentMethod(intent.method)
+        if method not in {PaymentMethod.BANK_TRANSFER, PaymentMethod.RUB_PHONE_TRANSFER}:
+            raise serializers.ValidationError(
+                {"payment_intent": "Selected intent does not support bank transfer instructions."}
+            )
+        if (
+            not getattr(self, "instance", None)
+            and BankTransferInstruction.objects.filter(payment_intent=intent).exists()
+        ):
+            raise serializers.ValidationError(
+                {"payment_intent": "Instructions already exist for this payment intent."}
+            )
+        return attrs
+
+    def create(self, validated_data: dict[str, Any]) -> BankTransferInstruction:
+        bank_accounts = validated_data.pop("bank_account_ids", [])
+        instruction = super().create(validated_data)
+        if bank_accounts:
+            instruction.bank_accounts.set(bank_accounts)
+        return instruction
+
+    def update(self, instance: BankTransferInstruction, validated_data: dict[str, Any]) -> BankTransferInstruction:
+        bank_accounts = validated_data.pop("bank_account_ids", None)
+        instruction = super().update(instance, validated_data)
+        if bank_accounts is not None:
+            instruction.bank_accounts.set(bank_accounts)
+        return instruction
 
 
 class PaymentIntentDetailSerializer(serializers.ModelSerializer):
@@ -195,18 +290,9 @@ class PaymentIntentCreateSerializer(serializers.Serializer):
 
     def create(self, validated_data: dict[str, Any]) -> PaymentIntent:
         customer = validated_data.pop("customer", {})
-        offline_instructions = None
-        if validated_data["method"] == PaymentMethod.BANK_TRANSFER.value:
-            offline_instructions = (
-                getattr(settings, "PAYMENT_BANK_TRANSFER_INSTRUCTIONS", None) or {}
-            )
-        elif validated_data["method"] == PaymentMethod.RUB_PHONE_TRANSFER.value:
-            offline_instructions = (
-                getattr(settings, "PAYMENT_RUB_PHONE_TRANSFER_INSTRUCTIONS", None) or {}
-            )
         return services.create_payment_intent(
             customer=customer,
-            offline_instructions=offline_instructions,
+            offline_instructions=None,
             **validated_data,
         )
 

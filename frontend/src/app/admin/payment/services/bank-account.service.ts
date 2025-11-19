@@ -1,0 +1,39 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+import { environment as env } from '../../../../environments/environment';
+import {
+  PaymentBankAccount,
+  PaymentBankAccountFilters,
+  PaymentBankAccountPayload,
+} from '../models/bank-account.model';
+
+@Injectable({ providedIn: 'root' })
+export class BankAccountService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${env.apiBase}/payments/bank-accounts`;
+
+  list(filters?: PaymentBankAccountFilters): Observable<PaymentBankAccount[]> {
+    const params = new HttpParams({
+      fromObject: {
+        ...(filters?.method ? { method: filters.method } : {}),
+        ...(filters?.currency ? { currency: filters.currency } : {}),
+        ...(typeof filters?.is_active === 'boolean' ? { is_active: String(filters.is_active) } : {}),
+      },
+    });
+    return this.http.get<PaymentBankAccount[]>(`${this.baseUrl}/`, { params });
+  }
+
+  create(payload: PaymentBankAccountPayload): Observable<PaymentBankAccount> {
+    return this.http.post<PaymentBankAccount>(`${this.baseUrl}/`, payload);
+  }
+
+  update(id: number, payload: PaymentBankAccountPayload): Observable<PaymentBankAccount> {
+    return this.http.patch<PaymentBankAccount>(`${this.baseUrl}/${id}/`, payload);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}/`);
+  }
+}

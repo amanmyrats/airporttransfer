@@ -1,3 +1,18 @@
+<app-filter-search
+  [first]="first"
+  [rows]="rows"
+  [totalRecords]="totalRecords"
+  [wantDetailedButton]="false"
+  [wantSearchFilter]="true"
+  [wantOrdering]="true"
+  [orderingOptions]="orderingOptions"
+  [defaultOrdering]="defaultOrdering"
+  [wantKeyFilter]="true"
+  [wantFeaturedFilter]="true"
+  [wantExpandedFilter]="true"
+  (searchEmitter)="onFilterSearch($event)"
+></app-filter-search>
+
 <!-- Toolbar -->
 <div class="faq-toolbar">
     <div class="left">
@@ -22,8 +37,14 @@
   </div>
   
   <!-- List (drag & drop container) -->
-  <div class="faq-list" cdkDropList (cdkDropListDropped)="drop($event)">
-    <ng-container *ngFor="let item of ordered(); trackBy: trackById">
+  <div
+    class="faq-list"
+    cdkDropList
+    [cdkDropListData]="visibleFaqs"
+    (cdkDropListDropped)="drop($event)"
+    *ngIf="visibleFaqs.length > 0; else noFaqs"
+  >
+    <ng-container *ngFor="let item of visibleFaqs; trackBy: trackById">
       <figure class="faq-item">
         <div class="faq-row" cdkDrag>
   
@@ -267,25 +288,34 @@
       </figure>
     </ng-container>
   
-    <ng-container *ngIf="ordered()?.length === 0">
-      <div class="empty-state">
-        No FAQs in library yet
-        <p-button
-          class="p-button-primary"
-          [label]="'Add New FAQ'"
-          [rounded]="true"
-          size="small"
-          (click)="addNewEmptyFaq(0)">
-          <ng-template pTemplate="icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                 class="bi bi-plus" viewBox="0 0 16 16">
-              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-            </svg>
-          </ng-template>
-        </p-button>
-      </div>
-    </ng-container>
   </div>
+
+  <ng-template #noFaqs>
+    <div class="empty-state" *ngIf="!loading()">
+      <span>No FAQs match your filters yet.</span>
+      <p-button
+        class="p-button-primary"
+        [label]="'Add New FAQ'"
+        [rounded]="true"
+        size="small"
+        (click)="addNewEmptyFaq(0)"
+      >
+        <ng-template pTemplate="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </ng-template>
+      </p-button>
+    </div>
+  </ng-template>
+
+  <app-shared-paginator
+    *ngIf="totalRecords > 0"
+    [first]="first"
+    [rows]="rows"
+    [totalRecords]="totalRecords"
+    (onPageChangeEmitter)="onPageChange($event)"
+  ></app-shared-paginator>
   
   <p-toast [life]="8000"></p-toast>
   

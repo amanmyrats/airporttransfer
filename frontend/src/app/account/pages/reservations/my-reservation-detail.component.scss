@@ -9,6 +9,25 @@ p-card {
   gap: 1.5rem;
   margin-bottom: 2rem;
 
+  .reservation-detail__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .reservation-detail__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.35rem;
+
+    button {
+      white-space: nowrap;
+    }
+  }
+
   .reservation-detail__number {
     margin: 0;
     font-size: 1.5rem;
@@ -22,31 +41,115 @@ p-card {
 
   .reservation-detail__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1rem;
+  }
+}
 
-    div {
-      display: flex;
-      flex-direction: column;
-      padding: 0.75rem;
-      border: 1px solid var(--surface-border, #e5e7eb);
-      border-radius: 0.75rem;
-      background: var(--surface-overlay, #f9fafb);
-    }
+.reservation-detail__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--surface-border, #e5e7eb);
+  border-radius: 0.75rem;
+  background: var(--surface-overlay, #f9fafb);
 
-    .label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      color: var(--surface-500, #6b7280);
-      margin-bottom: 0.25rem;
-      letter-spacing: 0.04em;
-    }
+  h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: #0f172a;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--surface-500, #6b7280);
+    letter-spacing: 0.04em;
+  }
+
+  p {
+    margin: 0;
+    color: #475467;
+  }
+}
+
+.payment-summary {
+  gap: 0.85rem;
+}
+
+.payment-summary__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+
+  strong {
+    font-size: 1rem;
+  }
+}
+
+.payment-summary__status {
+  color: #475467;
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+.payment-summary__note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #475467;
+}
+
+.payment-summary__due {
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(248, 113, 113, 0.08);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.payment-summary__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+
+  button {
+    border: none;
+    border-radius: 0.5rem;
+    background: var(--primary-color, #2563eb);
+    color: #fff;
+    padding: 0.4rem 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
 .reservation-detail__form,
 .reservation-detail__timeline {
   margin-bottom: 2rem;
+}
+
+.reservation-detail__form--dialog {
+  margin: 0;
+}
+
+.reservation-detail__pending-note {
+  font-size: 0.8rem;
+  color: #b45309;
 }
 
 .reservation-detail__passengers {
@@ -72,9 +175,69 @@ p-card {
 
   .passenger-form__controls {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 0.5rem;
     margin-bottom: 1rem;
+  }
+
+  .passenger-form--disabled {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .passenger-form__row {
+    display: grid;
+    grid-template-columns: minmax(100px, max-content) 1fr;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0;
+    border: 1px solid var(--surface-border, #d1d5db);
+    border-radius: 0.5rem;
+    background: var(--surface-card, #ffffff);
+  }
+
+  .passenger-form__label {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+  }
+
+  .passenger-form__input-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .passenger-form__input-wrapper input {
+    width: 100%;
+    padding: 0.45rem 0.6rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--surface-border, #d1d5db);
+    font-size: 0.9rem;
+  }
+
+  .passenger-form__row--warning {
+    border-color: #f97316;
+    box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.35);
+    background: rgba(249, 115, 22, 0.08);
+  }
+
+  .passenger-form__row--warning .passenger-form__label {
+    color: #f97316;
+  }
+
+  .passenger-form__row--warning input {
+    border-color: #f97316;
+  }
+
+  .passenger-form__warning {
+    margin-top: 0.35rem;
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #b45309;
   }
 }
 
@@ -347,14 +510,22 @@ a {
     }
 
     .reservation-detail__grid {
-      div {
+      .reservation-detail__group {
         background: rgba(30, 41, 59, 0.85);
         border-color: rgba(148, 163, 184, 0.35);
         color: rgba(226, 232, 240, 0.9);
-      }
 
-      .label {
-        color: rgba(148, 163, 184, 0.8);
+        h4 {
+          color: rgba(226, 232, 240, 0.95);
+        }
+
+        .label {
+          color: rgba(148, 163, 184, 0.8);
+        }
+
+        p {
+          color: rgba(226, 232, 240, 0.85);
+        }
       }
     }
   }
@@ -400,6 +571,18 @@ a {
     color: rgba(191, 219, 254, 0.95);
   }
 
+  .reservation-detail__passengers {
+    .passenger-owner {
+      background: rgba(17, 24, 39, 0.85);
+      border-color: rgba(148, 163, 184, 0.35);
+      color: rgba(226, 232, 240, 0.92);
+
+      .label {
+        color: rgba(148, 163, 184, 0.85);
+      }
+    }
+  }
+
   .change-request-list {
     li {
       background: rgba(17, 24, 39, 0.85);
@@ -435,5 +618,23 @@ a {
 
   .reservation-detail__loading {
     color: rgba(148, 163, 184, 0.8);
+  }
+
+  .payment-summary__status,
+  .payment-summary__note {
+    color: rgba(203, 213, 225, 0.85);
+  }
+
+  .payment-summary__due {
+    border-color: rgba(248, 176, 176, 0.5);
+    background: rgba(127, 29, 29, 0.35);
+
+    strong {
+      color: rgba(254, 226, 226, 0.95);
+    }
+  }
+
+  .payment-summary__actions button {
+    background: rgba(37, 99, 235, 0.9);
   }
 }

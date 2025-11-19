@@ -7,6 +7,7 @@ from .models import (
     LedgerEntry,
     OfflineReceipt,
     Payment,
+    PaymentBankAccount,
     PaymentIntent,
     PaymentProviderAccount,
     Refund,
@@ -84,5 +85,31 @@ class LedgerEntryAdmin(admin.ModelAdmin):
 
 @admin.register(BankTransferInstruction)
 class BankTransferInstructionAdmin(admin.ModelAdmin):
-    list_display = ("payment_intent", "bank_name", "iban", "phone_number", "expires_at")
-    search_fields = ("payment_intent__booking_ref", "iban", "phone_number", "bank_name")
+    list_display = (
+        "payment_intent",
+        "reference_text",
+        "expires_at",
+        "account_count",
+    )
+    search_fields = ("payment_intent__booking_ref", "reference_text", "bank_accounts__label")
+    filter_horizontal = ("bank_accounts",)
+
+    def account_count(self, obj: BankTransferInstruction) -> int:
+        return obj.bank_accounts.count()
+
+
+@admin.register(PaymentBankAccount)
+class PaymentBankAccountAdmin(admin.ModelAdmin):
+    list_display = (
+        "label",
+        "method",
+        "currency",
+        "bank_name",
+        "account_name",
+        "branch_code",
+        "is_active",
+        "priority",
+    )
+    list_filter = ("method", "currency", "is_active")
+    search_fields = ("label", "bank_name", "account_name", "iban", "account_number")
+    ordering = ("-is_active", "-priority", "label")

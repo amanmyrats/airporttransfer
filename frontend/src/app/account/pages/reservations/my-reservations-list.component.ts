@@ -20,7 +20,6 @@ import { LanguageService } from '../../../services/language.service';
 import { environment as env } from '../../../../environments/environment';
 import { MyReservation } from '../../../admin/models/reservation.model';
 import { CommonService } from '../../../services/common.service';
-import { SOCIAL_ICONS } from '../../../constants/social.constants';
 import { SharedPaginatorComponent } from '../../../admin/components/shared-paginator/shared-paginator.component';
 import { ACCOUNT_FALLBACK_LANGUAGE, AccountLanguageCode, normalizeAccountLanguage } from '../../constants/account-language.constants';
 
@@ -63,6 +62,18 @@ const ACCOUNT_RESERVATIONS_TRANSLATIONS = {
       de: 'Details anzeigen',
       ru: 'Подробнее',
       tr: 'Detayları gör',
+    },
+    requestChange: {
+      en: 'Request a change',
+      de: 'Änderung anfordern',
+      ru: 'Запросить изменение',
+      tr: 'Değişiklik iste',
+    },
+    completePassengers: {
+      en: 'Complete passenger list',
+      de: 'Passagierliste ergänzen',
+      ru: 'Заполнить список пассажиров',
+      tr: 'Yolcu listesini tamamla',
     },
     writeReview: {
       en: 'Write a review',
@@ -285,52 +296,6 @@ const ACCOUNT_RESERVATIONS_TRANSLATIONS = {
       tr: 'çocuk',
     },
   },
-  contact: {
-    whatsappLabel: {
-      en: 'WhatsApp',
-      de: 'WhatsApp',
-      ru: 'WhatsApp',
-      tr: 'WhatsApp',
-    },
-    emailLabel: {
-      en: 'Email',
-      de: 'E-Mail',
-      ru: 'Email',
-      tr: 'E-posta',
-    },
-    whatsappAria: {
-      en: 'Contact us via WhatsApp about this reservation',
-      de: 'Kontaktieren Sie uns per WhatsApp zu dieser Reservierung',
-      ru: 'Свяжитесь с нами в WhatsApp по этому бронированию',
-      tr: 'Bu rezervasyon hakkında WhatsApp üzerinden bize ulaşın',
-    },
-    emailAria: {
-      en: 'Email support about this reservation',
-      de: 'Schreiben Sie dem Support zu dieser Reservierung',
-      ru: 'Напишите поддержке по этому бронированию',
-      tr: 'Bu rezervasyon hakkında destek ekibine e-posta gönderin',
-    },
-  },
-  support: {
-    whatsappMessage: {
-      en: 'Hello! I would like assistance with reservation {reservation}.',
-      de: 'Hallo! Ich benötige Hilfe zu Reservierung {reservation}.',
-      ru: 'Здравствуйте! Мне нужна помощь по бронированию {reservation}.',
-      tr: 'Merhaba! {reservation} rezervasyonu için yardıma ihtiyacım var.',
-    },
-    emailSubject: {
-      en: 'Reservation {reservation} assistance',
-      de: 'Hilfe zu Reservierung {reservation}',
-      ru: 'Помощь по бронированию {reservation}',
-      tr: '{reservation} rezervasyonu desteği',
-    },
-    emailBody: {
-      en: 'Hello AirportTransfer team,\n\nI need help with my reservation.\n\nThank you.',
-      de: 'Hallo AirportTransfer-Team,\n\nich benötige Hilfe zu meiner Reservierung.\n\nVielen Dank.',
-      ru: 'Здравствуйте, команда AirportTransfer,\n\nмне нужна помощь с моим бронированием.\n\nСпасибо.',
-      tr: 'Merhaba AirportTransfer ekibi,\n\nrezervasyonum için yardıma ihtiyacım var.\n\nTeşekkürler.',
-    },
-  },
   empty: {
     title: {
       en: 'No reservations yet',
@@ -360,6 +325,8 @@ interface AccountReservationsCopy {
   actions: {
     refresh: string;
     viewDetails: string;
+    requestChange: string;
+    completePassengers: string;
     writeReview: string;
   };
   filters: {
@@ -387,17 +354,6 @@ interface AccountReservationsCopy {
     adultPlural: string;
     childSingular: string;
     childPlural: string;
-  };
-  contact: {
-    whatsappLabel: string;
-    emailLabel: string;
-    whatsappAria: string;
-    emailAria: string;
-  };
-  support: {
-    whatsappMessage: string;
-    emailSubject: string;
-    emailBody: string;
   };
   empty: {
     title: string;
@@ -431,10 +387,7 @@ export class MyReservationsListComponent {
   private readonly router = inject(Router);
   private readonly datePipe = inject(DatePipe);
   private readonly commonService = inject(CommonService);
-
-  private readonly whatsappConfig = SOCIAL_ICONS.whatsapp ?? {};
-  private readonly phoneConfig = SOCIAL_ICONS.phone ?? {};
-  private readonly emailConfig = SOCIAL_ICONS.email ?? {};
+  private readonly missingPassengerIds = signal<Set<number>>(new Set());
 
   private readonly defaultPageSize = env.pagination.defaultPageSize;
   protected copy: AccountReservationsCopy;
@@ -462,11 +415,6 @@ export class MyReservationsListComponent {
   readonly hasResults = computed(() => this.reservations().length > 0);
   readonly isEmpty = computed(() => !this.loading() && !this.hasResults());
   readonly currentLang = computed(() => this.languageService.extractLangFromUrl(this.router.url));
-  readonly whatsappDisplay =
-    this.phoneConfig.formatted ?? this.whatsappConfig.phone ?? this.phoneConfig.number ?? '+90 554 139 8307';
-  readonly supportEmail =
-    this.emailConfig.support ?? this.emailConfig.reservation ?? this.emailConfig.info ?? 'support@airporttransferhub.com';
-
   private readonly statusSeverities: Record<string, 'success' | 'info' | 'warn' | 'danger' | 'secondary'> =
     {
       draft: 'secondary',
@@ -482,6 +430,7 @@ export class MyReservationsListComponent {
     this.copy = this.buildCopy(this.detectLanguage());
     this.statusLabels = { ...this.copy.statuses };
     this.orderingOptions = this.buildOrderingOptions();
+    this.loadMissingPassengerReservations();
   }
 
   get reservationOrderingOptions(): { label: string; value: string }[] {
@@ -634,32 +583,12 @@ export class MyReservationsListComponent {
     return segments.length > 0 ? segments.join(', ') : this.copy.fields.passengersMissing;
   }
 
-  whatsappHref(reservation: MyReservation): string {
-    const baseUrl =
-      this.whatsappConfig.url ??
-      (this.whatsappConfig.phone ? `https://wa.me/${String(this.whatsappConfig.phone).replace(/\D/g, '')}` : 'https://wa.me/');
-    const separator = baseUrl.includes('?') ? '&' : '?';
-    const identifier = reservation.number ?? reservation.id;
-    const messageTemplate = this.copy.support.whatsappMessage.replace('{reservation}', String(identifier));
-    const message = encodeURIComponent(messageTemplate);
-    return `${baseUrl}${separator}text=${message}`;
-  }
-
-  emailHref(reservation: MyReservation): string {
-    const identifier = reservation.number ?? reservation.id;
-    const subject = encodeURIComponent(
-      this.copy.support.emailSubject.replace('{reservation}', String(identifier)),
-    );
-    const body = encodeURIComponent(this.copy.support.emailBody);
-    return `mailto:${this.supportEmail}?subject=${subject}&body=${body}`;
-  }
-
   trackByReservationId(_: number, reservation: MyReservation): number {
     return reservation.id;
   }
 
   canWriteReview(reservation: MyReservation): boolean {
-    return reservation.can_review && !reservation.has_review;
+    return reservation.status === 'completed' && reservation.can_review && !reservation.has_review;
   }
 
   reviewLink(reservation: MyReservation): any[] {
@@ -670,6 +599,24 @@ export class MyReservationsListComponent {
       'new',
       String(reservation.id),
     );
+  }
+
+  shouldCompletePassengerList(reservation: MyReservation): boolean {
+    if (!this.showPassengerActions(reservation)) {
+      return false;
+    }
+    if (reservation.passenger_names_missing === true) {
+      return true;
+    }
+    return this.missingPassengerIds().has(reservation.id);
+  }
+
+  showPassengerActions(reservation: MyReservation): boolean {
+    return ['draft', 'awaiting_payment', 'confirmed'].includes(reservation.status);
+  }
+
+  showChangeRequestAction(reservation: MyReservation): boolean {
+    return ['draft', 'awaiting_payment', 'confirmed'].includes(reservation.status);
   }
 
   private fetchReservations(params: Record<string, string | number | string[]>): void {
@@ -726,6 +673,8 @@ export class MyReservationsListComponent {
       actions: {
         refresh: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.actions.refresh),
         viewDetails: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.actions.viewDetails),
+        requestChange: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.actions.requestChange),
+        completePassengers: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.actions.completePassengers),
         writeReview: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.actions.writeReview),
       },
       filters: {
@@ -754,21 +703,22 @@ export class MyReservationsListComponent {
         childSingular: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.passengerSummary.childSingular),
         childPlural: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.passengerSummary.childPlural),
       },
-      contact: {
-        whatsappLabel: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.contact.whatsappLabel),
-        emailLabel: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.contact.emailLabel),
-        whatsappAria: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.contact.whatsappAria),
-        emailAria: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.contact.emailAria),
-      },
-      support: {
-        whatsappMessage: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.support.whatsappMessage),
-        emailSubject: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.support.emailSubject),
-        emailBody: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.support.emailBody),
-      },
       empty: {
         title: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.empty.title),
         body: pick(ACCOUNT_RESERVATIONS_TRANSLATIONS.empty.body),
       },
     };
+  }
+  private loadMissingPassengerReservations(): void {
+    this.reservationService.listMyMissingPassengerReservations(250).subscribe({
+      next: reservations => {
+        const ids = new Set((reservations ?? []).map(res => res.id));
+        this.missingPassengerIds.set(ids);
+      },
+      error: error => {
+        console.error('Failed to load passenger reminders', error);
+        this.missingPassengerIds.set(new Set());
+      },
+    });
   }
 }

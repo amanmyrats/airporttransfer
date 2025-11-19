@@ -7,8 +7,17 @@
       </ng-container>
       <ng-template #duePaymentsLoaded>
         <ul class="reservation-list">
-          <li *ngFor="let reservation of duePaymentReservations(); trackBy: trackByReservationId">
-            <a [routerLink]="checkoutLink(reservation)" class="reservation-link">
+          <li
+            *ngFor="let reservation of duePaymentReservations(); trackBy: trackByReservationId"
+            class="reservation-item"
+            [class.reservation-item--loading]="isCardLoading('checkout', reservation.id || reservation.number || reservation.due_currency)"
+          >
+            <button
+              type="button"
+              class="reservation-link"
+              (click)="openCheckoutReservation(reservation, $event)"
+              [attr.aria-busy]="isCardLoading('checkout', reservation.id || reservation.number || reservation.due_currency)"
+            >
               <div class="reservation-title">{{ tripTitle(reservation) }}</div>
               <div class="reservation-meta">
                 <span>{{ transferDateLabel(reservation) }}</span>
@@ -19,7 +28,12 @@
                   </ng-container>
                 </span>
               </div>
-            </a>
+              <span
+                class="reservation-spinner"
+                *ngIf="isCardLoading('checkout', reservation.id || reservation.number || reservation.due_currency)"
+                aria-hidden="true"
+              ></span>
+            </button>
           </li>
         </ul>
       </ng-template>
@@ -31,14 +45,24 @@
       </ng-container>
       <ng-template #passengerReminderLoaded>
         <ul class="reservation-list">
-          <li *ngFor="let reservation of passengerReminderReservations(); trackBy: trackByReservationId">
-            <a [routerLink]="reservationLink(reservation)" class="reservation-link">
+          <li
+            *ngFor="let reservation of passengerReminderReservations(); trackBy: trackByReservationId"
+            class="reservation-item"
+            [class.reservation-item--loading]="isCardLoading('reservation', reservation.id)"
+          >
+            <button
+              type="button"
+              class="reservation-link"
+              (click)="openAccountReservation(reservation, $event, true)"
+              [attr.aria-busy]="isCardLoading('reservation', reservation.id)"
+            >
               <div class="reservation-title">{{ tripTitle(reservation) }}</div>
               <div class="reservation-meta">
                 <span>{{ transferDateLabel(reservation) }}</span>
                 <span>• {{ copy.placeholders.passengerNamesMissing }}</span>
               </div>
-            </a>
+              <span class="reservation-spinner" *ngIf="isCardLoading('reservation', reservation.id)" aria-hidden="true"></span>
+            </button>
           </li>
         </ul>
       </ng-template>
@@ -50,40 +74,55 @@
       </ng-container>
       <ng-template #pendingLoaded>
         <ul class="reservation-list">
-          <li *ngFor="let reservation of pendingConfirmationReservations(); trackBy: trackByReservationId">
-            <a [routerLink]="reservationLink(reservation)" class="reservation-link">
+          <li
+            *ngFor="let reservation of pendingConfirmationReservations(); trackBy: trackByReservationId"
+            class="reservation-item"
+            [class.reservation-item--loading]="isCardLoading('reservation', reservation.id)"
+          >
+            <button
+              type="button"
+              class="reservation-link"
+              (click)="openAccountReservation(reservation, $event)"
+              [attr.aria-busy]="isCardLoading('reservation', reservation.id)"
+            >
               <div class="reservation-title">{{ tripTitle(reservation) }}</div>
               <div class="reservation-meta">
                 <span>{{ transferDateLabel(reservation) }}</span>
                 <span>• {{ statusLabel(reservation.status) }}</span>
               </div>
-            </a>
+              <span class="reservation-spinner" *ngIf="isCardLoading('reservation', reservation.id)" aria-hidden="true"></span>
+            </button>
           </li>
         </ul>
       </ng-template>
     </p-card>
 
-    <p-card [header]="copy.cards.upcoming">
+    <p-card [header]="copy.cards.upcoming" *ngIf="upcomingLoading() || upcomingReservations().length > 0">
       <ng-container *ngIf="upcomingLoading(); else upcomingLoaded">
         <p class="card-placeholder">{{ copy.placeholders.upcomingLoading }}</p>
       </ng-container>
       <ng-template #upcomingLoaded>
-        <ng-container *ngIf="upcomingReservations().length; else noUpcoming">
-          <ul class="reservation-list">
-            <li *ngFor="let reservation of upcomingReservations(); trackBy: trackByReservationId">
-              <a [routerLink]="reservationLink(reservation)" class="reservation-link">
-                <div class="reservation-title">{{ tripTitle(reservation) }}</div>
-                <div class="reservation-meta">
-                  <span>{{ transferDateLabel(reservation) }}</span>
-                  <span>• {{ statusLabel(reservation.status) }}</span>
-                </div>
-              </a>
-            </li>
-          </ul>
-        </ng-container>
-      </ng-template>
-      <ng-template #noUpcoming>
-        <p>{{ copy.placeholders.noUpcoming }}</p>
+        <ul class="reservation-list">
+          <li
+            *ngFor="let reservation of upcomingReservations(); trackBy: trackByReservationId"
+            class="reservation-item"
+            [class.reservation-item--loading]="isCardLoading('reservation', reservation.id)"
+          >
+            <button
+              type="button"
+              class="reservation-link"
+              (click)="openAccountReservation(reservation, $event)"
+              [attr.aria-busy]="isCardLoading('reservation', reservation.id)"
+            >
+              <div class="reservation-title">{{ tripTitle(reservation) }}</div>
+              <div class="reservation-meta">
+                <span>{{ transferDateLabel(reservation) }}</span>
+                <span>• {{ statusLabel(reservation.status) }}</span>
+              </div>
+              <span class="reservation-spinner" *ngIf="isCardLoading('reservation', reservation.id)" aria-hidden="true"></span>
+            </button>
+          </li>
+        </ul>
       </ng-template>
     </p-card>
 

@@ -2,7 +2,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CardModule } from 'primeng/card';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../../../auth/services/auth.service';
 import { ReservationService } from '../../../admin/services/reservation.service';
@@ -269,7 +269,7 @@ interface AccountDashboardCopy {
 @Component({
   selector: 'app-account-dashboard',
   standalone: true,
-  imports: [CommonModule, CardModule, RouterLink],
+  imports: [CommonModule, CardModule],
   templateUrl: './account-dashboard.component.html',
   styleUrl: './account-dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -300,6 +300,7 @@ export class AccountDashboardComponent implements OnInit {
   readonly upcomingLoading = signal(false);
   readonly pendingLoading = signal(false);
   readonly currentLang = computed(() => this.languageService.extractLangFromUrl(this.router.url));
+  private cardNavigationKey: string | null = null;
 
   protected copy: AccountDashboardCopy;
   private statusLabels: Record<string, string>;
@@ -376,6 +377,17 @@ export class AccountDashboardComponent implements OnInit {
       return this.languageService.commandsWithLang(this.currentLang(), 'checkout', bookingRef);
     }
     return this.reservationLink(reservation);
+  }
+
+  openCheckoutReservation(reservation: DuePaymentReservation, event?: Event): void {
+    const identifier = reservation.id ?? reservation.number ?? reservation.due_currency;
+    this.navigateWithCardLoading(this.checkoutLink(reservation), event, 'checkout', identifier);
+  }
+
+  openAccountReservation(reservation: MyReservation, event?: Event, focusPassengers = false): void {
+    const commands = this.reservationLink(reservation);
+    const queryParams = focusPassengers ? { focus: 'passengers' } : undefined;
+    this.navigateWithCardLoading(commands, event, 'reservation', reservation.id, queryParams);
   }
 
   paymentStatusLabel(status: string | null | undefined): string {
@@ -597,5 +609,58 @@ export class AccountDashboardComponent implements OnInit {
       statuses: pickMap(ACCOUNT_DASHBOARD_TRANSLATIONS.statuses) as Record<DashboardStatusKey, string>,
       paymentStatuses: pickMap(ACCOUNT_DASHBOARD_TRANSLATIONS.paymentStatuses) as Record<DashboardPaymentStatusKey, string>,
     };
+  }
+
+  isCardLoading(section: string, id: string | number | null | undefined): boolean {
+    const key = this.buildLoadingKey(section, id);
+    return Boolean(key && key === this.cardNavigationKey);
+  }
+
+  private navigateWithCardLoading(
+    commands: any[],
+    event: Event | undefined,
+    section: string,
+    id: string | number | null | undefined,
+    queryParams?: Record<string, string>,
+  ): void {
+    if (!this.beginCardNavigation(event, section, id)) {
+      return;
+    }
+    this.router.navigate(commands, { queryParams }).catch(() => {
+      this.resetCardNavigation();
+    });
+  }
+
+  private beginCardNavigation(event: Event | undefined, section: string, id: string | number | null | undefined): boolean {
+    const key = this.buildLoadingKey(section, id);
+    if (!key) {
+      event?.preventDefault();
+      event?.stopPropagation();
+      return false;
+    }
+    if (this.cardNavigationKey) {
+      event?.preventDefault();
+      event?.stopPropagation();
+      return false;
+    }
+    event?.preventDefault();
+    event?.stopPropagation();
+    this.cardNavigationKey = key;
+    return true;
+  }
+
+  private buildLoadingKey(section: string, id: string | number | null | undefined): string | null {
+    if (id === null || id === undefined) {
+      return null;
+    }
+    const normalized = String(id).trim();
+    if (!normalized) {
+      return null;
+    }
+    return `${section}:${normalized}`;
+  }
+
+  private resetCardNavigation(): void {
+    this.cardNavigationKey = null;
   }
 }

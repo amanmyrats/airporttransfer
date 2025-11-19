@@ -5,6 +5,7 @@ from typing import Any
 
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
@@ -336,18 +337,96 @@ class LedgerEntry(models.Model):
         super().save(*args, **kwargs)
 
 
+BANK_ACCOUNT_CURRENCY_CACHE_KEY = "payment:bank_accounts:currency_map"
+BANK_ACCOUNT_CURRENCY_CACHE_TIMEOUT = 60 * 5
+
+
+def clear_bank_account_currency_cache() -> None:
+    cache.delete(BANK_ACCOUNT_CURRENCY_CACHE_KEY)
+
+
+class PaymentBankAccountQuerySet(models.QuerySet):
+    def active(self) -> "PaymentBankAccountQuerySet":
+        return self.filter(is_active=True)
+
+    def for_method_and_currency(self, method: PaymentMethod, currency: str) -> "PaymentBankAccountQuerySet":
+        currency = currency.upper()
+        return self.active().filter(method=method.value, currency=currency)
+
+    def active_currency_map(self) -> dict[str, tuple[str, ...]]:
+        rows = (
+            self.active()
+            .values_list("method", "currency")
+            .distinct()
+        )
+        mapping: dict[str, set[str]] = {}
+        for method, currency in rows:
+            mapping.setdefault(method, set()).add(currency.upper())
+        return {method: tuple(sorted(values)) for method, values in mapping.items()}
+
+
+class PaymentBankAccount(models.Model):
+    objects = PaymentBankAccountQuerySet.as_manager()
+
+    label = models.CharField(max_length=255)
+    method = models.CharField(max_length=32, choices=PaymentMethod.choices())
+    currency = models.CharField(max_length=3)
+    account_name = models.CharField(max_length=255)
+    bank_name = models.CharField(max_length=255, blank=True)
+    iban = models.CharField(max_length=64, blank=True)
+    account_number = models.CharField(max_length=64, blank=True)
+    swift_code = models.CharField(max_length=64, blank=True)
+    branch_code = models.CharField(max_length=64, blank=True)
+    phone_number = models.CharField(max_length=64, blank=True)
+    reference_hint = models.CharField(max_length=255, blank=True)
+    metadata = models.JSONField(default=default_json, blank=True)
+    priority = models.IntegerField(default=0, help_text="Higher priority accounts are used first.")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-is_active", "-priority", "label"]
+
+    def __str__(self) -> str:
+        return f"{self.label} ({self.currency} – {self.method})"
+
+    def clean(self) -> None:
+        method = PaymentMethod(self.method)
+        if method == PaymentMethod.BANK_TRANSFER:
+            if not self.iban and not self.account_number:
+                raise ValidationError(
+                    {"iban": "Either IBAN or account number must be provided for bank transfer accounts."}
+                )
+        if method == PaymentMethod.RUB_PHONE_TRANSFER and not self.phone_number:
+            raise ValidationError({"phone_number": "Phone number is required for Russian phone transfers."})
+        super().clean()
+
+    def save(self, *args, **kwargs):  # type: ignore[override]
+        response = super().save(*args, **kwargs)
+        clear_bank_account_currency_cache()
+        return response
+
+    def delete(self, *args, **kwargs):  # type: ignore[override]
+        response = super().delete(*args, **kwargs)
+        clear_bank_account_currency_cache()
+        return response
+
+
 class BankTransferInstruction(models.Model):
     payment_intent = models.OneToOneField(
         PaymentIntent,
         on_delete=models.CASCADE,
         related_name="bank_transfer_instruction",
     )
-    iban = models.CharField(max_length=64, blank=True)
-    phone_number = models.CharField(max_length=64, blank=True)
-    account_name = models.CharField(max_length=255)
-    bank_name = models.CharField(max_length=255)
+    bank_accounts = models.ManyToManyField(
+        PaymentBankAccount,
+        related_name="bank_transfer_instructions",
+        blank=True,
+    )
     reference_text = models.CharField(max_length=255)
     expires_at = models.DateTimeField(null=True, blank=True)
+    metadata = models.JSONField(default=default_json, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

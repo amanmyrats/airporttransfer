@@ -69,6 +69,8 @@ export class Reservation {
 export interface MyReservation {
   id: number;
   number: string | null;
+  amount?: number | string | null;
+  currency_code?: string | null;
   status: ReservationStatus;
   reservation_date: string | null;
   transfer_date: string | null;
@@ -93,6 +95,7 @@ export interface MyReservation {
   payment_status: string | null;
   has_review: boolean;
   can_review: boolean;
+  passenger_names_missing?: boolean;
   created_at: string;
   updated_at: string;
 }

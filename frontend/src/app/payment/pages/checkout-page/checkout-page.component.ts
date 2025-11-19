@@ -538,8 +538,14 @@ export class CheckoutPageComponent implements OnInit {
     const booking = this.booking();
     const dueMinor = this.dueMinor();
     const sourceCurrency = this.intent()?.currency ?? booking?.currency_code ?? null;
-    if (!booking || sourceCurrency === null || sourceCurrency === 'RUB' || dueMinor === null) {
+    if (!booking || sourceCurrency === null || dueMinor === null) {
       return null;
+    }
+    if (sourceCurrency === 'RUB') {
+      return {
+        convertedFormatted: formatMinor(dueMinor, 'RUB'),
+        originalCurrency: sourceCurrency,
+      };
     }
     const fromCurrency = this.currencyService.getCurrencyByCode(sourceCurrency);
     const rubCurrency = this.currencyService.getCurrencyByCode('RUB');

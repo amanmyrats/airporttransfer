@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { SuperHeaderComponent } from '../../components/super-header/super-header.component';
@@ -147,7 +147,6 @@ interface BookingPageCopy {
   selector: 'app-booking-received',
   imports: [
     CommonModule,
-    RouterLink,
     SuperHeaderComponent, 
     NavbarComponent, 
     FooterComponent, 
@@ -170,6 +169,7 @@ export class BookingReceivedComponent implements OnInit {
   private readonly fallbackLanguage: LanguageCode = FALLBACK_LANGUAGE;
   private pendingReservationRefs: Array<{ reference: string; id?: number }> = [];
   copiedReference = signal<string | null>(null);
+  private buttonNavigationKey: string | null = null;
     
   constructor(
     private route: ActivatedRoute, 
@@ -309,6 +309,30 @@ export class BookingReceivedComponent implements OnInit {
     return this.languageService.commandsWithLang(langCode, 'account', 'reservations');
   }
 
+  openCheckoutLink(checkout: { commands: any[]; reference: string; id?: number }, event?: Event): void {
+    this.navigateWithButtonLoading(checkout.commands, event, 'checkout', checkout.reference);
+  }
+
+  openDashboard(event?: Event): void {
+    if (!this.dashboardCommands) {
+      return;
+    }
+    this.navigateWithButtonLoading(this.dashboardCommands, event, 'dashboard', 'main');
+  }
+
+  openDetails(checkout: { reference: string; id?: number }, event?: Event): void {
+    this.navigateWithButtonLoading(
+      this.reservationDetailCommands(checkout.reference, checkout.id),
+      event,
+      'details',
+      checkout.id ?? checkout.reference,
+    );
+  }
+
+  openHome(event?: Event): void {
+    this.navigateWithButtonLoading(['/' ], event, 'home', 'root');
+  }
+
   copyReference(reference: string): void {
     if (!reference) {
       return;
@@ -321,6 +345,52 @@ export class BookingReceivedComponent implements OnInit {
     } else {
       this.showCopied(reference);
     }
+  }
+
+  isButtonLoading(section: string, id: string | number | null | undefined): boolean {
+    const key = this.buildButtonKey(section, id);
+    return Boolean(key && key === this.buttonNavigationKey);
+  }
+
+  private navigateWithButtonLoading(
+    commands: any[] | null,
+    event: Event | undefined,
+    section: string,
+    id: string | number | null | undefined,
+  ): void {
+    if (!commands?.length) {
+      return;
+    }
+    const key = this.buildButtonKey(section, id);
+    if (!key) {
+      event?.preventDefault();
+      event?.stopPropagation();
+      return;
+    }
+    if (this.buttonNavigationKey) {
+      event?.preventDefault();
+      event?.stopPropagation();
+      return;
+    }
+    event?.preventDefault();
+    event?.stopPropagation();
+    this.buttonNavigationKey = key;
+    this.router.navigate(commands).catch(() => this.resetButtonNavigation());
+  }
+
+  private buildButtonKey(section: string, id: string | number | null | undefined): string | null {
+    if (id === null || id === undefined) {
+      return null;
+    }
+    const normalized = String(id).trim();
+    if (!normalized) {
+      return null;
+    }
+    return `${section}:${normalized}`;
+  }
+
+  private resetButtonNavigation(): void {
+    this.buttonNavigationKey = null;
   }
 
   private showCopied(reference: string): void {

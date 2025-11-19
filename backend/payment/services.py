@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Mapping, MutableMapping
 
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
 
@@ -18,6 +19,7 @@ from .models import (
     LedgerEntry,
     OfflineReceipt,
     Payment,
+    PaymentBankAccount,
     PaymentIntent,
     PaymentProviderAccount,
     Refund,
@@ -105,6 +107,13 @@ def _resolve_provider_account(provider: str) -> PaymentProviderAccount | None:
     ).first()
 
 
+def _select_bank_accounts(method: PaymentMethod, currency: str):
+    currency = currency.upper()
+    return PaymentBankAccount.objects.active().filter(method=method.value, currency=currency).order_by(
+        "-priority", "-updated_at"
+    )
+
+
 @transaction.atomic
 def create_payment_intent(
     *,
@@ -181,20 +190,30 @@ def create_payment_intent(
 
     intent.save()
 
-    if method_enum in {PaymentMethod.BANK_TRANSFER, PaymentMethod.RUB_PHONE_TRANSFER} and offline_instructions:
-        BankTransferInstruction.objects.update_or_create(
+    if method_enum in {PaymentMethod.BANK_TRANSFER, PaymentMethod.RUB_PHONE_TRANSFER}:
+        instructions_payload = dict(offline_instructions or {})
+        account_ids = instructions_payload.get("bank_account_ids")
+        if account_ids:
+            accounts = list(
+                PaymentBankAccount.objects.active()
+                .filter(id__in=account_ids, method=method_enum.value)
+                .order_by("-priority", "-updated_at")
+            )
+        else:
+            accounts = list(_select_bank_accounts(method_enum, intent.currency))
+        if not accounts:
+            raise ValidationError(
+                f"No active bank account configured for {method_enum.value} in {intent.currency}."
+            )
+        instruction, _ = BankTransferInstruction.objects.update_or_create(
             payment_intent=intent,
             defaults={
-                "iban": offline_instructions.get("iban", ""),
-                "phone_number": offline_instructions.get("phone_number", ""),
-                "account_name": offline_instructions.get("account_name", ""),
-                "bank_name": offline_instructions.get("bank_name", ""),
-                "reference_text": offline_instructions.get(
-                    "reference_text", booking_ref
-                ),
-                "expires_at": offline_instructions.get("expires_at"),
+                "reference_text": instructions_payload.get("reference_text", booking_ref),
+                "expires_at": instructions_payload.get("expires_at"),
+                "metadata": instructions_payload.get("metadata") or {},
             },
         )
+        instruction.bank_accounts.set(accounts)
 
     _log_ledger(
         kind=LedgerEntryKind.INTENT_CREATED,

@@ -133,3 +133,20 @@
     }
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .field label {
+    color: rgba(226, 232, 240, 0.92);
+  }
+
+  .field.checkbox label {
+    color: rgba(226, 232, 240, 0.92);
+  }
+}
+
+:host-context(.dark) {
+  .field label,
+  .field.checkbox label {
+    color: rgba(226, 232, 240, 0.92);
+  }
+}
