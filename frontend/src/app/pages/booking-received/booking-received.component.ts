@@ -191,11 +191,12 @@ export class BookingReceivedComponent implements OnInit {
         }
         console.log('One Way Data:', oneWaydata);
 
-        if (!this.isLocalhost) {
-          if (this.isDevEnvironment) {
+        if (this.isLocalhost) {
+          console.log('Localhost detected, skipping callbacks.');
+        } else if (this.isDevEnvironment) {
             this.callbackService.TtAthNewOrderCallback(
               oneWaydata, 
-              this.isDevEnvironment
+              true
             ).subscribe({
               next: data => {
                 console.log('Dev New Order Callback:', data);
@@ -214,7 +215,6 @@ export class BookingReceivedComponent implements OnInit {
               }
             });
           }
-        }
 
         // If there is a return reservation, send a callback for it as well
         const return_number = navigation.extras.state['returnInfo']['number'];
@@ -226,11 +226,12 @@ export class BookingReceivedComponent implements OnInit {
             }
           }
           console.log('Return Data:', return_data);
-          if (!this.isLocalhost) {
-            if (this.isDevEnvironment) {
+          if (this.isLocalhost) {
+            console.log('Localhost detected, skipping return callbacks.');
+          } else if (this.isDevEnvironment) {
               this.callbackService.TtAthNewOrderCallback(
                 return_data, 
-                this.isDevEnvironment
+                true
               ).subscribe({
                 next: data => {
                   console.log('Dev New Return Order Callback:', data);
@@ -240,7 +241,6 @@ export class BookingReceivedComponent implements OnInit {
                 }
               });
             } else {
-
               this.callbackService.TtAthNewOrderCallback(return_data).subscribe({
                 next: data => {
                   console.log('New Return Order Callback:', data);
@@ -250,7 +250,6 @@ export class BookingReceivedComponent implements OnInit {
                 }
               });
             }
-          }
         }
         this.collectReservationRefs(navigation.extras.state);
       }

@@ -5,6 +5,7 @@ from rest_framework import routers
 
 from .views import (
     EuroRateModelViewSet,
+    EuroRateListAPIView,
     PopularRouteModelViewSet,
     AirportModelViewSet,
     CurrencyModelViewSet,
@@ -24,6 +25,7 @@ router.register(r'currencies', CurrencyModelViewSet)
 
 urlpatterns = [
     path('', include(router.urls)), 
+    path('euro-rates-lite/', EuroRateListAPIView.as_view(), name='eurorate-lite-list'),
     path('currencychoices/', CurrencyChoicesAPIView.as_view(), name='currency-choices'),
     path('mainlocationchoices/', MainLocationChoicesAPIView.as_view(), name='main-location-choices'),
     path('cartypechoices/', CarTypeChoicesAPIView.as_view(), name='car-type-choices'),

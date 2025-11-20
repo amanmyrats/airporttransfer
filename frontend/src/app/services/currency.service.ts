@@ -5,6 +5,7 @@ import { environment as env } from '../../environments/environment';
 
 import {
   CurrencyCode,
+  EURO_RATES,
   SUPPORTED_CURRENCIES,
   SUPPORTED_CURRENCY_CODES,
   SupportedCurrency,
@@ -18,19 +19,29 @@ const DEFAULT_CURRENCY: Currency = { ...DEFAULT_SUPPORTED_CURRENCY };
 const buildSupportedCurrencyMap = (): Map<CurrencyCode, SupportedCurrency> =>
   new Map(SUPPORTED_CURRENCIES.map((currency) => [currency.code, currency] as const));
 
+type EuroRate = { code: CurrencyCode; rate: number };
+const FALLBACK_EURO_RATES_MAP = new Map(
+  EURO_RATES.map((rate) => [rate.code, rate.rate] as const),
+);
+
 @Injectable({
   providedIn: 'root',
 })
 export class CurrencyService {
   private readonly storageKey = 'selectedCurrency';
   private readonly cacheStorageKey = 'cachedCurrencies';
+  private readonly euroRatesCacheKey = 'cachedEuroRates';
   private readonly cacheTtlMs = 24 * 60 * 60 * 1000; // 24 hours
+  // cacheTtlMs set to 10 seconds for testing purposes
+  // private readonly cacheTtlMs = 10 * 1000; // 10 seconds
 
   private cacheTimestamp = 0;
+  private euroRatesCacheTimestamp = 0;
   private readonly supportedCurrencyMap = buildSupportedCurrencyMap();
   private readonly currenciesState = signal<Currency[]>(
     SUPPORTED_CURRENCIES.map((currency) => ({ ...currency })),
   );
+  private readonly euroRatesState = signal<EuroRate[]>(EURO_RATES.map((rate) => ({ ...rate })));
 
   readonly currencies = this.currenciesState.asReadonly();
   readonly currentCurrency = signal<Currency>(
@@ -44,8 +55,12 @@ export class CurrencyService {
     const initialCurrencies = this.loadInitialCurrencies();
     this.currenciesState.set(initialCurrencies);
     this.currentCurrency.set(this.resolveInitialCurrency(initialCurrencies));
+    const initialEuroRates = this.loadInitialEuroRates();
+    this.euroRatesState.set(initialEuroRates);
+    this.syncCurrencyRatesWithEuroRates();
     if (isPlatformBrowser(this.platformId)) {
       this.refreshCurrencies();
+      this.refreshEuroRates();
     }
   }
 
@@ -108,6 +123,30 @@ export class CurrencyService {
       });
   }
 
+  private refreshEuroRates(force = false): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    if (!force && this.isEuroRatesCacheFresh()) {
+      return;
+    }
+    this.http
+      .get<EuroRateDto[]>(`${env.baseUrl}${env.apiV1}common/euro-rates-lite/`)
+      .subscribe({
+        next: (response) => {
+          const normalized = this.normalizeEuroRates(response);
+          if (normalized.length) {
+            this.euroRatesState.set(normalized);
+            this.writeEuroRatesCache(normalized);
+            this.syncCurrencyRatesWithEuroRates();
+          }
+        },
+        error: (error) => {
+          console.error('Failed to fetch euro rates from server', error);
+        },
+      });
+  }
+
   private mapApiResponseToCurrencies(response: PaginatedCurrencyResponse): Currency[] {
     return (response.results || [])
       .map((item) => {
@@ -127,7 +166,7 @@ export class CurrencyService {
           code: normalizedCode,
           name: item.name || fallback.name,
           sign: item.symbol || fallback.sign,
-          rate: rateValue ?? fallback.rate,
+          rate: rateValue ?? this.getEuroRateFor(normalizedCode) ?? 1,
         } as Currency;
       })
       .filter((currency): currency is Currency => Boolean(currency));
@@ -173,14 +212,13 @@ export class CurrencyService {
   }
 
   convert(amount: number, currency: Currency, toCurrency: Currency): number {
-    if (toCurrency.rate === undefined) {
-      throw new Error('toCurrency rate is undefined');
+    const fromRate = this.getEuroRateFor(currency.code);
+    const toRate = this.getEuroRateFor(toCurrency.code);
+    if (!fromRate || !toRate) {
+      throw new Error('Currency rate is undefined');
     }
-    if (currency.rate === undefined) {
-      throw new Error('currency rate is undefined');
-    }
-    const euroEquivalent = amount / currency.rate;
-    const converted = euroEquivalent * toCurrency.rate;
+    const euroEquivalent = amount / fromRate;
+    const converted = euroEquivalent * toRate;
     return Math.ceil(converted);
   }
 
@@ -194,6 +232,18 @@ export class CurrencyService {
       }
     }
     return SUPPORTED_CURRENCIES.map((currency) => ({ ...currency }));
+  }
+
+  private loadInitialEuroRates(): EuroRate[] {
+    const cached = this.readEuroRatesCache();
+    if (cached) {
+      this.euroRatesCacheTimestamp = cached.timestamp;
+      const normalized = this.normalizeEuroRates(cached.rates);
+      if (normalized.length) {
+        return normalized;
+      }
+    }
+    return EURO_RATES.map((rate) => ({ ...rate }));
   }
 
   private resolveInitialCurrency(currencies: Currency[]): Currency {
@@ -239,6 +289,40 @@ export class CurrencyService {
     this.cacheTimestamp = payload.timestamp;
   }
 
+  private readEuroRatesCache(): CachedEuroRatesPayload | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
+    try {
+      const raw = localStorage.getItem(this.euroRatesCacheKey);
+      if (!raw) {
+        return null;
+      }
+      const parsed = JSON.parse(raw) as CachedEuroRatesPayload;
+      if (!parsed?.timestamp || !Array.isArray(parsed.rates)) {
+        return null;
+      }
+      if (Date.now() - parsed.timestamp > this.cacheTtlMs) {
+        return null;
+      }
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  private writeEuroRatesCache(rates: EuroRate[]): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    const payload: CachedEuroRatesPayload = {
+      timestamp: Date.now(),
+      rates,
+    };
+    localStorage.setItem(this.euroRatesCacheKey, JSON.stringify(payload));
+    this.euroRatesCacheTimestamp = payload.timestamp;
+  }
+
   private ensureSupportedCurrencies(payload: Currency[]): Currency[] {
     const result: Currency[] = [];
     payload.forEach((currency) => {
@@ -257,15 +341,38 @@ export class CurrencyService {
         rate:
           typeof currency.rate === 'number' && !Number.isNaN(currency.rate)
             ? currency.rate
-            : fallback.rate,
+            : this.getEuroRateFor(normalized) ?? 1,
       });
     });
     return result;
   }
 
+  private normalizeEuroRates(rates: Array<{ code: string; rate: number }>): EuroRate[] {
+    if (!Array.isArray(rates)) {
+      return [];
+    }
+    const normalized: EuroRate[] = [];
+    rates.forEach((rate) => {
+      const normalizedCode = this.normalizeCurrencyCode(rate.code);
+      if (!normalizedCode) {
+        return;
+      }
+      const numericRate = Number(rate.rate);
+      if (!Number.isFinite(numericRate) || numericRate <= 0) {
+        return;
+      }
+      normalized.push({ code: normalizedCode, rate: numericRate });
+    });
+    return normalized;
+  }
+
   private getSupportedCurrencyClone(code: CurrencyCode): Currency | undefined {
     const fallback = this.supportedCurrencyMap.get(code);
-    return fallback ? { ...fallback } : undefined;
+    if (!fallback) {
+      return undefined;
+    }
+    const rate = this.getEuroRateFor(code) ?? fallback.rate;
+    return { ...fallback, rate };
   }
 
   private normalizeCurrencyCode(code?: string | null): CurrencyCode | null {
@@ -284,6 +391,36 @@ export class CurrencyService {
     }
     return Date.now() - this.cacheTimestamp < this.cacheTtlMs;
   }
+
+  private isEuroRatesCacheFresh(): boolean {
+    if (!this.euroRatesCacheTimestamp) {
+      return false;
+    }
+    return Date.now() - this.euroRatesCacheTimestamp < this.cacheTtlMs;
+  }
+
+  private getEuroRateFor(code: CurrencyCode): number | undefined {
+    const rateEntry = this.euroRatesState().find((rate) => rate.code === code);
+    if (rateEntry) {
+      return rateEntry.rate;
+    }
+    return FALLBACK_EURO_RATES_MAP.get(code);
+  }
+
+  private syncCurrencyRatesWithEuroRates(): void {
+    const updatedCurrencies = this.currenciesState().map((currency) => {
+      const rate = this.getEuroRateFor(currency.code);
+      if (!rate) {
+        return currency;
+      }
+      return {
+        ...currency,
+        rate,
+      };
+    });
+    this.currenciesState.set(updatedCurrencies);
+    this.syncCurrentCurrency();
+  }
 }
 
 interface PaginatedCurrencyResponse {
@@ -301,4 +438,14 @@ interface CurrencyApiDto {
 interface CachedCurrenciesPayload {
   timestamp: number;
   currencies: Currency[];
+}
+
+interface EuroRateDto {
+  code: string;
+  rate: number;
+}
+
+interface CachedEuroRatesPayload {
+  timestamp: number;
+  rates: EuroRate[];
 }

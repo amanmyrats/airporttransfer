@@ -16,6 +16,7 @@ from django.utils import timezone
 from common.utils import transform_choices_to_key_value_pairs, clean_csv_file
 from .serializers import (
     EuroRateModelSerializer,
+    EuroRateSimpleSerializer,
     PopularRouteModelSerializer,
     AirportModelSerializer,
     CurrencyModelSerializer,
@@ -48,6 +49,16 @@ class EuroRateModelViewSet(viewsets.ModelViewSet):
             return []
         # Use default authentication classes for other actions
         return super().get_authenticators()
+
+
+class EuroRateListAPIView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def get(self, request, *args, **kwargs):
+        queryset = EuroRate.objects.order_by('currency_code')
+        serializer = EuroRateSimpleSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AirportModelViewSet(viewsets.ModelViewSet):

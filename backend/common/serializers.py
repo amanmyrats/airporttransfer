@@ -12,6 +12,15 @@ class EuroRateModelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class EuroRateSimpleSerializer(serializers.ModelSerializer):
+    code = serializers.CharField(source='currency_code')
+    rate = serializers.DecimalField(source='euro_rate', max_digits=10, decimal_places=4)
+
+    class Meta:
+        model = EuroRate
+        fields = ('code', 'rate')
+
+
 class CurrencyModelSerializer(serializers.ModelSerializer):
     euro_rate = serializers.SerializerMethodField()
 
