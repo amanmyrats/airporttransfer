@@ -3,12 +3,12 @@
 </app-super-header>
 <app-navbar></app-navbar>
 
-<section class="blog-list" role="region" aria-label="Blog list">
+<section class="blog-list" role="region" [attr.aria-label]="translate('sectionAriaLabel')">
   <div class="container">
     <header class="page-head">
-      <h1 class="page-title">Travel Tips & Guides</h1>
+      <h1 class="page-title">{{ translate('headerTitle') }}</h1>
       <p class="subtitle">
-        Explore blogs about airport transfers, Turkish destinations, and insider travel tips.
+        {{ translate('headerSubtitle') }}
       </p>
     </header>
 
@@ -24,7 +24,7 @@
             type="button" 
             [class.active]="selectedCategory === ''" 
             (click)="selectCategory('')">
-            All
+            {{ translate('categoriesAll') }}
           </button>
           <button 
             type="button" 
@@ -39,13 +39,13 @@
         <div class="search-box">
           <input 
             type="text" 
-            placeholder="Search blog posts..." 
+            [placeholder]="translate('searchPlaceholder')" 
             [(ngModel)]="searchTerm" 
             (keyup.enter)="onSearch()"
-            aria-label="Search blog posts"
+            [attr.aria-label]="translate('searchAriaLabel')"
           />
-          <button class="btn-search" (click)="onSearch()">🔍 Search</button>
-          <button class="btn-clear" *ngIf="searchTerm" (click)="onClear()">✖</button>
+          <button class="btn-search" (click)="onSearch()">🔍 {{ translate('searchButton') }}</button>
+          <button class="btn-clear" *ngIf="searchTerm" (click)="onClear()" [attr.aria-label]="translate('clearSearch')">✖</button>
         </div>
     
 
@@ -66,19 +66,19 @@
 
   <span class="chip" *ngIf="selectedTag">
     #{{ selectedTagName || selectedTag }}
-    <button type="button" class="chip-close" (click)="clearTag()" aria-label="Remove tag">×</button>
+    <button type="button" class="chip-close" (click)="clearTag()" [attr.aria-label]="translate('removeTag')">×</button>
   </span>
 </div>
 
 <!-- Controls row -->
 <div class="controls" [class.open]="filtersOpen">
   <label class="sort">
-    <span>Sort by</span>
+    <span>{{ translate('sortBy') }}</span>
     <select [(ngModel)]="ordering" (change)="onSortChange()">
-      <option value="-published_at">Newest</option>
-      <option value="published_at">Oldest</option>
-      <option value="-views_count">Most viewed</option>
-      <option value="-priority">Featured first</option>
+      <option value="-published_at">{{ translate('sortNewest') }}</option>
+      <option value="published_at">{{ translate('sortOldest') }}</option>
+      <option value="-views_count">{{ translate('sortMostViewed') }}</option>
+      <option value="-priority">{{ translate('sortFeaturedFirst') }}</option>
     </select>
   </label>
 
@@ -86,16 +86,16 @@
     <input #hasVideoToggle type="checkbox"
            [checked]="hasVideo"
            (change)="toggleHasVideo(hasVideoToggle.checked)" />
-    <span>Has video</span>
+    <span>{{ translate('hasVideo') }}</span>
   </label>
 
   <button class="btn-ghost btn-clear-all" *ngIf="searchTerm || selectedCategory || selectedTag || hasVideo || ordering !== '-published_at'"
-  type="button" (click)="clearAllFilters()">Clear all</button>
+  type="button" (click)="clearAllFilters()">{{ translate('clearAll') }}</button>
 </div>
 
 <!-- Mobile “Filters” toggle button -->
 <button type="button" class="btn-filters" (click)="filtersOpen = !filtersOpen">
-  Filters
+  {{ translate('filters') }}
 </button>
 
 
@@ -150,8 +150,8 @@
             </p>
 
             <div class="meta">
-              <span class="views" aria-label="Views">{{ blog.views_count }} views</span>
-              <nav class="tags" aria-label="Tags" *ngIf="blog.tags?.length">
+              <span class="views" [attr.aria-label]="translate('viewsLabel')">{{ blog.views_count }} {{ translate('viewsLabel') }}</span>
+              <nav class="tags" [attr.aria-label]="translate('tagsAriaLabel')" *ngIf="blog.tags?.length">
                 <button
                 type="button"
                 class="tag"
@@ -170,17 +170,17 @@
     </ng-container>
 
     <ng-template #empty>
-      <p class="empty">No posts yet.</p>
+      <p class="empty">{{ translate('emptyState') }}</p>
     </ng-template>
   </div>
 </section>
 
 
 
-<nav class="pager" aria-label="Blog pagination" *ngIf="totalPages > 0">
+<nav class="pager" [attr.aria-label]="translate('pagerAriaLabel')" *ngIf="totalPages > 0">
   <div class="pager-inner">
-    <button class="page-btn" (click)="firstPage()" [disabled]="page === 1" aria-label="First page">«</button>
-    <button class="page-btn" (click)="prevPage()"  [disabled]="page === 1" aria-label="Previous page">‹</button>
+    <button class="page-btn" (click)="firstPage()" [disabled]="page === 1" [attr.aria-label]="translate('firstPage')">«</button>
+    <button class="page-btn" (click)="prevPage()"  [disabled]="page === 1" [attr.aria-label]="translate('prevPage')">‹</button>
 
     <ng-container *ngIf="pageWindow[0] > 1">
       <button class="page-btn" (click)="goToPage(1)">1</button>
@@ -201,21 +201,21 @@
       <button class="page-btn" (click)="goToPage(totalPages)">{{ totalPages }}</button>
     </ng-container>
 
-    <button class="page-btn" (click)="nextPage()" [disabled]="page === totalPages" aria-label="Next page">›</button>
-    <button class="page-btn" (click)="lastPage()" [disabled]="page === totalPages" aria-label="Last page">»</button>
+    <button class="page-btn" (click)="nextPage()" [disabled]="page === totalPages" [attr.aria-label]="translate('nextPage')">›</button>
+    <button class="page-btn" (click)="lastPage()" [disabled]="page === totalPages" [attr.aria-label]="translate('lastPage')">»</button>
 
     <label class="page-size">
-      <span>Show</span>
+      <span>{{ translate('showLabel') }}</span>
       <select [(ngModel)]="pageSize" (change)="goToPage(1)">
         <option [value]="3">3</option>
         <option [value]="6">6</option>
         <option [value]="9">9</option>
         <option [value]="12">12</option>
       </select>
-      <span>per page</span>
+      <span>{{ translate('perPageLabel') }}</span>
     </label>
 
-    <span class="page-info">Page {{ page }} of {{ totalPages }}</span>
+    <span class="page-info">{{ translate('pageLabel') }} {{ page }} {{ translate('ofLabel') }} {{ totalPages }}</span>
   </div>
 </nav>
 

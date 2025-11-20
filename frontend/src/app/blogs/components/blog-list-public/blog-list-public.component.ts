@@ -46,6 +46,190 @@ export class BlogListPublicComponent implements OnInit {
   blogCategories: BlogCategory[] = [];
 
   currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
+  translations: Record<string, Record<string, string>> = {
+    sectionAriaLabel: {
+      en: 'Blog list',
+      de: 'Blogliste',
+      ru: 'Список блогов',
+      tr: 'Blog listesi',
+    },
+    headerTitle: {
+      en: 'Travel Tips & Guides',
+      de: 'Reisetipps & Guides',
+      ru: 'Путевые советы и гиды',
+      tr: 'Seyahat İpuçları & Rehberleri',
+    },
+    headerSubtitle: {
+      en: 'Explore blogs about airport transfers, Turkish destinations, and insider travel tips.',
+      de: 'Entdecken Sie Blogs über Flughafentransfers, türkische Reiseziele und Insider-Reisetipps.',
+      ru: 'Исследуйте блоги о трансферах из аэропорта, направлениях в Турции и лайфхаках путешественников.',
+      tr: 'Havalimanı transferleri, Türkiye destinasyonları ve içeriden seyahat ipuçlarını keşfedin.',
+    },
+    categoriesAll: {
+      en: 'All',
+      de: 'Alle',
+      ru: 'Все',
+      tr: 'Tümü',
+    },
+    searchPlaceholder: {
+      en: 'Search blog posts...',
+      de: 'Blogbeiträge durchsuchen...',
+      ru: 'Поиск записей блога...',
+      tr: 'Blog yazılarında ara...',
+    },
+    searchAriaLabel: {
+      en: 'Search blog posts',
+      de: 'Blogbeiträge durchsuchen',
+      ru: 'Поиск записей блога',
+      tr: 'Blog yazılarında ara',
+    },
+    searchButton: {
+      en: 'Search',
+      de: 'Suchen',
+      ru: 'Найти',
+      tr: 'Ara',
+    },
+    clearSearch: {
+      en: 'Clear search',
+      de: 'Suche löschen',
+      ru: 'Очистить поиск',
+      tr: 'Aramayı temizle',
+    },
+    removeTag: {
+      en: 'Remove tag',
+      de: 'Tag entfernen',
+      ru: 'Убрать тег',
+      tr: 'Etiketi kaldır',
+    },
+    sortBy: {
+      en: 'Sort by',
+      de: 'Sortieren nach',
+      ru: 'Сортировать по',
+      tr: 'Sırala',
+    },
+    sortNewest: {
+      en: 'Newest',
+      de: 'Neueste',
+      ru: 'Сначала новые',
+      tr: 'En yeni',
+    },
+    sortOldest: {
+      en: 'Oldest',
+      de: 'Älteste',
+      ru: 'Сначала старые',
+      tr: 'En eski',
+    },
+    sortMostViewed: {
+      en: 'Most viewed',
+      de: 'Meistgelesen',
+      ru: 'Самые просматриваемые',
+      tr: 'En çok görüntülenen',
+    },
+    sortFeaturedFirst: {
+      en: 'Featured first',
+      de: 'Highlights zuerst',
+      ru: 'Сначала избранные',
+      tr: 'Öne çıkanlar önce',
+    },
+    hasVideo: {
+      en: 'Has video',
+      de: 'Mit Video',
+      ru: 'Есть видео',
+      tr: 'Video var',
+    },
+    clearAll: {
+      en: 'Clear all',
+      de: 'Alle löschen',
+      ru: 'Сбросить всё',
+      tr: 'Tümünü temizle',
+    },
+    filters: {
+      en: 'Filters',
+      de: 'Filter',
+      ru: 'Фильтры',
+      tr: 'Filtreler',
+    },
+    tagsAriaLabel: {
+      en: 'Tags',
+      de: 'Tags',
+      ru: 'Теги',
+      tr: 'Etiketler',
+    },
+    viewsLabel: {
+      en: 'views',
+      de: 'Aufrufe',
+      ru: 'просмотров',
+      tr: 'görüntülenme',
+    },
+    emptyState: {
+      en: 'No posts yet.',
+      de: 'Noch keine Beiträge.',
+      ru: 'Пока нет записей.',
+      tr: 'Henüz yazı yok.',
+    },
+    pagerAriaLabel: {
+      en: 'Blog pagination',
+      de: 'Blog-Seiten',
+      ru: 'Пагинация блога',
+      tr: 'Blog sayfalandırma',
+    },
+    firstPage: {
+      en: 'First page',
+      de: 'Erste Seite',
+      ru: 'Первая страница',
+      tr: 'İlk sayfa',
+    },
+    prevPage: {
+      en: 'Previous page',
+      de: 'Vorherige Seite',
+      ru: 'Предыдущая страница',
+      tr: 'Önceki sayfa',
+    },
+    nextPage: {
+      en: 'Next page',
+      de: 'Nächste Seite',
+      ru: 'Следующая страница',
+      tr: 'Sonraki sayfa',
+    },
+    lastPage: {
+      en: 'Last page',
+      de: 'Letzte Seite',
+      ru: 'Последняя страница',
+      tr: 'Son sayfa',
+    },
+    showLabel: {
+      en: 'Show',
+      de: 'Anzeigen',
+      ru: 'Показать',
+      tr: 'Göster',
+    },
+    perPageLabel: {
+      en: 'per page',
+      de: 'pro Seite',
+      ru: 'на страницу',
+      tr: 'sayfa başına',
+    },
+    pageLabel: {
+      en: 'Page',
+      de: 'Seite',
+      ru: 'Страница',
+      tr: 'Sayfa',
+    },
+    ofLabel: {
+      en: 'of',
+      de: 'von',
+      ru: 'из',
+      tr: '/',
+    },
+  };
+
+  translate(key: keyof typeof this.translations): string {
+    const dict = this.translations[key];
+    if (!dict) {
+      return '';
+    }
+    return dict[this.currentLanguage.code] ?? dict['en'] ?? '';
+  }
 
 
   searchTerm = '';

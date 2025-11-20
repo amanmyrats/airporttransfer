@@ -251,6 +251,7 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
       this.currencyService.getCurrencyByCode(this.bookingService.bookingCarTypeSelectionForm.get('currency_code')?.value)!,
       this.currencyService.getCurrencyByCode('EUR')!
     );
+    console.log('Base Euro Price:', this.baseEuroPrice);
 
     const initialLocaleCode =
       this.langInput?.code || this.languageService.currentLang()?.code || 'en';

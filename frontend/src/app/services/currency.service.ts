@@ -219,7 +219,7 @@ export class CurrencyService {
     }
     const euroEquivalent = amount / fromRate;
     const converted = euroEquivalent * toRate;
-    return Math.ceil(converted);
+    return Math.round(converted);
   }
 
   private loadInitialCurrencies(): Currency[] {

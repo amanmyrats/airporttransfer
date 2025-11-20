@@ -463,9 +463,10 @@ export class PaymentIntentStore {
     if (!currency) {
       return methods;
     }
+    const normalizedCurrency = currency.toUpperCase();
     return methods.filter(method => {
       if (method.code === 'CASH') {
-        return true;
+        return normalizedCurrency !== 'RUB';
       }
       if (!method.supportedCurrencies?.length) {
         return true;

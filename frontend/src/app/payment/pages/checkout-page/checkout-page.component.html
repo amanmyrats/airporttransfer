@@ -88,8 +88,10 @@
       </p>
       <button type="button" class="cta" (click)="goToResult()">{{ copy().result.viewButton }}</button>
     </section>
+  </ng-container>
 
-    <section *ngIf="step() !== 'method' && selectedMethod() as method" class="method-section">
+  <section *ngIf="step() !== 'method' && selectedMethod() as method" class="method-section">
+    <ng-container *ngIf="activeIntent() as intent; else methodWithoutIntent">
       <ng-container *ngIf="isCard(method); else offlineFlow">
         <app-payment-button
           [clientSecret]="intent.client_secret"
@@ -104,36 +106,7 @@
       <ng-template #offlineFlow>
         <ng-container *ngIf="showOfflineInstructions(intent); else offlineStatusInfo">
           <ng-container *ngIf="isCash(method); else receiptFlow">
-            <section class="cash-instructions">
-              <h3>{{ copy().cash.title }}</h3>
-              <p>
-                {{ copy().cash.preparePrefix }}
-                {{ amountSummary()?.dueText || formattedTotal() }}
-                {{ copy().cash.prepareMid }}
-                <strong>{{ booking.number }}</strong>
-                {{ copy().cash.prepareSuffix }}
-              </p>
-              <div class="cash-actions">
-                <button
-                  type="button"
-                  (click)="onOfflineConfirm()"
-                  [disabled]="isLoading() || offlineInstructionStatus(intent) === 'processing' || hasProcessingCashIntent()"
-                >
-                  {{ copy().cash.confirmButton }}
-                </button>
-                <button type="button" class="link" (click)="onSelectAnotherMethod()">
-                  {{ copy().cash.changeMethod }}
-                </button>
-              </div>
-              <small *ngIf="!hasProcessingCashIntent(); else cashPending">
-                {{ copy().cash.intentNote }}
-              </small>
-              <ng-template #cashPending>
-                <small class="cash-note cash-note--pending">
-                  {{ copy().cash.pendingNote }}
-                </small>
-              </ng-template>
-            </section>
+            <ng-container *ngTemplateOutlet="cashInstructions; context: { intent: intent }"></ng-container>
           </ng-container>
           <ng-template #receiptFlow>
             <app-offline-instructions
@@ -159,8 +132,46 @@
         </ng-container>
         <ng-template #offlineStatusInfo></ng-template>
       </ng-template>
+    </ng-container>
+    <ng-template #methodWithoutIntent>
+      <ng-container *ngIf="method === 'CASH'">
+        <ng-container *ngTemplateOutlet="cashInstructions; context: { intent: null }"></ng-container>
+      </ng-container>
+    </ng-template>
+  </section>
+
+  <ng-template #cashInstructions let-currentIntent="intent">
+    <section class="cash-instructions">
+      <h3>{{ copy().cash.title }}</h3>
+      <p>
+        {{ copy().cash.preparePrefix }}
+        {{ amountSummary()?.dueText || formattedTotal() }}
+        {{ copy().cash.prepareMid }}
+        <strong>{{ booking.number }}</strong>
+        {{ copy().cash.prepareSuffix }}
+      </p>
+      <div class="cash-actions">
+        <button
+          type="button"
+          (click)="onOfflineConfirm()"
+          [disabled]="isLoading() || cashConfirmDisabled(currentIntent ?? null)"
+        >
+          {{ copy().cash.confirmButton }}
+        </button>
+        <button type="button" class="link" (click)="onSelectAnotherMethod()">
+          {{ copy().cash.changeMethod }}
+        </button>
+      </div>
+      <small *ngIf="!hasProcessingCashIntent(); else cashPending">
+        {{ copy().cash.intentNote }}
+      </small>
+      <ng-template #cashPending>
+        <small class="cash-note cash-note--pending">
+          {{ copy().cash.pendingNote }}
+        </small>
+      </ng-template>
     </section>
-  </ng-container>
+  </ng-template>
 
   <section class="intent-history" *ngIf="intentHistory()?.length">
     <h3>{{ copy().intentHistory.title }}</h3>

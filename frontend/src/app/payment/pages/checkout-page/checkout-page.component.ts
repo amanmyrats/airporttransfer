@@ -481,6 +481,14 @@ export class CheckoutPageComponent implements OnInit {
   protected readonly dueMinor = this.store.dueMinor;
   protected readonly paidMinor = this.store.paidMinor;
   protected readonly intentHistory = this.store.intentHistory;
+  protected readonly activeIntent = computed(() => {
+    const intent = this.intent();
+    const method = this.selectedMethod();
+    if (!intent || !method) {
+      return null;
+    }
+    return intent.method === method ? intent : null;
+  });
   protected readonly receiptSelection = signal<{ file: File | null; note?: string | null }>({ file: null, note: null });
 
   protected readonly uploadMessage = signal<string | null>(null);
@@ -603,29 +611,23 @@ export class CheckoutPageComponent implements OnInit {
       return;
     }
     const descriptor = this.methods().find(m => m.code === method);
-    // console.log('Method descriptor:', descriptor);
     this.store.setMethod(method);
-    // console.log('Method set in store:', this.store.selectedMethod());
     this.uploadMessage.set(null);
-    // console.log('Upload message cleared');
 
-    const returnUrl = this.buildReturnUrl(booking.number);
-    await this.store.createOrResume(
-      booking.number,
-      majorToMinor(Number(booking.amount), booking.currency_code),
-      booking.currency_code,
-      method,
-      returnUrl ?? undefined,
-      {
-        email: booking.passenger_email,
-        name: booking.passenger_name ?? undefined,
-      },
-      descriptor?.metadata ?? undefined,
-    );
+    if (method === 'CASH') {
+      this.store.markStep('details');
+      return;
+    }
+
+    await this.initiateIntentForMethod(method, descriptor?.metadata ?? undefined);
   }
 
   protected async onOfflineConfirm() {
-    const currentIntent = this.intent();
+    let currentIntent = this.intent();
+    const selected = this.selectedMethod();
+    if (selected === 'CASH' && (!currentIntent || currentIntent.method !== 'CASH')) {
+      currentIntent = await this.initiateIntentForMethod('CASH');
+    }
     if (!currentIntent) {
       return;
     }
@@ -678,6 +680,15 @@ export class CheckoutPageComponent implements OnInit {
   protected intentIsFinal = intentIsFinal;
   protected formatMinor = formatMinor;
   protected trackIntent = (_: number, intent: PaymentIntentDto) => intent.public_id;
+  protected cashConfirmDisabled(intent: PaymentIntentDto | null): boolean {
+    if (this.hasProcessingCashIntent()) {
+      return true;
+    }
+    if (intent) {
+      return this.offlineInstructionStatus(intent) === 'processing';
+    }
+    return false;
+  }
 
   protected buildReturnUrl(bookingRef: string): string | null {
     if (typeof window === 'undefined') {
@@ -698,6 +709,29 @@ export class CheckoutPageComponent implements OnInit {
 
   protected requiresCustomerActionIntent(intent: PaymentIntentDto): boolean {
     return intent.status === 'requires_action' || intent.status === 'requires_payment_method';
+  }
+
+  private async initiateIntentForMethod(
+    method: PaymentMethod,
+    metadata?: Record<string, unknown>,
+  ): Promise<PaymentIntentDto | null> {
+    const booking = this.booking();
+    if (!booking) {
+      return null;
+    }
+    const returnUrl = this.buildReturnUrl(booking.number);
+    return this.store.createOrResume(
+      booking.number,
+      majorToMinor(Number(booking.amount), booking.currency_code),
+      booking.currency_code,
+      method,
+      returnUrl ?? undefined,
+      {
+        email: booking.passenger_email,
+        name: booking.passenger_name ?? undefined,
+      },
+      metadata ?? undefined,
+    );
   }
 
   protected showOfflineInstructions(intent: PaymentIntentDto): boolean {
