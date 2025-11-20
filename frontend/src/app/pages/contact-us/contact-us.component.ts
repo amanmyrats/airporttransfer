@@ -8,6 +8,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ContactUsMessageService } from '../../admin/services/contact-us-message.service';
 import { CommonModule } from '@angular/common';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-contact-us',
@@ -25,7 +27,7 @@ import { SOCIAL_ICONS } from '../../constants/social.constants';
 export class ContactUsComponent implements OnInit {
   socialIcons = SOCIAL_ICONS;
   
-  currentLanguage: any = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
   contactForm: FormGroup;
   isSending: boolean = false;
   isSentSuccessfully: boolean = false;
@@ -52,8 +54,10 @@ export class ContactUsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] as string | undefined;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
     this.setMetaTags(this.currentLanguage.code);
 
   }
@@ -111,7 +115,8 @@ export class ContactUsComponent implements OnInit {
       }
     };
     
-    const meta: any = metaTags[langCode] || metaTags['en'];
+    const fallbackCode = SUPPORTED_LANGUAGES[0]!.code;
+    const meta: any = metaTags[langCode] || metaTags[fallbackCode];
     this.title.setTitle(meta.title);
     this.meta.updateTag({ name: 'description', content: meta.description });
   }

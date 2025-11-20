@@ -49,7 +49,7 @@ import { SUPPORTED_CAR_TYPES } from '../../../constants/car-type.constants';
     styleUrl: './reservation-form.component.scss'
 })
 export class ReservationFormComponent implements OnInit {
-  supportedCurrencies: any = SUPPORTED_CURRENCIES;
+  supportedCurrencies: Currency[] = SUPPORTED_CURRENCIES.map((currency) => ({ ...currency }));
   currencies: Currency[] = [];
   carTypes: CarType[] = [];
   showMyDriver: boolean = false;

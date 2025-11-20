@@ -14,10 +14,10 @@ import { CurrencyService } from '../../../services/currency.service';
 import { SuperHeaderComponent } from '../../../components/super-header/super-header.component';
 import { NavbarComponent } from '../../../components/navbar/navbar.component';
 import { FooterComponent } from '../../../components/footer/footer.component';
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES, SUPPORTED_LANGUAGES } from '../../../constants/language.contants';
+import { Language } from '../../../models/language.model';
 
-const SUPPORTED_CHECKOUT_LANGUAGES = ['en', 'de', 'ru', 'tr'] as const;
-type LanguageCode = (typeof SUPPORTED_CHECKOUT_LANGUAGES)[number];
-const FALLBACK_LANGUAGE: LanguageCode = 'en';
+const FALLBACK_LANGUAGE: LanguageCode = SUPPORTED_LANGUAGE_CODES[0]!;
 
 const CHECKOUT_TRANSLATIONS = {
   summaryTitle: {
@@ -466,7 +466,7 @@ export class CheckoutPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   @ViewChild(UploadReceiptComponent) private uploadReceipt?: UploadReceiptComponent;
-  protected currentLanguage = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
+  protected currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
   private readonly fallbackLanguage: LanguageCode = FALLBACK_LANGUAGE;
   protected readonly copy = signal<CheckoutPageCopy>(this.buildCopy(FALLBACK_LANGUAGE));
 
@@ -782,7 +782,9 @@ export class CheckoutPageComponent implements OnInit {
 
   ngOnInit(): void {
     const languageCode = this.normalizeLanguage(this.resolveLanguageFromRoute());
-    this.currentLanguage.code = languageCode;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
     this.copy.set(this.buildCopy(languageCode));
   }
 
@@ -889,7 +891,7 @@ export class CheckoutPageComponent implements OnInit {
   }
 
   private normalizeLanguage(code: string | null | undefined): LanguageCode {
-    if (code && SUPPORTED_CHECKOUT_LANGUAGES.includes(code as LanguageCode)) {
+    if (code && SUPPORTED_LANGUAGE_CODES.includes(code as LanguageCode)) {
       return code as LanguageCode;
     }
     return this.fallbackLanguage;

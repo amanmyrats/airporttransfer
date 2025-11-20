@@ -53,6 +53,7 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
   defaultCountry: CountryISO = CountryISO.Turkey;  // default fallback
   showCustomPickupFullInput = false;
   showCustomDestinationFullInput = false;
+  baseEuroPrice: number = 0;
   searchFields: SearchCountryField[] = [
     SearchCountryField.All,
     SearchCountryField.Iso2,
@@ -162,8 +163,8 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
       const existingAmount: number = this.bookingService.bookingCarTypeSelectionForm.get('amount')?.value;
 
       this.price = this.currencyService.convert(
-        existingAmount, 
-        this.currencyService.getCurrencyByCode(existingCurrencyCode)!, 
+        this.baseEuroPrice, 
+        this.currencyService.getCurrencyByCode('EUR')!, 
         newCurrency
       );
       this.currency = newCurrency;
@@ -244,6 +245,12 @@ export class BookingCompletionFormComponent implements OnInit, OnDestroy {
     if (this.authService.isLoggedIn()) {
       void this.authService.ensureSessionInitialized();
     }
+
+    this.baseEuroPrice = this.currencyService.convert(
+      this.bookingService.bookingCarTypeSelectionForm.get('amount')?.value,
+      this.currencyService.getCurrencyByCode(this.bookingService.bookingCarTypeSelectionForm.get('currency_code')?.value)!,
+      this.currencyService.getCurrencyByCode('EUR')!
+    );
 
     const initialLocaleCode =
       this.langInput?.code || this.languageService.currentLang()?.code || 'en';

@@ -6,6 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { title } from 'node:process';
 import { CommonModule } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-gallery',
@@ -19,11 +21,7 @@ import { Meta, Title } from '@angular/platform-browser';
   styleUrl: './gallery.component.scss'
 })
 export class GalleryComponent implements OnInit {
-  currentLanguage: any = {
-    code: 'en',
-    name: 'English',
-    flag: 'flags/gb.svg',
-  };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
 
   constructor(
     private route: ActivatedRoute,
@@ -33,8 +31,10 @@ export class GalleryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] as string | undefined;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
     this.setMetaTags(this.currentLanguage.code);
   }
   
@@ -58,7 +58,8 @@ export class GalleryComponent implements OnInit {
       }
     };
 
-    const meta: any = metaTags[langCode] || metaTags['en'];
+    const fallbackCode = SUPPORTED_LANGUAGES[0]!.code;
+    const meta: any = metaTags[langCode] || metaTags[fallbackCode];
     this.title.setTitle(meta.title);
     this.meta.updateTag({ name: 'description', content: meta.description });
   }

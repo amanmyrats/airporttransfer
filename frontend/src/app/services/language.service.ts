@@ -1,19 +1,17 @@
 import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SUPPORTED_LANGUAGES } from '../constants/language.contants';
+import { LanguageCode, SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGE_CODES } from '../constants/language.contants';
 import { Language } from '../models/language.model';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from '../auth/services/auth.service';
 
-export type SupportedLangCode = 'en' | 'de' | 'ru' | 'tr';
-const SUPPORTED_LANG_CODES: readonly SupportedLangCode[] = ['en', 'de', 'ru', 'tr'] as const;
-const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.find((lang) => lang.code === 'en')!;
+const DEFAULT_LANGUAGE: Language = { ...SUPPORTED_LANGUAGES.find((lang) => lang.code === 'en')! };
 
 @Injectable({
   providedIn: 'root',
 })
 export class LanguageService {
-  private languages: Language[] = SUPPORTED_LANGUAGES;
+  private languages: Language[] = SUPPORTED_LANGUAGES.map((lang) => ({ ...lang }));
   private storageKey = 'selectedLanguage'; // Key for local storage
 
   // Signal for the current language
@@ -36,7 +34,7 @@ export class LanguageService {
     const selectedLang = SUPPORTED_LANGUAGES.find((lang) => lang.code === langCode);
 
     if (selectedLang) {
-      this.currentLang.set(selectedLang); // Update the signal value
+      this.currentLang.set({ ...selectedLang }); // Update the signal value
       this.storeLanguage(langCode); // Persist the selected language
       // console.log('setLanguage was called: ', langCode);
       console.log('alreadyNavigated: ', alreadyNavigated);
@@ -120,21 +118,21 @@ export class LanguageService {
     return language ? language.name : undefined;
   }
 
-  extractLangFromUrl(url: string): SupportedLangCode | null {
+  extractLangFromUrl(url: string): LanguageCode | null {
     if (!url) {
       return null;
     }
     const clean = url.split('?')[0];
     const segment = clean.split('/').filter(Boolean)[0];
-    return SUPPORTED_LANG_CODES.includes(segment as SupportedLangCode)
-      ? (segment as SupportedLangCode)
+    return SUPPORTED_LANGUAGE_CODES.includes(segment as LanguageCode)
+      ? (segment as LanguageCode)
       : null;
   }
 
   withLangPrefix(path: string, lang?: string | null): string {
     const normalized = path.replace(/^\/+/, '');
     // console.log('withLangPrefix called with path:', path, 'and lang:', lang);
-    if (lang && SUPPORTED_LANG_CODES.includes(lang as SupportedLangCode)) {
+    if (lang && SUPPORTED_LANGUAGE_CODES.includes(lang as LanguageCode)) {
       // console.log('Returning: ', `/${lang}/${normalized}`.replace(/\/+/g, '/'))
       return `/${lang}/${normalized}`.replace(/\/+/g, '/');
     }
@@ -146,7 +144,7 @@ export class LanguageService {
     const normalized = segments.map(segment =>
       segment.replace(/^\/+/g, '').replace(/\/+$/g, ''),
     );
-    if (lang && SUPPORTED_LANG_CODES.includes(lang as SupportedLangCode)) {
+    if (lang && SUPPORTED_LANGUAGE_CODES.includes(lang as LanguageCode)) {
       return ['/', lang, ...normalized];
     }
     return ['/', ...normalized];

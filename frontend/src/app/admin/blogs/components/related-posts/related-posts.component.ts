@@ -5,8 +5,9 @@ import { RouterLink } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { BlogPostService } from '../../services/blog-post.service';
 import { NAVBAR_MENU } from '../../../../constants/navbar-menu.constants';
+import { LanguageCode } from '../../../../constants/language.contants';
 
-type LangCode = 'en' | 'de' | 'ru' | 'tr' | string;
+type LangCode = LanguageCode | string;
 
 interface RelatedPostTranslation {
   language: LangCode;

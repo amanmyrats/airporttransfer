@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { loadStripe, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES } from '../../../constants/language.contants';
 
 interface PaymentButtonCopy {
   processingLabel: string;
@@ -27,9 +28,7 @@ interface PaymentButtonCopy {
   };
 }
 
-const SUPPORTED_LANGUAGES = ['en', 'de', 'ru', 'tr'] as const;
-type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number];
-const FALLBACK_LANGUAGE: LanguageCode = 'en';
+const FALLBACK_LANGUAGE: LanguageCode = SUPPORTED_LANGUAGE_CODES[0]!;
 const PAYMENT_BUTTON_TRANSLATIONS = {
   processingLabel: {
     en: 'Processing...',
@@ -96,7 +95,7 @@ export class PaymentButtonComponent implements OnChanges, OnDestroy {
   @Input() returnUrl: string | null = null;
   @Input() bookingRef: string | null = null;
   @Input() intentId: string | null = null;
-  @Input() languageCode: string | null = 'en';
+  @Input() languageCode: string | null = FALLBACK_LANGUAGE;
   @Output() statusChange = new EventEmitter<'succeeded' | 'requires_action' | 'failed'>();
 
   processing = false;
@@ -217,7 +216,7 @@ export class PaymentButtonComponent implements OnChanges, OnDestroy {
   }
 
   private normalizeLanguage(code?: string | null): LanguageCode {
-    if (code && SUPPORTED_LANGUAGES.includes(code as LanguageCode)) {
+    if (code && SUPPORTED_LANGUAGE_CODES.includes(code as LanguageCode)) {
       return code as LanguageCode;
     }
     return this.fallbackLanguage;

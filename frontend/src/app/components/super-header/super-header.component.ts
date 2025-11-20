@@ -9,8 +9,10 @@ import { AuthService } from '../../auth/services/auth.service';
 import { AuthUser } from '../../auth/models/auth.models';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES, SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
-const LANG_PREFIXES = ['en', 'de', 'ru', 'tr'];
+const DEFAULT_LANGUAGE: Language = { ...SUPPORTED_LANGUAGES[0]! };
 
 @Component({
   selector: 'app-super-header',  
@@ -23,10 +25,10 @@ const LANG_PREFIXES = ['en', 'de', 'ru', 'tr'];
   styleUrl: './super-header.component.scss'
 })
 export class SuperHeaderComponent implements OnInit, OnChanges {
-  @Input() langInput: any | null = null; // Input property for language selection
-  @Input() trailingMultilingualBlogSlug: { [key: string]: string } | null = null; // e.g., 'blogs/turkey-airport-transfer-blogs/multilingual-slug'
+  @Input() langInput: Language | null = null; // Input property for language selection
+  @Input() trailingMultilingualBlogSlug: Partial<Record<LanguageCode, string>> | null = null; // e.g., 'blogs/turkey-airport-transfer-blogs/multilingual-slug'
   socialIcons = SOCIAL_ICONS;
-  currentLanguage: any = { code: 'en', name: 'English' };
+  currentLanguage: Language = { ...DEFAULT_LANGUAGE };
   dashboardLoading = false;
   private languageService!: LanguageService;
   private authService!: AuthService;
@@ -52,13 +54,13 @@ export class SuperHeaderComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     const languageCode = this.langInput?.code ?? this.resolveLanguageFromRoute();
-    this.currentLanguage = { ...this.currentLanguage, ...(this.langInput ?? {}), code: languageCode };
+    this.currentLanguage = { ...(this.langInput ?? this.getLanguageByCode(languageCode)) };
     this.showDashboardCta = !this.isAccountOrAdmin(this.router?.url ?? '');
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if ('langInput' in changes && this.langInput?.code) {
-      this.currentLanguage = { ...this.currentLanguage, ...this.langInput };
+      this.currentLanguage = { ...this.getLanguageByCode(this.langInput.code) };
     }
   }
 
@@ -67,7 +69,7 @@ export class SuperHeaderComponent implements OnInit, OnChanges {
       return;
     }
     this.dashboardLoading = true;
-    const languageCode = this.currentLanguage?.code ?? 'en';
+    const languageCode = this.currentLanguage?.code ?? DEFAULT_LANGUAGE.code;
     const accountTarget = this.languageService?.withLangPrefix('account', languageCode) ?? '/account';
     const user = this.authService?.user() ?? null;
     try {
@@ -97,7 +99,7 @@ export class SuperHeaderComponent implements OnInit, OnChanges {
       return true;
     }
     const segments = normalized.split('/');
-    if (segments.length > 1 && LANG_PREFIXES.includes(segments[0])) {
+    if (segments.length > 1 && SUPPORTED_LANGUAGE_CODES.includes(segments[0] as LanguageCode)) {
       return segments[1] === 'account' || segments[1] === 'admin';
     }
     return false;
@@ -118,15 +120,19 @@ export class SuperHeaderComponent implements OnInit, OnChanges {
     );
   }
 
-  private resolveLanguageFromRoute(): string {
+  private resolveLanguageFromRoute(): LanguageCode {
     let currentRoute: ActivatedRoute | null = this.route;
     while (currentRoute) {
       const language = currentRoute.snapshot.data['language'];
-      if (language) {
-        return language;
+      if (language && SUPPORTED_LANGUAGE_CODES.includes(language as LanguageCode)) {
+        return language as LanguageCode;
       }
       currentRoute = currentRoute.parent;
     }
-    return 'en';
+    return DEFAULT_LANGUAGE.code;
+  }
+
+  private getLanguageByCode(code: LanguageCode): Language {
+    return { ...(SUPPORTED_LANGUAGES.find((lang) => lang.code === code) ?? DEFAULT_LANGUAGE) };
   }
 }

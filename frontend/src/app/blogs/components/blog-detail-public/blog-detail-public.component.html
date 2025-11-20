@@ -77,7 +77,7 @@
 
         <!-- Image gallery section -->
         <section *ngIf="section.section_type === 'gallery'" class="section image-section">
-          <app-image-section-public [images]="section.images!" [lang]="currentLanguage" [loop]="false"
+          <app-image-section-public [images]="section.images!" [lang]="currentLanguage.code" [loop]="false"
             [showIndicators]="true">
           </app-image-section-public>
         </section>

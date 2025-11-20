@@ -143,7 +143,13 @@
       </div>
       <div class="form-field">
         <label for="currency">Currency</label>
-        <input id="currency" pInputText formControlName="currency" maxlength="3" />
+        <p-dropdown
+          id="currency"
+          formControlName="currency"
+          [options]="currencyOptions"
+          placeholder="Select currency"
+          [showClear]="true"
+        ></p-dropdown>
         @if (controlInvalid('currency')) {
           <p class="field-error">Currency code is required.</p>
         }

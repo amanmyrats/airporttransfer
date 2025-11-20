@@ -23,6 +23,8 @@ import { BookingFormComponent, BookingSearchEvent } from '../../../components/bo
 import { GoogleMapsService } from '../../../services/google-maps.service';
 import { BookingService } from '../../../services/booking.service';
 import { PriceCalculatorService } from '../../../services/price-calculator.service';
+import { LanguageCode, SUPPORTED_LANGUAGES } from '../../../constants/language.contants';
+import { Language } from '../../../models/language.model';
 
 
 
@@ -50,11 +52,7 @@ export class BlogDetailPublicComponent implements OnInit {
 
   public buildSectionAnchor = buildSectionAnchor;
   slug: string = '';
-  currentLanguage: any = {
-    code: 'en',
-    name: 'English',
-    flag: 'flags/gb.svg',
-  };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
   blog: LocalizedBlogPost = {};
 
   constructor(
@@ -73,15 +71,21 @@ export class BlogDetailPublicComponent implements OnInit {
       .pipe(
         map(([pm, data]) => ({
           slug: pm.get('slug') ?? '',
-          lang: (data['language'] as string) ?? 'en'
+          lang: (data['language'] as string) ?? SUPPORTED_LANGUAGES[0]!.code
         })),
         distinctUntilChanged((a, b) => a.slug === b.slug && a.lang === b.lang),
         takeUntilDestroyed() // constructor has injection context
       )
       .subscribe(({ slug, lang }) => {
         this.slug = slug;
-        this.currentLanguage.code = lang;
-        this.setMetaTags(lang);
+        const fallback = SUPPORTED_LANGUAGES[0]!.code;
+        const langCode = SUPPORTED_LANGUAGES.some(({ code }) => code === lang)
+          ? (lang as LanguageCode)
+          : fallback;
+        const resolvedLang =
+          SUPPORTED_LANGUAGES.find(({ code }) => code === langCode) ?? SUPPORTED_LANGUAGES[0]!;
+        this.currentLanguage = { ...resolvedLang };
+        this.setMetaTags(langCode);
         this.getBlogDetail();
       });
     }
@@ -211,7 +215,8 @@ export class BlogDetailPublicComponent implements OnInit {
         description: "Türkiye'de uygun fiyatlı ve güvenilir 7/24 özel havalimanı transfer hizmetleri hakkında bilgi edinin. Antalya, İstanbul, Alanya ve daha fazlasını kapsıyor. Kolayca ulaşım sağlayın!"
       }
     };
-    const meta: any = metaTags[langCode] || metaTags['en'];
+    const fallbackCode = SUPPORTED_LANGUAGES[0]!.code;
+    const meta: any = metaTags[langCode] || metaTags[fallbackCode];
     this.title.setTitle(meta.title);
     this.meta.updateTag({ name: 'description', content: meta.description });
   }

@@ -67,6 +67,11 @@ export class BankAccountsComponent implements OnInit {
     { label: 'Phone Transfer (RU)', value: 'RUB_PHONE_TRANSFER' as PaymentMethod },
   ];
 
+  readonly currencyOptions = ['EUR', 'USD', 'RUB', 'GBP'].map(code => ({
+    label: code,
+    value: code,
+  }));
+
   readonly statusOptions = [
     { label: 'All', value: '' },
     { label: 'Active', value: 'true' },

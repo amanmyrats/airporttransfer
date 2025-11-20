@@ -17,6 +17,7 @@ import { MessageService } from 'primeng/api';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LanguageService } from '../../../services/language.service';
 import { ACCOUNT_FALLBACK_LANGUAGE, AccountLanguageCode, normalizeAccountLanguage } from '../../constants/account-language.constants';
+import { SUPPORTED_LANGUAGES } from '../../../constants/language.contants';
 
 interface LanguageOption {
   code: AccountLanguageCode;
@@ -154,12 +155,10 @@ export class AccountProfileComponent implements OnInit {
     SearchCountryField.DialCode,
   ];
 
-  readonly languages: LanguageOption[] = [
-    { code: 'en', label: 'English' },
-    { code: 'de', label: 'Deutsch' },
-    { code: 'ru', label: 'Русский' },
-    { code: 'tr', label: 'Türkçe' },
-  ];
+  readonly languages: LanguageOption[] = SUPPORTED_LANGUAGES.map(({ code, name }) => ({
+    code: code as AccountLanguageCode,
+    label: name,
+  }));
 
   constructor(
     private readonly fb: FormBuilder,
@@ -172,7 +171,7 @@ export class AccountProfileComponent implements OnInit {
       first_name: [user?.first_name || '', [Validators.required]],
       last_name: [user?.last_name || ''],
       phone_e164: [profile?.phone_e164 || ''],
-      preferred_language: [profile?.preferred_language || 'en', Validators.required],
+      preferred_language: [profile?.preferred_language || ACCOUNT_FALLBACK_LANGUAGE, Validators.required],
       marketing_opt_in: [profile?.marketing_opt_in ?? false],
     });
 

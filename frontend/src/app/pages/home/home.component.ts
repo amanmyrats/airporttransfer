@@ -18,6 +18,8 @@ import { FooterPlaceholderComponent } from '../../components/footer-placeholder/
 import { TestimonialListPlaceholderComponent } from '../../components/testimonial-list-placeholder/testimonial-list-placeholder.component';
 import { BlogListPlaceholderComponent } from '../../components/blog-list-placeholder/blog-list-placeholder.component';
 import { PriceListPlaceholderComponent } from '../../components/price-list-placeholder/price-list-placeholder.component';
+import { Language } from '../../models/language.model';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
 
 @Component({
   selector: 'app-home',
@@ -44,7 +46,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   private router! : Router;
   private languageService!: LanguageService;
-  currentLanguage = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
   mainLocations: any[] = SUPPORTED_MAIN_LOCATIONS;
   isBrowser: boolean;
   testimonialPlaceholderCount = 3;
@@ -77,8 +79,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] as string | undefined;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
 
     this.setMetaTags(this.currentLanguage.code);
 
@@ -139,7 +143,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     };
 
-    const meta: any = metaTags[langCode] || metaTags['en'];
+    const fallbackCode = SUPPORTED_LANGUAGES[0]!.code;
+    const meta: any = metaTags[langCode] || metaTags[fallbackCode];
     this.title.setTitle(meta.title);
     this.meta.updateTag({ name: 'description', content: meta.description });
   }

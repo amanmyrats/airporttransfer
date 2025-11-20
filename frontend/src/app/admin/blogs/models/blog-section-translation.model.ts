@@ -1,10 +1,11 @@
 import { BlogSection } from "./blog-section.model";
+import { LanguageCode } from '../../../constants/language.contants';
 
 export class BlogSectionTranslation {
     id?: number;
     section?: number;
     section_obj?: BlogSection;
-    language?: 'en' | 'de' | 'ru' | 'tr';
+    language?: LanguageCode;
     heading?: string;
     body?: string;
     og_image?: string | null;

@@ -1,6 +1,8 @@
-export class Currency {
-    code?: string;
-    sign?: string;
-    name?: string;
-    rate?: number;
+import { CurrencyCode } from '../constants/currency.constants';
+
+export interface Currency {
+  code: CurrencyCode;
+  sign: string;
+  name: string;
+  rate: number;
 }

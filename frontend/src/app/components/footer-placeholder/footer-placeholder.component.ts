@@ -3,6 +3,8 @@ import { SOCIAL_ICONS } from '../../constants/social.constants';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { LanguageService } from '../../services/language.service';
 import { ActivatedRoute } from '@angular/router';
+import { LanguageCode, SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-footer-placeholder',
@@ -15,11 +17,7 @@ export class FooterPlaceholderComponent  implements OnInit {
   navbarMenu = NAVBAR_MENU;
   private languageService!: LanguageService;
   
-  currentLanguage: any = {
-    code: 'en',
-    name: 'English',
-    flag: 'flags/gb.svg',
-  };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
 
   constructor(private route: ActivatedRoute) {
       if (typeof window !== 'undefined') {
@@ -27,11 +25,13 @@ export class FooterPlaceholderComponent  implements OnInit {
   }
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] as string | undefined;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
   }
 
-  onLanguageSelect(langCode: any): void {
+  onLanguageSelect(langCode: LanguageCode): void {
     this.languageService.setLanguage(langCode, true)
   }
 

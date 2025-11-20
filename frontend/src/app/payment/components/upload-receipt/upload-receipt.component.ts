@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES } from '../../../constants/language.contants';
 
 interface UploadReceiptCopy {
   chooseLabel: string;
@@ -9,9 +10,7 @@ interface UploadReceiptCopy {
   placeholder: string;
 }
 
-const SUPPORTED_LANGUAGES = ['en', 'de', 'ru', 'tr'] as const;
-type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number];
-const FALLBACK_LANGUAGE: LanguageCode = 'en';
+const FALLBACK_LANGUAGE: LanguageCode = SUPPORTED_LANGUAGE_CODES[0]!;
 const UPLOAD_TRANSLATIONS = {
   chooseLabel: {
     en: 'Select receipt (PDF/JPG/PNG)',
@@ -45,7 +44,7 @@ type TranslationKey = keyof typeof UPLOAD_TRANSLATIONS;
 export class UploadReceiptComponent implements OnChanges {
   @Input() busy = false;
   @Input() successMessage: string | null = null;
-  @Input() languageCode: string | null = 'en';
+  @Input() languageCode: string | null = FALLBACK_LANGUAGE;
   @Output() selectionChanged = new EventEmitter<{ file: File | null; note?: string | null }>();
 
   form: FormGroup;
@@ -112,7 +111,7 @@ export class UploadReceiptComponent implements OnChanges {
   }
 
   private normalizeLanguage(code?: string | null): LanguageCode {
-    if (code && SUPPORTED_LANGUAGES.includes(code as LanguageCode)) {
+    if (code && SUPPORTED_LANGUAGE_CODES.includes(code as LanguageCode)) {
       return code as LanguageCode;
     }
     return this.fallbackLanguage;

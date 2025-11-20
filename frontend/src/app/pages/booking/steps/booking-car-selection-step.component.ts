@@ -3,6 +3,7 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { BookingCarTypeSelectionFormComponent } from '../../../components/booking-car-type-selection-form/booking-car-type-selection-form.component';
 import { BookingService } from '../../../services/booking.service';
 import { LanguageService } from '../../../services/language.service';
+import { SUPPORTED_LANGUAGES } from '../../../constants/language.contants';
 
 @Component({
   selector: 'app-booking-car-selection-step',
@@ -26,7 +27,7 @@ import { LanguageService } from '../../../services/language.service';
   `,
 })
 export class BookingCarSelectionStepComponent implements OnInit {
-  langInput: any = { code: 'en' };
+  langInput: any = { ...SUPPORTED_LANGUAGES[0]! };
   backLabel = 'Back';
 
   constructor(
@@ -38,7 +39,7 @@ export class BookingCarSelectionStepComponent implements OnInit {
 
   ngOnInit(): void {
     const parentRoute = this.route.parent ?? this.route;
-    const langCode = parentRoute.snapshot.data['language'] || 'en';
+    const langCode = parentRoute.snapshot.data['language'] || SUPPORTED_LANGUAGES[0]!.code;
     const detectedLang = this.languageService.getLanguageByCode(langCode);
     if (detectedLang) {
       this.langInput = detectedLang;

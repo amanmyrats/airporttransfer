@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { LanguageCode, SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-footer',
@@ -15,11 +17,7 @@ export class FooterComponent implements OnInit {
   navbarMenu = NAVBAR_MENU;
   private languageService!: LanguageService;
   
-  currentLanguage: any = {
-    code: 'en',
-    name: 'English',
-    flag: 'flags/gb.svg',
-  };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
 
   constructor(private route: ActivatedRoute) {
       if (typeof window !== 'undefined') {
@@ -27,11 +25,12 @@ export class FooterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.currentLanguage.code = this.resolveLanguageFromRoute();
+    const language = this.resolveLanguageFromRoute();
+    this.currentLanguage = { ...language };
   }
 
-  onLanguageSelect(langCode: any): void {
-    this.languageService.setLanguage(langCode, true)
+  onLanguageSelect(langCode: LanguageCode): void {
+    this.languageService.setLanguage(langCode, true);
   }
 
   getTranslation(key: string): string {
@@ -125,15 +124,18 @@ export class FooterComponent implements OnInit {
     }
   };
 
-  private resolveLanguageFromRoute(): string {
+  private resolveLanguageFromRoute(): Language {
     let currentRoute: ActivatedRoute | null = this.route;
     while (currentRoute) {
-      const language = currentRoute.snapshot.data['language'];
+      const language = currentRoute.snapshot.data['language'] as string | undefined;
       if (language) {
-        return language;
+        const match = SUPPORTED_LANGUAGES.find(({ code }) => code === language);
+        if (match) {
+          return { ...match };
+        }
       }
       currentRoute = currentRoute.parent;
     }
-    return 'en';
+    return { ...SUPPORTED_LANGUAGES[0]! };
   }
 }

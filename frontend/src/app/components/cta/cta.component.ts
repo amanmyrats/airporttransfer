@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-cta',
@@ -13,15 +15,17 @@ import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 })
 export class CtaComponent implements OnInit {
   navbarMenu = NAVBAR_MENU;
-  currentLanguage: any = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
 
   constructor(
     private route: ActivatedRoute, 
   ) {}
 
   ngOnInit(): void {
-      const languageCode = this.route.snapshot.data['language'] || 'en';
-      this.currentLanguage.code = languageCode;
+      const languageCode = this.route.snapshot.data['language'] as string | undefined;
+      const resolved =
+        SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+      this.currentLanguage = { ...resolved };
   }
 
 

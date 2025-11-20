@@ -4,6 +4,7 @@ import { BookingInitialFormComponent } from '../../../components/booking-initial
 import { BookingSearchEvent } from '../../../components/booking-form/booking-form.component';
 import { LanguageService } from '../../../services/language.service';
 import { BookingService } from '../../../services/booking.service';
+import { SUPPORTED_LANGUAGES } from '../../../constants/language.contants';
 
 @Component({
   selector: 'app-booking-initial-step',
@@ -17,7 +18,7 @@ import { BookingService } from '../../../services/booking.service';
   `,
 })
 export class BookingInitialStepComponent implements OnInit {
-  langInput: any = { code: 'en' };
+  langInput: any = { ...SUPPORTED_LANGUAGES[0]! };
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -28,7 +29,7 @@ export class BookingInitialStepComponent implements OnInit {
 
   ngOnInit(): void {
     const parentRoute = this.route.parent ?? this.route;
-    const langCode = parentRoute.snapshot.data['language'] || 'en';
+    const langCode = parentRoute.snapshot.data['language'] || SUPPORTED_LANGUAGES[0]!.code;
     const detectedLang = this.languageService.getLanguageByCode(langCode);
     if (detectedLang) {
       this.langInput = detectedLang;

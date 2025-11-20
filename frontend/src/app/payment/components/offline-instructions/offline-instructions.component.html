@@ -24,14 +24,22 @@
       >
         <header class="account-card__header" *ngIf="count > 1">
           <div class="account-card__label">
-            <span class="label">{{ account.label || (isRubPhoneTransfer() ? copy.detailed.bank : copy.detailed.bankName) }}</span>
+            <!-- <span class="label">{{ account.label || (isRubPhoneTransfer() ? copy.detailed.bank : copy.detailed.bankName) }}</span> -->
             <small>#{{ i + 1 }}</small>
           </div>
           <span class="account-card__currency">{{ account.currency }}</span>
         </header>
         <dl>
           <div>
-            <dt>{{ isRubPhoneTransfer() ? copy.detailed.phoneNumber : copy.detailed.iban }}</dt>
+            <dt>
+              {{ isRubPhoneTransfer() ? copy.detailed.phoneNumber : copy.detailed.iban }}
+              <small
+                class="field-note"
+                *ngIf="currencyRestrictionNoteFor(account) as currencyNote"
+              >
+                {{ currencyNote }}
+              </small>
+            </dt>
             <dd>
               <div class="value-with-copy">
                 <span>

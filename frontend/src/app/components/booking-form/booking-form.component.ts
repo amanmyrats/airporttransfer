@@ -9,9 +9,7 @@ import { PriceCalculatorService } from '../../services/price-calculator.service'
 import { SOCIAL_ICONS } from '../../constants/social.constants';
 import { GoogleMapsLoaderService, GoogleMapsLoaderState } from '../../services/google-maps-loader.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
-const SUPPORTED_LANGUAGE_CODES = ['en', 'de', 'ru', 'tr'] as const;
-type LanguageCode = typeof SUPPORTED_LANGUAGE_CODES[number];
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES } from '../../constants/language.contants';
 
 export interface BookingSearchEvent {
   formValue: any;

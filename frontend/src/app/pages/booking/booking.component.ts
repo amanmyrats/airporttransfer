@@ -7,6 +7,8 @@ import { BookingService } from '../../services/booking.service';
 import { LanguageService } from '../../services/language.service';
 import { Meta, Title } from '@angular/platform-browser';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 
 @Component({
@@ -22,7 +24,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class BookingComponent implements OnInit {
   bookingService = inject(BookingService);
-  currentLanguage: any = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
 
   constructor(
     private route: ActivatedRoute, 
@@ -34,13 +36,16 @@ export class BookingComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    const detectedLanguage = this.languageService.getLanguageByCode(languageCode);
-    if (detectedLanguage) {
-      this.currentLanguage = detectedLanguage;
-      this.languageService.currentLang.set(detectedLanguage);
+    const languageCode = this.route.snapshot.data['language'] as string | undefined;
+    const detectedLanguage = languageCode
+      ? this.languageService.getLanguageByCode(languageCode)
+      : undefined;
+    const resolved = detectedLanguage ?? SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode);
+    if (resolved) {
+      this.currentLanguage = { ...resolved };
+      this.languageService.currentLang.set(resolved);
     } else {
-      this.currentLanguage.code = languageCode;
+      this.currentLanguage = { ...SUPPORTED_LANGUAGES[0]! };
     }
 
     this.setMetaTags(this.currentLanguage.code);
@@ -153,7 +158,8 @@ export class BookingComponent implements OnInit {
 
     };
 
-    const meta: any = metaTags[langCode] || metaTags['en'];
+    const fallbackCode = SUPPORTED_LANGUAGES[0]!.code;
+    const meta: any = metaTags[langCode] || metaTags[fallbackCode];
     this.title.setTitle(meta.title);
     this.meta.updateTag({ name: 'description', content: meta.description });
   }

@@ -1,6 +1,8 @@
+import { LanguageCode } from '../../constants/language.contants';
+
 export interface CustomerProfileDto {
   phone_e164?: string;
-  preferred_language: 'en' | 'de' | 'ru' | 'tr';
+  preferred_language: LanguageCode;
   marketing_opt_in: boolean;
 }
 

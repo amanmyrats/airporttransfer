@@ -1,6 +1,8 @@
+import { LanguageCode } from '../../../constants/language.contants';
+
 export class BlogPostTranslation {
     id?: number;
-    language?: 'en' | 'de' | 'ru' | 'tr';
+    language?: LanguageCode;
     title?: string;
     short_description?: string;
     slug?: string;
@@ -9,5 +11,4 @@ export class BlogPostTranslation {
     created_at?: string;
     updated_at?: string;
 }
-
 

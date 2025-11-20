@@ -9,10 +9,10 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
 import { CallbackService } from '../../services/callback.service';
 import { LanguageService } from '../../services/language.service';
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES, SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
-const SUPPORTED_BOOKING_LANGUAGES = ['en', 'de', 'ru', 'tr'] as const;
-type LanguageCode = (typeof SUPPORTED_BOOKING_LANGUAGES)[number];
-const FALLBACK_LANGUAGE: LanguageCode = 'en';
+const FALLBACK_LANGUAGE: LanguageCode = SUPPORTED_LANGUAGE_CODES[0]!;
 
 const BOOKING_TRANSLATIONS = {
   successTitle: {
@@ -157,7 +157,7 @@ interface BookingPageCopy {
 export class BookingReceivedComponent implements OnInit {
   navBarMenu: any = NAVBAR_MENU;
   socialIcons: any = SOCIAL_ICONS;
-  currentLanguage = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
   private readonly isLocalhost =
     typeof window !== 'undefined' && window.location.hostname.includes('localhost');
   private readonly isDevEnvironment =
@@ -258,7 +258,9 @@ export class BookingReceivedComponent implements OnInit {
   
   ngOnInit(): void {
     const languageCode = this.normalizeLanguage(this.route.snapshot.data['language']);
-    this.currentLanguage.code = languageCode;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
     this.pageCopy = this.buildPageCopy(languageCode);
     this.initializeNavigationOptions();
     this.setMetaTags(languageCode);
@@ -428,7 +430,7 @@ export class BookingReceivedComponent implements OnInit {
   }
 
   private normalizeLanguage(code?: string | null): LanguageCode {
-    if (code && SUPPORTED_BOOKING_LANGUAGES.includes(code as LanguageCode)) {
+    if (code && SUPPORTED_LANGUAGE_CODES.includes(code as LanguageCode)) {
       return code as LanguageCode;
     }
     return this.fallbackLanguage;

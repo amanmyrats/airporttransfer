@@ -10,9 +10,10 @@ import { NavbarComponent } from '../../../components/navbar/navbar.component';
 import { FooterComponent } from '../../../components/footer/footer.component';
 import { LanguageService } from '../../../services/language.service';
 import { AUTH_FALLBACK_LANGUAGE, AuthLanguageCode, normalizeAuthLanguage } from '../../constants/auth-language.constants';
+import { LanguageCode, SUPPORTED_LANGUAGES } from '../../../constants/language.contants';
 
 interface LanguageOption {
-  code: 'en' | 'de' | 'ru' | 'tr';
+  code: LanguageCode;
   label: string;
 }
 
@@ -168,12 +169,10 @@ export class RegisterComponent {
   readonly success = signal(false);
   readonly serverFieldErrors = signal<Record<string, string[]>>({});
   readonly serverGeneralErrors = signal<string[]>([]);
-  readonly languages: LanguageOption[] = [
-    { code: 'en', label: 'English' },
-    { code: 'de', label: 'Deutsch' },
-    { code: 'ru', label: 'Русский' },
-    { code: 'tr', label: 'Türkçe' },
-  ];
+  readonly languages: LanguageOption[] = SUPPORTED_LANGUAGES.map(({ code, name }) => ({
+    code,
+    label: name,
+  }));
   protected copy: RegisterCopy;
 
   constructor(

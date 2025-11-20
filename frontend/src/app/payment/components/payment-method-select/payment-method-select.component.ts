@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
 import { PaymentMethod, PaymentMethodDto } from '../../models/payment.models';
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES } from '../../../constants/language.contants';
 
 interface PaymentMethodSelectCopy {
   heading: string;
@@ -13,9 +14,7 @@ interface PaymentMethodSelectCopy {
   };
 }
 
-const SUPPORTED_LANGUAGES = ['en', 'de', 'ru', 'tr'] as const;
-type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number];
-const FALLBACK_LANGUAGE: LanguageCode = 'en';
+const FALLBACK_LANGUAGE: LanguageCode = SUPPORTED_LANGUAGE_CODES[0]!;
 const METHOD_SELECT_TRANSLATIONS = {
   heading: {
     en: 'Select a payment option',
@@ -62,7 +61,7 @@ export class PaymentMethodSelectComponent implements OnInit, OnChanges {
   @Input({ required: true }) methods: PaymentMethodDto[] = [];
   @Input() selected: PaymentMethod | null = null;
   @Input() methodDetails: Partial<Record<PaymentMethod, string>> | null = null;
-  @Input() languageCode: string | null = 'en';
+  @Input() languageCode: string | null = FALLBACK_LANGUAGE;
   @Output() methodSelected = new EventEmitter<PaymentMethod>();
   protected copy: PaymentMethodSelectCopy = this.buildCopy(FALLBACK_LANGUAGE);
   private readonly fallbackLanguage: LanguageCode = FALLBACK_LANGUAGE;
@@ -122,7 +121,7 @@ export class PaymentMethodSelectComponent implements OnInit, OnChanges {
   }
 
   private normalizeLanguage(code?: string | null): LanguageCode {
-    if (code && SUPPORTED_LANGUAGES.includes(code as LanguageCode)) {
+    if (code && SUPPORTED_LANGUAGE_CODES.includes(code as LanguageCode)) {
       return code as LanguageCode;
     }
     return this.fallbackLanguage;

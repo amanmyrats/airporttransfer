@@ -15,6 +15,8 @@ import { BlogCategoryService } from '../../../admin/blogs/services/blog-category
 import { BlogService } from '../../../admin/blogs/services/blog.service';
 import { CommonService } from '../../../services/common.service';
 import { LazyLoadParams } from '../../../interfaces/custom-lazy-load-event';
+import { SUPPORTED_LANGUAGES } from '../../../constants/language.contants';
+import { Language } from '../../../models/language.model';
 
 @Component({
   selector: 'app-blog-list-public',
@@ -43,7 +45,7 @@ export class BlogListPublicComponent implements OnInit {
   blogPosts: LocalizedBlogPost[] = [];
   blogCategories: BlogCategory[] = [];
 
-  currentLanguage = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
 
 
   searchTerm = '';
@@ -79,8 +81,10 @@ export class BlogListPublicComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] || SUPPORTED_LANGUAGES[0]!.code;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
 
 
     // read initial params if needed

@@ -7,9 +7,9 @@ import { CarTypeService } from '../../services/car-type.service';
 import { MainLocation } from '../../models/main-location.model';
 import { PopularRoute } from '../../admin/models/popular-route.model';
 import { CarType } from '../../models/car-type.model';
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES } from '../../constants/language.contants';
 
-type LangCode = 'en' | 'de' | 'ru' | 'tr';
-type Translatable = Record<LangCode, string>;
+type Translatable = Record<LanguageCode, string>;
 
 interface RouteSummary {
   destination: string;
@@ -36,7 +36,7 @@ export class PriceListPlaceholderComponent implements OnInit {
   @Input() langInput?: { code?: string };
 
   readonly navbarMenu = NAVBAR_MENU;
-  private readonly fallbackLang: LangCode = 'en';
+  private readonly fallbackLang: LanguageCode = SUPPORTED_LANGUAGE_CODES[0]!;
 
   locationSummaries: LocationSummary[] = [];
 
@@ -90,10 +90,9 @@ export class PriceListPlaceholderComponent implements OnInit {
     }
   }
 
-  get langCode(): LangCode {
-    const code = this.langInput?.code?.toLowerCase() as LangCode | undefined;
-    const supported: LangCode[] = ['en', 'de', 'ru', 'tr'];
-    if (!code || !supported.includes(code)) {
+  get langCode(): LanguageCode {
+    const code = this.langInput?.code?.toLowerCase() as LanguageCode | undefined;
+    if (!code || !SUPPORTED_LANGUAGE_CODES.includes(code)) {
       return this.fallbackLang;
     }
     return code;

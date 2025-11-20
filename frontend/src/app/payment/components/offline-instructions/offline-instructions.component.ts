@@ -11,8 +11,14 @@ import {
 
 import { EventEmitter, Output } from '@angular/core';
 
-import { BankTransferInstruction, IntentStatus, PaymentMethod } from '../../models/payment.models';
+import {
+  BankTransferInstruction,
+  IntentStatus,
+  PaymentMethod,
+  PaymentBankAccount,
+} from '../../models/payment.models';
 import { formatMinor } from '../../utils/money.util';
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES } from '../../../constants/language.contants';
 
 interface OfflineInstructionsCopy {
   detailed: {
@@ -31,6 +37,7 @@ interface OfflineInstructionsCopy {
     confirmButton: string;
     changeMethod: string;
     reviewing: string;
+    currencyRestriction: string;
   };
   generic: {
     title: string;
@@ -45,9 +52,7 @@ interface OfflineInstructionsCopy {
   copyPrompt: string;
 }
 
-const SUPPORTED_LANGUAGES = ['en', 'de', 'ru', 'tr'] as const;
-type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number];
-const FALLBACK_LANGUAGE: LanguageCode = 'en';
+const FALLBACK_LANGUAGE: LanguageCode = SUPPORTED_LANGUAGE_CODES[0]!;
 const OFFLINE_TRANSLATIONS = {
   detailedTitle: {
     en: 'Transfer Instructions',
@@ -120,6 +125,12 @@ const OFFLINE_TRANSLATIONS = {
     de: 'Laden Sie nach Abschluss der Überweisung den Beleg hoch, damit wir die Zahlung prüfen können.',
     ru: 'Загрузите квитанцию после перевода, чтобы мы могли подтвердить оплату.',
     tr: 'Ödeme tamamlanınca dekontu yükleyin, böylece ödemeyi doğrulayabilelim.',
+  },
+  detailedCurrencyRestriction: {
+    en: 'Only for {{currency}} transfers',
+    de: 'Nur für {{currency}}-Überweisungen',
+    ru: 'Только для переводов в {{currency}}',
+    tr: 'Yalnızca {{currency}} havaleleri için',
   },
   detailedConfirmButton: {
     en: "I've sent the transfer",
@@ -213,7 +224,7 @@ export class OfflineInstructionsComponent implements OnChanges {
   @Input() status: IntentStatus | null = null;
   @Input() actionDisabled = false;
   @Input() method: PaymentMethod | null = null;
-  @Input() languageCode: string | null = 'en';
+  @Input() languageCode: string | null = FALLBACK_LANGUAGE;
   @Output() confirmTransfer = new EventEmitter<void>();
   @Output() changeMethod = new EventEmitter<void>();
   protected copy: OfflineInstructionsCopy = this.buildCopy(FALLBACK_LANGUAGE);
@@ -258,6 +269,7 @@ export class OfflineInstructionsComponent implements OnChanges {
         confirmButton: this.translate('detailedConfirmButton', lang),
         changeMethod: this.translate('detailedChangeMethod', lang),
         reviewing: this.translate('detailedReviewing', lang),
+        currencyRestriction: this.translate('detailedCurrencyRestriction', lang),
       },
       generic: {
         title: this.translate('genericTitle', lang),
@@ -279,7 +291,7 @@ export class OfflineInstructionsComponent implements OnChanges {
   }
 
   private normalizeLanguage(code?: string | null): LanguageCode {
-    if (code && SUPPORTED_LANGUAGES.includes(code as LanguageCode)) {
+    if (code && SUPPORTED_LANGUAGE_CODES.includes(code as LanguageCode)) {
       return code as LanguageCode;
     }
     return this.fallbackLanguage;
@@ -371,5 +383,14 @@ export class OfflineInstructionsComponent implements OnChanges {
 
   protected copyLabelActiveFor(key: string | null | undefined): boolean {
     return !!key && this.copiedKey === key;
+  }
+
+  protected currencyRestrictionNoteFor(account: PaymentBankAccount | null | undefined): string | null {
+    const currency = account?.currency?.trim();
+    if (!currency) {
+      return null;
+    }
+    const template = this.copy.detailed.currencyRestriction;
+    return template.replace('{{currency}}', currency.toUpperCase());
   }
 }

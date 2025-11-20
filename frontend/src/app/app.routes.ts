@@ -10,8 +10,7 @@ import { BookingStepGuard } from './pages/booking/guards/booking-step.guard';
 import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
 import { SsrTestComponent } from './components/ssr-test/ssr-test.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
-
-const LANG_CODES = ['en', 'de', 'ru', 'tr'] as const;
+import { SUPPORTED_LANGUAGE_CODES } from './constants/language.contants';
 
 const loadLogin = () => import('./auth/pages/login/login.component').then(m => m.LoginComponent);
 const loadRegister = () => import('./auth/pages/register/register.component').then(m => m.RegisterComponent);
@@ -35,7 +34,7 @@ const authRouteEntries: Routes = [
         path: 'auth',
         children: authChildRoutes,
     },
-    ...LANG_CODES.map(lang => ({
+    ...SUPPORTED_LANGUAGE_CODES.map(lang => ({
         path: `${lang}/auth`,
         children: authChildRoutes.map(route => ({
             ...route,
@@ -73,7 +72,7 @@ const accountRouteEntries: Routes = [
     //     canActivate: [SessionInitGuard, ClientAuthGuard],
     //     loadChildren: () => import('./account/account.routes').then(m => m.accountRoutes),
     // },
-    ...LANG_CODES.map(lang => ({
+    ...SUPPORTED_LANGUAGE_CODES.map(lang => ({
         path: `${lang}/account`,
         providers: accountThemeProviders,
         canActivate: [SessionInitGuard, ClientAuthGuard],
@@ -91,7 +90,7 @@ const checkoutRouteEntries: Routes = [
         // canActivate: [SessionInitGuard, ClientAuthGuard],
         loadChildren: () => import('./payment/payment.routes').then(m => m.paymentRoutes),
     },
-    ...LANG_CODES.map(lang => ({
+    ...SUPPORTED_LANGUAGE_CODES.map(lang => ({
         path: `${lang}/checkout/:bookingRef`,
         data: { language: lang },
         loadChildren: () => import('./payment/payment.routes').then(m => m.paymentRoutes),

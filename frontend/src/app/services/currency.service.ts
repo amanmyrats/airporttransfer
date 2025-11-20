@@ -3,8 +3,20 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment as env } from '../../environments/environment';
 
-import { SUPPORTED_CURRENCIES } from '../constants/currency.constants';
+import {
+  CurrencyCode,
+  SUPPORTED_CURRENCIES,
+  SUPPORTED_CURRENCY_CODES,
+  SupportedCurrency,
+} from '../constants/currency.constants';
 import { Currency } from '../models/currency.model';
+
+const DEFAULT_SUPPORTED_CURRENCY =
+  SUPPORTED_CURRENCIES.find((currency) => currency.code === 'EUR') ?? SUPPORTED_CURRENCIES[0];
+const DEFAULT_CURRENCY: Currency = { ...DEFAULT_SUPPORTED_CURRENCY };
+
+const buildSupportedCurrencyMap = (): Map<CurrencyCode, SupportedCurrency> =>
+  new Map(SUPPORTED_CURRENCIES.map((currency) => [currency.code, currency] as const));
 
 @Injectable({
   providedIn: 'root',
@@ -15,11 +27,14 @@ export class CurrencyService {
   private readonly cacheTtlMs = 24 * 60 * 60 * 1000; // 24 hours
 
   private cacheTimestamp = 0;
-  private readonly currenciesState = signal<Currency[]>(SUPPORTED_CURRENCIES);
+  private readonly supportedCurrencyMap = buildSupportedCurrencyMap();
+  private readonly currenciesState = signal<Currency[]>(
+    SUPPORTED_CURRENCIES.map((currency) => ({ ...currency })),
+  );
 
   readonly currencies = this.currenciesState.asReadonly();
   readonly currentCurrency = signal<Currency>(
-    SUPPORTED_CURRENCIES.find((currency) => currency.code === 'EUR') || SUPPORTED_CURRENCIES[0]
+    { ...DEFAULT_CURRENCY },
   );
 
   constructor(
@@ -35,24 +50,33 @@ export class CurrencyService {
   }
 
   setCurrency(currencyCode: string): void {
-    const selectedCurrency =
-      this.getCurrencyByCode(currencyCode) ||
-      SUPPORTED_CURRENCIES.find((currency) => currency.code === currencyCode);
-
-    if (selectedCurrency) {
-      this.currentCurrency.set(selectedCurrency); // Update the signal value
-      this.storeCurrency(currencyCode); // Persist the selected currency
-    } else {
+    const normalized = this.normalizeCurrencyCode(currencyCode);
+    if (!normalized) {
       console.warn(`Unsupported currency code: ${currencyCode}`);
+      return;
     }
+    const selectedCurrency =
+      this.getCurrencyByCode(normalized) || this.getSupportedCurrencyClone(normalized);
+
+    if (!selectedCurrency) {
+      console.warn(`Unsupported currency code: ${currencyCode}`);
+      return;
+    }
+
+    this.currentCurrency.set({ ...selectedCurrency });
+    this.storeCurrency(normalized); // Persist the selected currency
   }
 
   getCurrencies(): Currency[] {
     return this.currenciesState();
   }
 
-  getCurrencyByCode(code: string): Currency | undefined {
-    return this.currenciesState().find((currency) => currency.code === code);
+  getCurrencyByCode(code: string | null | undefined): Currency | undefined {
+    const normalized = this.normalizeCurrencyCode(code);
+    if (!normalized) {
+      return undefined;
+    }
+    return this.currenciesState().find((currency) => currency.code === normalized);
   }
 
   getCurrencySign(code: string): string | undefined {
@@ -85,25 +109,28 @@ export class CurrencyService {
   }
 
   private mapApiResponseToCurrencies(response: PaginatedCurrencyResponse): Currency[] {
-    const fallbackMap = new Map(
-      SUPPORTED_CURRENCIES.map((currency) => [currency.code, currency] as const)
-    );
-
     return (response.results || [])
       .map((item) => {
-        const fallback = item.code ? fallbackMap.get(item.code) : undefined;
+        const normalizedCode = this.normalizeCurrencyCode(item.code);
+        if (!normalizedCode) {
+          return null;
+        }
+        const fallback = this.supportedCurrencyMap.get(normalizedCode);
+        if (!fallback) {
+          return null;
+        }
         const rateValue =
           item.euro_rate !== undefined && item.euro_rate !== null
             ? Number(item.euro_rate)
             : undefined;
         return {
-          code: item.code,
-          name: item.name || fallback?.name || item.code,
-          sign: item.symbol || fallback?.sign || item.code,
-          rate: rateValue ?? fallback?.rate ?? 1,
+          code: normalizedCode,
+          name: item.name || fallback.name,
+          sign: item.symbol || fallback.sign,
+          rate: rateValue ?? fallback.rate,
         } as Currency;
       })
-      .filter((currency) => Boolean(currency.code));
+      .filter((currency): currency is Currency => Boolean(currency));
   }
 
   private setCurrencies(currencies: Currency[], persist = false): void {
@@ -120,10 +147,10 @@ export class CurrencyService {
       (storedCode && this.getCurrencyByCode(storedCode)) ||
       this.currentCurrency() ||
       this.currenciesState().find((currency) => currency.code === 'EUR') ||
-      SUPPORTED_CURRENCIES[0];
+      this.getSupportedCurrencyClone(SUPPORTED_CURRENCIES[0].code);
 
     if (preferredCurrency) {
-      this.currentCurrency.set(preferredCurrency);
+      this.currentCurrency.set({ ...preferredCurrency });
     }
   }
 
@@ -153,16 +180,20 @@ export class CurrencyService {
       throw new Error('currency rate is undefined');
     }
     const euroEquivalent = amount / currency.rate;
-    return Math.round(euroEquivalent * toCurrency.rate);
+    const converted = euroEquivalent * toCurrency.rate;
+    return Math.ceil(converted);
   }
 
   private loadInitialCurrencies(): Currency[] {
     const cached = this.readCache();
     if (cached) {
       this.cacheTimestamp = cached.timestamp;
-      return cached.currencies;
+      const sanitized = this.ensureSupportedCurrencies(cached.currencies);
+      if (sanitized.length) {
+        return sanitized;
+      }
     }
-    return SUPPORTED_CURRENCIES;
+    return SUPPORTED_CURRENCIES.map((currency) => ({ ...currency }));
   }
 
   private resolveInitialCurrency(currencies: Currency[]): Currency {
@@ -170,7 +201,7 @@ export class CurrencyService {
       this.getStoredCurrency() ||
       currencies.find((currency) => currency.code === 'EUR') ||
       currencies[0] ||
-      SUPPORTED_CURRENCIES[0]
+      this.getSupportedCurrencyClone(SUPPORTED_CURRENCIES[0].code)!
     );
   }
 
@@ -206,6 +237,45 @@ export class CurrencyService {
     };
     localStorage.setItem(this.cacheStorageKey, JSON.stringify(payload));
     this.cacheTimestamp = payload.timestamp;
+  }
+
+  private ensureSupportedCurrencies(payload: Currency[]): Currency[] {
+    const result: Currency[] = [];
+    payload.forEach((currency) => {
+      const normalized = this.normalizeCurrencyCode(currency.code);
+      if (!normalized) {
+        return;
+      }
+      const fallback = this.supportedCurrencyMap.get(normalized);
+      if (!fallback) {
+        return;
+      }
+      result.push({
+        code: normalized,
+        name: currency.name || fallback.name,
+        sign: currency.sign || fallback.sign,
+        rate:
+          typeof currency.rate === 'number' && !Number.isNaN(currency.rate)
+            ? currency.rate
+            : fallback.rate,
+      });
+    });
+    return result;
+  }
+
+  private getSupportedCurrencyClone(code: CurrencyCode): Currency | undefined {
+    const fallback = this.supportedCurrencyMap.get(code);
+    return fallback ? { ...fallback } : undefined;
+  }
+
+  private normalizeCurrencyCode(code?: string | null): CurrencyCode | null {
+    if (!code) {
+      return null;
+    }
+    const normalized = code.toUpperCase();
+    return SUPPORTED_CURRENCY_CODES.includes(normalized as CurrencyCode)
+      ? (normalized as CurrencyCode)
+      : null;
   }
 
   private isCacheFresh(): boolean {

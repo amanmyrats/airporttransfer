@@ -5,6 +5,8 @@ import { NavbarComponent } from '../../../components/navbar/navbar.component';
 import { FooterComponent } from '../../../components/footer/footer.component';
 import { NAVBAR_MENU } from '../../../constants/navbar-menu.constants';
 import { Meta, Title } from '@angular/platform-browser';
+import { SUPPORTED_LANGUAGES } from '../../../constants/language.contants';
+import { Language } from '../../../models/language.model';
 
 @Component({
   selector: 'app-istanbul-airport-transfer',
@@ -18,11 +20,7 @@ import { Meta, Title } from '@angular/platform-browser';
 })
 export class IstanbulAirportTransferComponent  {
   navBarMenu: any = NAVBAR_MENU;
-  currentLanguage: any = {
-    code: 'en',
-    name: 'English',
-    flag: 'flags/gb.svg',
-  };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
   
   constructor(
     private route: ActivatedRoute, 
@@ -33,8 +31,10 @@ export class IstanbulAirportTransferComponent  {
   ngOnInit(): void {
     console.log('inside istanbul sabiha gokcen blog')
     console.log(this.route.snapshot)
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] as string | undefined;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
     this.setMetaTags(this.currentLanguage.code);
   }
 
@@ -58,7 +58,8 @@ export class IstanbulAirportTransferComponent  {
       }
     };
     
-    const meta: any = metaTags[langCode] || metaTags['en'];
+    const fallbackCode = SUPPORTED_LANGUAGES[0]!.code;
+    const meta: any = metaTags[langCode] || metaTags[fallbackCode];
     this.title.setTitle(meta.title);
     this.meta.updateTag({ name: 'description', content: meta.description });
   }
