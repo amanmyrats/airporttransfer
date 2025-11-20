@@ -161,7 +161,7 @@ export class BookingReceivedComponent implements OnInit {
   private readonly isLocalhost =
     typeof window !== 'undefined' && window.location.hostname.includes('localhost');
   private readonly isDevEnvironment =
-    typeof window !== 'undefined' && window.location.hostname.includes('dev.airporttransfer.com');
+    typeof window !== 'undefined' && window.location.hostname.includes('dev.airporttransferhub.com');
   checkoutLinks: Array<{ label: string; commands: any[]; reference: string; id?: number }> = [];
   dashboardCommands: any[] | null = null;
   hasNextActions = false;
@@ -191,7 +191,7 @@ export class BookingReceivedComponent implements OnInit {
         }
         console.log('One Way Data:', oneWaydata);
 
-        if (!this.isLocalhost || !this.isDevEnvironment) {
+        if (!this.isLocalhost) {
           if (this.isDevEnvironment) {
             this.callbackService.TtAthNewOrderCallback(
               oneWaydata, 
