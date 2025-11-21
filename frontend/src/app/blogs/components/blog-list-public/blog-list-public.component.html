@@ -159,7 +159,7 @@
                 [class.active]="selectedTag === (tag?.id?.toString())"
                 (click)="applyTag(tag)"
               >
-                #{{ (tag?.resolved?.name || tag?.name || tag) | lowercase }}
+                #{{ getTagLabel(tag) }}
               </button>
 
               </nav>

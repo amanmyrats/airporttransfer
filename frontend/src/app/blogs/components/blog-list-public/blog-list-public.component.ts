@@ -559,11 +559,11 @@ toggleHasVideo(checked: boolean) {
   this.hasVideo = checked;
   this.onSortChange(); // reuse to rebuild + reload
 }
-clearAllFilters() {
-  this.searchTerm = '';
-  this.selectedCategory = '';
-  this.selectedTag = null;
-  this.selectedTagName = null;
+  clearAllFilters() {
+    this.searchTerm = '';
+    this.selectedCategory = '';
+    this.selectedTag = null;
+    this.selectedTagName = null;
   this.ordering = '-published_at';
   this.hasVideo = false;
 
@@ -579,4 +579,13 @@ clearAllFilters() {
   });
   this.loadWithEvent();
 }
+
+  toLower(val?: string | null): string {
+    return (val || '').toString().toLowerCase();
+  }
+
+  getTagLabel(tag: BlogTag | string): string {
+    if (typeof tag === 'string') return this.toLower(tag);
+    return this.toLower(tag.resolved?.name || tag.name);
+  }
 }
