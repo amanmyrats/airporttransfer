@@ -19,6 +19,7 @@ import { TableOfContentsComponent } from '../../../admin/blogs/components/table-
 import { BlogSectionMapPublicComponent } from '../../../admin/blogs/components/blog-section-map-public/blog-section-map-public.component';
 import { buildSectionAnchor } from '../../../admin/blogs/components/shared/slug.utils';
 import { LocalizedBlogPost } from '../../../admin/blogs/models/localized-blog-post.model';
+import { BlogTag } from '../../../admin/blogs/models/blog-tag.model';
 import { BookingFormComponent, BookingSearchEvent } from '../../../components/booking-form/booking-form.component';
 import { GoogleMapsService } from '../../../services/google-maps.service';
 import { BookingService } from '../../../services/booking.service';
@@ -347,6 +348,23 @@ export class BlogDetailPublicComponent implements OnInit {
         },
       },
     );
+  }
+
+  getTagLabel(tag: BlogTag | string): string {
+    if (typeof tag === 'string') return tag.toLowerCase();
+    const name = tag.resolved?.name || tag.name || '';
+    return name.toLowerCase();
+  }
+
+  getTagSlug(tag: BlogTag | string): string {
+    if (typeof tag === 'string') return tag.toLowerCase();
+    const slug = tag.resolved?.slug || tag.slug || '';
+    return slug.toLowerCase();
+  }
+
+  getTagFilterValue(tag: BlogTag | string): string {
+    if (typeof tag === 'string') return tag;
+    return (tag.name ?? tag.slug ?? tag.id ?? '').toString();
   }
 
 }

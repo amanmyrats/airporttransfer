@@ -4,6 +4,8 @@ import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { BlogPost } from '../../models/blog-post.model';
+import { BlogTag } from '../../models/blog-tag.model';
+import { BlogCategory } from '../../models/blog-category.model';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { HttpErrorPrinterService } from '../../../../services/http-error-printer.service';
@@ -155,6 +157,23 @@ export class BlogPostListComponent implements OnInit {
 
   search(queryString: string = ''): void {
     this.getBlogPosts(queryString);
+  }
+
+  private toLower(val?: string | null): string {
+    return (val || '').toString().toLowerCase();
+  }
+
+  getCategoryLabel(cat?: BlogCategory | null): string {
+    if (!cat) return '';
+    return this.toLower(cat.resolved?.name || cat.name);
+  }
+
+  getTagLabels(tags?: BlogTag[] | null): string {
+    if (!tags || !tags.length) return '';
+    return tags
+      .map(t => this.toLower(t.resolved?.name || t.name))
+      .filter(Boolean)
+      .join(', ');
   }
 
   getEnglishTitle(post: BlogPost): string {

@@ -10,7 +10,7 @@ from .views import (
     BlogImageModelViewSet,
     BlogCategoryModelViewSet,
     BlogTagModelViewSet, 
-    BlogImageTranslationModelViewSet, 
+    BlogImageTranslationModelViewSet, BlogCategoryTranslationModelViewSet, BlogTagTranslationModelViewSet, 
     FaqItemModelViewSet, FaqItemTranslationModelViewSet, 
     FaqLibraryItemModelViewSet,
     FaqLibraryItemTranslationModelViewSet,
@@ -38,6 +38,8 @@ router.register(r'blogimages', BlogImageModelViewSet, basename='blogimage')
 router.register(r'blogcategories', BlogCategoryModelViewSet, basename='blogcategory')
 router.register(r'blogtags', BlogTagModelViewSet, basename='blogtag')
 router.register(r'blogimagetranslations', BlogImageTranslationModelViewSet, basename='blogimagetranslation')
+router.register(r'blogcategorytranslations', BlogCategoryTranslationModelViewSet, basename='blogcategorytranslation')
+router.register(r'blogtagtranslations', BlogTagTranslationModelViewSet, basename='blogtagtranslation')
 router.register(r'faqitems', FaqItemModelViewSet, basename='faqitem')
 router.register(r'faqitemtranslations', FaqItemTranslationModelViewSet, basename='faqitemtranslation')
 router.register(r'faqlibraryitems', FaqLibraryItemModelViewSet, basename='faqlibraryitem')

@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 from rest_framework import serializers
 from .models import (
     BlogPost, BlogPostTranslation, BlogSection,
-    BlogSectionTranslation, BlogImage, BlogCategory, BlogTag,
+    BlogSectionTranslation, BlogImage, BlogCategory, BlogTag, BlogCategoryTranslation, BlogTagTranslation,
     BlogImageTranslation,
     FaqItem, FaqItemTranslation,
     FaqLibraryItem,
@@ -17,16 +17,53 @@ from .serializers_video import BlogVideoModelSerializer
 from .serializers_map import BlogSectionMapSerializer
 
 
+class BlogCategoryTranslationModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlogCategoryTranslation
+        fields = ['id', 'category', 'language', 'name', 'slug', 'created_at', 'updated_at']
+
+
+class BlogTagTranslationModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlogTagTranslation
+        fields = ['id', 'tag', 'language', 'name', 'slug', 'created_at', 'updated_at']
+
+
 class BlogCategoryModelSerializer(serializers.ModelSerializer):
+    translations = BlogCategoryTranslationModelSerializer(many=True, read_only=True)
+    resolved = serializers.SerializerMethodField()
+
     class Meta:
         model = BlogCategory
-        fields = ['id', 'name', 'slug']
+        fields = ['id', 'name', 'slug', 'translations', 'resolved']
+
+    def get_resolved(self, obj: BlogCategory):
+        request = self.context.get('request')
+        lang = (self.context.get('lang')
+                or (request and request.query_params.get('lang'))
+                or 'en')
+        lang = (lang or 'en')[:2]
+        return obj.get_resolved(lang)
 
 
 class BlogTagModelSerializer(serializers.ModelSerializer):
+    translations = serializers.SerializerMethodField()
+    resolved = serializers.SerializerMethodField()
+
     class Meta:
         model = BlogTag
-        fields = ['id', 'name', 'slug']
+        fields = ['id', 'name', 'slug', 'translations', 'resolved']
+
+    def get_translations(self, obj: BlogTag):
+        return BlogTagTranslationModelSerializer(obj.translations.all(), many=True).data
+
+    def get_resolved(self, obj: BlogTag):
+        request = self.context.get('request')
+        lang = (self.context.get('lang')
+                or (request and request.query_params.get('lang'))
+                or 'en')
+        lang = (lang or 'en')[:2]
+        return obj.get_resolved(lang)
 
 
 # class BlogImageModelSerializer(serializers.ModelSerializer):
@@ -381,7 +418,7 @@ class PublicBlogPostLocalizedModelSerializer(serializers.ModelSerializer):
     translation = serializers.SerializerMethodField()
     sections = serializers.SerializerMethodField()
     category = BlogCategoryModelSerializer(read_only=True)
-    tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
+    tags = BlogTagModelSerializer(many=True, read_only=True)
     thumbnail = serializers.ImageField(source='main_image_small', read_only=True)
     available_languages = serializers.SerializerMethodField()
     is_partial = serializers.SerializerMethodField()

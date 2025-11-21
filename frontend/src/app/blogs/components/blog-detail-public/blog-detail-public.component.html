@@ -28,8 +28,9 @@
 
         <div class="tags" *ngIf="blog.tags?.length">
           <a *ngFor="let tag of blog.tags" class="tag"
-            [routerLink]="['/', currentLanguage.code, 'turkey-airport-transfer-blogs', 'tag', tag.slug || tag]"
-            [attr.aria-label]="'Tag ' + (tag.name || tag)">#{{ tag.name || tag }}</a>
+            [routerLink]="['/', currentLanguage.code, navbarMenu.newBlogs.slug[currentLanguage.code]]"
+            [queryParams]="{ tag: getTagFilterValue(tag) }"
+            [attr.aria-label]="'Tag ' + getTagLabel(tag)">#{{ getTagLabel(tag) }}</a>
         </div>
       </div>
 

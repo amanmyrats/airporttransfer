@@ -342,7 +342,7 @@ export class BlogListPublicComponent implements OnInit {
   }
 
   getCategories(): void {
-    this.categoryService.getAll().subscribe({
+    this.categoryService.getAll('', this.currentLanguage.code).subscribe({
       next: (data) => {
         this.blogCategories = data?.results ?? [];
         console.log('Blog categories:', this.blogCategories);
@@ -485,7 +485,8 @@ export class BlogListPublicComponent implements OnInit {
   
   applyTag(tag: BlogTag | string) {
     const val = typeof tag === 'string' ? tag : tag.id?.toString() ?? '';
-    const name = typeof tag === 'string' ? ''  : (tag as BlogTag).name ?? '';
+    const resolvedName = typeof tag === 'string' ? ''  : (tag as BlogTag).resolved?.name ?? (tag as BlogTag).name ?? '';
+    const name = resolvedName ? resolvedName.toLowerCase() : '';
   
     // Toggle off if same tag clicked
     if (this.selectedTag === val) {
