@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { InputTextModule } from 'primeng/inputtext';
@@ -22,6 +23,7 @@ import { ImportFormComponent } from '../../components/import-form/import-form.co
 @Component({
   selector: 'app-popular-route-list',
   imports: [
+      CommonModule,
       TableModule,
       ToastModule,
       InputTextModule,

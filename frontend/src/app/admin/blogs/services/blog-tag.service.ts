@@ -11,12 +11,17 @@ export class BlogTagService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(queryString: string=''): Observable<PaginatedResponse<BlogTag>> {
-    return this.http.get<PaginatedResponse<BlogTag>>(`${env.baseUrl}${env.apiV1}${this.endPoint}${queryString}`);
+  getAll(queryString: string='', lang?: string): Observable<PaginatedResponse<BlogTag>> {
+    let suffix = queryString || '';
+    if (lang) {
+      suffix += `${suffix ? (suffix.includes('?') ? '&' : '?') : '?'}lang=${lang}`;
+    }
+    return this.http.get<PaginatedResponse<BlogTag>>(`${env.baseUrl}${env.apiV1}${this.endPoint}${suffix}`);
   }
 
-  getById(id: number): Observable<BlogTag> {
-    return this.http.get<BlogTag>(`${env.baseUrl}${env.apiV1}${this.endPoint}${id}/`);
+  getById(id: number, lang?: string): Observable<BlogTag> {
+    const suffix = lang ? `?lang=${lang}` : '';
+    return this.http.get<BlogTag>(`${env.baseUrl}${env.apiV1}${this.endPoint}${id}/${suffix}`);
   }
 
   create(data: Partial<BlogTag>): Observable<BlogTag> {

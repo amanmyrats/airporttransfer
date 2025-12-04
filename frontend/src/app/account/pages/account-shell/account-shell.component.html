@@ -1,0 +1,46 @@
+<app-super-header></app-super-header>
+<app-navbar></app-navbar>
+
+<div class="account-layout">
+  <header class="mobile-top-bar">
+    <div class="user-inline">
+      <div class="name">{{ user()?.first_name || user()?.email }}</div>
+      <div class="email">{{ user()?.email }}</div>
+    </div>
+    <button class="mobile-nav-trigger"
+            type="button"
+            (click)="toggleMobileNav()"
+            aria-controls="account-sidebar"
+            [attr.aria-expanded]="mobileMenuOpen()">
+      <span class="hamburger" [class.open]="mobileMenuOpen()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+      <span class="label">{{ copy().menuLabel }}</span>
+    </button>
+  </header>
+
+  <aside class="sidebar" id="account-sidebar" [class.open]="mobileMenuOpen()">
+    <div class="user-block desktop-only">
+      <h3>{{ user()?.first_name || user()?.email }}</h3>
+      <p>{{ user()?.email }}</p>
+    </div>
+    <nav>
+      <a *ngFor="let item of navItems()"
+         [routerLink]="item.link"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{ exact: item.exact }"
+         (click)="closeMobileNav()">
+        {{ item.label }}
+      </a>
+    </nav>
+    <button pButton class="p-button-danger" [label]="copy().logout" (click)="logout()"></button>
+  </aside>
+  <div class="backdrop" *ngIf="mobileMenuOpen()" (click)="closeMobileNav()"></div>
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<app-footer></app-footer>

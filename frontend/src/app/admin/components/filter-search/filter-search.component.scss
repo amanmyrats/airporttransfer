@@ -1,14 +1,31 @@
+@import 'primeicons/primeicons.css';
+
+.filter-search-form {
+  width: 100%;
+}
+
 .next-prev-button {
-    margin-top: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    background-color: rgba(0, 0, 0, 0.05);
+    outline: none;
   }
-  
-  .next-prev-button .pi {
-    font-size: 1.5em;
-    color: #007bff; /* Change this color as per your requirement */
-  }
+}
+
+.next-prev-button .pi {
+  font-size: 1.25rem;
+  color: #007bff; /* Change this color as per your requirement */
+}
 
 .item-wrapper {
   display: flex;
@@ -18,19 +35,9 @@
   align-items: center;
 
   .item {
-    margin: 5px 5px;
+    margin: 0 5px 0.5rem;
     max-width: 200px;
   }
-}
-
-.custom-clear-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f6f2f2; /* Replace with your desired fill color */
-  border-radius: 0 15% 15% 0; /* Optional: Makes the background circular */
-  width: 24px; /* Adjust width and height as needed */
-  height: 35px;
 }
 
 .p-select {
@@ -39,4 +46,188 @@
 
 .p-floatlabel {
   margin-top: 10px;
+}
+
+.filter-date-single {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // gap: 0.5rem;
+}
+
+.filter-date-range {
+  display: block;
+  margin-top: 0.1rem;
+}
+
+.filter-date-range__inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.05rem;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-top: 1rem;
+}
+
+.filter-date-single__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  p-datepicker,
+  .p-datepicker,
+  .p-datepicker input {
+    flex: 1 1 auto;
+  }
+}
+
+.detailed-toggle-container {
+  display: flex;
+  justify-content: flex-end;
+  // margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .filter-search-form .p-d-flex {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .filter-date-single {
+    width: 100%;
+    align-items: center;
+
+    .filter-date-single__controls {
+      flex-wrap: nowrap;
+      width: 100%;
+      gap: 0.25rem;
+      justify-content: center;
+      align-items: center;
+
+      p-datepicker,
+      .p-datepicker,
+      .p-datepicker input {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      .next-prev-button {
+        flex: 0 0 auto;
+      }
+    }
+  }
+
+  .filter-date-single--mobile-box {
+    background: rgba(56, 144, 221, 0.05);
+    border: 1px solid rgba(30, 136, 229, 0.15);
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    box-shadow: 0 2px 6px rgba(30, 64, 175, 0.08);
+    width: auto;
+    max-width: 100%;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0.25rem auto 0.5rem;
+
+    .filter-date-single__controls {
+      width: auto;
+      p-datepicker,
+      .p-datepicker,
+      .p-datepicker input {
+        flex: 0 0 auto;
+      }
+    }
+  }
+
+  .item-wrapper span[p-iconfield],
+  .item-wrapper span p-iconfield {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    max-width: none;
+  }
+
+  .item-wrapper span[p-iconfield] p-floatlabel,
+  .item-wrapper span p-iconfield p-floatlabel {
+    width: 100%;
+  }
+
+  .item-wrapper span[p-iconfield] input[pInputText],
+  .item-wrapper span p-iconfield input[pInputText] {
+    width: 100%;
+  }
+
+  .filter-date-range {
+    width: 100%;
+
+    .p-col-12 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      // gap: 0.75rem;
+    }
+
+    &__inner {
+      background: rgba(92, 164, 228, 0.05);
+      border: 1px solid rgba(30, 136, 229, 0.15);
+      border-radius: 12px;
+      padding: 0.3rem 0.2rem;
+      margin: 0.3rem 0;
+      box-shadow: 1px 12px 16px rgba(30, 64, 175, 0.08);
+      flex-direction: column;
+      align-items: stretch;
+      // gap: 0.75rem;
+    }
+  }
+
+  .filter-actions {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: nowrap;
+
+    button {
+      width: auto;
+    }
+
+    .item {
+      width: auto;
+      max-width: none;
+    }
+  }
+
+  .item-wrapper {
+    flex-direction: column;
+    align-items: center;
+    // gap: 0.75rem;
+    width: 100%;
+
+    .item {
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .p-floatlabel,
+    p-iconfield,
+    button {
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .p-select,
+  .p-inputtext,
+  input[pInputText] {
+    width: 100%;
+    min-width: 0;
+  }
 }

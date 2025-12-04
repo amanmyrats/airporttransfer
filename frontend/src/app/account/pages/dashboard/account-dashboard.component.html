@@ -1,0 +1,136 @@
+<div class="dashboard">
+  <h2>{{ copy.header.welcomeBack }}, {{ user()?.first_name || user()?.email }}</h2>
+  <div class="cards">
+    <p-card [header]="copy.cards.duePayments" *ngIf="duePaymentReservations().length > 0">
+      <ng-container *ngIf="duePaymentsLoading(); else duePaymentsLoaded">
+        <p class="card-placeholder">{{ copy.placeholders.duePaymentsLoading }}</p>
+      </ng-container>
+      <ng-template #duePaymentsLoaded>
+        <ul class="reservation-list">
+          <li
+            *ngFor="let reservation of duePaymentReservations(); trackBy: trackByReservationId"
+            class="reservation-item"
+            [class.reservation-item--loading]="isCardLoading('checkout', reservation.id || reservation.number || reservation.due_currency)"
+          >
+            <button
+              type="button"
+              class="reservation-link"
+              (click)="openCheckoutReservation(reservation, $event)"
+              [attr.aria-busy]="isCardLoading('checkout', reservation.id || reservation.number || reservation.due_currency)"
+            >
+              <div class="reservation-title">{{ tripTitle(reservation) }}</div>
+              <div class="reservation-meta">
+                <span>{{ transferDateLabel(reservation) }}</span>
+                <span>
+                  • {{ paymentStatusLabel(reservation.payment_status) }}
+                  <ng-container *ngIf="dueAmountLabel(reservation) as dueLabel">
+                    • {{ copy.labels.duePrefix }} {{ dueLabel }}
+                  </ng-container>
+                </span>
+              </div>
+              <span
+                class="reservation-spinner"
+                *ngIf="isCardLoading('checkout', reservation.id || reservation.number || reservation.due_currency)"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </li>
+        </ul>
+      </ng-template>
+    </p-card>
+
+    <p-card [header]="copy.cards.passengerDetails" *ngIf="passengerReminderReservations().length > 0">
+      <ng-container *ngIf="passengerReminderLoading(); else passengerReminderLoaded">
+        <p class="card-placeholder">{{ copy.placeholders.passengerDetailsLoading }}</p>
+      </ng-container>
+      <ng-template #passengerReminderLoaded>
+        <ul class="reservation-list">
+          <li
+            *ngFor="let reservation of passengerReminderReservations(); trackBy: trackByReservationId"
+            class="reservation-item"
+            [class.reservation-item--loading]="isCardLoading('reservation', reservation.id)"
+          >
+            <button
+              type="button"
+              class="reservation-link"
+              (click)="openAccountReservation(reservation, $event, true)"
+              [attr.aria-busy]="isCardLoading('reservation', reservation.id)"
+            >
+              <div class="reservation-title">{{ tripTitle(reservation) }}</div>
+              <div class="reservation-meta">
+                <span>{{ transferDateLabel(reservation) }}</span>
+                <span>• {{ copy.placeholders.passengerNamesMissing }}</span>
+              </div>
+              <span class="reservation-spinner" *ngIf="isCardLoading('reservation', reservation.id)" aria-hidden="true"></span>
+            </button>
+          </li>
+        </ul>
+      </ng-template>
+    </p-card>
+
+    <p-card [header]="copy.cards.pendingConfirmation" *ngIf="pendingConfirmationReservations().length > 0">
+      <ng-container *ngIf="pendingLoading(); else pendingLoaded">
+        <p class="card-placeholder">{{ copy.placeholders.pendingLoading }}</p>
+      </ng-container>
+      <ng-template #pendingLoaded>
+        <ul class="reservation-list">
+          <li
+            *ngFor="let reservation of pendingConfirmationReservations(); trackBy: trackByReservationId"
+            class="reservation-item"
+            [class.reservation-item--loading]="isCardLoading('reservation', reservation.id)"
+          >
+            <button
+              type="button"
+              class="reservation-link"
+              (click)="openAccountReservation(reservation, $event)"
+              [attr.aria-busy]="isCardLoading('reservation', reservation.id)"
+            >
+              <div class="reservation-title">{{ tripTitle(reservation) }}</div>
+              <div class="reservation-meta">
+                <span>{{ transferDateLabel(reservation) }}</span>
+                <span>• {{ statusLabel(reservation.status) }}</span>
+              </div>
+              <span class="reservation-spinner" *ngIf="isCardLoading('reservation', reservation.id)" aria-hidden="true"></span>
+            </button>
+          </li>
+        </ul>
+      </ng-template>
+    </p-card>
+
+    <p-card [header]="copy.cards.upcoming" *ngIf="upcomingLoading() || upcomingReservations().length > 0">
+      <ng-container *ngIf="upcomingLoading(); else upcomingLoaded">
+        <p class="card-placeholder">{{ copy.placeholders.upcomingLoading }}</p>
+      </ng-container>
+      <ng-template #upcomingLoaded>
+        <ul class="reservation-list">
+          <li
+            *ngFor="let reservation of upcomingReservations(); trackBy: trackByReservationId"
+            class="reservation-item"
+            [class.reservation-item--loading]="isCardLoading('reservation', reservation.id)"
+          >
+            <button
+              type="button"
+              class="reservation-link"
+              (click)="openAccountReservation(reservation, $event)"
+              [attr.aria-busy]="isCardLoading('reservation', reservation.id)"
+            >
+              <div class="reservation-title">{{ tripTitle(reservation) }}</div>
+              <div class="reservation-meta">
+                <span>{{ transferDateLabel(reservation) }}</span>
+                <span>• {{ statusLabel(reservation.status) }}</span>
+              </div>
+              <span class="reservation-spinner" *ngIf="isCardLoading('reservation', reservation.id)" aria-hidden="true"></span>
+            </button>
+          </li>
+        </ul>
+      </ng-template>
+    </p-card>
+
+    <p-card [header]="copy.cards.profileCompleteness">
+      <p>
+        {{ user()?.customer_profile?.preferred_language | uppercase }} • {{ copy.labels.marketingOptIn }}:
+        {{ user()?.customer_profile?.marketing_opt_in ? copy.labels.yes : copy.labels.no }}
+      </p>
+    </p-card>
+  </div>
+</div>

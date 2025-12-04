@@ -74,7 +74,7 @@ export class PriceListComponent implements OnInit, AfterViewInit {
     effect(() => {
       const popularRoutes = this.popularRoutesSignal();
       const filteredMainLocations = this.mainLocationService.getMainLocations().filter(location =>
-        popularRoutes.some(route => route.main_location === location.code)
+        popularRoutes.some(route => this.matchesLocation(route, location.code))
       );
       this.mainLocations = filteredMainLocations;
       if (this.loadForHomePagePlaceholder) {
@@ -83,6 +83,16 @@ export class PriceListComponent implements OnInit, AfterViewInit {
         // 
       }
     });
+  }
+
+  private matchesLocation(route: any, code?: string | null): boolean {
+    if (!code) {
+      return false;
+    }
+    return route?.main_location === code
+      || route?.airport === code
+      || route?.airport_detail?.code === code
+      || route?.airport_detail?.iata_code === code;
   }
   
   ngOnInit(): void {

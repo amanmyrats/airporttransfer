@@ -15,6 +15,8 @@ import { BlogCategoryService } from '../../../admin/blogs/services/blog-category
 import { BlogService } from '../../../admin/blogs/services/blog.service';
 import { CommonService } from '../../../services/common.service';
 import { LazyLoadParams } from '../../../interfaces/custom-lazy-load-event';
+import { SUPPORTED_LANGUAGES } from '../../../constants/language.contants';
+import { Language } from '../../../models/language.model';
 
 @Component({
   selector: 'app-blog-list-public',
@@ -43,7 +45,191 @@ export class BlogListPublicComponent implements OnInit {
   blogPosts: LocalizedBlogPost[] = [];
   blogCategories: BlogCategory[] = [];
 
-  currentLanguage = { code: 'en', name: 'English', flag: 'flags/gb.svg' };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
+  translations: Record<string, Record<string, string>> = {
+    sectionAriaLabel: {
+      en: 'Blog list',
+      de: 'Blogliste',
+      ru: 'Список блогов',
+      tr: 'Blog listesi',
+    },
+    headerTitle: {
+      en: 'Travel Tips & Guides',
+      de: 'Reisetipps & Guides',
+      ru: 'Путевые советы и гиды',
+      tr: 'Seyahat İpuçları & Rehberleri',
+    },
+    headerSubtitle: {
+      en: 'Explore blogs about airport transfers, Turkish destinations, and insider travel tips.',
+      de: 'Entdecken Sie Blogs über Flughafentransfers, türkische Reiseziele und Insider-Reisetipps.',
+      ru: 'Исследуйте блоги о трансферах из аэропорта, направлениях в Турции и лайфхаках путешественников.',
+      tr: 'Havalimanı transferleri, Türkiye destinasyonları ve içeriden seyahat ipuçlarını keşfedin.',
+    },
+    categoriesAll: {
+      en: 'All',
+      de: 'Alle',
+      ru: 'Все',
+      tr: 'Tümü',
+    },
+    searchPlaceholder: {
+      en: 'Search blog posts...',
+      de: 'Blogbeiträge durchsuchen...',
+      ru: 'Поиск записей блога...',
+      tr: 'Blog yazılarında ara...',
+    },
+    searchAriaLabel: {
+      en: 'Search blog posts',
+      de: 'Blogbeiträge durchsuchen',
+      ru: 'Поиск записей блога',
+      tr: 'Blog yazılarında ara',
+    },
+    searchButton: {
+      en: 'Search',
+      de: 'Suchen',
+      ru: 'Найти',
+      tr: 'Ara',
+    },
+    clearSearch: {
+      en: 'Clear search',
+      de: 'Suche löschen',
+      ru: 'Очистить поиск',
+      tr: 'Aramayı temizle',
+    },
+    removeTag: {
+      en: 'Remove tag',
+      de: 'Tag entfernen',
+      ru: 'Убрать тег',
+      tr: 'Etiketi kaldır',
+    },
+    sortBy: {
+      en: 'Sort by',
+      de: 'Sortieren nach',
+      ru: 'Сортировать по',
+      tr: 'Sırala',
+    },
+    sortNewest: {
+      en: 'Newest',
+      de: 'Neueste',
+      ru: 'Сначала новые',
+      tr: 'En yeni',
+    },
+    sortOldest: {
+      en: 'Oldest',
+      de: 'Älteste',
+      ru: 'Сначала старые',
+      tr: 'En eski',
+    },
+    sortMostViewed: {
+      en: 'Most viewed',
+      de: 'Meistgelesen',
+      ru: 'Самые просматриваемые',
+      tr: 'En çok görüntülenen',
+    },
+    sortFeaturedFirst: {
+      en: 'Featured first',
+      de: 'Highlights zuerst',
+      ru: 'Сначала избранные',
+      tr: 'Öne çıkanlar önce',
+    },
+    hasVideo: {
+      en: 'Has video',
+      de: 'Mit Video',
+      ru: 'Есть видео',
+      tr: 'Video var',
+    },
+    clearAll: {
+      en: 'Clear all',
+      de: 'Alle löschen',
+      ru: 'Сбросить всё',
+      tr: 'Tümünü temizle',
+    },
+    filters: {
+      en: 'Filters',
+      de: 'Filter',
+      ru: 'Фильтры',
+      tr: 'Filtreler',
+    },
+    tagsAriaLabel: {
+      en: 'Tags',
+      de: 'Tags',
+      ru: 'Теги',
+      tr: 'Etiketler',
+    },
+    viewsLabel: {
+      en: 'views',
+      de: 'Aufrufe',
+      ru: 'просмотров',
+      tr: 'görüntülenme',
+    },
+    emptyState: {
+      en: 'No posts yet.',
+      de: 'Noch keine Beiträge.',
+      ru: 'Пока нет записей.',
+      tr: 'Henüz yazı yok.',
+    },
+    pagerAriaLabel: {
+      en: 'Blog pagination',
+      de: 'Blog-Seiten',
+      ru: 'Пагинация блога',
+      tr: 'Blog sayfalandırma',
+    },
+    firstPage: {
+      en: 'First page',
+      de: 'Erste Seite',
+      ru: 'Первая страница',
+      tr: 'İlk sayfa',
+    },
+    prevPage: {
+      en: 'Previous page',
+      de: 'Vorherige Seite',
+      ru: 'Предыдущая страница',
+      tr: 'Önceki sayfa',
+    },
+    nextPage: {
+      en: 'Next page',
+      de: 'Nächste Seite',
+      ru: 'Следующая страница',
+      tr: 'Sonraki sayfa',
+    },
+    lastPage: {
+      en: 'Last page',
+      de: 'Letzte Seite',
+      ru: 'Последняя страница',
+      tr: 'Son sayfa',
+    },
+    showLabel: {
+      en: 'Show',
+      de: 'Anzeigen',
+      ru: 'Показать',
+      tr: 'Göster',
+    },
+    perPageLabel: {
+      en: 'per page',
+      de: 'pro Seite',
+      ru: 'на страницу',
+      tr: 'sayfa başına',
+    },
+    pageLabel: {
+      en: 'Page',
+      de: 'Seite',
+      ru: 'Страница',
+      tr: 'Sayfa',
+    },
+    ofLabel: {
+      en: 'of',
+      de: 'von',
+      ru: 'из',
+      tr: '/',
+    },
+  };
+
+  translate(key: keyof typeof this.translations): string {
+    const dict = this.translations[key];
+    if (!dict) {
+      return '';
+    }
+    return dict[this.currentLanguage.code] ?? dict['en'] ?? '';
+  }
 
 
   searchTerm = '';
@@ -79,8 +265,10 @@ export class BlogListPublicComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] || SUPPORTED_LANGUAGES[0]!.code;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
 
 
     // read initial params if needed
@@ -154,7 +342,7 @@ export class BlogListPublicComponent implements OnInit {
   }
 
   getCategories(): void {
-    this.categoryService.getAll().subscribe({
+    this.categoryService.getAll('', this.currentLanguage.code).subscribe({
       next: (data) => {
         this.blogCategories = data?.results ?? [];
         console.log('Blog categories:', this.blogCategories);
@@ -297,7 +485,8 @@ export class BlogListPublicComponent implements OnInit {
   
   applyTag(tag: BlogTag | string) {
     const val = typeof tag === 'string' ? tag : tag.id?.toString() ?? '';
-    const name = typeof tag === 'string' ? ''  : (tag as BlogTag).name ?? '';
+    const resolvedName = typeof tag === 'string' ? ''  : (tag as BlogTag).resolved?.name ?? (tag as BlogTag).name ?? '';
+    const name = resolvedName ? resolvedName.toLowerCase() : '';
   
     // Toggle off if same tag clicked
     if (this.selectedTag === val) {
@@ -370,11 +559,11 @@ toggleHasVideo(checked: boolean) {
   this.hasVideo = checked;
   this.onSortChange(); // reuse to rebuild + reload
 }
-clearAllFilters() {
-  this.searchTerm = '';
-  this.selectedCategory = '';
-  this.selectedTag = null;
-  this.selectedTagName = null;
+  clearAllFilters() {
+    this.searchTerm = '';
+    this.selectedCategory = '';
+    this.selectedTag = null;
+    this.selectedTagName = null;
   this.ordering = '-published_at';
   this.hasVideo = false;
 
@@ -390,4 +579,13 @@ clearAllFilters() {
   });
   this.loadWithEvent();
 }
+
+  toLower(val?: string | null): string {
+    return (val || '').toString().toLowerCase();
+  }
+
+  getTagLabel(tag: BlogTag | string): string {
+    if (typeof tag === 'string') return this.toLower(tag);
+    return this.toLower(tag.resolved?.name || tag.name);
+  }
 }

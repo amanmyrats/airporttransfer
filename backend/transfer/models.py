@@ -1,7 +1,8 @@
 import logging
-
 from decimal import Decimal
+from typing import Optional
 
+from django.conf import settings
 from django.utils import timezone
 from django.db import models
 
@@ -13,11 +14,24 @@ from .utils import (
 
 logger = logging.getLogger('airporttransfer')
 
+
+class ReservationStatus(models.TextChoices):
+    DRAFT = 'draft', 'Draft'
+    AWAITING_PAYMENT = 'awaiting_payment', 'Awaiting Payment'
+    CONFIRMED = 'confirmed', 'Confirmed'
+    COMPLETED = 'completed', 'Completed'
+    CANCELLED_BY_USER = 'cancelled_by_user', 'Cancelled by User'
+    CANCELLED_BY_OPERATOR = 'cancelled_by_operator', 'Cancelled by Operator'
+    NO_SHOW = 'no_show', 'No Show'
+
+
 class Reservation(models.Model):
 
-    STATUS_CHOICES = [
-        ('pending', 'Beklemede'),
-        ('confirmed', 'Onaylandı'),
+    PAYMENT_STATUS_CHOICES = [
+        ('unpaid', 'Unpaid'),
+        ('paid', 'Paid'),
+        ('partial_refund', 'Partially Refunded'),
+        ('refunded', 'Refunded'),
     ]
 
     TRANSFER_TYPE_CHOICES = [
@@ -77,7 +91,12 @@ class Reservation(models.Model):
     greet_with_champagne = models.BooleanField(default=False)
     greet_with_flower = models.BooleanField(default=False)
     
-    status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(
+        max_length=64,
+        choices=ReservationStatus.choices,
+        default=ReservationStatus.DRAFT,
+    )
+    payment_status = models.CharField(max_length=32, choices=PAYMENT_STATUS_CHOICES, default='unpaid')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -118,6 +137,98 @@ class Reservation(models.Model):
 
     def __str__(self):
         return f"{self.transfer_date} - [{self.pickup_short}-{self.dest_short}] - {self.transfer_time}"
+
+
+class ReservationPassenger(models.Model):
+    reservation = models.ForeignKey(
+        Reservation,
+        related_name='passengers',
+        on_delete=models.CASCADE,
+    )
+    full_name = models.CharField(max_length=255)
+    is_child = models.BooleanField(default=False)
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['reservation', 'order'],
+                name='unique_passenger_order_per_reservation',
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.full_name} ({'Child' if self.is_child else 'Adult'})"
+
+
+class ReservationChangeRequestStatus(models.TextChoices):
+    PENDING_REVIEW = 'pending_review', 'Pending Review'
+    AUTO_APPROVED = 'auto_approved', 'Auto Approved'
+    AWAITING_USER_PAYMENT = 'awaiting_user_payment', 'Awaiting User Payment'
+    APPROVED_APPLIED = 'approved_applied', 'Approved & Applied'
+    DECLINED = 'declined', 'Declined'
+    EXPIRED = 'expired', 'Expired'
+    CANCELLED = 'cancelled', 'Cancelled'
+
+
+class ReservationChangeRequest(models.Model):
+    reservation = models.ForeignKey(
+        'transfer.Reservation',
+        related_name='change_requests',
+        on_delete=models.CASCADE,
+    )
+    status = models.CharField(
+        max_length=64,
+        choices=ReservationChangeRequestStatus.choices,
+        default=ReservationChangeRequestStatus.PENDING_REVIEW,
+    )
+    proposed_changes = models.JSONField(default=dict, blank=True)
+    applied_changes = models.JSONField(default=dict, blank=True)
+    pricing_delta = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    cutoff_ok = models.BooleanField(default=True)
+    requires_manual_review = models.BooleanField(default=True)
+    reason_code = models.CharField(max_length=255, blank=True)
+    idempotency_key = models.CharField(max_length=64, blank=True, null=True)
+    expires_at = models.DateTimeField(blank=True, null=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='reservation_change_requests',
+        on_delete=models.PROTECT,
+    )
+    decided_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='reservation_change_requests_decided',
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+    )
+    decided_at = models.DateTimeField(null=True, blank=True)
+    decision_reason = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['reservation', 'idempotency_key'],
+                name='unique_change_request_idempotency_key',
+                condition=models.Q(idempotency_key__isnull=False),
+            ),
+        ]
+
+    def mark_declined(self, actor, reason: Optional[str] = None) -> None:
+        self.status = ReservationChangeRequestStatus.DECLINED
+        self.decision_reason = reason or ''
+        self.decided_by = actor
+        self.decided_at = timezone.now()
+        self.save(update_fields=['status', 'decision_reason', 'decided_by', 'decided_at', 'updated_at'])
+
+    def __str__(self) -> str:
+        return f"CR#{self.pk} for Reservation {self.reservation_id} ({self.status})"
 
 
 class ContactUsMessage(models.Model):

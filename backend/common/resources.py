@@ -1,13 +1,9 @@
 import logging
 
 from import_export import resources, fields
-from import_export.widgets import (
-    DateWidget, TimeWidget, BooleanWidget, 
-)
+from import_export.widgets import BooleanWidget
 
-from .models import (
-    PopularRoute, 
-)
+from .models import PopularRoute
 
 
 logger = logging.getLogger('airporttransfer')
@@ -17,9 +13,9 @@ class PopularRouteModelResource(resources.ModelResource):
     def for_delete(self, row, instance):
         return row["delete (1)"] == "1"
         
-    main_location = fields.Field(
+    havaalani = fields.Field(
         column_name='Havaalanı',
-        attribute='main_location'
+        attribute='main_location',
     )
 
     destination = fields.Field(
@@ -46,4 +42,19 @@ class PopularRouteModelResource(resources.ModelResource):
     class Meta:
         model = PopularRoute
         import_id_fields = ('id',)
-
+        fields = (
+            'id',
+            'havaalani',
+            'destination',
+            'car_type',
+            'euro_price',
+            'delete',
+        )
+        export_order = (
+            'id',
+            'havaalani',
+            'destination',
+            'car_type',
+            'euro_price',
+            'delete',
+        )

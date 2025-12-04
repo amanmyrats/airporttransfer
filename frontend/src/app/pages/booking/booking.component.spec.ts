@@ -8,11 +8,14 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BookingComponent } from './booking.component';
 import { LanguageService } from '../../services/language.service';
 import { GoogleMapsLoaderService } from '../../services/google-maps-loader.service';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+
+const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0]!;
 
 class LanguageServiceStub {
-  currentLang = signal<any>({ code: 'en', name: 'English', flag: 'flags/gb.svg' });
+  currentLang = signal<any>({ ...DEFAULT_LANGUAGE });
   getLanguageByCode(code: string) {
-    return { code, name: 'English', flag: 'flags/gb.svg' };
+    return SUPPORTED_LANGUAGES.find((lang) => lang.code === code) ?? DEFAULT_LANGUAGE;
   }
 }
 
@@ -32,7 +35,7 @@ describe('BookingComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
-              data: { language: 'en' },
+              data: { language: DEFAULT_LANGUAGE.code },
             },
             queryParams: of({}),
             firstChild: null,

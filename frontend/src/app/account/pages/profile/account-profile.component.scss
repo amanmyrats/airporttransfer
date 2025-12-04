@@ -1,0 +1,152 @@
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid .col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &.checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+.field label {
+  font-weight: 600;
+  color: var(--text-color, #111827);
+}
+
+.error-message {
+  font-size: 0.8125rem;
+  color: var(--red-500, #dc2626);
+}
+
+@media (max-width: 576px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .grid .col,
+  .field {
+    width: 100%;
+  }
+}
+
+:host ::ng-deep {
+  .profile-form {
+    .p-inputtext,
+    .p-select,
+    .iti__tel-input,
+    .p-select .p-inputtext {
+      border-radius: 0.75rem;
+      border: 1px solid var(--surface-border, #d1d5db);
+      padding: 0.65rem 0.85rem;
+      font-size: 0.9375rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .p-inputtext:focus,
+    .p-select .p-inputtext:focus,
+    .iti__tel-input:focus {
+      border-color: var(--primary-color, #0ea5e9);
+      box-shadow: 0 0 0 0.1rem rgba(14, 165, 233, 0.15);
+    }
+
+    .iti {
+      width: 100%;
+    }
+
+    .iti__flag-container {
+      border-radius: 0.75rem 0 0 0.75rem;
+      // background-color: var(--surface-100, #f3f4f6);
+      border: 1px solid var(--surface-border, #d1d5db);
+      border-right: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .iti__flag-container:hover,
+    .iti__flag-container:focus-visible {
+      border-color: var(--primary-color, #0ea5e9);
+    }
+
+    .iti__selected-flag {
+      padding: 0 0.85rem;
+      // background-color: transparent;
+    }
+
+    .iti__tel-input {
+      width: 100%;
+      border-left: none;
+      border-radius: 0 0.75rem 0.75rem 0;
+      // background-color: var(--surface-card, #fff);
+    }
+
+    .iti--separate-dial-code .iti__selected-dial-code {
+      color: var(--text-color, #111827);
+      font-weight: 600;
+    }
+
+    .iti__country-list {
+      border-radius: 0.75rem;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+      max-height: 16rem;
+      overflow-y: auto;
+    }
+
+    .iti__search-input {
+      border-radius: 0.65rem;
+      border: 1px solid var(--surface-border, #d1d5db);
+      padding: 0.45rem 0.75rem;
+      margin: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .iti__search-input:focus {
+      outline: none;
+      border-color: var(--primary-color, #0ea5e9);
+      box-shadow: 0 0 0 0.05rem rgba(14, 165, 233, 0.25);
+    }
+
+    .p-select {
+      width: 100%;
+    }
+
+    .p-select .p-select-label {
+      padding: 0;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .field label {
+    color: rgba(226, 232, 240, 0.92);
+  }
+
+  .field.checkbox label {
+    color: rgba(226, 232, 240, 0.92);
+  }
+}
+
+:host-context(.dark) {
+  .field label,
+  .field.checkbox label {
+    color: rgba(226, 232, 240, 0.92);
+  }
+}

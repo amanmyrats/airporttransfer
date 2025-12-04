@@ -44,4 +44,10 @@
           <img src="images/icons/download.svg" alt="Download Icon" width="16" height="16" />
         </ng-template>
   </p-button>
+
+  <p-button *ngIf="wantChangeRequest && hasPermission(changeRequestRole)"
+      icon="pi pi-refresh" label="Değişiklik"
+      severity="help"
+      (click)="onChangeRequest()">
+  </p-button>
 </div>

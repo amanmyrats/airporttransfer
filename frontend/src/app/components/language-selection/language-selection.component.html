@@ -14,29 +14,16 @@
     <!-- Dropdown Menu -->
     <ul class="dropdown-menu" [class.show]="isDropdownVisible">
       <li
-        *ngFor="let lang of supportedLanguages"
+        *ngFor="let lang of supportedLanguages; trackBy: trackByLang"
         class="dropdown-item" 
         (click)="onLanguageSelect(lang)"
       >
-      @if (lang.code) {
-        <a [href]="lang.code + getTranslatedUrlWithoutLang(lang.code)" [attr.aria-label]="'Switch to ' + lang.name">
-          <!-- <a [href]="lang.code" [attr.aria-label]="'Switch to ' + lang.name"> -->
+        <a [href]="buildLanguageHref(lang.code)" [attr.aria-label]="'Switch to ' + lang.name">
           <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" 
-          style="width: 20px; height: 15px;"
+            style="width: 20px; height: 15px;"
           />
           {{ lang.name }}
         </a>
-
-      } @else {
-        <a [href]="lang.code + getTranslatedUrlWithoutLang(lang.code) + '/'" [attr.aria-label]="'Switch to ' + lang.name">
-          <!-- <a [href]="lang.code" [attr.aria-label]="'Switch to ' + lang.name"> -->
-          <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="flag-icon" 
-          style="width: 20px; height: 15px;"
-          />
-          {{ lang.name }}
-        </a>
-
-      }
       </li>
     </ul>
   </div>

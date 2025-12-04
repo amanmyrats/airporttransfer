@@ -1,33 +1,29 @@
-import { effect, Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SUPPORTED_LANGUAGES } from '../constants/language.contants';
+import { LanguageCode, SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGE_CODES } from '../constants/language.contants';
 import { Language } from '../models/language.model';
 import { isPlatformBrowser } from '@angular/common';
+import { AuthService } from '../auth/services/auth.service';
+
+const DEFAULT_LANGUAGE: Language = { ...SUPPORTED_LANGUAGES.find((lang) => lang.code === 'en')! };
 
 @Injectable({
   providedIn: 'root',
 })
 export class LanguageService {
-  private languages: Language[] = SUPPORTED_LANGUAGES;
+  private languages: Language[] = SUPPORTED_LANGUAGES.map((lang) => ({ ...lang }));
   private storageKey = 'selectedLanguage'; // Key for local storage
 
   // Signal for the current language
-  currentLang = signal<any>(
-    this.getStoredLanguage() || 
-    // this.detectLanguageFromRoute() || 
-    SUPPORTED_LANGUAGES.find((lang) => lang.code === 'en')!
-  );
+  currentLang = signal<Language>(DEFAULT_LANGUAGE);
 
   constructor(
     private route: ActivatedRoute, 
     private router: Router, 
+    private authService: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object, 
   ) {
-    // effect(() => {
-    //   console.log('Triggered currentLang() effect in language service');
-    //   console.log('new lang:', this.currentLang());
-    //   this.setLanguage(this.currentLang().code);
-    // });
+    this.initializeLanguage();
   }
 
   /**
@@ -38,7 +34,7 @@ export class LanguageService {
     const selectedLang = SUPPORTED_LANGUAGES.find((lang) => lang.code === langCode);
 
     if (selectedLang) {
-      // this.currentLang.set(selectedLang); // Update the signal value
+      this.currentLang.set({ ...selectedLang }); // Update the signal value
       this.storeLanguage(langCode); // Persist the selected language
       // console.log('setLanguage was called: ', langCode);
       console.log('alreadyNavigated: ', alreadyNavigated);
@@ -122,6 +118,38 @@ export class LanguageService {
     return language ? language.name : undefined;
   }
 
+  extractLangFromUrl(url: string): LanguageCode | null {
+    if (!url) {
+      return null;
+    }
+    const clean = url.split('?')[0];
+    const segment = clean.split('/').filter(Boolean)[0];
+    return SUPPORTED_LANGUAGE_CODES.includes(segment as LanguageCode)
+      ? (segment as LanguageCode)
+      : null;
+  }
+
+  withLangPrefix(path: string, lang?: string | null): string {
+    const normalized = path.replace(/^\/+/, '');
+    // console.log('withLangPrefix called with path:', path, 'and lang:', lang);
+    if (lang && SUPPORTED_LANGUAGE_CODES.includes(lang as LanguageCode)) {
+      // console.log('Returning: ', `/${lang}/${normalized}`.replace(/\/+/g, '/'))
+      return `/${lang}/${normalized}`.replace(/\/+/g, '/');
+    }
+    // console.log('Returning: ', `/${normalized}`.replace(/\/+/g, '/'))
+    return `/${normalized}`.replace(/\/+/g, '/');
+  }
+
+  commandsWithLang(lang: string | null, ...segments: string[]): any[] {
+    const normalized = segments.map(segment =>
+      segment.replace(/^\/+/g, '').replace(/\/+$/g, ''),
+    );
+    if (lang && SUPPORTED_LANGUAGE_CODES.includes(lang as LanguageCode)) {
+      return ['/', lang, ...normalized];
+    }
+    return ['/', ...normalized];
+  }
+
   /**
    * Store the selected language in local storage.
    * @param langCode - The language code to store.
@@ -143,6 +171,56 @@ export class LanguageService {
       return SUPPORTED_LANGUAGES.find((lang) => lang.code === langCode);
     }
     return undefined; // Avoid accessing signal here during SSR
-  }    
+  }
 
+  /**
+   * Resolve language preference order and bootstrap the current language.
+   * Priority: URL -> authenticated user preference -> local storage -> default
+   */
+  private initializeLanguage(): void {
+    const urlLangCode = this.extractLangFromUrl(this.router.url);
+    const initialLanguage =
+      this.detectLanguageFromUrlString(this.router.url) ??
+      this.getUserPreferredLanguage() ??
+      this.getStoredLanguage() ??
+      DEFAULT_LANGUAGE;
+
+    this.currentLang.set(initialLanguage);
+    this.storeLanguage(initialLanguage.code);
+
+    if (
+      this.isBrowser() &&
+      this.isRootUrl(this.router.url) &&
+      !urlLangCode &&
+      initialLanguage.code !== DEFAULT_LANGUAGE.code
+    ) {
+      this.router.navigate([`${initialLanguage.code}/`]);
+    }
+  }
+
+  private detectLanguageFromUrlString(url: string): Language | undefined {
+    const langCode = this.extractLangFromUrl(url);
+    return langCode ? this.getLanguageByCode(langCode) : undefined;
+  }
+
+  private getUserPreferredLanguage(): Language | undefined {
+    try {
+      const user = this.authService.user?.();
+      const preferred =
+        user?.customer_profile?.preferred_language ??
+        user?.profile?.preferred_language;
+      return preferred ? this.getLanguageByCode(preferred) : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+
+  private isRootUrl(url: string): boolean {
+    const normalized = (url ?? '').trim();
+    return normalized === '' || normalized === '/';
+  }
+
+  private isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
 }

@@ -25,6 +25,7 @@ import { MessageModule } from 'primeng/message';
 import { ToastModule } from "primeng/toast";
 import { HttpErrorPrinterService } from '../../../../services/http-error-printer.service';
 import { PaginatedResponse } from '../../../../models/paginated-response.model';
+import { SUPPORTED_LANGUAGES } from '../../../../constants/language.contants';
 
 
 @Component({
@@ -59,12 +60,10 @@ export class BlogPostFormComponent implements OnInit {
 
   isTagLoading: boolean = false;
 
-  languages = [
-    { code: 'en', label: 'English' },
-    { code: 'de', label: 'German' },
-    { code: 'ru', label: 'Russian' },
-    { code: 'tr', label: 'Turkish' }
-  ];
+  languages = SUPPORTED_LANGUAGES.map(({ code, name }) => ({
+    code,
+    label: name,
+  }));
 
   categories: BlogCategory[] = [];
 

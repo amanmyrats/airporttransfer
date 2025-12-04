@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-whatsapp-popup',
@@ -17,7 +19,7 @@ export class WhatsappPopupComponent implements OnInit, OnDestroy {
   @Input() soundOnShow: boolean = false;
   @Input() position: 'bottom-right' | 'top-left' | 'center' = 'bottom-right';
   @Input() popupId: string = 'default';
-  @Input() currentLanguage: any = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
+  @Input() currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
   @Input() scrollThreshold = 0.45;
 
   socialIcons = SOCIAL_ICONS;
@@ -82,7 +84,7 @@ export class WhatsappPopupComponent implements OnInit, OnDestroy {
     if (!this.isBrowser) {
       return `whatsapp_popup_hide_until_${this.popupId}`;
     }
-    const lang = this.currentLanguage?.code ?? 'en';
+    const lang = this.currentLanguage?.code ?? SUPPORTED_LANGUAGES[0]!.code;
     const path = window.location?.pathname?.replace(/[^a-zA-Z0-9]+/g, '-') ?? 'root';
     return `whatsapp_popup_hide_until_${this.popupId}_${lang}_${path}`;
   }

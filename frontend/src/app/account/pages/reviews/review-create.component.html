@@ -1,0 +1,71 @@
+<p-toast></p-toast>
+
+<p-card class="review-form">
+  <ng-template pTemplate="header">
+    <h1>Write a review</h1>
+    <p class="review-form__caption">
+      Reservation ID: <strong>{{ reservationId() ?? 'unknown' }}</strong>
+    </p>
+  </ng-template>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="review-form__body">
+    <fieldset class="review-form__rating" [attr.aria-required]="true">
+      <legend>Rating</legend>
+      <div class="review-form__rating-stars">
+        <p-rating
+          formControlName="rating"
+          [stars]="5"
+          [readonly]="submitting()"
+        ></p-rating>
+        <span class="review-form__rating-value">{{ form.controls.rating.value }} / 5</span>
+      </div>
+      <div class="review-form__validation" *ngIf="form.controls.rating.invalid && form.controls.rating.touched">
+        Please select a rating between 1 and 5.
+      </div>
+    </fieldset>
+
+    <label class="review-form__field">
+      <span>Title <small>(optional, up to {{ titleMaxLength() }} characters)</small></span>
+      <input
+        pInputText
+        type="text"
+        formControlName="title"
+        [maxlength]="titleMaxLength()"
+      />
+      <div class="review-form__validation" *ngIf="form.controls.title.invalid && form.controls.title.touched">
+        Title must be at most {{ titleMaxLength() }} characters.
+      </div>
+    </label>
+
+    <label class="review-form__field">
+      <span>Comment <small>(optional, up to {{ commentMaxLength() }} characters)</small></span>
+      <textarea
+        pTextarea
+        rows="6"
+        formControlName="comment"
+        [maxlength]="commentMaxLength()"
+      ></textarea>
+      <div class="review-form__meta">{{ commentCharsLeft() }} characters left</div>
+      <div class="review-form__validation" *ngIf="form.controls.comment.invalid && form.controls.comment.touched">
+        Comment must be at most {{ commentMaxLength() }} characters.
+      </div>
+    </label>
+
+    <div class="review-form__actions">
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        class="p-button-text"
+        (click)="cancel()"
+        [disabled]="submitting()"
+      ></button>
+      <button
+        pButton
+        type="submit"
+        label="Submit review"
+        [loading]="submitting()"
+      ></button>
+    </div>
+  </form>
+</p-card>

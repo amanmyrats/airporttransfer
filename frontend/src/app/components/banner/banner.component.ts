@@ -4,6 +4,8 @@ import { BookingBannerFormComponent } from '../booking-banner-form/booking-banne
 import { BookingBannerFormPlaceholderComponent } from '../booking-banner-form-placeholder/booking-banner-form-placeholder.component';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SOCIAL_ICONS } from '../../constants/social.constants';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-banner',
@@ -20,12 +22,12 @@ export class BannerComponent implements OnInit {
   socialIcons = SOCIAL_ICONS;
   private router! : Router;
   isBrowser: boolean;
-  currentLanguage = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
 
   constructor(@Inject(PLATFORM_ID) private platformId: any, 
     private route: ActivatedRoute, 
     
-) {
+  ) {
     if (typeof window !== 'undefined') {
       this.router = inject(Router);
     }
@@ -33,8 +35,10 @@ export class BannerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] as string | undefined;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
   }
 
   getTranslation(key: string): string {

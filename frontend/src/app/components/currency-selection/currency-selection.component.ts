@@ -2,6 +2,11 @@ import { Component, effect, inject, OnInit } from '@angular/core';
 import { SUPPORTED_CURRENCIES } from '../../constants/currency.constants';
 import { CommonModule } from '@angular/common';
 import { CurrencyService } from '../../services/currency.service';
+import { Currency } from '../../models/currency.model';
+
+const DEFAULT_CURRENCY_SELECTION: Currency = {
+  ...(SUPPORTED_CURRENCIES.find((currency) => currency.code === 'EUR') ?? SUPPORTED_CURRENCIES[0]),
+};
 
 @Component({
   selector: 'app-currency-selection',
@@ -12,8 +17,8 @@ import { CurrencyService } from '../../services/currency.service';
   styleUrls: ['./currency-selection.component.scss'],
 })
 export class CurrencySelectionComponent implements OnInit {
-  supportedCurrencies: any = SUPPORTED_CURRENCIES;
-  selectedCurrency: any = { name: 'Euro', code: 'EUR', symbol: '€' };
+  supportedCurrencies: Currency[] = SUPPORTED_CURRENCIES.map((currency) => ({ ...currency }));
+  selectedCurrency: Currency = { ...DEFAULT_CURRENCY_SELECTION };
   isDropdownVisible = false; // Tracks the visibility of the dropdown menu
   currencyService!: CurrencyService;
   
@@ -38,7 +43,7 @@ export class CurrencySelectionComponent implements OnInit {
    * Handles currency selection and closes the dropdown menu
    * @param currency - The selected currency object
    */
-  onCurrencySelect(currency: any): void {
+  onCurrencySelect(currency: Currency): void {
     this.currencyService.setCurrency(currency.code); // Update the currency via service
     this.isDropdownVisible = false; // Close the dropdown menu
   }

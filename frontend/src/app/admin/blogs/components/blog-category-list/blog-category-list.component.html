@@ -9,14 +9,34 @@
       <tr>
         <th>Name</th>
         <th>Slug</th>
+        <th>Translations</th>
         <th style="width: 220px;">Actions</th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-cat>
       <tr>
-        <td>{{ cat.name }}</td>
-        <td>{{ cat.slug }}</td>
+        <td>{{ cat.resolved?.name || cat.name }}</td>
+        <td>{{ cat.resolved?.slug || cat.slug }}</td>
+        <td>
+          <div class="translation-chips">
+            <button
+              *ngFor="let tx of cat.translations"
+              type="button"
+              pButton
+              class="p-button-text p-button-sm"
+              [label]="(tx.language || '').toUpperCase() + ': ' + (tx.name || '—')"
+              (click)="openTranslation(cat, tx)">
+            </button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-plus"
+              class="p-button-text p-button-sm"
+              (click)="openTranslation(cat, null)">
+            </button>
+          </div>
+        </td>
         <td class="actions">
           <button pButton icon="pi pi-pencil" label="Edit" class="p-button-sm p-button-text" (click)="openEdit(cat)"></button>
           <button pButton icon="pi pi-trash" label="Delete" class="p-button-sm p-button-danger p-button-text" (click)="confirmDelete(cat)"></button>

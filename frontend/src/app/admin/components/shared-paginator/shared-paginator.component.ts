@@ -13,6 +13,7 @@ export class SharedPaginatorComponent implements OnInit{
   @Input() first: number = 0;
   @Input() rows: number = env.pagination.defaultPageSize;
   @Input() totalRecords: number = 0;
+  @Input() rowsPerPageOptions: number[] = [10, 20, 50, 100, 200, 500, 1000];
 
   @Output() onPageChangeEmitter: EventEmitter<any> = new EventEmitter();
 

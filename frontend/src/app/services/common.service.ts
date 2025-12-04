@@ -78,4 +78,59 @@ export class CommonService {
   //   return `?page=${event.page ? event.page : 1}&page_size=${event.page_size}&ordering=${event.ordering}${filter}`;
   // }
 
+  /**
+   * Parse a query string into a plain object.
+   * Supports repeated keys by collecting values into arrays.
+   */
+  public parseQueryParams(queryString: string): Record<string, string | string[]> {
+    if (!queryString) {
+      return {};
+    }
+    const trimmed = queryString.startsWith('?') ? queryString.slice(1) : queryString;
+    if (!trimmed) {
+      return {};
+    }
+    const params = new URLSearchParams(trimmed);
+    const result: Record<string, string | string[]> = {};
+    params.forEach((value, key) => {
+      if (result[key] === undefined) {
+        result[key] = value;
+      } else if (Array.isArray(result[key])) {
+        (result[key] as string[]).push(value);
+      } else {
+        result[key] = [result[key] as string, value];
+      }
+    });
+    return result;
+  }
+
+  /**
+   * Build a query string from an object.
+   * Falsy values (empty string, null, undefined) are removed.
+   */
+  public toQueryString(
+    params: Record<string, string | number | boolean | (string | number | boolean)[] | null | undefined>,
+    includeQuestionMark: boolean = true,
+  ): string {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === '') {
+        return;
+      }
+      if (Array.isArray(value)) {
+        value.forEach(item => {
+          if (item !== undefined && item !== null && item !== '') {
+            searchParams.append(key, String(item));
+          }
+        });
+        return;
+      }
+      searchParams.set(key, String(value));
+    });
+    const serialized = searchParams.toString();
+    if (!serialized) {
+      return '';
+    }
+    return includeQuestionMark ? `?${serialized}` : serialized;
+  }
 }

@@ -7,6 +7,8 @@ import { CommonModule } from '@angular/common';
 import { BLOGS } from '../../blog-content';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 import { Meta, Title } from '@angular/platform-browser';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-blogs',
@@ -21,11 +23,7 @@ import { Meta, Title } from '@angular/platform-browser';
 })
 export class BlogsComponent implements OnInit {
   navbarMenu: any = NAVBAR_MENU;
-  currentLanguage: any = {
-    code: 'en',
-    name: 'English',
-    flag: 'flags/gb.svg',
-  };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
   blogItems: any = BLOGS;
 
   constructor(
@@ -35,8 +33,10 @@ export class BlogsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] as string | undefined;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
     this.setMetaTags(this.currentLanguage.code);
   }
 
@@ -60,7 +60,8 @@ export class BlogsComponent implements OnInit {
       }
     };
     
-    const meta: any = metaTags[langCode] || metaTags['en'];
+    const fallbackCode = SUPPORTED_LANGUAGES[0]!.code;
+    const meta: any = metaTags[langCode] || metaTags[fallbackCode];
     this.title.setTitle(meta.title);
     this.meta.updateTag({ name: 'description', content: meta.description });
   }

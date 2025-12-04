@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.contrib.auth.models import UserManager
 
 
 class UserManager(BaseUserManager):
@@ -14,22 +13,21 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, first_name, password=None, **extra_fields):
-        # extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('role', 'company_admin')
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        # if extra_fields.get('is_active') is not True:
-        #     raise ValueError('Superuser must have is_active=True.')
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self.create_user(email, first_name, password, **extra_fields)
-    
+
 
 class Account(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
+        ('client', 'Client'),
         ('company_admin', 'Admin'),
         ('company_yonetici', 'Yönetici'),
         ('company_rezervasyoncu', 'Rezervasyoncu'),
@@ -40,6 +38,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
+    is_client = models.BooleanField(default=False, db_index=True)
+    is_company_user = models.BooleanField(default=False, db_index=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -52,7 +52,19 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.email} - {self.first_name}"
-    
+
+
+class CustomerProfile(models.Model):
+    user = models.OneToOneField('accounts.Account', on_delete=models.CASCADE, related_name='customer_profile')
+    phone_e164 = models.CharField(max_length=20, blank=True)
+    preferred_language = models.CharField(max_length=2, default='en')
+    marketing_opt_in = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"CustomerProfile({self.user_id})"
+
 
 class UserColumn(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)

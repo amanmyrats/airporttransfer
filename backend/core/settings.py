@@ -27,20 +27,40 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables from .env file
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
+
+def env_list(name: str, default: str = '') -> list[str]:
+    value = os.getenv(name, default)
+    if not value:
+        return []
+    return [item.strip() for item in value.split(',') if item.strip()]
+
+
+def env_int(name: str, default: int | None = None) -> int | None:
+    value = os.getenv(name)
+    if value in (None, ''):
+        return default
+    try:
+        return int(value)
+    except ValueError:
+        return default
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', os.getenv('SECRET_KEY', ''))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = os.getenv('DJANGO_DEBUG', os.getenv('DEBUG', 'False')).lower() == 'true'
 
-ALLOWED_HOSTS = [
-    '*', 
-    'backend.airporttransfer.transfertakip.com', 
-    'dev.backend.airporttransferhub.com',
-]
+ALLOWED_HOSTS = env_list('ALLOWED_HOSTS')
+if not ALLOWED_HOSTS:
+    ALLOWED_HOSTS = [
+        'backend.airporttransfer.transfertakip.com',
+        'dev.backend.airporttransferhub.com',
+        'localhost',
+        '127.0.0.1',
+    ]
 
 
 AUTH_USER_MODEL = 'accounts.Account'
@@ -54,19 +74,32 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.postgres',
     'storages', 
 
     'corsheaders',
 
     'rest_framework',
+    'drf_spectacular',
+    'rest_framework_simplejwt.token_blacklist',
     'django_filters',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.apple',
 
-    'authentication',
-    'accounts', 
+    'authentication.apps.AuthenticationConfig',
+    'accounts.apps.AccountsConfig', 
     'common', 
     'transfer', 
 
     'blog.apps.BlogConfig', 
+    'payment.apps.PaymentConfig',
+    'reviews.apps.ReviewsConfig',
 
 ]
 
@@ -77,6 +110,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -86,7 +120,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -108,11 +142,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRESQL_DB_NAME'),
-        'USER': os.getenv('POSTGRESQL_USER'),
-        'PASSWORD': os.getenv('POSTGRESQL_PASSWORD'),
-        'HOST': os.getenv('POSTGRESQL_HOST'),
-        'PORT': os.getenv('POSTGRESQL_PORT'),
+        'NAME': os.getenv('DB_NAME', os.getenv('POSTGRESQL_DB_NAME')),
+        'USER': os.getenv('DB_USER', os.getenv('POSTGRESQL_USER')),
+        'PASSWORD': os.getenv('DB_PASSWORD', os.getenv('POSTGRESQL_PASSWORD')),
+        'HOST': os.getenv('DB_HOST', os.getenv('POSTGRESQL_HOST', 'localhost')),
+        'PORT': env_int('DB_PORT', env_int('POSTGRESQL_PORT', 5432)) or 5432,
     }
     # 'default': {
     #     'ENGINE': 'django.db.backends.sqlite3',
@@ -126,16 +160,10 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'OPTIONS': {
+            'min_length': env_int('AUTH_PASSWORD_MIN_LENGTH', 5) or 5,
+        },
     },
 ]
 
@@ -150,41 +178,32 @@ USE_I18N = True
 USE_TZ = True
 TIME_ZONE = 'Europe/Istanbul'
 
-CORS_ALLOW_ALL_ORIGINS = True
-
-CORS_ALLOW_METHODS = [
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-    "OPTIONS",
-]
-
-# CORS_ALLOW_HEADERS = [
-#     "Content-type",
-#     "Authorization",
-#     "x-csrftoken",
-#     "accept",
-#     "origin",
-#     "user-agent",
-# ]
+CORS_ALLOWED_ORIGINS = env_list('CORS_ALLOWED_ORIGINS')
+if not CORS_ALLOWED_ORIGINS and DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        'http://localhost:3000',
+        'http://localhost:4200',
+        'http://localhost:5173',
+    ]
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = list(default_methods)
 CORS_ALLOW_HEADERS = list(default_headers) + [
-    "authorization",     # lower-case
-    "x-language",        # you use this
-    "x-requested-with",
-    "x-csrftoken",
+    'authorization',
+    'x-language',
+    'x-requested-with',
+    'x-csrftoken',
 ]
-CSRF_TRUSTED_ORIGINS = [
-    "https://dev.airporttransferhub.com",
-    # "https://admin.airporttransferhub.com",
-]
+CSRF_TRUSTED_ORIGINS = env_list('CSRF_TRUSTED_ORIGINS')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
 
         'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
     ),
     'EXCEPTION_HANDLER': 'core.utils.custom_exception_handler',
     'DEFAULT_FILTER_BACKENDS': (
@@ -194,30 +213,92 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'core.pagination.CustomPageNumberPagination',
     'PAGE_SIZE': 50,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_THROTTLE_RATES': {
+        'auth_burst': '10/min',
+        'auth_sensitive': '5/min',
+        'payment_intent_create': '5/min',
+        'payment_intent_confirm': '10/min',
+    },
 }
 
+ACCESS_TOKEN_LIFETIME_DAYS = env_int('ACCESS_TOKEN_LIFETIME_DAYS', 30) or 30
+REFRESH_TOKEN_LIFETIME_DAYS = env_int('REFRESH_TOKEN_LIFETIME_DAYS', 180) or 180
+
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=ACCESS_TOKEN_LIFETIME_DAYS),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=REFRESH_TOKEN_LIFETIME_DAYS),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
 }
 
-JWT_AUTH_USER_SERIALIZER = 'authentication.serializers.CustomTokenUserSerializer'
+
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'info@airporttransferhub.com')
+
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST_AIRPORTTRANSFERHUB', os.getenv('EMAIL_HOST', ''))
+EMAIL_PORT = env_int('EMAIL_PORT_AIRPORTTRANSFERHUB', env_int('EMAIL_PORT', 587)) or 587
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS_AIRPORTTRANSFERHUB', os.getenv('EMAIL_USE_TLS', 'true')).lower() == 'true'
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL_AIRPORTTRANSFERHUB', os.getenv('EMAIL_USE_SSL', 'false')).lower() == 'true'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER_AIRPORTTRANSFERHUB', os.getenv('EMAIL_HOST_USER', ''))
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD_AIRPORTTRANSFERHUB', os.getenv('EMAIL_HOST_PASSWORD', ''))
+EMAIL_TIMEOUT = env_int('EMAIL_TIMEOUT', 10) or 10
+
+SITE_ID = env_int('SITE_ID', 1) or 1
+
+AUTH_FRONTEND_URL = os.getenv('AUTH_FRONTEND_URL')
+if not AUTH_FRONTEND_URL and CORS_ALLOWED_ORIGINS:
+    AUTH_FRONTEND_URL = CORS_ALLOWED_ORIGINS[0]
 
 
-DEFAULT_FROM_EMAIL = 'info@airporttransferhub.com'
+DEFAULT_LANGUAGE = 'en'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST_AIRPORTTRANSFERHUB')
-EMAIL_PORT = os.getenv('EMAIL_PORT_AIRPORTTRANSFERHUB')
-# EMAIL_USE_TLS = True
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER_AIRPORTTRANSFERHUB')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD_AIRPORTTRANSFERHUB')
+FRONTEND_URL = AUTH_FRONTEND_URL or (
+    'http://localhost:4200' if DEBUG else 'https://airporttransferhub.com'
+)
+BACKEND_URL = os.getenv(
+    'BACKEND_URL',
+    'http://localhost:8000' if DEBUG else 'https://backend.airporttransfer.transfertakip.com',
+)
+
+AUTH_EMAIL_TOKEN_MAX_AGE = env_int('AUTH_EMAIL_TOKEN_MAX_AGE', 60 * 60 * 24) or 60 * 60 * 24
+AUTH_PASSWORD_RESET_TOKEN_MAX_AGE = env_int('AUTH_PASSWORD_RESET_TOKEN_MAX_AGE', 60 * 60 * 2) or 60 * 60 * 2
+PASSWORD_RESET_TIMEOUT = AUTH_PASSWORD_RESET_TOKEN_MAX_AGE
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_RATE_LIMITS = {
+    'login_failed': {
+        'limit': env_int('ACCOUNT_LOGIN_ATTEMPTS_LIMIT', 5) or 5,
+        'timeout': env_int('ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT', 300) or 300,
+    },
+}
+
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'ath_access',
+    'JWT_AUTH_REFRESH_COOKIE': 'ath_refresh',
+    'TOKEN_MODEL': None,
+}
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.AuthUserSerializer',
+}
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'accounts.serializers.RegisterSerializer',
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -298,17 +379,6 @@ LOGGING = {
     },
 }
 
-if DEBUG:
-    FRONTEND_URL = 'http://localhost:4200'
-    BACKEND_URL = 'http://localhost:8000'
-    DEFAULT_LANGUAGE = "en"
-
-else:
-    FRONTEND_URL = 'https://airporttransferhub.com'
-    BACKEND_URL = 'https://backend.airporttransfer.transfertakip.com'
-    DEFAULT_LANGUAGE = "en"
-
-
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
@@ -358,4 +428,34 @@ CACHES = {
         },
         "KEY_PREFIX": "ath",         # short, unique prefix
     },
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "AirportTransferHub API",
+    "DESCRIPTION": "API schema for AirportTransferHub including payment module.",
+    "VERSION": "1.0.0",
+}
+
+PAYMENT_ENABLE_CARD = os.getenv("PAYMENT_ENABLE_CARD", "true").lower() == "true"
+PAYMENT_OFFLINE_CHANNELS = env_list(
+    "PAYMENT_OFFLINE_CHANNELS",
+    default="CASH,BANK_TRANSFER,RUB_PHONE_TRANSFER",
+)
+PAYMENT_STRIPE_SECRET_KEY = os.getenv("PAYMENT_STRIPE_SECRET_KEY")
+PAYMENT_STRIPE_PUBLISHABLE_KEY = os.getenv("PAYMENT_STRIPE_PUBLISHABLE_KEY")
+PAYMENT_STRIPE_WEBHOOK_SECRET = os.getenv("PAYMENT_STRIPE_WEBHOOK_SECRET")
+PAYMENT_STRIPE_API_VERSION = os.getenv("PAYMENT_STRIPE_API_VERSION", "2023-10-16")
+PAYMENT_OFFLINE_MAX_FILE_SIZE = env_int("PAYMENT_OFFLINE_MAX_FILE_SIZE", 5 * 1024 * 1024)
+PAYMENT_BANK_TRANSFER_INSTRUCTIONS = {
+    "iban": os.getenv("PAYMENT_BANK_IBAN", ""),
+    "account_name": os.getenv("PAYMENT_BANK_ACCOUNT_NAME", ""),
+    "bank_name": os.getenv("PAYMENT_BANK_NAME", ""),
+    "reference_text": os.getenv("PAYMENT_BANK_REFERENCE", ""),
+}
+
+PAYMENT_RUB_PHONE_TRANSFER_INSTRUCTIONS = {
+    "phone_number": os.getenv("PAYMENT_RUB_PHONE_NUMBER", ""),
+    "account_name": os.getenv("PAYMENT_RUB_ACCOUNT_NAME", ""),
+    "bank_name": os.getenv("PAYMENT_RUB_BANK_NAME", ""),
+    "reference_text": os.getenv("PAYMENT_RUB_REFERENCE", ""),
 }

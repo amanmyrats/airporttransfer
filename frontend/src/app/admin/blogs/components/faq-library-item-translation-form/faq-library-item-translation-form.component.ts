@@ -13,8 +13,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { HttpErrorPrinterService } from '../../../../services/http-error-printer.service';
 import { FaqLibraryItemTranslationService } from '../../services/faq-library-item-translation.service';
 import { FaqLibraryItemTranslation } from '../../models/faq-library-item-translation.model';
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES, SUPPORTED_LANGUAGES } from '../../../../constants/language.contants';
 
-type LangOption = { label: string; value: string };
+type LangOption = { label: string; value: LanguageCode };
 
 @Component({
   selector: 'app-faq-library-item-translation-form',
@@ -48,12 +49,11 @@ export class FaqLibraryItemTranslationFormComponent implements OnInit {
   translation: FaqLibraryItemTranslation | null = null;
   preferredLanguage: string | null = null;
 
-  languages: LangOption[] = [
-    { label: 'English', value: 'en' },
-    { label: 'Deutsch', value: 'de' },
-    { label: 'Russian', value: 'ru' },
-    { label: 'Turkish', value: 'tr' },
-  ];
+  languages: LangOption[] = SUPPORTED_LANGUAGES.map(({ name, code }) => ({
+    label: name,
+    value: code,
+  }));
+  private readonly fallbackLanguage: LanguageCode = SUPPORTED_LANGUAGE_CODES[0]!;
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -84,7 +84,7 @@ export class FaqLibraryItemTranslationFormComponent implements OnInit {
       // Create new translation
       this.form.patchValue({
         item: this.faqItemId || null,
-        language: (this.preferredLanguage || 'en').toLowerCase(),
+        language: (this.preferredLanguage || this.fallbackLanguage).toLowerCase(),
       });
     }
   }
@@ -92,7 +92,7 @@ export class FaqLibraryItemTranslationFormComponent implements OnInit {
   private langValidator = (c: any) => {
     const v = (c?.value ?? '').toString().toLowerCase();
     if (!v) return { required: true };
-    return ['en', 'de', 'ru', 'tr'].includes(v) ? null : { lang: true };
+    return SUPPORTED_LANGUAGE_CODES.includes(v as LanguageCode) ? null : { lang: true };
   };
 
   submit(): void {

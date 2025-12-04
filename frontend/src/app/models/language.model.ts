@@ -1,5 +1,8 @@
+import { LanguageCode } from '../constants/language.contants';
+
 export class Language {
-    code?: string;
-    name?: string;
-    flag?: string;
+  code!: LanguageCode;
+  name!: string;
+  flag!: string;
+  url?: string;
 }

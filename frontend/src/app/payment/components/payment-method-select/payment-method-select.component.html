@@ -1,0 +1,15 @@
+<section class="method-select">
+  <h2>{{ copy.heading }}</h2>
+  <ul class="method-list">
+    <li *ngFor="let method of methods; trackBy: trackByMethod">
+      <button
+        type="button"
+        (click)="onSelect(method.code)"
+        [class.selected]="method.code === selected"
+      >
+        <span class="label">{{ labelFor(method.code, method.label) }}</span>
+        <span class="details" *ngIf="detailFor(method) as detail">{{ detail }}</span>
+      </button>
+    </li>
+  </ul>
+</section>

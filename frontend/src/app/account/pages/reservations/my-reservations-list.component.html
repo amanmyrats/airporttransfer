@@ -1,0 +1,173 @@
+<section class="reservations">
+  <header class="reservations__header">
+    <div>
+      <h1>{{ copy.header.title }}</h1>
+      <p class="reservations__subhead" *ngIf="!loading() && totalRecords() > 0">
+        {{ resultsLabel(totalRecords()) }}
+      </p>
+      <p class="reservations__subhead" *ngIf="!loading() && totalRecords() === 0">
+        {{ copy.header.resultsEmpty }}
+      </p>
+    </div>
+    <button
+      pButton
+      type="button"
+      [label]="copy.actions.refresh"
+      icon="pi pi-refresh"
+      class="p-button-text reservations__refresh"
+      (click)="refresh()"
+      [disabled]="loading()"
+    ></button>
+  </header>
+
+  <app-filter-search
+    class="reservations__filters"
+    [wantDetailedButton]="true"
+    [detailedFilterKeys]="detailedFilterKeys"
+    [wantSearchFilter]="true"
+    [wantDateFilter]="true"
+    [wantDateVariationFilter]="true"
+    [wantDateRangeFilter]="true"
+    [wantStatusFilter]="true"
+    [wantReservationCreationDateVariationFilter]="true"
+    [wantReservationCreationDateRangeFilter]="true"
+    [wantOrdering]="true"
+    [dateFilterLabel]="copy.filters.transferDate"
+    [dateVariationLabel]="copy.filters.transferDateRange"
+    [reservationDateVariationLabel]="copy.filters.reservationDateRange"
+    [orderingOptions]="reservationOrderingOptions"
+    [defaultOrdering]="defaultOrdering"
+    [statuses]="statusOptions"
+    [first]="firstIndex()"
+    [rows]="pageSize()"
+    [totalRecords]="totalRecords()"
+    (searchEmitter)="onSearch($event)"
+    (getStatusesEmitter)="onStatusesRequested()"
+  ></app-filter-search>
+
+  <section *ngIf="loading(); else listContent" class="reservations__loading">
+    <p-card class="reservation-card reservation-card--loading" *ngFor="let skeleton of [0, 1, 2]">
+      <ng-template pTemplate="content">
+        <div class="reservation-card__skeleton">
+          <p-skeleton width="65%" height="1.5rem"></p-skeleton>
+          <p-skeleton width="40%" height="1rem"></p-skeleton>
+          <p-skeleton width="85%" height="1rem"></p-skeleton>
+        </div>
+      </ng-template>
+    </p-card>
+  </section>
+
+  <ng-template #listContent>
+    <section *ngIf="hasResults(); else emptyState" class="reservations__grid">
+      <p-card
+        *ngFor="let reservation of reservations(); trackBy: trackByReservationId"
+        class="reservation-card"
+      >
+        <ng-template pTemplate="header">
+          <div class="reservation-card__header">
+            <div>
+              <h3>
+                {{ reservationHeading(reservation) }}
+              </h3>
+              <p class="reservation-card__route">
+                {{ tripTitle(reservation) }}
+              </p>
+            </div>
+            <p-tag
+              [value]="statusLabel(reservation.status)"
+              [severity]="statusSeverity(reservation.status)"
+            ></p-tag>
+          </div>
+        </ng-template>
+
+        <div class="reservation-card__body">
+          <dl>
+            <div>
+              <dt>{{ copy.fields.transfer }}</dt>
+              <dd>{{ transferDateLabel(reservation) }}</dd>
+            </div>
+            <div *ngIf="reservation.flight_number">
+              <dt>{{ copy.fields.flight }}</dt>
+              <dd>
+                {{ reservation.flight_number }}
+                <span *ngIf="reservation.flight_date">
+                  • {{ reservation.flight_date | date: 'mediumDate' }}
+                </span>
+                <span *ngIf="reservation.flight_time"> • {{ reservation.flight_time }} </span>
+              </dd>
+            </div>
+            <div>
+              <dt>{{ copy.fields.passengers }}</dt>
+              <dd>{{ passengerSummary(reservation) }}</dd>
+            </div>
+            <div *ngIf="reservation.passenger_phone || reservation.passenger_email">
+              <dt>{{ copy.fields.contact }}</dt>
+              <dd>
+                <span *ngIf="reservation.passenger_name">{{ reservation.passenger_name }}<br /></span>
+                <span *ngIf="reservation.passenger_phone">{{ reservation.passenger_phone }}<br /></span>
+                <span *ngIf="reservation.passenger_email">{{ reservation.passenger_email }}</span>
+              </dd>
+            </div>
+            <div *ngIf="reservation.note">
+              <dt>{{ copy.fields.notes }}</dt>
+              <dd>{{ reservation.note }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <ng-template pTemplate="footer">
+          <div class="reservation-card__actions">
+            <button
+              pButton
+              type="button"
+              [label]="copy.actions.viewDetails"
+              [routerLink]="detailLink(reservation)"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="p-button-outlined"
+              *ngIf="showChangeRequestAction(reservation)"
+              [label]="copy.actions.requestChange"
+              [routerLink]="detailLink(reservation)"
+              [queryParams]="{ change_request: '1' }"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="p-button-warning"
+              *ngIf="shouldCompletePassengerList(reservation)"
+              [label]="copy.actions.completePassengers"
+              [routerLink]="detailLink(reservation)"
+              [queryParams]="{ focus: 'passengers' }"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="p-button-secondary"
+              [label]="copy.actions.writeReview"
+              *ngIf="canWriteReview(reservation)"
+              [routerLink]="reviewLink(reservation)"
+            ></button>
+          </div>
+        </ng-template>
+      </p-card>
+    </section>
+  </ng-template>
+
+  <ng-template #emptyState>
+    <section class="reservations__empty">
+      <h3>{{ copy.empty.title }}</h3>
+      <p>{{ copy.empty.body }}</p>
+    </section>
+  </ng-template>
+
+  <app-shared-paginator
+    *ngIf="hasResults()"
+    [first]="firstIndex()"
+    [rows]="pageSize()"
+    [totalRecords]="totalRecords()"
+    [rowsPerPageOptions]="[5, 10, 20, 50]"
+    (onPageChangeEmitter)="onPageChange($event)"
+  ></app-shared-paginator>
+</section>

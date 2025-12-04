@@ -1,0 +1,181 @@
+<section class="review-detail">
+  <p-confirmDialog />
+
+  @if (loadingReview && !review) {
+    <div class="loading-state">
+      <i class="pi pi-spin pi-spinner"></i>
+      <span>Loading review...</span>
+    </div>
+  } @else if (review) {
+    <header class="review-header">
+      <div class="header-left">
+        <span class="review-id">Review #{{ review.id }}</span>
+        <div class="rating">
+          <i class="pi pi-star-fill"></i>
+          <span>{{ review.rating }}</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <p-tag
+          [severity]="getStatusSeverity(review.status)"
+          [value]="review.status | titlecase"
+        />
+        @if (review.is_flagged) {
+          <span class="flag-indicator" pTooltip="Flagged for follow-up">
+            <i class="pi pi-flag"></i>
+          </span>
+        }
+        <button
+          type="button"
+          pButton
+          icon="pi pi-times"
+          severity="secondary"
+          class="close-button"
+          (click)="closeDialog()"
+        ></button>
+      </div>
+    </header>
+
+    <section class="review-meta">
+      <div>
+        <span class="label">Reservation</span>
+        <span class="value">{{ review.reservation_obj?.number || '—' }}</span>
+      </div>
+      <div>
+        <span class="label">Transfer date</span>
+        <span class="value">
+          {{
+            review.reservation_obj?.transfer_date
+              ? (review.reservation_obj?.transfer_date | date: 'mediumDate')
+              : '—'
+          }}
+        </span>
+      </div>
+      <div>
+        <span class="label">Created</span>
+        <span class="value">{{ review.created_at | date: 'medium' }}</span>
+      </div>
+      <div>
+        <span class="label">Updated</span>
+        <span class="value">{{ review.updated_at | date: 'medium' }}</span>
+      </div>
+      <div>
+        <button
+          type="button"
+          pButton
+          label="Open reservation"
+          icon="pi pi-external-link"
+          severity="secondary"
+          size="small"
+          (click)="navigateToReservation()"
+          [disabled]="!review.reservation_obj?.number"
+        ></button>
+      </div>
+    </section>
+
+    <section class="comment-card">
+      <h3>{{ review.title || 'Untitled review' }}</h3>
+      <p>{{ review.comment || 'No comment provided.' }}</p>
+    </section>
+
+    <section class="moderation-actions">
+      <button
+        type="button"
+        pButton
+        label="Publish"
+        icon="pi pi-check"
+        severity="success"
+        (click)="publishReview()"
+        [loading]="moderationLoading"
+        [disabled]="review.status === 'published'"
+      ></button>
+      <button
+        type="button"
+        pButton
+        label="Reject"
+        icon="pi pi-times"
+        severity="danger"
+        (click)="rejectReview()"
+        [loading]="moderationLoading"
+        [disabled]="review.status === 'rejected'"
+      ></button>
+      <button
+        type="button"
+        pButton
+        [label]="review.is_flagged ? 'Unflag' : 'Flag'"
+        icon="pi pi-flag"
+        [severity]="review.is_flagged ? 'secondary' : 'warn'"
+        (click)="toggleFlag()"
+        [loading]="flagLoading"
+      ></button>
+    </section>
+
+    <p-divider align="left">
+      <span class="divider-title">Staff replies</span>
+    </p-divider>
+
+    <section class="reply-form">
+      <form [formGroup]="replyForm" (ngSubmit)="submitReply()">
+        <span class="label">Add reply</span>
+        <textarea
+          pInputTextarea
+          rows="4"
+          formControlName="body"
+          [autoResize]="true"
+          placeholder="Leave an internal reply for this review..."
+          [disabled]="savingReply"
+        ></textarea>
+        @if (replyForm.controls.body.invalid && replyForm.controls.body.touched) {
+          <small class="error">Reply must be at least 3 characters.</small>
+        }
+        <div class="reply-actions">
+          <button
+            type="submit"
+            pButton
+            label="Post reply"
+            icon="pi pi-send"
+            [loading]="savingReply"
+            [disabled]="savingReply"
+          ></button>
+        </div>
+      </form>
+    </section>
+
+    <section class="replies">
+      @if (loadingReplies) {
+        <div class="loading-replies">
+          <i class="pi pi-spin pi-spinner"></i>
+          <span>Loading replies…</span>
+        </div>
+      } @else if (!replies.length) {
+        <div class="empty-replies">
+          <i class="pi pi-comments"></i>
+          <p>No replies yet.</p>
+        </div>
+      } @else {
+        <ul>
+          @for (reply of replies; track trackReply($index, reply)) {
+            <li>
+              <div class="reply-meta">
+                <span class="author">{{ reply.author_name }}</span>
+                <span class="timestamp">{{ reply.created_at | date: 'medium' }}</span>
+              </div>
+              <p class="reply-body">{{ reply.body }}</p>
+              <div class="reply-actions">
+                <button
+                  type="button"
+                  pButton
+                  label="Delete"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  size="small"
+                  (click)="confirmDeleteReply(reply)"
+                ></button>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
+</section>

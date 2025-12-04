@@ -2,8 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { BlogSection } from '../../models/blog-section.model';
 import { BlogSectionTranslation } from '../../models/blog-section-translation.model';
+import { LanguageCode } from '../../../../constants/language.contants';
 
-type LangCode = 'en' | 'de' | 'ru' | 'tr' | string;
+type LangCode = LanguageCode | string;
 
 interface TocEntry {
   id: number | string;

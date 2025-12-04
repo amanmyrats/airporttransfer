@@ -1,0 +1,98 @@
+.checkout-result {
+  max-width: 640px;
+  margin: 2rem auto;
+  display: grid;
+  gap: 1.5rem;
+
+  header {
+    h1 {
+      margin-bottom: 0.25rem;
+      font-size: 1.75rem;
+    }
+
+    p {
+      margin: 0;
+      color: #475467;
+    }
+  }
+
+  .card {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    background: #fff;
+
+    span {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: #94a3b8;
+      letter-spacing: 0.05em;
+    }
+
+    strong {
+      display: block;
+      font-size: 1rem;
+      margin-top: 0.35rem;
+    }
+  }
+
+  .status-chip {
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    text-transform: capitalize;
+    background: #e2e8f0;
+  }
+
+  .status-succeeded {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  .status-processing {
+    background: #fef3c7;
+    color: #b45309;
+  }
+
+  .status-failed,
+  .status-canceled {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .receipt {
+    text-align: right;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+
+    .btn {
+      padding: 0.65rem 1.25rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .secondary {
+      border: 1px solid #cbd5f5;
+      color: #1d4ed8;
+    }
+  }
+}
+
+.empty {
+  text-align: center;
+  margin: 3rem 0;
+}

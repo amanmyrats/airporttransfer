@@ -58,17 +58,22 @@ export class PopularRouteFormComponent implements OnInit {
   ) {
     this.popularRouteForm = this.fb.group({
       id: [''],
-      main_location: ['', Validators.required],
+      airport: ['', Validators.required],
       car_type: ['', Validators.required],
       destination: ['', Validators.required],
-      euro_price: null,
+      euro_price: [null, Validators.required],
     });
   }
 
   ngOnInit(): void {
     this.popularRoute = this.config.data.popularRoute;
     if (this.popularRoute) {
-      this.popularRouteForm.patchValue(this.popularRoute);
+      this.popularRouteForm.patchValue({
+        ...this.popularRoute,
+        airport: this.popularRoute.airport
+          || this.popularRoute.airport_detail?.iata_code
+          || this.popularRoute.main_location,
+      });
     }
     this.mainLocations = this.mainLocationService.getMainLocations();
     this.carTypes = this.carTypeService.getCarTypes();

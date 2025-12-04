@@ -1,0 +1,249 @@
+<div class="checkout-page">
+  <app-super-header [langInput]="currentLanguage"></app-super-header>
+
+  <app-navbar></app-navbar>
+
+  <section class="checkout" *ngIf="booking() as booking; else bookingLoading">
+  <header class="summary" [class.summary--alert]="hasOutstandingDue() && amountSummary()?.dueText">
+    <div class="summary__title">
+      <h1>{{ copy().summaryTitle }}</h1>
+      <p class="summary__reference">
+        {{ copy().bookingReferenceLabel }} <strong>{{ booking.number }}</strong>
+      </p>
+    </div>
+
+    <ng-container *ngIf="amountSummary() as summary; else fallbackTotal">
+      <div class="summary__figures" [attr.aria-label]="copy().summary.ariaLabel">
+        <div class="figure figure--total">
+          <span class="figure__label">{{ copy().summary.total }} ({{ summary.totalCurrency }})</span>
+          <span class="figure__value">{{ summary.totalText }}</span>
+        </div>
+        <div class="figure figure--paid" *ngIf="summary.paidText">
+          <span class="figure__label">{{ copy().summary.paid }} ({{ summary.paidCurrency }})</span>
+          <span class="figure__value">{{ summary.paidText }}</span>
+        </div>
+        <div class="figure figure--due" *ngIf="summary.dueText">
+          <span class="figure__label">{{ copy().summary.due }} ({{ summary.dueCurrency }})</span>
+          <span class="figure__value">{{ summary.dueText }}</span>
+          <div class="figure__status" *ngIf="intent()?.status === 'processing'">
+            <span class="status-indicator" aria-hidden="true"></span>
+            <span>{{ copy().summary.processing }}</span>
+          </div>
+        </div>
+      </div>
+      <p class="summary__note" *ngIf="summary.hasCurrencyMismatch">
+        {{ copy().summary.currencyNotePrefix }} {{ summary.bookingCurrency }}.
+        {{ copy().summary.currencyNoteSuffix }} {{ summary.paymentCurrency }}.
+      </p>
+    </ng-container>
+    <ng-template #fallbackTotal>
+      <div class="amount">{{ formattedTotal() }}</div>
+    </ng-template>
+  </header>
+
+  <div class="stepper">
+    <span [class.active]="isStepActive('method')" [class.completed]="isStepCompleted('method')">{{ copy().stepper.method }}</span>
+    <span [class.active]="isStepActive('details')" [class.completed]="isStepCompleted('details')">{{ copy().stepper.details }}</span>
+    <span
+      [class.active]="isStepActive('processing')"
+      [class.completed]="isStepCompleted('processing')"
+    >
+      {{ copy().stepper.processing }}
+    </span>
+    <span [class.active]="isStepActive('result')" [class.completed]="isStepCompleted('result')">{{ copy().stepper.result }}</span>
+  </div>
+  <p class="conversion-note" *ngIf="rubPreview() as rub">
+    {{ copy().conversion.prefix }}
+    <strong>{{ rub.convertedFormatted }}</strong>
+    {{ copy().conversion.middle }}
+    {{ rub.originalCurrency }}
+    {{ copy().conversion.suffix }}
+  </p>
+
+  <app-payment-method-select
+    *ngIf="step() === 'method'"
+    [methods]="methods()"
+    [selected]="selectedMethod()"
+    [methodDetails]="methodDetails()"
+    [languageCode]="currentLanguage.code"
+    (methodSelected)="onMethodSelected($event)"
+  ></app-payment-method-select>
+
+  <div class="error" *ngIf="error() as errorMessage">
+    <span>{{ errorMessage }}</span>
+    <button type="button" (click)="onSelectAnotherMethod()">{{ copy().error.tryAnother }}</button>
+  </div>
+
+  <div class="spinner" *ngIf="isLoading()">{{ copy().spinner }}</div>
+
+  <ng-container *ngIf="intent() as intent">
+    <section class="result" *ngIf="intentIsFinal(intent)">
+      <h2>{{ intent.status === 'succeeded' ? copy().result.successTitle : copy().result.defaultTitle }}</h2>
+      <p>
+        <ng-container [ngSwitch]="intent.status">
+          <span *ngSwitchCase="'succeeded'">{{ copy().result.successMessage }}</span>
+          <span *ngSwitchCase="'failed'">{{ copy().result.failedMessage }}</span>
+          <span *ngSwitchDefault>{{ copy().result.fallbackMessagePrefix }} {{ intent.status }}.</span>
+        </ng-container>
+      </p>
+      <button type="button" class="cta" (click)="goToResult()">{{ copy().result.viewButton }}</button>
+    </section>
+  </ng-container>
+
+  <section *ngIf="step() !== 'method' && selectedMethod() as method" class="method-section">
+    <ng-container *ngIf="activeIntent() as intent; else methodWithoutIntent">
+      <ng-container *ngIf="isCard(method); else offlineFlow">
+        <app-payment-button
+          [clientSecret]="intent.client_secret"
+          [publishableKey]="cardPublishableKey()"
+          [intentId]="intent.public_id"
+          [bookingRef]="booking.number"
+          [returnUrl]="buildReturnUrl(booking.number)"
+          [languageCode]="currentLanguage.code"
+          (statusChange)="onCardStatusChange($event)"
+        ></app-payment-button>
+      </ng-container>
+      <ng-template #offlineFlow>
+        <ng-container *ngIf="showOfflineInstructions(intent); else offlineStatusInfo">
+          <ng-container *ngIf="isCash(method); else receiptFlow">
+            <ng-container *ngTemplateOutlet="cashInstructions; context: { intent: intent }"></ng-container>
+          </ng-container>
+          <ng-template #receiptFlow>
+            <app-offline-instructions
+              [instruction]="intent.bank_transfer_instruction"
+              [amountMinor]="intent.amount_minor"
+              [currency]="intent.currency"
+              [bookingRef]="booking.number"
+              [status]="offlineInstructionStatus(intent)"
+              [actionDisabled]="isLoading() || !receiptSelection().file"
+              [method]="method"
+              [languageCode]="currentLanguage.code"
+              (confirmTransfer)="onOfflineConfirm()"
+              (changeMethod)="onSelectAnotherMethod()"
+            >
+              <app-upload-receipt
+                [busy]="isLoading()"
+                [successMessage]="uploadMessage()"
+                [languageCode]="currentLanguage.code"
+                (selectionChanged)="onReceiptSelectionChange($event)"
+              ></app-upload-receipt>
+            </app-offline-instructions>
+          </ng-template>
+        </ng-container>
+        <ng-template #offlineStatusInfo></ng-template>
+      </ng-template>
+    </ng-container>
+    <ng-template #methodWithoutIntent>
+      <ng-container *ngIf="method === 'CASH'">
+        <ng-container *ngTemplateOutlet="cashInstructions; context: { intent: null }"></ng-container>
+      </ng-container>
+    </ng-template>
+  </section>
+
+  <ng-template #cashInstructions let-currentIntent="intent">
+    <section class="cash-instructions">
+      <h3>{{ copy().cash.title }}</h3>
+      <p>
+        {{ copy().cash.preparePrefix }}
+        {{ amountSummary()?.dueText || formattedTotal() }}
+        {{ copy().cash.prepareMid }}
+        <strong>{{ booking.number }}</strong>
+        {{ copy().cash.prepareSuffix }}
+      </p>
+      <div class="cash-actions">
+        <button
+          type="button"
+          (click)="onOfflineConfirm()"
+          [disabled]="isLoading() || cashConfirmDisabled(currentIntent ?? null)"
+        >
+          {{ copy().cash.confirmButton }}
+        </button>
+        <button type="button" class="link" (click)="onSelectAnotherMethod()">
+          {{ copy().cash.changeMethod }}
+        </button>
+      </div>
+      <small *ngIf="!hasProcessingCashIntent(); else cashPending">
+        {{ copy().cash.intentNote }}
+      </small>
+      <ng-template #cashPending>
+        <small class="cash-note cash-note--pending">
+          {{ copy().cash.pendingNote }}
+        </small>
+      </ng-template>
+    </section>
+  </ng-template>
+
+  <section class="intent-history" *ngIf="intentHistory()?.length">
+    <h3>{{ copy().intentHistory.title }}</h3>
+    <ul>
+      <li
+        class="intent-card"
+        *ngFor="let historyIntent of intentHistory(); trackBy: trackIntent"
+        [class.intent-card--current]="intent()?.public_id === historyIntent.public_id"
+        (click)="selectIntentFromHistory(historyIntent)"
+        tabindex="0"
+        (keyup.enter)="selectIntentFromHistory(historyIntent)"
+        (keyup.space)="selectIntentFromHistory(historyIntent)"
+      >
+        <div class="intent-card__header">
+          <div class="intent-card__title">
+            <span class="method">{{ methodLabel(historyIntent.method) }}</span>
+            <span class="status-badge" [class]="'status-' + statusClass(historyIntent.status)">
+              {{ statusLabel(historyIntent.status) }}
+            </span>
+          </div>
+          <small>{{ historyIntent.created_at | date: 'medium' }}</small>
+        </div>
+        <div class="intent-card__details">
+          <span>{{ copy().intentHistory.attempted }} {{ formatMinor(historyIntent.amount_minor, historyIntent.currency) }}</span>
+          <span *ngIf="historyIntent.paid_minor">
+            {{ copy().intentHistory.paid }} {{ formatMinor(historyIntent.paid_minor, historyIntent.currency) }}
+          </span>
+          <span *ngIf="historyIntent.due_minor">
+            {{ copy().intentHistory.due }} {{ formatMinor(historyIntent.due_minor, historyIntent.currency) }}
+          </span>
+        </div>
+        <p class="intent-card__hint" *ngIf="statusHint(historyIntent)">
+          {{ statusHint(historyIntent) }}
+        </p>
+        <ng-container *ngIf="historyIntent.public_id === intent()?.public_id && intent()?.status !== 'processing'">
+          <div *ngIf="intent()?.status === 'succeeded'" class="intent-card__accordion">
+            <details>
+              <summary>{{ copy().intentHistory.successSummary }}</summary>
+              <ul *ngIf="intent()?.payments?.length; else noPayments">
+                <li *ngFor="let payment of intent()?.payments">
+                  <div>
+                    <strong>{{ formatMinor(payment.amount_minor, payment.currency) }}</strong>
+                    <span> • {{ payment.status | titlecase }}</span>
+                  </div>
+                  <small *ngIf="payment.captured_at">
+                    {{ copy().intentHistory.capturedLabel }} {{ payment.captured_at | date: 'medium' }}
+                  </small>
+                  <small *ngIf="payment.provider_payment_id">
+                    {{ copy().intentHistory.referenceLabel }}: {{ payment.provider_payment_id }}
+                  </small>
+                </li>
+              </ul>
+              <ng-template #noPayments>
+                <p>{{ copy().intentHistory.noPayments }}</p>
+              </ng-template>
+            </details>
+          </div>
+          <div *ngIf="intent()?.status === 'failed'" class="intent-card__accordion intent-card__accordion--error">
+            <details open>
+              <summary>{{ copy().intentHistory.failedTitle }}</summary>
+              <p>{{ copy().intentHistory.failedHelp }}</p>
+            </details>
+          </div>
+        </ng-container>
+      </li>
+    </ul>
+  </section>
+  </section>
+
+  <ng-template #bookingLoading>
+    <p>{{ copy().loading }}</p>
+  </ng-template>
+
+  <app-footer></app-footer>
+</div>

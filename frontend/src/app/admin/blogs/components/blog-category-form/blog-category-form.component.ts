@@ -6,11 +6,15 @@ import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { RouterModule } from '@angular/router';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
+import { TableModule } from 'primeng/table';
 
 import { BlogCategoryService } from '../../services/blog-category.service';
 import { BlogCategory } from '../../models/blog-category.model';
+import { BlogCategoryTranslation } from '../../models/blog-category-translation.model';
+import { BlogCategoryTranslationFormComponent } from '../blog-category-translation-form/blog-category-translation-form.component';
 import { HttpErrorPrinterService } from '../../../../services/http-error-printer.service';
+import { SUPPORTED_LANGUAGES } from '../../../../constants/language.contants';
 
 
 @Component({
@@ -25,14 +29,18 @@ import { HttpErrorPrinterService } from '../../../../services/http-error-printer
     RouterModule,
     MessageModule,
     ToastModule,
+    TableModule,
   ],
-  providers: [HttpErrorPrinterService],
+  providers: [HttpErrorPrinterService, DialogService],
   templateUrl: './blog-category-form.component.html',
   styleUrl: './blog-category-form.component.scss',
 })
 export class BlogCategoryFormComponent implements OnInit {
   form!: FormGroup;
   category: BlogCategory | null = null;
+  translations: BlogCategoryTranslation[] = [];
+  languages = SUPPORTED_LANGUAGES;
+  refTx?: DynamicDialogRef;
 
   constructor(
     private fb: FormBuilder,
@@ -40,6 +48,7 @@ export class BlogCategoryFormComponent implements OnInit {
     private dialogRef: DynamicDialogRef,
     private config: DynamicDialogConfig,
     private httpErrorPrinter: HttpErrorPrinterService,
+    private dialogService: DialogService,
   ) {}
 
   ngOnInit(): void {
@@ -52,6 +61,7 @@ export class BlogCategoryFormComponent implements OnInit {
     this.category = this.config?.data?.category ?? null;
     if (this.category) {
       this.form.patchValue(this.category);
+      this.translations = this.category.translations ?? [];
     }
   }
 
@@ -80,5 +90,46 @@ export class BlogCategoryFormComponent implements OnInit {
 
   get f() {
     return this.form.controls;
+  }
+
+  getTranslationForLang(lang?: string): BlogCategoryTranslation | null {
+    if (!lang) return null;
+    return this.translations.find(tx => tx.language === lang) ?? null;
+  }
+
+  openTranslationForm(language?: string, translation?: BlogCategoryTranslation | null): void {
+    if (!this.category?.id) {
+      this.httpErrorPrinter.printHttpError({ error: { detail: 'Save the category before adding translations.' } });
+      return;
+    }
+
+    this.refTx = this.dialogService.open(BlogCategoryTranslationFormComponent, {
+      header: translation ? `Edit ${translation.language?.toUpperCase()} Translation` : 'Add Translation',
+      width: '520px',
+      data: {
+        categoryId: this.category.id,
+        translation,
+        preferredLanguage: translation?.language ?? language,
+      },
+      dismissableMask: true,
+      closable: true,
+      modal: true,
+    });
+
+    this.refTx.onClose.subscribe((res: BlogCategoryTranslation) => {
+      if (!res) return;
+      const txs = this.translations ?? [];
+      const idx = txs.findIndex(t => t.language === res.language);
+      if (idx !== -1) {
+        txs[idx] = res;
+      } else {
+        txs.push(res);
+      }
+      this.translations = [...txs];
+      // if EN updated, mirror into base display
+      if (res.language === 'en') {
+        this.form.patchValue({ name: res.name, slug: res.slug });
+      }
+    });
   }
 }

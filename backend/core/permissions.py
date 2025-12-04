@@ -12,8 +12,11 @@ class IsCompanyAdmin(IsAdminUser, BasePermission):
         if super().has_permission(request, view):
             return True
 
+        user = getattr(request, "user", None)
+        if not getattr(user, "is_authenticated", False):
+            return False
         # Check for authentication and company_admin role
-        if not request.user.role == 'company_admin':
+        if getattr(user, "role", None) != 'company_admin':
             return False
         return True  # Allow all actions for company admins (subject to object-level check)
 
@@ -32,7 +35,10 @@ class IsCompanyYonetici(IsCompanyAdmin):
             return True
 
         # Check for authentication and company_yonetici role
-        if not request.user.role == 'company_yonetici':
+        user = getattr(request, "user", None)
+        if not getattr(user, "is_authenticated", False):
+            return False
+        if getattr(user, "role", None) != 'company_yonetici':
             return False
         return True  # Allow all actions for company yonetici (subject to object-level check)
 
@@ -51,7 +57,10 @@ class IsCompanyRezervasyoncu(IsCompanyYonetici):
             return True
 
         # Check for authentication and company_rezervasyoncu role
-        if not request.user.role == 'company_rezervasyoncu':
+        user = getattr(request, "user", None)
+        if not getattr(user, "is_authenticated", False):
+            return False
+        if getattr(user, "role", None) != 'company_rezervasyoncu':
             return False
         return True  # Allow all actions for company rezervasyoncu (subject to object-level check)
 
@@ -70,7 +79,10 @@ class IsCompanyOperasyoncu(IsCompanyRezervasyoncu):
             return True
 
         # Check for authentication and company_operasyoncu role
-        if not request.user.role == 'company_operasyoncu':
+        user = getattr(request, "user", None)
+        if not getattr(user, "is_authenticated", False):
+            return False
+        if getattr(user, "role", None) != 'company_operasyoncu':
             return False
         return True  # Allow all actions for company operasyoncu (subject to object-level check)
 
@@ -94,7 +106,10 @@ class IsCompanyEmployeeReadOnly(IsCompanyOperasyoncu):
             return False
         
         # Check for authentication and company_employee role
-        if not request.user.role == 'company_employee':
+        user = getattr(request, "user", None)
+        if not getattr(user, "is_authenticated", False):
+            return False
+        if getattr(user, "role", None) != 'company_employee':
             return False
         return True  # Allow GET requests for company employees (subject to object-level check)
 
@@ -107,13 +122,14 @@ class IsCompanyDriverReadOnly(IsCompanyOperasyoncu):
     def has_permission(self, request, view):
         if super().has_permission(request, view):
             return True
-        
+
         # Only allow GET requests for company employees
         if request.method != 'GET':
             return False
         # Check for authentication and company_driver role
-        if not request.user.role == 'company_driver':
+        user = getattr(request, "user", None)
+        if not getattr(user, "is_authenticated", False):
+            return False
+        if getattr(user, "role", None) != 'company_driver':
             return False
         return True  # Allow all actions for company drivers (subject to object-level check)
-
-

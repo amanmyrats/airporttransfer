@@ -4,6 +4,7 @@
 
 # Django stuff:
 *.log
+*.log.*
 /logs/*
 !/logs/.gitkeep
 
@@ -141,6 +142,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env dev
 .env prod
 .dev.env
 .venv

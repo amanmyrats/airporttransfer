@@ -19,7 +19,7 @@ from .serializers_related import RelatedPostSerializer
 
 from .models import (
     BlogPost, BlogPostTranslation, BlogSection,
-    BlogSectionTranslation, BlogImage, BlogCategory, BlogTag, 
+    BlogSectionTranslation, BlogImage, BlogCategory, BlogTag, BlogCategoryTranslation, BlogTagTranslation,
     SectionType, BlogImageTranslation, FaqItem, FaqItemTranslation,
     FaqLibraryItem,
     FaqLibraryItemTranslation,
@@ -32,7 +32,7 @@ from .serializers import (
     BlogPostLocalizedModelSerializer, 
     BlogTagModelSerializer, 
     PublicBlogPostLocalizedModelSerializer, 
-    BlogImageTranslationModelSerializer, 
+    BlogImageTranslationModelSerializer, BlogCategoryTranslationModelSerializer, BlogTagTranslationModelSerializer,
     FaqItemModelSerializer, FaqItemTranslationModelSerializer, 
     FaqLibraryItemModelSerializer,
     FaqLibraryItemTranslationModelSerializer,
@@ -50,21 +50,39 @@ logger = logging.getLogger("airporttransfer")
 
 
 class BlogCategoryModelViewSet(PublicReadMixin, viewsets.ModelViewSet):
-    queryset = BlogCategory.objects.all()
+    queryset = BlogCategory.objects.all().prefetch_related("translations")
     serializer_class = BlogCategoryModelSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    search_fields = ["name", "slug"]
-    ordering_fields = ["name"]
+    search_fields = ["name", "slug", "translations__name", "translations__slug"]
+    ordering_fields = ["name", "translations__name"]
     ordering = ["name"]
 
 
 class BlogTagModelViewSet(viewsets.ModelViewSet):
-    queryset = BlogTag.objects.all()
+    queryset = BlogTag.objects.all().prefetch_related("translations")
     serializer_class = BlogTagModelSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    search_fields = ["name", "slug"]
-    ordering_fields = ["name"]
+    search_fields = ["name", "slug", "translations__name", "translations__slug"]
+    ordering_fields = ["name", "translations__name"]
     ordering = ["name"]
+
+
+class BlogCategoryTranslationModelViewSet(viewsets.ModelViewSet):
+    queryset = BlogCategoryTranslation.objects.all()
+    serializer_class = BlogCategoryTranslationModelSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    search_fields = ["name", "slug", "language", "category__name", "category__slug"]
+    ordering_fields = ["language", "name"]
+    ordering = ["language"]
+
+
+class BlogTagTranslationModelViewSet(viewsets.ModelViewSet):
+    queryset = BlogTagTranslation.objects.all()
+    serializer_class = BlogTagTranslationModelSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    search_fields = ["name", "slug", "language", "tag__name", "tag__slug"]
+    ordering_fields = ["language", "name"]
+    ordering = ["language"]
 
 class BlogImageModelViewSet(viewsets.ModelViewSet):
     queryset = BlogImage.objects.all()

@@ -1,0 +1,226 @@
+<section class="payments-wrapper">
+  <p-toast position="bottom-right" [life]="8000"></p-toast>
+  <p-confirmDialog key="paymentIntentConfirm"></p-confirmDialog>
+  <header>
+    <h1>All Payment Intents</h1>
+  </header>
+
+  <div class="filter-search-container">
+    <app-filter-search
+      [rows]="filterRows"
+      [wantSearchFilter]="true"
+      [wantStatusFilter]="true"
+      [wantPaymentMethodFilter]="true"
+      [statuses]="statusOptions"
+      [paymentMethods]="methodOptions"
+      (searchEmitter)="onFilterSearch($event)"
+    ></app-filter-search>
+  </div>
+
+  <p-table
+    [value]="intents()"
+    [loading]="loading()"
+    [paginator]="true"
+    [rows]="15"
+    [responsiveLayout]="'stack'"
+    dataKey="public_id"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Booking</th>
+        <th>Method</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Receipts</th>
+        <th>Updated</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-intent>
+      <tr>
+        <td>
+          <div class="booking-ref">{{ intent.booking_ref }}</div>
+          <button type="button" class="link" (click)="viewBookingSummary(intent.booking_ref)">
+            See all related payments
+          </button>
+          <small class="intent-id">{{ intent.public_id }}</small>
+          <small class="booking-due">
+            {{ bookingSummaries()[intent.booking_ref] || 'Booking summary unavailable' }}
+          </small>
+        </td>
+        <td>{{ intent.method }}</td>
+        <td>
+          <div class="amount-stack">
+            <span class="amount-total">Total {{ formattedAmount(intent) }}</span>
+            <span class="amount-paid">Paid {{ formatCurrency(intent.paid_minor ?? 0, intent.currency) }}</span>
+            <span class="amount-due">Due {{ formatCurrency(intent.due_minor ?? 0, intent.currency) }}</span>
+          </div>
+        </td>
+        <td>
+          <div class="status-column">
+            <span class="status-chip" [ngClass]="intent.status">{{ intent.status }}</span>
+            <button
+              *ngIf="canSettleIntent(intent)"
+              pButton
+              type="button"
+              label="Settle"
+              class="p-button-sm status-settle"
+              (click)="openSettlementDialog(intent)"
+            ></button>
+          </div>
+        </td>
+        <td>
+          <div class="receipt-actions" *ngIf="intent.offline_receipts?.length; else emptyCell">
+            <div class="receipt-buttons">
+              <button
+                pButton
+                class="p-button-text p-button-sm receipt-action-button"
+                icon="pi pi-external-link"
+                [label]="i + 1 + '- Receipt'"
+                type="button"
+                *ngFor="let receipt of intent.offline_receipts; index as i"
+                (click)="viewReceipt(receipt.evidence_file)"
+              ></button>
+            </div>
+          </div>
+          <ng-template #emptyCell></ng-template>
+        </td>
+        <td>{{ intent.updated_at | date: 'medium' }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-dialog
+    header="Review payment intent"
+    [(visible)]="settlementDialogVisible"
+    [modal]="true"
+    [closable]="true"
+    [closeOnEscape]="true"
+    [dismissableMask]="true"
+    [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+    [style]="{ width: '720px' }"
+    (onHide)="closeSettlementDialog()"
+  >
+    <ng-container *ngIf="selectedIntent() as intent">
+      <section class="dialog-section">
+        <h3>Booking {{ intent.booking_ref }}</h3>
+        <p class="muted">Intent {{ intent.public_id }} • {{ intent.updated_at | date: 'medium' }}</p>
+        <p>Status: {{ intent.status }} • Method: {{ intent.method }}</p>
+      </section>
+
+      <p class="error" *ngIf="settlementContextError()">{{ settlementContextError() }}</p>
+      <p *ngIf="settlementContextLoading()">Loading booking details…</p>
+
+      <ng-container *ngIf="!settlementContextLoading() && settlementContext() as ctx">
+        <section class="dialog-section">
+          <h4>Reservation</h4>
+          <ul>
+            <li>Total: {{ formatCurrency(ctx.totalMinor, ctx.currency) }}</li>
+            <li>Paid: {{ formatCurrency(ctx.paidMinor, ctx.currency) }}</li>
+            <li>Due: {{ formatCurrency(ctx.dueMinor, ctx.currency) }}</li>
+            <li>Passenger: {{ ctx.reservation.passenger_name || 'N/A' }}</li>
+            <li>Travel date: {{ ctx.reservation.transfer_date || 'N/A' }} {{ ctx.reservation.transfer_time || '' }}</li>
+          </ul>
+        </section>
+
+        <section class="dialog-section">
+          <h4>Payments</h4>
+          <table class="dialog-table" *ngIf="ctx.payments.length; else noPayments">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Amount</th>
+                <th>Captured</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let payment of ctx.payments">
+                <td>{{ payment.provider_payment_id }}</td>
+                <td>{{ payment.status }}</td>
+                <td>{{ formatCurrency(payment.amount_minor, payment.currency) }}</td>
+                <td>{{ payment.captured_at | date: 'medium' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #noPayments>
+            <p>No payments recorded yet.</p>
+          </ng-template>
+        </section>
+
+        <section class="dialog-section">
+          <h4>Related intents</h4>
+          <table class="dialog-table" *ngIf="ctx.relatedIntents.length; else noIntents">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Updated</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let related of ctx.relatedIntents">
+                <td>{{ related.method }}</td>
+                <td>{{ related.status }}</td>
+                <td>{{ formattedAmount(related) }}</td>
+                <td>{{ related.updated_at | date: 'medium' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #noIntents>
+            <p>No other intents for this booking.</p>
+          </ng-template>
+        </section>
+
+        <section class="dialog-section">
+          <h4>Receipts</h4>
+          <ng-container *ngIf="intent.offline_receipts?.length; else noReceipts">
+            <ul class="receipt-list">
+              <li *ngFor="let receipt of intent.offline_receipts">
+                <div>
+                  <strong>{{ receipt.created_at | date: 'medium' }}</strong>
+                  <p>{{ receipt.note || 'No note provided' }}</p>
+                </div>
+                <a
+                  class="receipt-link"
+                  [href]="receipt.evidence_file"
+                  target="_blank"
+                  rel="noopener"
+                  download
+                >
+                  Open receipt
+                </a>
+              </li>
+            </ul>
+          </ng-container>
+          <ng-template #noReceipts>
+            <p>No receipts uploaded.</p>
+          </ng-template>
+        </section>
+      </ng-container>
+    </ng-container>
+
+    <ng-template pTemplate="footer">
+      <ng-container *ngIf="selectedIntent() as intent">
+        <button
+          pButton
+          type="button"
+          class="p-button-text p-button-danger"
+          label="Decline"
+          [disabled]="!canDeclineIntent(intent) || settlementContextLoading()"
+          [loading]="decliningIntent() === intent.public_id"
+          (click)="declineIntent(intent)"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Approve &amp; Settle"
+          class="p-button-success"
+          [disabled]="!canSettleIntent(intent) || settlementContextLoading()"
+          [loading]="settlingIntent() === intent.public_id"
+          (click)="settleIntent(intent)"
+        ></button>
+      </ng-container>
+    </ng-template>
+  </p-dialog>
+</section>

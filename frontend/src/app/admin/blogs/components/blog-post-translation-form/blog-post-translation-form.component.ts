@@ -12,6 +12,7 @@ import { BlogPostTranslation } from '../../models/blog-post-translation.model';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { HttpErrorPrinterService } from '../../../../services/http-error-printer.service';
+import { SUPPORTED_LANGUAGES } from '../../../../constants/language.contants';
 
 @Component({
   selector: 'app-blog-post-translation-form',
@@ -34,12 +35,10 @@ import { HttpErrorPrinterService } from '../../../../services/http-error-printer
   styleUrl: './blog-post-translation-form.component.scss'
 })
 export class BlogPostTranslationFormComponent implements OnInit {
-  @Input() languages = [
-    { code: 'en', label: 'English' },
-    { code: 'de', label: 'German' },
-    { code: 'ru', label: 'Russian' },
-    { code: 'tr', label: 'Turkish' }
-  ];
+  @Input() languages = SUPPORTED_LANGUAGES.map(({ code, name }) => ({
+    code,
+    label: name,
+  }));
 
   form!: FormGroup;
   blogPostId: string | null = null;

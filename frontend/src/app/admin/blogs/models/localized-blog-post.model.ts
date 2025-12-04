@@ -40,4 +40,3 @@ export class LocalizedBlogPost {
     author?: string | null;
 }
 
-

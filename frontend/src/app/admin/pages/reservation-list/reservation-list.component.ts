@@ -17,10 +17,12 @@ import { concatMap, of } from 'rxjs';
 import { PdfService } from '../../services/pdf.service';
 import { ReservationPdfComponent } from '../../components/reservation-pdf/reservation-pdf.component';
 import { StatusFormComponent } from '../../components/status-form/status-form.component';
+import { ReservationChangeRequestsComponent } from '../../components/reservation-change-requests/reservation-change-requests.component';
 import { ButtonModule } from 'primeng/button';
 import { ReservationDetailComponent } from '../../components/reservation-detail/reservation-detail.component';
+import { TagModule } from 'primeng/tag';
 import { HttpErrorPrinterService } from '../../../services/http-error-printer.service';
-import { Reservation } from '../../models/reservation.model';
+import { Reservation, ReservationChangeRequest } from '../../models/reservation.model';
 import { ReservationService } from '../../services/reservation.service';
 import { UserColumnService } from '../../services/user-column.service';
 import { environment as env } from '../../../../environments/environment';
@@ -45,6 +47,7 @@ import { Meta } from '@angular/platform-browser';
         SkeletonModule,
         ReservationPdfComponent,
         ButtonModule,
+        TagModule,
         FilterSearchComponent, 
     ],
     providers: [
@@ -70,9 +73,16 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
 
   ref: DynamicDialogRef | undefined;
   refDetail: DynamicDialogRef | undefined;
+  refChangeRequests: DynamicDialogRef | undefined;
 
   statuses: any[] = [];
+  changeRequestStatuses: any[] = [];
   table_name: string = 'reservation';
+  readonly detailedFilterKeys = [
+    'transfer_date',
+    'date_variation',
+    'reservation_date_variation',
+  ];
 
   reservationForPdf: Reservation | {} = {};
   isGeneratingPdf: boolean = false;
@@ -168,6 +178,36 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
     this.rows = env.pagination.defaultPageSize;
     this.getUserColumns('?table_name=' + this.table_name);
     this.meta.updateTag({ name: 'robots', content: 'noindex, nofollow' });
+  }
+
+  openChangeRequests(reservation: Reservation): void {
+    if (!reservation?.id) {
+      return;
+    }
+    this.refChangeRequests = this.dialogService.open(ReservationChangeRequestsComponent, {
+      header: `Değişiklik İstekleri - ${reservation.number ?? reservation.id}`,
+      styleClass: 'fit-content-dialog',
+      contentStyle: { overflow: 'auto' },
+      closable: true,
+      closeOnEscape: true,
+      maximizable: true,
+      baseZIndex: 10000,
+      modal: true,
+      data: {
+        reservation,
+        onUpdate: (changeRequest: ReservationChangeRequest) => {
+          reservation.latest_change_request_status = changeRequest.status;
+          reservation.has_change_request = true;
+        },
+        messageService: this.messageService,
+      },
+    });
+
+    this.refChangeRequests.onClose.subscribe((result: { refresh?: boolean } | undefined) => {
+      if (result?.refresh) {
+        this.filterSearch.search();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -287,6 +327,18 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
     });
   }
 
+  getChangeRequestStatuses(): void {
+    this.reservationService.getChangeRequestStatuses().subscribe({
+      next: (statuses: any[]) => {
+        console.log('Change request statuses:', statuses);
+        this.changeRequestStatuses = statuses;
+      },
+      error: (err: any) => {
+        this.httpErrorPrinterService.printHttpError(err);
+      }
+    });
+  }
+
   export(): void {
     this.isExporting = true;
     this.reservationService.handleExport(this.filterSearch.getQueryParams());
@@ -339,6 +391,38 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
         noshow: 'warn'             // Yellow
     };
     return severities[status] || 'secondary'; // Default value
+  }
+
+  getChangeRequestStatusLabel(status?: string | null): string {
+    if (!status) {
+      return '';
+    }
+    const labels: Record<string, string> = {
+      pending_review: 'CR: İncelemede',
+      auto_approved: 'CR: Oto Onaylandı',
+      awaiting_user_payment: 'CR: Ödeme Bekleniyor',
+      approved_applied: 'CR: Uygulandı',
+      declined: 'CR: Reddedildi',
+      expired: 'CR: Süresi Doldu',
+      cancelled: 'CR: İptal Edildi',
+    };
+    return labels[status] || `CR: ${status}`;
+  }
+
+  getChangeRequestStatusSeverity(status?: string | null): "info" | "success" | "warn" | "danger" | "secondary" | "contrast" | undefined {
+    if (!status) {
+      return undefined;
+    }
+    const severities: Record<string, "info" | "success" | "warn" | "danger" | "secondary" | "contrast"> = {
+      pending_review: 'info',
+      auto_approved: 'success',
+      awaiting_user_payment: 'warn',
+      approved_applied: 'success',
+      declined: 'danger',
+      expired: 'secondary',
+      cancelled: 'secondary',
+    };
+    return severities[status] || 'info';
   }
   
   onPageChange(event: any): void {

@@ -11,7 +11,10 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { BlogCategory } from '../../models/blog-category.model';
 import { BlogCategoryService } from '../../services/blog-category.service';
 import { BlogCategoryFormComponent } from '../blog-category-form/blog-category-form.component';
+import { BlogCategoryTranslationFormComponent } from '../blog-category-translation-form/blog-category-translation-form.component';
+import { BlogCategoryTranslation } from '../../models/blog-category-translation.model';
 import { PaginatedResponse } from '../../../../models/paginated-response.model';
+import { SUPPORTED_LANGUAGES } from '../../../../constants/language.contants';
 
 @Component({
   selector: 'app-blog-category-list',
@@ -36,6 +39,8 @@ export class BlogCategoryListComponent implements OnInit {
 
   categories: BlogCategory[] = [];
   ref?: DynamicDialogRef;
+  refTx?: DynamicDialogRef;
+  languages = SUPPORTED_LANGUAGES;
 
   ngOnInit(): void {
     this.load();
@@ -68,7 +73,7 @@ export class BlogCategoryListComponent implements OnInit {
 
   openEdit(category: BlogCategory): void {
     this.ref = this.dialog.open(BlogCategoryFormComponent, {
-      header: `Edit Category: ${category.name}`,
+      header: `Edit Category: ${category.resolved?.name || category.name}`,
       width: '460px',
       data: { category },
       dismissableMask: true,
@@ -86,7 +91,7 @@ export class BlogCategoryListComponent implements OnInit {
 
   confirmDelete(category: BlogCategory): void {
     this.confirm.confirm({
-      message: `Delete category "${category.name}"?`,
+      message: `Delete category "${category.resolved?.name || category.name}"?`,
       header: 'Confirm Delete',
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger',
@@ -102,6 +107,42 @@ export class BlogCategoryListComponent implements OnInit {
         this.load();
       },
       error: () => this.messages.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete category' }),
+    });
+  }
+
+  openTranslation(cat: BlogCategory, translation?: BlogCategoryTranslation | null): void {
+    if (!cat.id) return;
+    this.refTx = this.dialog.open(BlogCategoryTranslationFormComponent, {
+      header: translation ? `Edit ${translation.language?.toUpperCase()} Translation` : 'Add Translation',
+      width: '520px',
+      data: {
+        categoryId: cat.id,
+        translation,
+        preferredLanguage: translation?.language,
+      },
+      dismissableMask: true,
+      closable: true,
+      modal: true,
+    });
+
+    this.refTx.onClose.subscribe((res: BlogCategoryTranslation) => {
+      if (!res) return;
+      const idx = this.categories.findIndex(c => c.id === cat.id);
+      if (idx === -1) return;
+      const txs = this.categories[idx].translations ?? [];
+      const existingIdx = txs.findIndex(t => t.language === res.language);
+      if (existingIdx !== -1) {
+        txs[existingIdx] = res;
+      } else {
+        txs.push(res);
+      }
+      this.categories[idx] = {
+        ...this.categories[idx],
+        translations: [...txs],
+        resolved: this.categories[idx].resolved?.language === res.language ? { ...this.categories[idx].resolved, ...{ name: res.name, slug: res.slug } } : this.categories[idx].resolved,
+      };
+      this.categories = [...this.categories];
+      this.messages.add({ severity: 'success', summary: 'Saved', detail: 'Translation saved' });
     });
   }
 }

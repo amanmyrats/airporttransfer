@@ -2,11 +2,46 @@ import { inject, provideEnvironmentInitializer } from '@angular/core';
 import { Routes } from '@angular/router';
 import { PrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
+import Material from '@primeng/themes/material';
+import { ClientAuthGuard } from './auth/guards/client-auth.guard';
+import { SessionInitGuard } from './auth/guards/session-init.guard';
 import { HomeComponent } from './pages/home/home.component';
 import { BookingStepGuard } from './pages/booking/guards/booking-step.guard';
 import { AdminHomeComponent } from './admin/pages/admin-home/admin-home.component';
 import { SsrTestComponent } from './components/ssr-test/ssr-test.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
+import { SUPPORTED_LANGUAGE_CODES } from './constants/language.contants';
+
+const loadLogin = () => import('./auth/pages/login/login.component').then(m => m.LoginComponent);
+const loadRegister = () => import('./auth/pages/register/register.component').then(m => m.RegisterComponent);
+const loadVerifyEmail = () => import('./auth/pages/verify-email/verify-email.component').then(m => m.VerifyEmailComponent);
+const loadForgotPassword = () => import('./auth/pages/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent);
+const loadResetPassword = () => import('./auth/pages/reset-password/reset-password.component').then(m => m.ResetPasswordComponent);
+const loadAppleCallback = () => import('./auth/pages/apple-callback/apple-callback.component').then(m => m.AppleCallbackComponent);
+
+const authChildRoutes: Routes = [
+    { path: '', pathMatch: 'full', redirectTo: 'login' },
+    { path: 'login', loadComponent: loadLogin },
+    { path: 'register', loadComponent: loadRegister },
+    { path: 'verify-email', loadComponent: loadVerifyEmail },
+    { path: 'forgot-password', loadComponent: loadForgotPassword },
+    { path: 'reset-password', loadComponent: loadResetPassword },
+    { path: 'social/apple/callback', loadComponent: loadAppleCallback },
+];
+
+const authRouteEntries: Routes = [
+    {
+        path: 'auth',
+        children: authChildRoutes,
+    },
+    ...SUPPORTED_LANGUAGE_CODES.map(lang => ({
+        path: `${lang}/auth`,
+        children: authChildRoutes.map(route => ({
+            ...route,
+            data: { ...(route.data || {}), language: lang },
+        })),
+    })),
+];
 
 const adminThemeProviders = [
     provideEnvironmentInitializer(() => {
@@ -19,7 +54,53 @@ const adminThemeProviders = [
     }),
 ];
 
+const accountThemeProviders = [
+    provideEnvironmentInitializer(() => {
+        const prime = inject(PrimeNG);
+        prime.setConfig({
+            theme: {
+                preset: Aura,
+            },
+        });
+    }),
+];
+
+const accountRouteEntries: Routes = [
+    // {
+    //     path: 'account',
+    //     providers: accountThemeProviders,
+    //     canActivate: [SessionInitGuard, ClientAuthGuard],
+    //     loadChildren: () => import('./account/account.routes').then(m => m.accountRoutes),
+    // },
+    ...SUPPORTED_LANGUAGE_CODES.map(lang => ({
+        path: `${lang}/account`,
+        providers: accountThemeProviders,
+        canActivate: [SessionInitGuard, ClientAuthGuard],
+        data: { 
+            language: lang, 
+            noHydration: true
+        },
+        loadChildren: () => import('./account/account.routes').then(m => m.accountRoutes),
+    })),
+];
+
+const checkoutRouteEntries: Routes = [
+    {
+        path: 'checkout/:bookingRef',
+        // canActivate: [SessionInitGuard, ClientAuthGuard],
+        loadChildren: () => import('./payment/payment.routes').then(m => m.paymentRoutes),
+    },
+    ...SUPPORTED_LANGUAGE_CODES.map(lang => ({
+        path: `${lang}/checkout/:bookingRef`,
+        data: { language: lang },
+        loadChildren: () => import('./payment/payment.routes').then(m => m.paymentRoutes),
+    })),
+];
+
 export const routes: Routes = [
+    ...authRouteEntries,
+    ...accountRouteEntries,
+    ...checkoutRouteEntries,
     // {   path: 'en/aboutus/',component: AboutUsComponent, data: { language: 'en' }  },
     // {   path: 'de/aboutus/',component: AboutUsComponent, data: { language: 'de' }  },
     // {   path: 'ru/aboutus/',component: AboutUsComponent, data: { language: 'ru' }  },
@@ -357,6 +438,7 @@ export const routes: Routes = [
         path: 'admin',
         component: AdminHomeComponent, 
         providers: adminThemeProviders,
+        canActivate: [SessionInitGuard],
         loadChildren: () => import('./admin/admin.routes').then(x => x.adminRoutes),
         data: { 
             noHydration: true, 
@@ -365,17 +447,13 @@ export const routes: Routes = [
 
     {
         path: 'passwordreset',
-        // component: PasswordResetComponent,
-        loadComponent: () => import('./admin/pages/password-reset/password-reset.component').then(m => m.PasswordResetComponent), 
-        data: { language: 'tr' },
-        providers: adminThemeProviders,
+        loadComponent: () => import('./auth/pages/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
+        data: { noHydration: true },
     },
     {
         path: 'passwordresetconfirm',
-        // component: PasswordResetConfirmComponent,
-        loadComponent: () => import('./admin/pages/password-reset-confirm/password-reset-confirm.component').then(m => m.PasswordResetConfirmComponent), 
-        data: { language: 'tr' },
-        providers: adminThemeProviders,
+        loadComponent: () => import('./auth/pages/reset-password/reset-password.component').then(m => m.ResetPasswordComponent),
+        data: { noHydration: true },
     },
     {
         path: 'unauthorized',

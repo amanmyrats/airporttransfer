@@ -1,0 +1,79 @@
+.review-form {
+  max-width: 720px;
+  margin: 0 auto;
+
+  &__caption {
+    margin: 0.25rem 0 0;
+    color: #6b7280;
+    font-size: 0.95rem;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  &__rating {
+    border: none;
+    padding: 0;
+    margin: 0;
+
+    legend {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  &__rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .p-rating {
+      display: inline-flex;
+      gap: 0.35rem;
+    }
+
+    .p-rating-icon {
+      font-size: 1.75rem;
+      color: #d1d5db;
+      transition: color 0.2s ease;
+
+      &.pi-star-fill {
+        color: #fbbf24;
+      }
+    }
+  }
+
+  &__rating-value {
+    font-weight: 600;
+    color: #374151;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    span {
+      font-weight: 600;
+    }
+  }
+
+  &__meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+  }
+
+  &__validation {
+    font-size: 0.85rem;
+    color: #b91c1c;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+}

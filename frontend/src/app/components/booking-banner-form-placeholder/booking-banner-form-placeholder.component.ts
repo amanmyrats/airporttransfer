@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES } from '../../constants/language.contants';
 
-type LangCode = 'en' | 'de' | 'ru' | 'tr';
-type Translatable = Record<LangCode, string>;
+type Translatable = Record<LanguageCode, string>;
 
 @Component({
   selector: 'app-booking-banner-form-placeholder',
@@ -15,8 +15,7 @@ export class BookingBannerFormPlaceholderComponent {
   @Input() langInput?: { code?: string };
 
   readonly navbarMenu = NAVBAR_MENU;
-  private readonly fallbackLang: LangCode = 'en';
-  private readonly supportedLangs: LangCode[] = ['en', 'de', 'ru', 'tr'];
+  private readonly fallbackLang: LanguageCode = SUPPORTED_LANGUAGE_CODES[0]!;
   readonly loadingPlaceholder: Translatable = {
     en: 'Loading Google Places. Please wait…',
     de: 'Google Places wird geladen. Bitte warten …',
@@ -71,9 +70,9 @@ export class BookingBannerFormPlaceholderComponent {
     },
   };
 
-  get langCode(): LangCode {
-    const candidate = this.langInput?.code?.toLowerCase() as LangCode | undefined;
-    if (!candidate || !this.supportedLangs.includes(candidate)) {
+  get langCode(): LanguageCode {
+    const candidate = this.langInput?.code?.toLowerCase() as LanguageCode | undefined;
+    if (!candidate || !SUPPORTED_LANGUAGE_CODES.includes(candidate)) {
       return this.fallbackLang;
     }
     return candidate;

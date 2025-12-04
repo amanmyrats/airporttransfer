@@ -3,6 +3,8 @@ import { BLOGS } from '../../blog-content';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-blog-list',
@@ -14,18 +16,16 @@ import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 })
 export class BlogListComponent  implements OnInit {
   navbarMenu = NAVBAR_MENU;
-  currentLanguage: any = {
-    code: 'en',
-    name: 'English',
-    flag: 'flags/gb.svg',
-  };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
 
   blogs: any = BLOGS;
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] as string | undefined;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
   }
 
 

@@ -1,0 +1,310 @@
+.payments-wrapper {
+  display: grid;
+  gap: 1rem;
+
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+
+    h1 {
+      margin: 0;
+    }
+
+    .filters {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+  }
+
+  .booking-ref {
+    font-weight: 600;
+  }
+
+  .summary {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--surface-border, #e2e8f0);
+    border-radius: 0.5rem;
+    background: var(--surface-card, #f8fafc);
+    color: var(--text-color, #0f172a);
+  }
+
+  .link {
+    margin-left: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--primary-color, #2563eb);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+  }
+
+  .intent-id,
+  .booking-due {
+    display: block;
+    margin-left: 0.5rem;
+    color: #475467;
+    font-size: 0.85rem;
+  }
+
+  .receipt-actions {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    .receipt-count {
+      display: none;
+    }
+
+    .receipt-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .receipt-action-button {
+      color: var(--primary-color, #93c5fd) !important;
+      border-color: var(--primary-color, #93c5fd) !important;
+      border-radius: 999px !important;
+      font-size: 0.75rem !important;
+      padding: 0 0.5rem !important;
+      min-width: 3.5rem;
+      &:hover {
+        color: var(--primary-color-text, #0f172a) !important;
+        border-color: var(--primary-color-text, #0f172a) !important;
+        background: var(--primary-color, #93c5fd) !important;
+      }
+    }
+  }
+
+  .status-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-items: stretch;
+  }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem 0.85rem;
+    border-radius: 0.75rem;
+    font-size: 0.95rem;
+    text-transform: capitalize;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: 0.02em;
+
+    &.succeeded {
+      background: #16a34a;
+    }
+
+    &.processing {
+      background: #f97316;
+    }
+
+    &.requires_action {
+      background: #facc15;
+      color: #1f2937;
+    }
+
+    &.failed,
+    &.canceled {
+      background: #dc2626;
+    }
+
+    &.default,
+    &:not(.succeeded):not(.processing):not(.requires_action):not(.failed):not(.canceled) {
+      background: #64748b;
+    }
+  }
+
+  :host ::ng-deep .status-settle.p-button {
+    width: 100%;
+    max-width: 12rem;
+    align-self: stretch;
+    background: linear-gradient(135deg, #34d399, #059669) !important;
+    color: #032d1f !important;
+    border: none !important;
+    border-radius: 999px !important;
+    padding: 0.35rem 1rem !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+
+    &:hover {
+      background: linear-gradient(135deg, #6ee7b7, #10b981) !important;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .p-button-label {
+      font-weight: 900 !important;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-family: inherit !important;
+    }
+  }
+
+  .small-text {
+    font-size: 0.8rem;
+  }
+
+  .amount-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: 0.9rem;
+
+    span {
+      display: block;
+    }
+
+    .amount-total {
+      font-weight: 600;
+      color: inherit;
+    }
+
+    .amount-paid {
+      color: var(--green-500, #047857);
+    }
+
+    .amount-due {
+      color: var(--orange-500, #b45309);
+      font-weight: 600;
+    }
+  }
+
+  .p-input-icon-left.disabled input {
+    background: #f1f5f9;
+    cursor: not-allowed;
+  }
+
+  .p-input-icon-left.disabled {
+    opacity: 0.7;
+  }
+
+  .filter-search-container {
+    position: relative;
+
+    &.filter-search-disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .filter-disabled-hint {
+      position: absolute;
+      bottom: 0.5rem;
+      right: 1rem;
+      background: #fff;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.85rem;
+      color: #475467;
+    }
+  }
+
+  .dialog-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--surface-border, #e2e8f0);
+
+    &:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    h3,
+    h4 {
+      margin: 0 0 0.5rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.25rem;
+    }
+  }
+
+  .dialog-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+    color: var(--text-color, #0f172a);
+    background: var(--surface-card, #f8fafc);
+
+    th,
+    td {
+      border: 1px solid var(--surface-border, #e2e8f0);
+      padding: 0.35rem 0.5rem;
+      font-size: 0.9rem;
+      text-align: left;
+      color: inherit;
+    }
+
+    th {
+      background: var(--surface-card, #f8fafc);
+      font-weight: 600;
+    }
+  }
+
+  .receipt-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      border: 1px solid var(--surface-border, #e2e8f0);
+      border-radius: 0.5rem;
+      background: var(--surface-card, #f8fafc);
+      gap: 0.75rem;
+
+      strong {
+        display: block;
+        margin-bottom: 0.25rem;
+        color: var(--text-color, #0f172a);
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--text-color-secondary, #334155);
+      }
+
+      .receipt-link {
+        font-weight: 600;
+        color: var(--primary-color, #2563eb);
+        text-decoration: none;
+        white-space: nowrap;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  .muted {
+    color: var(--text-color-secondary, #64748b);
+    margin: 0;
+  }
+
+  .error {
+    color: var(--red-400, #b91c1c);
+    font-weight: 600;
+  }
+}

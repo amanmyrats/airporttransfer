@@ -45,6 +45,8 @@
     <ng-template pTemplate="header">
       <tr>
         <th>Title</th>
+        <th>Category</th>
+        <th>Tags</th>
         <th>Status</th>
         <th>Views</th>
         <th>Published At</th>
@@ -56,6 +58,8 @@
         <td>
           {{ post.internal_title || post.slug }}
         </td>
+        <td>{{ getCategoryLabel(post.category_obj) || '—' }}</td>
+        <td>{{ getTagLabels(post.tags_obj) || '—' }}</td>
         <td>
           <span [class.p-badge]="true" [class.p-badge-success]="post.is_published"
             [class.p-badge-secondary]="!post.is_published">

@@ -7,9 +7,9 @@ import { CarTypeService } from '../../services/car-type.service';
 import { MainLocation } from '../../models/main-location.model';
 import { PopularRoute } from '../../admin/models/popular-route.model';
 import { CarType } from '../../models/car-type.model';
+import { LanguageCode, SUPPORTED_LANGUAGE_CODES } from '../../constants/language.contants';
 
-type LangCode = 'en' | 'de' | 'ru' | 'tr';
-type Translatable = Record<LangCode, string>;
+type Translatable = Record<LanguageCode, string>;
 
 interface RouteSummary {
   destination: string;
@@ -36,7 +36,7 @@ export class PriceListPlaceholderComponent implements OnInit {
   @Input() langInput?: { code?: string };
 
   readonly navbarMenu = NAVBAR_MENU;
-  private readonly fallbackLang: LangCode = 'en';
+  private readonly fallbackLang: LanguageCode = SUPPORTED_LANGUAGE_CODES[0]!;
 
   locationSummaries: LocationSummary[] = [];
 
@@ -90,10 +90,9 @@ export class PriceListPlaceholderComponent implements OnInit {
     }
   }
 
-  get langCode(): LangCode {
-    const code = this.langInput?.code?.toLowerCase() as LangCode | undefined;
-    const supported: LangCode[] = ['en', 'de', 'ru', 'tr'];
-    if (!code || !supported.includes(code)) {
+  get langCode(): LanguageCode {
+    const code = this.langInput?.code?.toLowerCase() as LanguageCode | undefined;
+    if (!code || !SUPPORTED_LANGUAGE_CODES.includes(code)) {
       return this.fallbackLang;
     }
     return code;
@@ -143,13 +142,14 @@ export class PriceListPlaceholderComponent implements OnInit {
 
     const routesByLocation = new Map<string, PopularRoute[]>();
     routes.forEach((route) => {
-      if (!route?.main_location) {
+      const locationCode = this.getRouteLocationCode(route);
+      if (!locationCode) {
         return;
       }
-      if (!routesByLocation.has(route.main_location)) {
-        routesByLocation.set(route.main_location, []);
+      if (!routesByLocation.has(locationCode)) {
+        routesByLocation.set(locationCode, []);
       }
-      routesByLocation.get(route.main_location)!.push(route);
+      routesByLocation.get(locationCode)!.push(route);
     });
 
     return this.mainLocationService
@@ -185,6 +185,16 @@ export class PriceListPlaceholderComponent implements OnInit {
         };
       })
       .filter((summary) => summary.routes.length > 0);
+  }
+
+  private getRouteLocationCode(route: PopularRoute): string | undefined {
+    return (
+      route.main_location ||
+      route.airport ||
+      route.airport_detail?.code ||
+      route.airport_detail?.iata_code ||
+      undefined
+    );
   }
 
   private toNumeric(value: unknown): number | null {

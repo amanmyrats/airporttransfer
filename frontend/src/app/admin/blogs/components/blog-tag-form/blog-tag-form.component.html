@@ -27,5 +27,42 @@
     </div>
   </form>
 
+  <section *ngIf="tag?.id" class="translations">
+    <header class="translations__header">
+      <h4>Translations</h4>
+      <div class="lang-actions">
+        <button
+          *ngFor="let l of languages"
+          pButton
+          type="button"
+          class="p-button-sm p-button-text"
+          [label]="l.name"
+          (click)="openTranslationForm(l.code, getTranslationForLang(l.code))">
+        </button>
+      </div>
+    </header>
+
+    <p-table [value]="translations" [tableStyle]="{ 'min-width': '100%' }" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Language</th>
+          <th>Name</th>
+          <th>Slug</th>
+          <th style="width: 120px;">Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-tx>
+        <tr>
+          <td>{{ tx.language?.toUpperCase() }}</td>
+          <td>{{ tx.name || '—' }}</td>
+          <td>{{ tx.slug || '—' }}</td>
+          <td>
+            <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm" type="button" (click)="openTranslationForm(tx.language, tx)"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </section>
+
   <p-toast [life]="8000"></p-toast>
 </div>

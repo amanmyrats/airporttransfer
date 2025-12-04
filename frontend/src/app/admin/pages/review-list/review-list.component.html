@@ -1,0 +1,266 @@
+<section class="reviews-page">
+  <div class="filters-card" [ngClass]="{ compact: !showDetailedFilters }">
+    <form [formGroup]="filterForm" (ngSubmit)="onSubmitFilters()" class="filters-form">
+      <div class="filters-grid">
+        <div class="filter-field search-field">
+          <label for="review-search">Search</label>
+          <p-iconfield>
+            <p-inputicon styleClass="pi pi-search" />
+            <input
+              id="review-search"
+              type="text"
+              pInputText
+              formControlName="search"
+              placeholder="Search by comment, reservation or user"
+            />
+          </p-iconfield>
+        </div>
+
+        <div class="filter-field">
+          <label for="review-status">Status</label>
+          <p-select
+            inputId="review-status"
+            formControlName="status"
+            [options]="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            showClear="true"
+            appendTo="body"
+            placeholder="All statuses"
+            (onChange)="onSubmitFilters()"
+          />
+        </div>
+
+        @if (showDetailedFilters) {
+          <div class="filter-field">
+            <label for="review-flagged">Flagged</label>
+            <p-select
+              inputId="review-flagged"
+              formControlName="is_flagged"
+              [options]="flaggedOptions"
+              optionLabel="label"
+              optionValue="value"
+              appendTo="body"
+              placeholder="All reviews"
+              (onChange)="onSubmitFilters()"
+            />
+          </div>
+
+          <div class="filter-field rating-range">
+            <div class="rating-range__group">
+              <label for="review-min-rating">Min rating</label>
+              <input
+                id="review-min-rating"
+                type="number"
+                pInputText
+                formControlName="min_rating"
+                min="1"
+                max="5"
+                step="1"
+                (change)="onSubmitFilters()"
+              />
+            </div>
+            <div class="rating-range__group">
+              <label for="review-max-rating">Max rating</label>
+              <input
+                id="review-max-rating"
+                type="number"
+                pInputText
+                formControlName="max_rating"
+                min="1"
+                max="5"
+                step="1"
+                (change)="onSubmitFilters()"
+              />
+            </div>
+          </div>
+
+          <div class="filter-field">
+            <label for="review-ordering">Ordering</label>
+            <p-select
+              inputId="review-ordering"
+              formControlName="ordering"
+              [options]="orderingOptions"
+              optionLabel="label"
+              optionValue="value"
+              appendTo="body"
+              placeholder="Newest first"
+              (onChange)="handleOrderingChange()"
+            />
+          </div>
+        }
+      </div>
+
+      <div class="filters-actions">
+        <button type="submit" pButton label="Search" icon="pi pi-search"></button>
+        <button
+          type="button"
+          pButton
+          label="Clear"
+          icon="pi pi-times"
+          severity="secondary"
+          (click)="onResetFilters()"
+        ></button>
+        <button
+          type="button"
+          pButton
+          class="toggle-button"
+          [label]="showDetailedFilters ? 'Hide detailed filters' : 'Show detailed filters'"
+          [icon]="showDetailedFilters ? 'pi pi-eye-slash' : 'pi pi-eye'"
+          severity="secondary"
+          (click)="toggleDetailedFilters()"
+          [attr.aria-expanded]="showDetailedFilters"
+        ></button>
+      </div>
+    </form>
+  </div>
+
+  <p-table
+    [value]="reviews"
+    [loading]="loading"
+    dataKey="id"
+    styleClass="reviews-table"
+    [tableStyle]="{ 'min-width': '65rem' }"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Reservation</th>
+        <th>Rating</th>
+        <th>Title & Comment</th>
+        <th>Status</th>
+        <th>Public</th>
+        <th>Flagged</th>
+        <th>Created</th>
+        <th>Updated</th>
+        <th class="actions-column">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-review>
+      <tr>
+        <td>
+          <span class="id-cell">#{{ review.id }}</span>
+        </td>
+        <td>
+          <div class="reservation-cell">
+            <span class="reservation-number">{{ review.reservation_obj?.number || '—' }}</span>
+            @if (review.reservation_obj?.transfer_date) {
+              <span class="reservation-date">
+                {{ review.reservation_obj?.transfer_date | date: 'mediumDate' }}
+              </span>
+            }
+          </div>
+        </td>
+        <td>
+          <div class="rating-cell">
+            <i class="pi pi-star-fill"></i>
+            <span>{{ review.rating }}</span>
+          </div>
+        </td>
+        <td>
+          <div class="comment-cell">
+            <strong>{{ review.title || 'No title' }}</strong>
+            <p class="comment-snippet">
+              {{ review.comment || 'No comment provided.' }}
+            </p>
+          </div>
+        </td>
+        <td>
+          <p-tag
+            [severity]="getStatusSeverity(review.status)"
+            [value]="review.status | titlecase"
+          />
+        </td>
+        <td>
+          @if (review.is_public) {
+            <span class="pi pi-eye text-success" pTooltip="Public" tooltipPosition="bottom"></span>
+          } @else {
+            <span class="pi pi-eye-slash text-muted" pTooltip="Private" tooltipPosition="bottom"></span>
+          }
+        </td>
+        <td>
+          @if (review.is_flagged) {
+            <span class="pi pi-flag text-warn" pTooltip="Flagged for follow-up"></span>
+          } @else {
+            <span class="pi pi-flag text-muted" pTooltip="Not flagged"></span>
+          }
+        </td>
+        <td>
+          <span>{{ review.created_at | date: 'short' }}</span>
+        </td>
+        <td>
+          <span>{{ review.updated_at | date: 'short' }}</span>
+        </td>
+        <td class="actions-column">
+          <div class="actions">
+            <button
+              type="button"
+              pButton
+              label="View"
+              icon="pi pi-eye"
+              severity="secondary"
+              (click)="openReviewDetails(review)"
+            ></button>
+            @if (review.status !== 'published') {
+              <button
+                type="button"
+                pButton
+                label="Publish"
+                icon="pi pi-check"
+                severity="success"
+                [loading]="isProcessing(review.id)"
+                (click)="publishReview(review)"
+              ></button>
+            }
+            @if (review.status !== 'rejected') {
+              <button
+                type="button"
+                pButton
+                label="Reject"
+                icon="pi pi-times"
+                severity="danger"
+                [loading]="isProcessing(review.id)"
+                (click)="confirmRejectReview(review)"
+              ></button>
+            }
+            <button
+              type="button"
+              pButton
+              [label]="review.is_flagged ? 'Unflag' : 'Flag'"
+              icon="pi pi-flag"
+              [severity]="review.is_flagged ? 'secondary' : 'warn'"
+              [loading]="isProcessing(review.id)"
+              (click)="toggleFlagReview(review)"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="10">
+          <div class="empty-state">
+            <i class="pi pi-comments"></i>
+            <p>No reviews match the current filters.</p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <div class="paginator-wrapper">
+    <app-shared-paginator
+      [first]="(currentPage - 1) * pageSize"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords"
+      [rowsPerPageOptions]="pageSizeOptions"
+      (onPageChangeEmitter)="handlePageChange($event)"
+    />
+  </div>
+
+  <p-toast position="bottom-right" [life]="20000" />
+
+  <p-confirmDialog />
+</section>

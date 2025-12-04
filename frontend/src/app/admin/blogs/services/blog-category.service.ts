@@ -11,12 +11,17 @@ export class BlogCategoryService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(queryString: string=''): Observable<PaginatedResponse<BlogCategory>> {
-    return this.http.get<PaginatedResponse<BlogCategory>>(`${env.baseUrl}${env.apiV1}${this.endPoint}${queryString}`);
+  getAll(queryString: string='', lang?: string): Observable<PaginatedResponse<BlogCategory>> {
+    let suffix = queryString || '';
+    if (lang) {
+      suffix += `${suffix ? (suffix.includes('?') ? '&' : '?') : '?'}lang=${lang}`;
+    }
+    return this.http.get<PaginatedResponse<BlogCategory>>(`${env.baseUrl}${env.apiV1}${this.endPoint}${suffix}`);
   }
 
-  getById(id: number): Observable<BlogCategory> {
-    return this.http.get<BlogCategory>(`${env.baseUrl}${env.apiV1}${this.endPoint}${id}/`);
+  getById(id: number, lang?: string): Observable<BlogCategory> {
+    const suffix = lang ? `?lang=${lang}` : '';
+    return this.http.get<BlogCategory>(`${env.baseUrl}${env.apiV1}${this.endPoint}${id}/${suffix}`);
   }
 
   create(data: Partial<BlogCategory>): Observable<BlogCategory> {

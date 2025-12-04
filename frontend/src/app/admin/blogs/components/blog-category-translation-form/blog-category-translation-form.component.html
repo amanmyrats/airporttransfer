@@ -1,0 +1,40 @@
+<div class="form-wrapper">
+  <h3 class="title">{{ translation?.id ? 'Edit Category Translation' : 'Create Category Translation' }}</h3>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+    <input type="hidden" formControlName="id" />
+    <input type="hidden" formControlName="category" />
+
+    <div class="form-field">
+      <label for="language">Language <span class="required">*</span></label>
+      <p-select
+        inputId="language"
+        [options]="languages"
+        formControlName="language"
+        placeholder="Select language"
+        optionLabel="label"
+        optionValue="value"
+        [showClear]="true">
+      </p-select>
+      <small *ngIf="f['language'].touched && f['language'].invalid" class="error">Language is required.</small>
+    </div>
+
+    <div class="form-field">
+      <label for="name">Name <span class="required">*</span></label>
+      <input id="name" type="text" pInputText formControlName="name" placeholder="Localized category name" />
+      <small *ngIf="f['name'].touched && f['name'].invalid" class="error">Name is required.</small>
+    </div>
+
+    <div class="form-field">
+      <label for="slug">Slug</label>
+      <input id="slug" type="text" pInputText formControlName="slug" placeholder="Optional localized slug" />
+      <small>Leave empty to auto-generate.</small>
+    </div>
+
+    <div class="form-actions">
+      <button pButton type="submit" label="Save" icon="pi pi-check"></button>
+    </div>
+  </form>
+
+  <p-toast [life]="6000"></p-toast>
+</div>

@@ -9,14 +9,34 @@
       <tr>
         <th>Name</th>
         <th>Slug</th>
+        <th>Translations</th>
         <th style="width: 220px;">Actions</th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-tag>
       <tr>
-        <td>{{ tag.name }}</td>
-        <td>{{ tag.slug }}</td>
+        <td>{{ tag.resolved?.name || tag.name }}</td>
+        <td>{{ tag.resolved?.slug || tag.slug }}</td>
+        <td>
+          <div class="translation-chips">
+            <button
+              *ngFor="let tx of tag.translations"
+              type="button"
+              pButton
+              class="p-button-text p-button-sm"
+              [label]="(tx.language || '').toUpperCase() + ': ' + (tx.name || '—')"
+              (click)="openTranslation(tag, tx)">
+            </button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-plus"
+              class="p-button-text p-button-sm"
+              (click)="openTranslation(tag, null)">
+            </button>
+          </div>
+        </td>
         <td class="actions">
           <button pButton icon="pi pi-pencil" label="Edit" class="p-button-sm p-button-text" (click)="openEdit(tag)"></button>
           <button pButton icon="pi pi-trash" label="Delete" class="p-button-sm p-button-danger p-button-text" (click)="confirmDelete(tag)"></button>

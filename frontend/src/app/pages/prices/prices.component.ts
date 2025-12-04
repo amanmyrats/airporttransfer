@@ -5,6 +5,8 @@ import { PriceListComponent } from '../../components/price-list/price-list.compo
 import { FooterComponent } from '../../components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-prices',  
@@ -18,7 +20,7 @@ import { Meta, Title } from '@angular/platform-browser';
   styleUrl: './prices.component.scss'
 })
 export class PricesComponent implements OnInit {
-  currentLanguage = {code: 'en', name: 'English', flag: 'flags/gb.svg'};
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
 
   constructor(
   private route: ActivatedRoute, 
@@ -27,8 +29,10 @@ export class PricesComponent implements OnInit {
   ){
   }
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] as string | undefined;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
 
     this.setMetaTags(this.currentLanguage.code);
   }
@@ -59,7 +63,8 @@ export class PricesComponent implements OnInit {
       },
     };
 
-    const meta: any = metaTags[langCode] || metaTags['en'];
+    const fallbackCode = SUPPORTED_LANGUAGES[0]!.code;
+    const meta: any = metaTags[langCode] || metaTags[fallbackCode];
     this.title.setTitle(meta.title);
     this.meta.updateTag({ name: 'description', content: meta.description });
   }

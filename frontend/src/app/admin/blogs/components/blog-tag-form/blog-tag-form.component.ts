@@ -7,10 +7,14 @@ import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { RouterModule } from '@angular/router';
 
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
+import { TableModule } from 'primeng/table';
 
 import { BlogTagService } from '../../services/blog-tag.service';
 import { BlogTag } from '../../models/blog-tag.model';
+import { BlogTagTranslation } from '../../models/blog-tag-translation.model';
+import { BlogTagTranslationFormComponent } from '../blog-tag-translation-form/blog-tag-translation-form.component';
+import { SUPPORTED_LANGUAGES } from '../../../../constants/language.contants';
 import { HttpErrorPrinterService } from '../../../../services/http-error-printer.service';
 
 @Component({
@@ -25,14 +29,18 @@ import { HttpErrorPrinterService } from '../../../../services/http-error-printer
     RouterModule,
     MessageModule,
     ToastModule,
+    TableModule,
   ],
-  providers: [HttpErrorPrinterService],
+  providers: [HttpErrorPrinterService, DialogService],
   templateUrl: './blog-tag-form.component.html',
   styleUrl: './blog-tag-form.component.scss',
 })
 export class BlogTagFormComponent implements OnInit {
   form!: FormGroup;
   tag: BlogTag | null = null;
+  translations: BlogTagTranslation[] = [];
+  languages = SUPPORTED_LANGUAGES;
+  refTx?: DynamicDialogRef;
 
   constructor(
     private fb: FormBuilder,
@@ -40,6 +48,7 @@ export class BlogTagFormComponent implements OnInit {
     private dialogRef: DynamicDialogRef,
     private config: DynamicDialogConfig,
     private httpErrorPrinter: HttpErrorPrinterService,
+    private dialogService: DialogService,
   ) {}
 
   ngOnInit(): void {
@@ -52,6 +61,7 @@ export class BlogTagFormComponent implements OnInit {
     this.tag = this.config?.data?.tag ?? null;
     if (this.tag) {
       this.form.patchValue(this.tag);
+      this.translations = this.tag.translations ?? [];
     }
   }
 
@@ -80,5 +90,45 @@ export class BlogTagFormComponent implements OnInit {
 
   get f() {
     return this.form.controls;
+  }
+
+  getTranslationForLang(lang?: string): BlogTagTranslation | null {
+    if (!lang) return null;
+    return this.translations.find(tx => tx.language === lang) ?? null;
+  }
+
+  openTranslationForm(language?: string, translation?: BlogTagTranslation | null): void {
+    if (!this.tag?.id) {
+      this.httpErrorPrinter.printHttpError({ error: { detail: 'Save the tag before adding translations.' } });
+      return;
+    }
+
+    this.refTx = this.dialogService.open(BlogTagTranslationFormComponent, {
+      header: translation ? `Edit ${translation.language?.toUpperCase()} Translation` : 'Add Translation',
+      width: '520px',
+      data: {
+        tagId: this.tag.id,
+        translation,
+        preferredLanguage: translation?.language ?? language,
+      },
+      dismissableMask: true,
+      closable: true,
+      modal: true,
+    });
+
+    this.refTx.onClose.subscribe((res: BlogTagTranslation) => {
+      if (!res) return;
+      const txs = this.translations ?? [];
+      const idx = txs.findIndex(t => t.language === res.language);
+      if (idx !== -1) {
+        txs[idx] = res;
+      } else {
+        txs.push(res);
+      }
+      this.translations = [...txs];
+      if (res.language === 'en') {
+        this.form.patchValue({ name: res.name, slug: res.slug });
+      }
+    });
   }
 }

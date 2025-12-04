@@ -1,9 +1,4 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './pages/login/login.component';
-import { LogoutComponent } from './pages/logout/logout.component';
-import { ChangePasswordComponent } from './pages/change-password/change-password.component';
-import { PasswordResetComponent } from './pages/password-reset/password-reset.component';
-import { PasswordResetConfirmComponent } from './pages/password-reset-confirm/password-reset-confirm.component';
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 import { PopularRouteListComponent } from './pages/popular-route-list/popular-route-list.component';
 import { RateListComponent } from './pages/rate-list/rate-list.component';
@@ -18,15 +13,21 @@ import { BlogPostSectionListComponent } from './blogs/components/blog-post-secti
 import { BlogPostDetailComponent } from './blogs/components/blog-post-detail/blog-post-detail.component';
 import { BlogPostPreviewComponent } from './blogs/components/blog-post-preview/blog-post-preview.component';
 import { FaqLibraryListComponent } from './blogs/components/faq-library-list/faq-library-list.component';
+import { ReviewListComponent } from './pages/review-list/review-list.component';
 
 export const adminRoutes: Routes = [
     {
         path: 'login',
-        component: LoginComponent,
+        pathMatch: 'full',
+        redirectTo: '',
     },
     {
         path: 'logout',
-        component: LogoutComponent,
+        loadComponent: () => import('../auth/pages/logout/logout.component').then(m => m.LogoutComponent),
+    },
+    {
+        path: 'payments',
+        loadChildren: () => import('./payment/payment-admin.routes').then(m => m.paymentAdminRoutes),
     },
     {
         path: 'profile', 
@@ -34,13 +35,17 @@ export const adminRoutes: Routes = [
     },
     {
         path: 'changepassword',
-        component: ChangePasswordComponent,
+        loadComponent: () => import('../auth/pages/change-password/change-password.component').then(m => m.ChangePasswordComponent),
     },
 
 
     {
         path: 'reservations',
         component: ReservationListComponent,
+    },
+    {
+        path: 'reviews',
+        component: ReviewListComponent,
     },
     {
         path: 'popularroutes',

@@ -5,6 +5,8 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
+import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
+import { Language } from '../../models/language.model';
 
 @Component({
   selector: 'app-about-us',
@@ -19,11 +21,7 @@ import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 export class AboutUsComponent {
   navbarMenu = NAVBAR_MENU;
 
-  currentLanguage: any = {
-    code: 'en',
-    name: 'English',
-    flag: 'flags/gb.svg',
-  };
+  currentLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
   
   constructor(
       private title: Title, 
@@ -31,8 +29,10 @@ export class AboutUsComponent {
       private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    const languageCode = this.route.snapshot.data['language'] || 'en';
-    this.currentLanguage.code = languageCode;
+    const languageCode = this.route.snapshot.data['language'] as string | undefined;
+    const resolved =
+      SUPPORTED_LANGUAGES.find(({ code }) => code === languageCode) ?? SUPPORTED_LANGUAGES[0]!;
+    this.currentLanguage = { ...resolved };
     this.setMetaTags(this.currentLanguage.code);
   }
 
@@ -55,7 +55,8 @@ setMetaTags(langCode: string): void {
       description: "Türkiye'de uygun fiyatlı ve güvenilir 7/24 özel havalimanı transfer hizmetleri hakkında bilgi edinin. Antalya, İstanbul, Alanya ve daha fazlasını kapsıyor. Kolayca ulaşım sağlayın!"
     }
   };
-  const meta: any = metaTags[langCode] || metaTags['en'];
+  const fallbackCode = SUPPORTED_LANGUAGES[0]!.code;
+  const meta: any = metaTags[langCode] || metaTags[fallbackCode];
   this.title.setTitle(meta.title);
   this.meta.updateTag({ name: 'description', content: meta.description });
 }

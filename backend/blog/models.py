@@ -375,6 +375,20 @@ class BlogCategory(models.Model):
     def __str__(self):
         return self.name
 
+    def get_i18n(self, lang: str) -> Optional['BlogCategoryTranslation']:
+        tx = next((t for t in self.translations.all() if t.language == lang), None)
+        if tx:
+            return tx
+        return next((t for t in self.translations.all() if t.language == 'en'), None)
+
+    def get_resolved(self, lang: str) -> dict:
+        tx = self.get_i18n(lang)
+        return {
+            "name": (tx and tx.name) or self.name,
+            "slug": (tx and tx.slug) or self.slug,
+            "language": lang,
+        }
+
     def save(self, *args, **kwargs):
         # Only auto-generate if slug is empty; preserves existing URLs on rename.
         if not self.slug:
@@ -384,15 +398,73 @@ class BlogCategory(models.Model):
         for _ in range(3):
             try:
                 with transaction.atomic():
-                    return super().save(*args, **kwargs)
+                    result = super().save(*args, **kwargs)
+                    break
             except IntegrityError as e:
                 if "slug" in str(e).lower():
                     # another process grabbed the same slug; bump and retry
                     self.slug = generate_unique_slug(self, self.name, field_name="slug")
                     continue
                 raise
-        # Final attempt (very unlikely to reach)
+        else:
+            # Final attempt (very unlikely to reach)
+            result = super().save(*args, **kwargs)
+
+        if self.pk:
+            existing_langs = set(self.translations.values_list('language', flat=True))
+            for lang_code, _ in LANGUAGE_CHOICES:
+                if lang_code not in existing_langs:
+                    BlogCategoryTranslation.objects.create(
+                        category=self,
+                        language=lang_code,
+                        name=self.name if lang_code == 'en' else "",
+                    )
+
+        return result
+
+
+class BlogCategoryTranslation(models.Model):
+    category = models.ForeignKey(BlogCategory, related_name='translations', on_delete=models.CASCADE)
+    language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES)
+    name = models.CharField(max_length=100, blank=True)
+    slug = models.SlugField(max_length=150, unique=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('category', 'language')
+        indexes = [
+            models.Index(fields=['category', 'language']),
+        ]
+
+    def __str__(self):
+        return f"{self.language.upper()} - {self.name or self.category.name}"
+
+    def save(self, *args, **kwargs):
+        base = (self.name or self.category.name or f"{self.category.slug}-{self.language}").strip()
+        if not self.slug:
+            candidate = slugify_by_language(base, self.language) or f"{self.category.slug}-{self.language}"
+            self.slug = self._unique_slug(candidate)
+
         return super().save(*args, **kwargs)
+
+    def _unique_slug(self, candidate: str) -> str:
+        max_len = self._meta.get_field('slug').max_length
+        qs = BlogCategoryTranslation.objects.exclude(pk=self.pk)
+
+        base = _trim_slug_to_length(candidate, max_len)
+        unique = base
+        if not qs.filter(slug=unique).exists():
+            return unique
+
+        i = 2
+        while True:
+            suffix = f"-{i}"
+            base_fitted = _trim_slug_to_length(candidate, max_len, reserve=len(suffix))
+            unique = f"{base_fitted}{suffix}"
+            if not qs.filter(slug=unique).exists():
+                return unique
+            i += 1
 
 
 class BlogTag(models.Model):
@@ -402,6 +474,20 @@ class BlogTag(models.Model):
     def __str__(self):
         return self.name
 
+    def get_i18n(self, lang: str) -> Optional['BlogTagTranslation']:
+        tx = next((t for t in self.translations.all() if t.language == lang), None)
+        if tx:
+            return tx
+        return next((t for t in self.translations.all() if t.language == 'en'), None)
+
+    def get_resolved(self, lang: str) -> dict:
+        tx = self.get_i18n(lang)
+        return {
+            "name": (tx and tx.name) or self.name,
+            "slug": (tx and tx.slug) or self.slug,
+            "language": lang,
+        }
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = generate_unique_slug(self, self.name, field_name="slug")
@@ -409,13 +495,71 @@ class BlogTag(models.Model):
         for _ in range(3):
             try:
                 with transaction.atomic():
-                    return super().save(*args, **kwargs)
+                    result = super().save(*args, **kwargs)
+                    break
             except IntegrityError as e:
                 if "slug" in str(e).lower():
                     self.slug = generate_unique_slug(self, self.name, field_name="slug")
                     continue
                 raise
+        else:
+            result = super().save(*args, **kwargs)
+
+        if self.pk:
+            existing_langs = set(self.translations.values_list('language', flat=True))
+            for lang_code, _ in LANGUAGE_CHOICES:
+                if lang_code not in existing_langs:
+                    BlogTagTranslation.objects.create(
+                        tag=self,
+                        language=lang_code,
+                        name=self.name if lang_code == 'en' else "",
+                    )
+
+        return result
+
+
+class BlogTagTranslation(models.Model):
+    tag = models.ForeignKey(BlogTag, related_name='translations', on_delete=models.CASCADE)
+    language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES)
+    name = models.CharField(max_length=50, blank=True)
+    slug = models.SlugField(max_length=150, unique=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('tag', 'language')
+        indexes = [
+            models.Index(fields=['tag', 'language']),
+        ]
+
+    def __str__(self):
+        return f"{self.language.upper()} - {self.name or self.tag.name}"
+
+    def save(self, *args, **kwargs):
+        base = (self.name or self.tag.name or f"{self.tag.slug}-{self.language}").strip()
+        if not self.slug:
+            candidate = slugify_by_language(base, self.language) or f"{self.tag.slug}-{self.language}"
+            self.slug = self._unique_slug(candidate)
+
         return super().save(*args, **kwargs)
+
+    def _unique_slug(self, candidate: str) -> str:
+        max_len = self._meta.get_field('slug').max_length
+        qs = BlogTagTranslation.objects.exclude(pk=self.pk)
+
+        base = _trim_slug_to_length(candidate, max_len)
+        unique = base
+        if not qs.filter(slug=unique).exists():
+            return unique
+
+        i = 2
+        while True:
+            suffix = f"-{i}"
+            base_fitted = _trim_slug_to_length(candidate, max_len, reserve=len(suffix))
+            unique = f"{base_fitted}{suffix}"
+            if not qs.filter(slug=unique).exists():
+                return unique
+            i += 1
 
 
 class FaqItem(models.Model):

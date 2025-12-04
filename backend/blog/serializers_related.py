@@ -3,14 +3,28 @@ from rest_framework import serializers
 from .models import BlogPost, BlogTag, BlogCategory, BlogPostTranslation
 
 class TagMiniSerializer(serializers.ModelSerializer):
+    resolved = serializers.SerializerMethodField()
+
     class Meta:
         model = BlogTag
-        fields = ('id', 'name',)
+        fields = ('id', 'name', 'resolved',)
+
+    def get_resolved(self, obj: BlogTag):
+        lang = self.context.get('lang') or 'en'
+        lang = (lang or 'en')[:2]
+        return obj.get_resolved(lang)
 
 class CategoryMiniSerializer(serializers.ModelSerializer):
+    resolved = serializers.SerializerMethodField()
+
     class Meta:
         model = BlogCategory
-        fields = ('id', 'name',)
+        fields = ('id', 'name', 'resolved',)
+
+    def get_resolved(self, obj: BlogCategory):
+        lang = self.context.get('lang') or 'en'
+        lang = (lang or 'en')[:2]
+        return obj.get_resolved(lang)
 
 class TranslationMiniSerializer(serializers.ModelSerializer):
     class Meta:

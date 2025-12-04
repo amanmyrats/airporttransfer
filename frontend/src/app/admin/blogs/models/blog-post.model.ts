@@ -17,12 +17,12 @@ export class BlogPost  {
     seo_description?: string;
     main_image?: string;
     thumbnail?: string;
-    category?: string;
+    category?: number | string | null;
     category_obj?: BlogCategory;
     translations?: BlogPostTranslation[];
     sections?: BlogSection[];
     views_count?: number;
-    tags?: [];
+    tags?: BlogTag[];
     tags_obj?: BlogTag[];
     featured?: boolean;
     priority?: number;

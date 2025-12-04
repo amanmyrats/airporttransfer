@@ -1,0 +1,126 @@
+.reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    h1 {
+      margin: 0;
+    }
+
+    .p-button {
+      white-space: nowrap;
+    }
+  }
+
+  &__subhead {
+    margin: 0.25rem 0 0;
+    color: #6b7280;
+    font-size: 0.95rem;
+  }
+
+  &__hint {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+  }
+
+  &__empty {
+    margin: 0;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px dashed #d1d5db;
+    background: #f9fafb;
+    color: #6b7280;
+  }
+
+  &__card {
+    .p-card-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+
+    .p-card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  }
+
+  &__card-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 600;
+  }
+
+  &__status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    background: #e5e7eb;
+    color: #374151;
+    &--live {
+      background: #dcfce7;
+      color: #166534;
+    }
+  }
+
+  &__rating {
+    font-size: 0.9rem;
+    color: #111827;
+  }
+
+  &__reservation {
+    font-size: 0.9rem;
+    color: #4b5563;
+  }
+
+  &__title {
+    margin: 0;
+    font-weight: 600;
+    &--muted {
+      color: #9ca3af;
+      font-style: italic;
+    }
+  }
+
+  &__comment {
+    margin: 0;
+    line-height: 1.6;
+    &--muted {
+      color: #9ca3af;
+      font-style: italic;
+    }
+  }
+
+  &__status-note {
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.75rem;
+    background: #f3f4f6;
+    font-size: 0.85rem;
+    color: #4b5563;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__timestamp {
+    font-size: 0.85rem;
+    color: #6b7280;
+  }
+}

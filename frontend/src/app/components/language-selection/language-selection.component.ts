@@ -1,8 +1,14 @@
-import { afterNextRender, afterRender, ChangeDetectorRef, Component, effect, Inject, inject, Input, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, Input, PLATFORM_ID } from '@angular/core';
 import { LanguageService } from '../../services/language.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { SUPPORTED_LANGUAGES } from '../../constants/language.contants';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { Language } from '../../models/language.model';
+import {
+  LanguageCode,
+  SupportedLanguage,
+  SUPPORTED_LANGUAGE_CODES,
+  SUPPORTED_LANGUAGES,
+} from '../../constants/language.contants';
+import { Router } from '@angular/router';
 import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 
 @Component({
@@ -15,48 +21,22 @@ import { NAVBAR_MENU } from '../../constants/navbar-menu.constants';
 })
 export class LanguageSelectionComponent {
   navbarMenu: any = NAVBAR_MENU;
-  supportedLanguages = SUPPORTED_LANGUAGES;
-  @Input() langInput: any | null = null; // Input property for language selection
-  @Input() trailingMultilingualBlogSlug: { [key: string]: string } | null = null; // e.g., 'blogs/turkey-airport-transfer-blogs/multilingual-slug'
-  selectedLanguage: any = { name: 'English', code: 'en', flag: 'flags/gb.svg' };
+  supportedLanguages: SupportedLanguage[] = SUPPORTED_LANGUAGES.map((lang) => ({ ...lang }));
+  @Input() langInput: Language | null = null; // Input property for language selection
+  @Input() trailingMultilingualBlogSlug: Partial<Record<LanguageCode, string>> | null = null; // e.g., 'blogs/turkey-airport-transfer-blogs/multilingual-slug'
+  selectedLanguage: Language = { ...SUPPORTED_LANGUAGES[0]! };
 
   translatedUrlWithoutLang: string = '';
 
   isDropdownVisible = false; // Tracks the visibility of the dropdown menu
-  private languageService!: LanguageService;
-  private router!: Router;
-
   constructor(
-    private route: ActivatedRoute, 
+    private languageService: LanguageService,
+    private router: Router,
     @Inject(PLATFORM_ID) private platformId: any,
-    private cd: ChangeDetectorRef,
-  ) {
-    
-    if (typeof window !== 'undefined') {
-      this.languageService = inject(LanguageService);
-      this.router = inject(Router);
-
-      //   effect(() => {
-      //     this.selectedLanguage = this.languageService.currentLang();
-      //     this.translatedUrlWithoutLang = this.getTranslatedUrlWithoutLang(this.selectedLanguage.code);
-      // });
-    }
-    afterNextRender(() => {
-      console.log('afterRender in language selection');
-      console.log(this.route.snapshot);
-      const lang = this.languageService.detectLanguageFromRoute(this.route);
-      if (lang) {
-        if (lang.code !== this.selectedLanguage.code) {
-          this.selectedLanguage = lang;
-          this.onLanguageSelect(lang);
-          this.cd.detectChanges(); // 👈 Fixes the error
-        }
-      }
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
-    if (typeof window !== 'undefined') {
+    if (isPlatformBrowser(this.platformId)) {
       this.selectedLanguage = this.languageService.currentLang();
       this.translatedUrlWithoutLang = this.getTranslatedUrlWithoutLang(this.selectedLanguage.code);
     }
@@ -66,23 +46,21 @@ export class LanguageSelectionComponent {
    * Handles language selection and closes the dropdown menu
    * @param lang - The selected language object
    */
-  onLanguageSelect(lang: any): void {
+  onLanguageSelect(lang: SupportedLanguage): void {
     // this.languageService.setLanguage(lang.code, true)
     // this.languageService.currentLang.set(lang)
     this.languageService.setLanguage(lang.code, true); // Update the language via service
     this.isDropdownVisible = false; // Close the dropdown
   }
 
-  getTranslatedUrlWithoutLang(langCode: string): string {
-    if (typeof window !== 'undefined') {
+  getTranslatedUrlWithoutLang(langCode: LanguageCode): string {
+    if (isPlatformBrowser(this.platformId)) {
       const currentUrl = this.router.url; // Get the current URL
       // ex: http://localhost:4200/en/turkey-airport-transfer-blogs/test-2
       const segments = currentUrl.split('/'); // Split URL into segments
       // ex: ["", "en", "turkey-airport-transfer-blogs", "test-2"]
-      let queryParam = '';
-      let isFound: boolean = false;
-      // console.log('segments[1]: ', segments[1]);
-      if (this.supportedLanguages.map((lang) => lang.code).includes(segments[1])) {
+      const candidate = segments[1] as LanguageCode | undefined;
+      if (candidate && SUPPORTED_LANGUAGE_CODES.includes(candidate)) {
         segments.splice(1, 1);
         // ex: segments after splice:  ["", "turkey-airport-transfer-blogs", "test-2"]
 
@@ -105,13 +83,14 @@ export class LanguageSelectionComponent {
             }
           }
         }
-        if (isFound) {
-          break;
-        }
       }
       if (this.trailingMultilingualBlogSlug) {
-        // change the last segment to this.trailingMultilingualBlogSlug
-        segments[segments.length - 1] = this.trailingMultilingualBlogSlug[langCode] || this.trailingMultilingualBlogSlug['en'];
+        const fallbackLangCode = SUPPORTED_LANGUAGES[0]!.code;
+        const slug =
+          this.trailingMultilingualBlogSlug[langCode] ??
+          this.trailingMultilingualBlogSlug[fallbackLangCode] ??
+          segments[segments.length - 1];
+        segments[segments.length - 1] = slug;
       }
 
       return segments.join('/'); // Reconstruct the URL
@@ -133,5 +112,13 @@ export class LanguageSelectionComponent {
    */
   closeDropdown(): void {
     this.isDropdownVisible = false;
+  }
+
+  protected trackByLang = (_: number, lang: SupportedLanguage) => lang.code;
+
+  protected buildLanguageHref(code: LanguageCode): string {
+    const path = this.getTranslatedUrlWithoutLang(code);
+    const combined = `/${code}${path}`.replace(/\/+/g, '/');
+    return combined.endsWith('/') ? combined : `${combined}/`;
   }
 }
