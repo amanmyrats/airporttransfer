@@ -109,7 +109,8 @@ class OfflineReceiptUploadView(APIView):
             data=request.data,
         )
         serializer.is_valid(raise_exception=True)
-        receipt = serializer.save(public_id=public_id, user=request.user)
+        user = request.user if request.user and request.user.is_authenticated else None
+        receipt = serializer.save(public_id=public_id, user=user)
         return Response(OfflineReceiptSerializer(receipt).data, status=status.HTTP_201_CREATED)
 
 
