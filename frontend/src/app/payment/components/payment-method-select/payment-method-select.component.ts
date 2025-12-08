@@ -35,16 +35,16 @@ const METHOD_SELECT_TRANSLATIONS = {
     tr: 'Banka havalesi',
   },
   labelCASH: {
-    en: 'Cash on Delivery',
-    de: 'Bar bei Übergabe',
-    ru: 'Наличные при встрече',
-    tr: 'Teslimatta nakit',
+    en: 'Pay Cash in Vehicle',
+    de: 'Bar im Fahrzeug bezahlen',
+    ru: 'Оплата наличными в автомобиле',
+    tr: 'Araçta nakit ödeme yapın',
   },
   labelRUB_PHONE_TRANSFER: {
-    en: 'Russian Phone Transfer',
-    de: 'Russische Telefonüberweisung',
-    ru: 'Перевод на российский телефон',
-    tr: 'Rus telefon transferi',
+    en: 'Pay With Ruble',
+    de: 'Mit Rubel bezahlen',
+    ru: 'Оплата в рублях',
+    tr: 'Ruble ile öde',
   },
 } as const;
 type TranslationKey = keyof typeof METHOD_SELECT_TRANSLATIONS;

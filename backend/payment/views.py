@@ -34,7 +34,7 @@ from transfer.models import Reservation
 class PaymentIntentCreateView(generics.CreateAPIView):
     queryset = PaymentIntent.objects.all()
     serializer_class = PaymentIntentCreateSerializer
-    permission_classes = [IsAuthenticatedPaymentUser]
+    permission_classes = [permissions.AllowAny]
     throttle_classes = [PaymentIntentCreateThrottle]
 
     def get_permissions(self):
@@ -75,11 +75,11 @@ class PaymentIntentDetailView(generics.RetrieveAPIView):
     queryset = PaymentIntent.objects.prefetch_related("payments", "offline_receipts", "ledger_entries")
     serializer_class = PaymentIntentDetailSerializer
     lookup_field = "public_id"
-    permission_classes = [IsAuthenticatedPaymentUser]
+    permission_classes = [permissions.AllowAny]
 
 
 class PaymentIntentConfirmView(APIView):
-    permission_classes = [IsAuthenticatedPaymentUser]
+    permission_classes = [permissions.AllowAny]
     throttle_classes = [PaymentIntentConfirmThrottle]
 
     @payment_schema(
@@ -96,7 +96,7 @@ class PaymentIntentConfirmView(APIView):
 
 
 class OfflineReceiptUploadView(APIView):
-    permission_classes = [IsAuthenticatedPaymentUser]
+    permission_classes = [permissions.AllowAny]
     parser_classes = [MultiPartParser, FormParser]
 
     @payment_schema(
@@ -109,7 +109,8 @@ class OfflineReceiptUploadView(APIView):
             data=request.data,
         )
         serializer.is_valid(raise_exception=True)
-        receipt = serializer.save(public_id=public_id, user=request.user)
+        user = request.user if request.user and request.user.is_authenticated else None
+        receipt = serializer.save(public_id=public_id, user=user)
         return Response(OfflineReceiptSerializer(receipt).data, status=status.HTTP_201_CREATED)
 
 
@@ -179,7 +180,7 @@ class PaymentMethodsListView(APIView):
 
 
 class PaymentIntentByBookingView(APIView):
-    permission_classes = [IsAuthenticatedPaymentUser]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request, booking_ref: str):
         intent = (
@@ -195,7 +196,7 @@ class PaymentIntentByBookingView(APIView):
 
 
 class PaymentIntentHistoryView(APIView):
-    permission_classes = [IsAuthenticatedPaymentUser]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request, booking_ref: str):
         intents = (
