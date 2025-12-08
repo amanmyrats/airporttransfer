@@ -39,6 +39,8 @@ export class PaymentIntentStore {
   private readonly handlers = inject(THREE_DS_HANDLERS, { optional: true }) ?? [];
   private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly state = signal<PaymentIntentState>(initialState);
+  private languageCode: string | null = null;
+  private bookingPhone: string | null = null;
   private pollHandle: ReturnType<typeof setTimeout> | null = null;
 
   readonly booking = computed(() => this.state().booking);
@@ -76,10 +78,13 @@ export class PaymentIntentStore {
   reset(): void {
     this.clearPoll();
     this.state.set(initialState);
+    this.languageCode = null;
+    this.bookingPhone = null;
   }
 
-  async bootstrap(bookingRef: string): Promise<boolean> {
+  async bootstrap(bookingRef: string, languageCode?: string | null): Promise<boolean> {
     try {
+      this.languageCode = languageCode ?? null;
       this.patch({ isLoading: true, error: null });
       const [booking, methods, existingIntent, history] = await Promise.all([
         firstValueFrom(this.paymentService.fetchBookingSummary(bookingRef)),
@@ -88,9 +93,10 @@ export class PaymentIntentStore {
         firstValueFrom(this.paymentService.getIntentHistory(bookingRef)).catch(() => []),
       ]);
       const normalized = normalizeBooking(booking);
+      this.bookingPhone = normalized.passenger_phone ?? null;
       this.patch({
         booking: normalized,
-        methods: this.filterMethods(methods, normalized.currency_code),
+        methods: this.filterMethods(methods, normalized.currency_code, this.languageCode, this.bookingPhone),
         isLoading: false,
         selectedMethod: null,
         intent: existingIntent,
@@ -110,8 +116,9 @@ export class PaymentIntentStore {
       this.patch({ isLoading: true, error: null });
       const methods = await firstValueFrom(this.paymentService.getMethods());
       const currency = this.state().booking?.currency_code ?? null;
+      const phone = this.state().booking?.passenger_phone ?? this.bookingPhone ?? null;
       this.patch({
-        methods: this.filterMethods(methods, currency),
+        methods: this.filterMethods(methods, currency, this.languageCode, phone),
         isLoading: false,
       });
     } catch (error) {
@@ -459,12 +466,23 @@ export class PaymentIntentStore {
     return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
   }
 
-  private filterMethods(methods: PaymentMethodDto[], currency: string | null): PaymentMethodDto[] {
+  private filterMethods(
+    methods: PaymentMethodDto[],
+    currency: string | null,
+    languageCode: string | null,
+    phone: string | null,
+  ): PaymentMethodDto[] {
     if (!currency) {
       return methods;
     }
     const normalizedCurrency = currency.toUpperCase();
+    const normalizedLang = (languageCode ?? '').toLowerCase();
+    const isRuLocale = normalizedLang === 'ru';
+    const isRuPhone = this.isRuRelatedPhone(phone);
     return methods.filter(method => {
+      if (method.code === 'RUB_PHONE_TRANSFER' && (isRuLocale || isRuPhone)) {
+        return true;
+      }
       if (method.code === 'CASH') {
         return normalizedCurrency !== 'RUB';
       }
@@ -473,6 +491,20 @@ export class PaymentIntentStore {
       }
       return method.supportedCurrencies.includes(currency);
     });
+  }
+
+  private isRuRelatedPhone(phone: string | null): boolean {
+    if (!phone) {
+      return false;
+    }
+    let normalized = phone.replace(/[^0-9+]/g, '');
+    if (normalized.startsWith('00')) {
+      normalized = `+${normalized.slice(2)}`;
+    } else if (!normalized.startsWith('+')) {
+      normalized = `+${normalized}`;
+    }
+    const prefixes = ['+7', '+375', '+380', '+373', '+372', '+374', '+992', '+993', '+994', '+995', '+996', '+997', '+998'];
+    return prefixes.some(prefix => normalized.startsWith(prefix));
   }
 
   private resolvePaymentDetails(

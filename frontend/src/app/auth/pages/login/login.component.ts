@@ -236,7 +236,7 @@ export class LoginComponent {
       });
 
     if (isPlatformBrowser(this.platformId)) {
-      this.socialService.loadGoogle();
+      this.socialService.loadGoogle().catch(() => {});
       this.socialService.loadApple();
     }
   }
@@ -272,20 +272,21 @@ export class LoginComponent {
     });
   }
 
-  handleGoogleSignIn(): void {
+  async handleGoogleSignIn(): Promise<void> {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
     if (this.googleLoading() || this.loading()) {
       return;
     }
-    this.socialService.loadGoogle();
-    if (typeof google === 'undefined' || !environment.googleClientId) {
-      this.statusMessage.set({ type: 'info', text: this.copy.statusMessages.googleUnavailable });
-      return;
-    }
     this.googleLoading.set(true);
     try {
+      await this.socialService.loadGoogle();
+      if (typeof google === 'undefined' || !google?.accounts?.id || !environment.googleClientId) {
+        this.googleLoading.set(false);
+        this.statusMessage.set({ type: 'info', text: this.copy.statusMessages.googleUnavailable });
+        return;
+      }
       google.accounts.id.initialize({
         client_id: environment.googleClientId,
         callback: (response: { credential: string }) => this.exchangeGoogleCredential(response?.credential),

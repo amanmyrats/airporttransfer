@@ -10,11 +10,12 @@ class PaymentReadyGuardImpl {
 
   async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
     const bookingRef = route.paramMap.get('bookingRef');
+    const language = route.data?.['language'] ?? null;
     if (!bookingRef) {
       await this.router.navigateByUrl('/');
       return false;
     }
-    const ok = await this.store.bootstrap(bookingRef);
+    const ok = await this.store.bootstrap(bookingRef, language);
     if (!ok) {
       await this.router.navigateByUrl('/');
     }
@@ -24,4 +25,3 @@ class PaymentReadyGuardImpl {
 
 export const paymentReadyGuard: CanActivateFn = (route) =>
   inject(PaymentReadyGuardImpl).canActivate(route);
-
