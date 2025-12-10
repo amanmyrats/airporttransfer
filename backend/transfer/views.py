@@ -196,12 +196,18 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["put"])
     def update_status(self, request, pk=None):
+        reservation = self.get_object()
         serializer = ReservationStatusModelSerializer(
-            instance=self.get_object(), data=request.data, partial=True
+            instance=reservation, data=request.data, partial=True
         )
         if serializer.is_valid(raise_exception=True):
-            reservation = serializer.save()
-            serialized_data = ReservationModelSerializer(reservation).data
+            validated_status = serializer.validated_data.get("status")
+            if validated_status:
+                # Persist via serializer to keep validation/hooks intact
+                serializer.save(status=validated_status)
+                # Double-check by reloading the record from DB
+                persisted = Reservation.objects.filter(pk=reservation.pk).values("status").first()
+            serialized_data = ReservationModelSerializer(serializer.instance).data
             return Response(serialized_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -34,6 +34,20 @@ export class SuperHeaderComponent implements OnInit, OnChanges {
   private authService!: AuthService;
   private router!: Router;
   showDashboardCta = true;
+  translations: Record<string, Record<LanguageCode, string>> = {
+    dashboard: {
+      en: 'My Dashboard',
+      de: 'Mein Dashboard',
+      ru: 'Мой кабинет',
+      tr: 'Panelim',
+    },
+    loading: {
+      en: 'Loading...',
+      de: 'Wird geladen...',
+      ru: 'Загрузка...',
+      tr: 'Yükleniyor...',
+    },
+  };
 
 
   constructor(private route: ActivatedRoute, private readonly destroyRef: DestroyRef) {
@@ -62,6 +76,12 @@ export class SuperHeaderComponent implements OnInit, OnChanges {
     if ('langInput' in changes && this.langInput?.code) {
       this.currentLanguage = { ...this.getLanguageByCode(this.langInput.code) };
     }
+  }
+
+  getTranslation(key: keyof SuperHeaderComponent['translations']): string {
+    const languageCode = this.currentLanguage?.code ?? DEFAULT_LANGUAGE.code;
+    const translation = this.translations[key];
+    return translation?.[languageCode] ?? translation?.[DEFAULT_LANGUAGE.code] ?? '';
   }
 
   async goToDashboard(): Promise<void> {

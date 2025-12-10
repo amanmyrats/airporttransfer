@@ -1,13 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment as env } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CallbackService {
-  TT_ATH_NEW_ORDER_CALLBACK_URL="https://backend.transfertakip.com/api/v1/airporttransferhub/ATHETYXYMD/acceptneworder/"
-  TT_ATH_ORDER_CHANGE_CALLBACK_URL="https://backend.transfertakip.com/api/v1/airporttransferhub/ATHETYXYMD/acceptorderchange/"
+  TT_ATH_NEW_ORDER_CALLBACK_URL=env.TT_ATH_NEW_ORDER_CALLBACK_URL;
+  TT_ATH_ORDER_CHANGE_CALLBACK_URL=env.TT_ATH_ORDER_CHANGE_CALLBACK_URL;
 
   constructor(
     private http: HttpClient

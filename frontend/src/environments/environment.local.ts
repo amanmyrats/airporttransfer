@@ -13,7 +13,10 @@ export const environment = {
   pagination: {
     defaultPageSize: 2,
     defaultBlogPageSize: 3,
-  }
+  },
+  TT_ATH_NEW_ORDER_CALLBACK_URL: 'http://localhost:8000/api/v1/airporttransferhub/ATHETYXYMD/acceptneworder/',
+  TT_ATH_ORDER_CHANGE_CALLBACK_URL: 'http://localhost:8000/api/v1/airporttransferhub/ATHETYXYMD/acceptorderchange/',
+
 
   };
   
