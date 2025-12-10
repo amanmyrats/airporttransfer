@@ -11,8 +11,43 @@
     margin-top: 2rem;
   }
   
-  .p-button-success {
+  .status-button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0;
     width: 100%;
-    margin-top: 10px;
+  }
+
+  .status-button {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .status-button.is-current {
+    border-color: var(--primary-color, #3b82f6);
+    background: rgba(59, 130, 246, 0.08);
+  }
+
+  @media (min-width: 768px) {
+    .status-button-group {
+      max-width: 420px;
+    }
+  }
+
+  :host ::ng-deep .p-dialog {
+    width: 95vw !important;
+    max-width: 520px !important;
+  }
+
+  :host ::ng-deep .p-dialog-content {
+    padding: 1.25rem !important;
+  }
+
+  .status-button.is-loading {
+    cursor: wait;
   }
   

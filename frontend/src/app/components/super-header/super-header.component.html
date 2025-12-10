@@ -41,7 +41,7 @@
                     </svg>
                 </span>
                 <span class="spinner" aria-hidden="true" *ngIf="dashboardLoading"></span>
-                <span class="text">{{ dashboardLoading ? 'Loading...' : 'My Dashboard' }}</span>
+                <span class="text">{{ dashboardLoading ? getTranslation('loading') : getTranslation('dashboard') }}</span>
             </button>
         </div>
 

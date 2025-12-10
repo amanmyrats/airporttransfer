@@ -350,8 +350,6 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
       header: 'Durumu Güncelle',
       styleClass: 'fit-content-dialog',
       contentStyle: { "overflow": "auto" },
-      width: '50%',
-      height: '90%',
       baseZIndex: 10000, 
       closable: true,
       modal: true,

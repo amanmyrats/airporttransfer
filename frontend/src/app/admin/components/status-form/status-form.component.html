@@ -1,35 +1,32 @@
 <p-panel>
-    <form [formGroup]="statusForm" class="generic-form" (ngSubmit)="submitForm()">
-      <div class="p-grid p-fluid">
-        <input id="id" type="text" formControlName="id" hidden>
-        
+  <form [formGroup]="statusForm" class="generic-form" (ngSubmit)="submitForm()">
+    <div class="p-grid p-fluid">
+      <input id="id" type="text" formControlName="id" hidden>
+      
       <div class="p-col-12">
-          <p-floatlabel variant="on">
-              <p-select 
-                  [options]="statuses"
-                  formControlName="status"
-                  optionLabel="label"
-                  optionValue="value"
-                  [filter]="true"
-                  id="status"
-                  filterBy="label" 
-                  [showClear]="true"
-                  placeholder="Durum seçiniz"
-                  appendTo="body">
-              </p-select>
-
-              <label for="status">Durum*</label>
-          </p-floatlabel>
+        <p-messages [value]="messages"></p-messages>
       </div>
 
-
-        <div class="p-col-6">
-          <button type="submit" pButton label="Kaydet " class="p-button-success"></button>
-        </div>
-        <div class="p-col-6" style="font-size: small;">
-          <span class="required-fields">Yıldızlı alanlar zorunludur.</span>
-        </div>
+      <div class="p-col-12 status-button-group" role="group" aria-label="Reservation status options">
+        <button
+          type="button"
+          *ngFor="let status of statuses"
+          pButton
+          class="p-button p-button-outlined status-button"
+          (click)="onStatusClick(status.value)"
+          [disabled]="submitting || isCurrentStatus(status.value)"
+          [attr.aria-pressed]="isCurrentStatus(status.value)"
+          [class.is-current]="isCurrentStatus(status.value)"
+          [class.is-loading]="submitting && submittingStatus === status.value">
+          <span pButtonLabel>{{ status.label }}</span>
+          <i
+            *ngIf="submitting && submittingStatus === status.value"
+            pButtonIcon
+            class="pi pi-spin pi-spinner"
+            aria-hidden="true"
+          ></i>
+        </button>
       </div>
-    </form>
-    <p-messages></p-messages>
-  </p-panel>
+    </div>
+  </form>
+</p-panel>
