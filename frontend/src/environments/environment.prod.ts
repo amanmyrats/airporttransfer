@@ -12,4 +12,6 @@ export const environment = {
     defaultPageSize: 10,
     defaultBlogPageSize: 9,
   },
+  TT_ATH_NEW_ORDER_CALLBACK_URL: 'https://backend.transfertakip.com/api/v1/airporttransferhub/ATHETYXYMD/acceptneworder/',
+  TT_ATH_ORDER_CHANGE_CALLBACK_URL: 'https://backend.transfertakip.com/api/v1/airporttransferhub/ATHETYXYMD/acceptorderchange/',
 };
