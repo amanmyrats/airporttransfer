@@ -218,15 +218,26 @@ export class StatusFormComponent implements OnInit {
     if (typeof payload === 'string') {
       return payload;
     }
-    if (payload?.message) {
-      return String(payload.message);
-    }
     if (payload?.error?.message) {
-      return String(payload.error.message);
+      if (payload?.message) {
+        return `${String(payload.message)}: ${String(payload.error.message)}`;
+      } else {
+        return String(payload.error.message);
+      }
     }
     if (payload?.error) {
-      return String(payload.error);
+      if (payload?.message) {
+        return `${String(payload.message)}: ${String(payload.error)}`;
+      } else {
+        return String(payload.error);
+      }
     }
+    
+    if (payload?.message) {
+        return String(payload.message);
+    }
+
+
     if (payload?.statusText) {
       return String(payload.statusText);
     }
