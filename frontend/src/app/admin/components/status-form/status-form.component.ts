@@ -220,14 +220,14 @@ export class StatusFormComponent implements OnInit {
     }
     if (payload?.error?.message) {
       if (payload?.message) {
-        return `${String(payload.message)}: ${String(payload.error.message)}`;
+        return `${String(payload.error.message)}: ${String(payload.message)}`;
       } else {
         return String(payload.error.message);
       }
     }
     if (payload?.error) {
       if (payload?.message) {
-        return `${String(payload.message)}: ${String(payload.error)}`;
+        return `${String(payload.error)}: ${String(payload.message)}`;
       } else {
         return String(payload.error);
       }
