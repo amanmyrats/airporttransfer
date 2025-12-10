@@ -3,8 +3,11 @@
     <div class="p-grid p-fluid">
       <input id="id" type="text" formControlName="id" hidden>
       
-      <div class="p-col-12">
-        <p-messages [value]="messages"></p-messages>
+      <div class="p-col-12 status-messages" *ngIf="messages?.length">
+        <div *ngFor="let msg of messages" class="custom-warning" role="alert" aria-live="assertive">
+          <span class="custom-warning__summary">{{ msg.summary || 'Warning' }}</span>
+          <span class="custom-warning__detail">{{ msg.detail }}</span>
+        </div>
       </div>
 
       <div class="p-col-12 status-button-group" role="group" aria-label="Reservation status options">

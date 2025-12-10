@@ -50,4 +50,33 @@
   .status-button.is-loading {
     cursor: wait;
   }
+
+  .status-messages {
+    width: 100%;
+
+    .custom-warning {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      width: 100%;
+      background: #3f2f00;
+      color: #f4e3b0;
+      border: 1px solid #f4e3b0;
+      border-radius: 8px;
+      padding: 0.75rem 0.85rem;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .custom-warning__summary {
+      font-weight: 600;
+      color: #ffd166;
+    }
+
+    .custom-warning__detail {
+      display: block;
+    }
+  }
   

@@ -138,9 +138,10 @@ export class StatusFormComponent implements OnInit {
             error: error => {
               console.error('Order Change Callback Error:', error);
               const userMessage = 'This status cannot be updated in transfertakip.com.';
-              this.handleCallbackFailure(previousStatus, this.extractCallbackMessage(error), {
+              const callbackMsg = this.extractCallbackMessage(error);
+              this.handleCallbackFailure(previousStatus, callbackMsg, {
                 revert: true,
-                userMessage,
+                userMessage: callbackMsg || userMessage,
               });
             }
           });
@@ -186,10 +187,15 @@ export class StatusFormComponent implements OnInit {
     message?: string | null,
     options?: { revert?: boolean; userMessage?: string },
   ) {
-    const trimmedMessage = message ? String(message).split(' ')[0] : undefined;
-    const detail = options?.userMessage || 'Update blocked.';
+    const primary = options?.userMessage || message || 'Update blocked.';
     const extra = options?.revert ? 'Previous status restored.' : '';
-    this.messages = [{ severity: 'warn', summary: 'Order Update', detail: [detail, trimmedMessage, extra].filter(Boolean).join(' ') }];
+    this.messages = [
+      {
+        severity: 'warn',
+        summary: 'Order Update',
+        detail: [primary, extra].filter(Boolean).join(' '),
+      },
+    ];
     if (options?.revert && previousStatus && this.reservation?.id) {
       this.reservationService
         .updateStatus(this.reservation.id, { status: previousStatus } as Reservation)
@@ -217,6 +223,12 @@ export class StatusFormComponent implements OnInit {
     }
     if (payload?.error?.message) {
       return String(payload.error.message);
+    }
+    if (payload?.error) {
+      return String(payload.error);
+    }
+    if (payload?.statusText) {
+      return String(payload.statusText);
     }
     return null;
   }
