@@ -62,6 +62,11 @@ export class ReservationFormComponent implements OnInit {
     {label: 'Lazım Değil', value: false},
   ];
 
+  isNakitOptions: any[] = [
+    {label: 'Nakit', value: true},
+    {label: 'Cari', value: false},
+  ];
+
   directionTypes: any[] = [
     {value: 'ARR', label: 'Arrival' },
     {value: 'DEP', label: 'Departure' },
@@ -115,6 +120,7 @@ export class ReservationFormComponent implements OnInit {
 
       need_child_seat: false,
       child_seat_count: 0,
+      is_nakit: true,
       
     });
   }
@@ -126,7 +132,10 @@ export class ReservationFormComponent implements OnInit {
 
       this.reservation = this.config.data.reservation;
       if (this.reservation) {
-        this.reservationForm.patchValue(this.reservation);
+        this.reservationForm.patchValue({
+          ...this.reservation,
+          is_nakit: this.reservation.is_nakit ?? true,
+        });
       }
   }
 

@@ -123,7 +123,7 @@ export class FilterSearchComponent implements OnInit, OnChanges{
   ){
     this.filterSearchForm = this.fb.group({
       transfer_date: [ '' ],
-      date_filter_option: ['year'],
+      date_filter_option: [''],
       date_range: [ [ '', '' ] ],
       start_date: [ '' ],
       end_date: [ '' ],
@@ -131,7 +131,7 @@ export class FilterSearchComponent implements OnInit, OnChanges{
       year: [ '' ],
       month_date: [ ''],
       month: [ ''],
-      reservation_date_filter_option: ['year'],
+      reservation_date_filter_option: [''],
       reservation_date_range: [[ '', '' ]],
       reservation_start_date: [''],
       reservation_end_date: [''],
@@ -387,8 +387,8 @@ export class FilterSearchComponent implements OnInit, OnChanges{
   clearSearch(){
     this.filterSearchForm.reset();
     this.filterSearchForm.patchValue({
-      date_filter_option: 'year',
-      reservation_date_filter_option: 'year',
+      date_filter_option: '',
+      reservation_date_filter_option: '',
       status: '',
       method: '',
       currency: '',

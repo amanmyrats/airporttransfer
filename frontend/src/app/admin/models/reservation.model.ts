@@ -58,6 +58,7 @@ export class Reservation {
   child_seat_count?: number | string | null;
   greet_with_flower?: boolean | string | null;
   greet_with_champagne?: boolean | string | null;
+  is_nakit?: boolean | string | null;
   created_at?: string | null;
   updated_at?: string | null;
 
