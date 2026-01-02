@@ -36,6 +36,104 @@
   min-width: 220px;
 }
 
+
+
+// Reservation Amount Container
+.reservation-amount-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reservation-payment-icon {
+  display: flex;
+  align-items: center;
+}
+.reservation-amount-details {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+}
+
+.location-short {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+  background: #e5e7eb;
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+
+.route-meta {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #585c64;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  background: #f9fafb;
+  border: 1px dashed #e5e7eb;
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+
+.payment-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.payment-status__label {
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-size: 10px;
+}
+
+.payment-status__badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.payment-status__badge--paid {
+  color: #065f46;
+  background: #d1fae5;
+  border-color: #6ee7b7;
+}
+
+.payment-status__badge--unpaid {
+  color: #92400e;
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.payment-status__badge--partial-refund {
+  color: #1e3a8a;
+  background: #dbeafe;
+  border-color: #60a5fa;
+}
+
+.payment-status__badge--refunded {
+  color: #374151;
+  background: #e5e7eb;
+  border-color: #cbd5f5;
+}
+
+.payment-status__badge--unknown {
+  color: #1f2937;
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+
+
+
 @media screen and (max-width: 768px) {
   .table-caption {
     flex-direction: column;

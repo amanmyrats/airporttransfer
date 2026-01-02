@@ -2,8 +2,8 @@
 <div id="pdf-content" class="reservation-confirmation">
     <hr>
     <!-- <h1>Rezervasyon Detayı</h1> -->
-    <p><strong>Numarası:</strong>{{reservation.number}}</p>
-    <p><strong>Rezervasyon Tarihi:</strong>{{reservation.reservation_date}}</p>
+    <p><strong>Numarası:</strong> {{ reservation.number ?? '-' }}</p>
+    <p><strong>Rezervasyon Tarihi:</strong> {{ reservation.reservation_date ?? '-' }}</p>
     <p><strong>Rezervasyon Durumu:</strong>
         @if (reservation.status == 'confirmed'){
             Onaylandı
@@ -15,41 +15,63 @@
             İptal Edildi
         } @else if (reservation.status == 'noshow'){
             No Show
+        } @else {
+            {{ reservation.status ?? '-' }}
         }
     </p>
     <hr>
   
     <h2>Kişisel Bilgiler</h2>
-    <p><strong>Müşteri İsmi</strong> {{ reservation.passenger_name }}</p>
-    <p><strong>Müşteri Telefonu</strong> {{ reservation.passenger_phone }}</p>
-    <p><strong>Müşteri Email</strong> {{ reservation.passenger_email }}</p>
+    <p><strong>Müşteri İsmi</strong> {{ reservation.passenger_name ?? '-' }}</p>
+    <p><strong>Yolcu İsimleri</strong> {{ reservation.passenger_names ?? '-' }}</p>
+    <p><strong>Müşteri Telefonu</strong> {{ reservation.passenger_phone ?? '-' }}</p>
+    <p><strong>Müşteri Email</strong> {{ reservation.passenger_email ?? '-' }}</p>
     <hr>
     
     <h2>Transfer Bilgileri</h2>
-    <p><strong>Araba Tipi:</strong> <span appCarTypeName="reservation.car_type"></span> </p>
-    <p><strong>Transfer Tarihi:</strong> {{ reservation.transfer_date }}</p>
-    <p><strong>Transfer Saati:</strong> {{ reservation.transfer_time }}</p>
-    <p><strong>Alınacak Yer:</strong> {{ reservation.pickup_full }}</p>
-    <p><strong>Varılacak Yer:</strong> {{ reservation.dest_full }}</p>
-    <p><strong>Uçuş Bilgileri:</strong> 
-        {{ reservation.flight_number }}
+    <p><strong>Transfer Tipi:</strong> {{ reservation.transfer_type ?? '-' }}</p>
+    <p><strong>Yön Tipi:</strong> {{ reservation.direction_type ?? '-' }}</p>
+    <p><strong>Gidiş Dönüş:</strong> {{ reservation.is_round_trip ? 'Evet' : 'Hayır' }}</p>
+    <p><strong>Araba Tipi:</strong> <span appCarTypeName="reservation.car_type"></span></p>
+    <p><strong>Transfer Tarihi:</strong> {{ reservation.transfer_date ?? '-' }}</p>
+    <p><strong>Transfer Saati:</strong> {{ reservation.transfer_time ?? '-' }}</p>
+    <p><strong>Transfer Tarih/Saat (Sistem):</strong> {{ reservation.transfer_date_time ?? '-' }}</p>
+    <p><strong>Alınacak Yer (Kısa):</strong> {{ reservation.pickup_short ?? '-' }}</p>
+    <p><strong>Alınacak Yer (Detay):</strong> {{ reservation.pickup_full ?? '-' }}</p>
+    <p><strong>Varılacak Yer (Kısa):</strong> {{ reservation.dest_short ?? '-' }}</p>
+    <p><strong>Varılacak Yer (Detay):</strong> {{ reservation.dest_full ?? '-' }}</p>
+    <p><strong>Alınacak Koordinat:</strong>
+        {{ reservation.pickup_lat ?? '-' }}, {{ reservation.pickup_lon ?? '-' }}
+    </p>
+    <p><strong>Varış Koordinat:</strong>
+        {{ reservation.dest_lat ?? '-' }}, {{ reservation.dest_lon ?? '-' }}
+    </p>
+    <p><strong>Mesafe:</strong> {{ reservation.distance ?? '-' }}</p>
+    <p><strong>Süre (dk):</strong> {{ reservation.driving_duration ?? '-' }}</p>
+    <p><strong>Uçuş Bilgileri:</strong>
+        {{ reservation.flight_number ?? '-' }}
         (@if (reservation.flight_date){
             {{ reservation.flight_date }}
-        } 
+        } @else {
+            -
+        }
         @if (reservation.flight_time){
             {{ reservation.flight_time }}
+        } @else {
+            -
         })
     </p>
-    <p><strong>Yolcu Sayısı</strong> 
-        {{ reservation.passenger_count }} Yetişkin 
+    <p><strong>Uçuş Tarih/Saat (Sistem):</strong> {{ reservation.flight_date_time ?? '-' }}</p>
+    <p><strong>Yolcu Sayısı</strong>
+        {{ reservation.passenger_count ?? '-' }} Yetişkin
         @if (reservation.passenger_count_child){
         / {{ reservation.passenger_count_child }} Çocuk
         }
     </p>
 
-    <p><strong>Çocuk Koltuğu:</strong> 
+    <p><strong>Çocuk Koltuğu:</strong>
         @if (reservation.need_child_seat){
-            {{ reservation.child_seat_count }} Adet
+            {{ reservation.child_seat_count ?? 0 }} Adet
         } @else {
             Yok
         }
@@ -64,12 +86,37 @@
     }
     <hr>
 
-    <p><strong>Not:</strong> {{ reservation.note }}</p>
+    <p><strong>Not:</strong> {{ reservation.note ?? '-' }}</p>
     <hr>
 
-    <p><strong>Toplam Tutar:</strong> 
-        {{ reservation.amount }} {{reservation.currency_code}} 
+    <h2>Ödeme Bilgileri</h2>
+    <p><strong>Ödeme Durumu:</strong> {{ reservation.payment_status ?? '-' }}</p>
+    <p><strong>Ödeme Tipi:</strong>
+        @if (reservation.is_nakit === true || reservation.is_nakit === '1' || reservation.is_nakit === 'true'){
+            Nakit
+        } @else if (reservation.is_nakit === false || reservation.is_nakit === '0' || reservation.is_nakit === 'false'){
+            Kart
+        } @else {
+            -
+        }
     </p>
+    <p><strong>Toplam Tutar:</strong>
+        {{ reservation.amount ?? '-' }} {{ reservation.currency_code ?? '' }}
+    </p>
+    <hr>
+
+    <h2>Sistem Bilgileri</h2>
+    <p><strong>ID:</strong> {{ reservation.id ?? '-' }}</p>
+    <p><strong>Değişiklik İsteği Durumu:</strong> {{ reservation.latest_change_request_status ?? '-' }}</p>
+    <p><strong>Değişiklik İsteği Var mı:</strong>
+        @if (reservation.has_change_request){
+            Evet
+        } @else {
+            Hayır
+        }
+    </p>
+    <p><strong>Oluşturulma:</strong> {{ reservation.created_at ?? '-' }}</p>
+    <p><strong>Güncellenme:</strong> {{ reservation.updated_at ?? '-' }}</p>
     <hr>
     
 </div>

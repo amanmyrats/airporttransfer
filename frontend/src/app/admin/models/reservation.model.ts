@@ -37,6 +37,7 @@ export class Reservation {
   flight_time?: string | null;
   flight_date_time?: string | null;
   passenger_name?: string | null;
+  passenger_names?: string[] | string | null;
   passenger_phone?: string | null;
   passenger_email?: string | null;
   passenger_count?: number | string | null;
@@ -51,6 +52,8 @@ export class Reservation {
   pickup_lon?: string | null;
   dest_lat?: string | null;
   dest_lon?: string | null;
+  distance?: number | string | null;
+  driving_duration?: number | string | null;
   status?: ReservationStatus;
   latest_change_request_status?: ChangeRequestStatus | null;
   has_change_request?: boolean | null;
@@ -59,6 +62,7 @@ export class Reservation {
   greet_with_flower?: boolean | string | null;
   greet_with_champagne?: boolean | string | null;
   is_nakit?: boolean | string | null;
+  payment_status?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
 

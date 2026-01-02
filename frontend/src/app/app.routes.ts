@@ -12,6 +12,9 @@ import { SsrTestComponent } from './components/ssr-test/ssr-test.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
 import { SUPPORTED_LANGUAGE_CODES } from './constants/language.contants';
 
+import { importProvidersFrom } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 const loadLogin = () => import('./auth/pages/login/login.component').then(m => m.LoginComponent);
 const loadRegister = () => import('./auth/pages/register/register.component').then(m => m.RegisterComponent);
 const loadVerifyEmail = () => import('./auth/pages/verify-email/verify-email.component').then(m => m.VerifyEmailComponent);
@@ -437,7 +440,11 @@ export const routes: Routes = [
     {
         path: 'admin',
         component: AdminHomeComponent, 
-        providers: adminThemeProviders,
+        // providers: adminThemeProviders,
+        providers: [
+            ...adminThemeProviders,
+            importProvidersFrom(FontAwesomeModule),
+        ],
         canActivate: [SessionInitGuard],
         loadChildren: () => import('./admin/admin.routes').then(x => x.adminRoutes),
         data: { 

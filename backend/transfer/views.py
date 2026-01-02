@@ -74,11 +74,13 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
         "flight_number",
         "passenger_name",
         "passenger_count",
-        "note",
+        "passenger_email",
+        "passenger_phone",
         "pickup_short",
         "pickup_full",
         "dest_short",
         "dest_full",
+        "note",
     )
     ordering_fields = (
         "reservation_date",
@@ -113,7 +115,7 @@ class ReservationModelViewSet(viewsets.ModelViewSet):
             reservation=OuterRef("pk"),
             status=ReservationChangeRequestStatus.PENDING_REVIEW,
         )
-        return Reservation.objects.all().annotate(
+        return Reservation.objects.all().prefetch_related("passengers").annotate(
             latest_change_request_status=Subquery(
                 latest_change_request.values("status")[:1]
             ),
@@ -385,7 +387,7 @@ def _reservations_queryset_for_user(user):
     if not filters:
         return Reservation.objects.none()
 
-    return Reservation.objects.filter(filters).distinct()
+    return Reservation.objects.filter(filters).prefetch_related("passengers").distinct()
 
 
 STATUS_PRIORITY_SEQUENCE = [
@@ -416,13 +418,29 @@ class MyReservationListAPIView(ListAPIView):
     ordering_fields = (
         "transfer_date",
         "transfer_time",
+        "transfer_date_time",
         "reservation_date",
         "status",
         "status_priority",
         "payment_status",
         "created_at",
     )
-    ordering = ("status_priority", "status", "-reservation_date", "-transfer_date", "-transfer_time", "-created_at")
+    ordering = ("status_priority", "-reservation_date", "-transfer_date", "-transfer_date_time", "-transfer_time", "-created_at")
+
+    def get_ordering(self):
+        ordering = super().get_ordering()
+        if not ordering:
+            return self.ordering
+        if ordering == ["status_priority"]:
+            return list(self.ordering)
+        return ordering
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        raw_ordering = self.request.query_params.get("ordering") if self.request else None
+        if not raw_ordering or raw_ordering == "status_priority":
+            return queryset.order_by(*self.ordering)
+        return queryset
 
     def get_queryset(self):
         base_queryset = _reservations_queryset_for_user(self.request.user)

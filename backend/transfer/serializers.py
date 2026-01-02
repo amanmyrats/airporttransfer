@@ -54,6 +54,7 @@ class ReservationModelSerializer(ModelSerializer):
     return_trip_amount = DecimalField(max_digits=10, decimal_places=2, default=0, required=False, allow_null=True)
     latest_change_request_status = CharField(read_only=True, required=False, allow_blank=True, allow_null=True)
     has_change_request = serializers.BooleanField(read_only=True, required=False)
+    passenger_names = serializers.SerializerMethodField()
 
     def create(self, validated_data):
         # Extract the extra fields
@@ -66,6 +67,10 @@ class ReservationModelSerializer(ModelSerializer):
     class Meta:
         model = Reservation
         fields = '__all__'
+
+    def get_passenger_names(self, obj):
+        names = obj.passengers.order_by('order', 'id').values_list('full_name', flat=True)
+        return [name for name in names if name]
     
 
 class ReservationStatusModelSerializer(ModelSerializer):
@@ -85,6 +90,7 @@ class ReservationClientSerializer(ModelSerializer):
     flight_time = Time24HourField(format='%H:%M', required=False, allow_null=True)
     has_review = serializers.SerializerMethodField()
     can_review = serializers.SerializerMethodField()
+    passenger_names = serializers.SerializerMethodField()
 
     class Meta:
         model = Reservation
@@ -101,6 +107,7 @@ class ReservationClientSerializer(ModelSerializer):
             "flight_date",
             "flight_time",
             "passenger_name",
+            "passenger_names",
             "passenger_email",
             "passenger_phone",
             "passenger_count",
@@ -132,6 +139,10 @@ class ReservationClientSerializer(ModelSerializer):
     def get_can_review(self, obj: Reservation) -> bool:
         status = (getattr(obj, "status", "") or "").lower()
         return status in {"confirmed", "completed"}
+
+    def get_passenger_names(self, obj):
+        names = obj.passengers.order_by('order', 'id').values_list('full_name', flat=True)
+        return [name for name in names if name]
 
 
 class ReservationDuePaymentSerializer(ReservationClientSerializer):
