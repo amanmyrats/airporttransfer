@@ -30,6 +30,20 @@ import { PaginatedResponse } from '../../../models/paginated-response.model';
 import { FilterSearchComponent } from '../../components/filter-search/filter-search.component';
 import { CurrencyService } from '../../../services/currency.service';
 import { Meta } from '@angular/platform-browser';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faSackDollar,
+  faCreditCard,
+  faCircleQuestion,
+  faPencil,
+  faPlane,
+  faPlaneArrival,
+  faPlaneDeparture,
+  faArrowsUpDown,
+  faPhone,
+  faEnvelope,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -49,6 +63,7 @@ import { Meta } from '@angular/platform-browser';
         ButtonModule,
         TagModule,
         FilterSearchComponent, 
+        FontAwesomeModule,
     ],
     providers: [
         DialogService,
@@ -60,7 +75,17 @@ import { Meta } from '@angular/platform-browser';
     styleUrl: './reservation-list.component.scss'
 })
 export class ReservationListComponent implements OnInit, AfterViewInit {
-
+  faSackDollar = faSackDollar;
+  faCreditCard = faCreditCard;
+  faCircleQuestion = faCircleQuestion;
+  faPencil = faPencil;
+  faPlane = faPlane;
+  faPlaneArrival = faPlaneArrival;
+  faPlaneDeparture = faPlaneDeparture;
+  faArrowsUpDown = faArrowsUpDown;
+  faPhone = faPhone;
+  faEnvelope = faEnvelope;
+  faUsers = faUsers;
   // Pagination
   @ViewChild(FilterSearchComponent) filterSearch!: FilterSearchComponent;
   first: number = 0;
@@ -158,6 +183,10 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
   
       { id: '', index: 60, field: 'amount', header: 'Tutar', 
         width: 100, min_width: 50, max_width: 500, 
+        table_name:'reservation', is_visible:true },
+
+      { id: '', index: 80, field: 'passenger_names', header: 'Yolcu İsimleri', 
+        width: 200, min_width: 50, max_width: 500, 
         table_name:'reservation', is_visible:true },
       
       // { id: '', index: 80, field: 'status', header: 'Durumu', 
@@ -421,6 +450,129 @@ export class ReservationListComponent implements OnInit, AfterViewInit {
       cancelled: 'secondary',
     };
     return severities[status] || 'info';
+  }
+
+  formatPassengerNames(reservation: Reservation): string[] {
+    const names: string[] = [];
+    const primaryName = reservation.passenger_name?.trim();
+    if (primaryName) {
+      names.push(primaryName);
+    }
+
+    const passengerNames = reservation.passenger_names;
+    if (Array.isArray(passengerNames)) {
+      const cleanedNames = passengerNames.map(name => name?.trim()).filter((name): name is string => !!name);
+      for (const name of cleanedNames) {
+        if (!names.includes(name)) {
+          names.push(name);
+        }
+      }
+    }
+
+    if (typeof passengerNames === 'string' && passengerNames.trim()) {
+      const fallbackName = passengerNames.trim();
+      if (!names.includes(fallbackName)) {
+        names.push(fallbackName);
+      }
+    }
+
+    return names;
+  }
+
+  hasMissingPassengerNames(reservation: Reservation): boolean {
+    const adultCount = Number(reservation.passenger_count ?? 0);
+    const childCount = Number(reservation.passenger_count_child ?? 0);
+    const expectedCount = Math.max(0, (Number.isFinite(adultCount) ? adultCount : 0)) +
+      Math.max(0, (Number.isFinite(childCount) ? childCount : 0));
+    if (expectedCount <= 1) {
+      return false;
+    }
+    const actualCount = this.formatPassengerNames(reservation).length;
+    return actualCount < expectedCount;
+  }
+
+  getPassengerNameSlots(reservation: Reservation): string[] {
+    const names = this.formatPassengerNames(reservation);
+    const adultCount = Number(reservation.passenger_count ?? 0);
+    const childCount = Number(reservation.passenger_count_child ?? 0);
+    const expectedCount = Math.max(0, (Number.isFinite(adultCount) ? adultCount : 0)) +
+      Math.max(0, (Number.isFinite(childCount) ? childCount : 0));
+    if (expectedCount <= names.length) {
+      return names;
+    }
+    const slots = names.slice();
+    const missingCount = Math.max(0, expectedCount - names.length);
+    for (let i = 0; i < missingCount; i += 1) {
+      slots.push('??');
+    }
+    return slots;
+  }
+
+  paymentStatusLabel(status: string | null | undefined): string {
+    if (!status) {
+      return '-';
+    }
+    const normalized = status.toLowerCase();
+    const labels: Record<string, string> = {
+      paid: 'Paid',
+      unpaid: 'Unpaid',
+      partial_refund: 'Partial refund',
+      refunded: 'Refunded',
+    };
+    return labels[normalized] ?? status;
+  }
+
+  paymentStatusClass(status: string | null | undefined): string {
+    const normalized = (status ?? '').toLowerCase();
+    const classes: Record<string, string> = {
+      paid: 'payment-status__badge--paid',
+      unpaid: 'payment-status__badge--unpaid',
+      partial_refund: 'payment-status__badge--partial-refund',
+      refunded: 'payment-status__badge--refunded',
+    };
+    return classes[normalized] ?? 'payment-status__badge--unknown';
+  }
+
+  getDirectionPlaneIcon(directionType?: string | null) {
+    const normalized = (directionType ?? '').toUpperCase();
+    if (normalized === 'ARR') {
+      return this.faPlaneArrival;
+    }
+    if (normalized === 'DEP') {
+      return this.faPlaneDeparture;
+    }
+    return this.faPlane;
+  }
+
+  formatDistance(distance?: number | string | null): string | null {
+    if (distance === null || distance === undefined || distance === '') {
+      return null;
+    }
+    const value = typeof distance === 'number' ? distance : Number(distance);
+    if (!Number.isFinite(value) || value <= 0) {
+      return null;
+    }
+    if (value >= 1) {
+      return `${value.toFixed(1)} km`;
+    }
+    return `${Math.round(value * 1000)} m`;
+  }
+
+  formatDuration(duration?: number | string | null): string | null {
+    if (duration === null || duration === undefined || duration === '') {
+      return null;
+    }
+    const value = typeof duration === 'number' ? duration : Number(duration);
+    if (!Number.isFinite(value) || value <= 0) {
+      return null;
+    }
+    const totalMinutes = Math.round(value);
+    if (totalMinutes < 60) {
+      return `${totalMinutes} min`;
+    }
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return minutes > 0 ? `${hours} h ${minutes} min` : `${hours} h`;
   }
   
   onPageChange(event: any): void {

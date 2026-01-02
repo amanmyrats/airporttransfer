@@ -8,8 +8,11 @@ import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute } from '@angular/router';
 
 import { PaymentAdminService } from '../../services/payment-admin.service';
-import { PaymentDto } from '../../../../payment/models/payment.models';
+import { PaymentDto, PaymentMethod } from '../../../../payment/models/payment.models';
 import { formatMinor } from '../../../../payment/utils/money.util';
+import { PaymentService } from '../../../../payment/services/payment.service';
+import { ReservationService } from '../../../services/reservation.service';
+import { syncReservationIsNakit } from '../../utils/reservation-payment.util';
 
 @Component({
   selector: 'app-offline-settlement',
@@ -28,6 +31,8 @@ import { formatMinor } from '../../../../payment/utils/money.util';
 export class OfflineSettlementComponent {
   private readonly fb = inject(FormBuilder);
   private readonly service = inject(PaymentAdminService);
+  private readonly paymentService = inject(PaymentService);
+  private readonly reservationService = inject(ReservationService);
   private readonly route = inject(ActivatedRoute);
 
   readonly form = this.fb.group({
@@ -85,6 +90,7 @@ export class OfflineSettlementComponent {
         }),
       );
       this.result.set(payment);
+      await this.syncReservationPaymentMethod(publicId.trim(), payment);
     } catch (error) {
       console.error('settleOffline failed', error);
       this.error.set('Unable to settle this intent. Please verify the identifier and try again.');
@@ -102,6 +108,35 @@ export class OfflineSettlementComponent {
       this.form.patchValue({ publicId: text.trim() });
     } catch (err) {
       console.warn('Clipboard read failed', err);
+    }
+  }
+
+  private async syncReservationPaymentMethod(publicId: string, payment: PaymentDto): Promise<void> {
+    try {
+      const intent = payment.intent ?? (await this.fetchIntentMeta(publicId));
+      if (!intent) {
+        return;
+      }
+      await syncReservationIsNakit({
+        bookingRef: intent.booking_ref,
+        method: intent.method,
+        paymentService: this.paymentService,
+        reservationService: this.reservationService,
+      });
+    } catch (error) {
+      console.warn('Unable to update reservation cash flag', error);
+    }
+  }
+
+  private async fetchIntentMeta(
+    publicId: string,
+  ): Promise<{ booking_ref: string; method: PaymentMethod } | null> {
+    try {
+      const intent = await firstValueFrom(this.paymentService.getIntent(publicId));
+      return { booking_ref: intent.booking_ref, method: intent.method };
+    } catch (error) {
+      console.warn('Unable to load intent for cash flag sync', error);
+      return null;
     }
   }
 }

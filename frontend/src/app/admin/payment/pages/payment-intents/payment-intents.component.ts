@@ -16,6 +16,8 @@ import { PaymentService } from '../../../../payment/services/payment.service';
 import { FilterSearchComponent } from '../../../components/filter-search/filter-search.component';
 import { CommonService } from '../../../../services/common.service';
 import { isOfflineMethod } from '../../../../payment/utils/payment-utils';
+import { ReservationService } from '../../../services/reservation.service';
+import { syncReservationIsNakit } from '../../utils/reservation-payment.util';
 
 type PaymentIntentFilters = {
   status?: string;
@@ -60,6 +62,7 @@ export class PaymentIntentsComponent {
   private readonly commonService = inject(CommonService);
   private readonly messages = inject(MessageService);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly reservationService = inject(ReservationService);
 
   readonly intents = signal<PaymentIntentDto[]>([]);
   readonly loading = signal(false);
@@ -304,6 +307,7 @@ export class PaymentIntentsComponent {
             : undefined,
         }),
       );
+      await this.syncReservationPaymentMethod(intent);
       this.messages.add({
         severity: 'success',
         summary: 'Payment settled',
@@ -395,5 +399,18 @@ export class PaymentIntentsComponent {
         reject: () => resolve(false),
       });
     });
+  }
+
+  private async syncReservationPaymentMethod(intent: PaymentIntentDto): Promise<void> {
+    try {
+      await syncReservationIsNakit({
+        bookingRef: intent.booking_ref,
+        method: intent.method,
+        paymentService: this.paymentService,
+        reservationService: this.reservationService,
+      });
+    } catch (error) {
+      console.warn('Unable to update reservation cash flag', error);
+    }
   }
 }
