@@ -233,6 +233,13 @@
   justify-content: space-between;
 }
 
+.section-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .section-heading h3 {
   margin: 0;
   font-size: 1.1rem;

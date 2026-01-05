@@ -107,17 +107,27 @@
         <div class="urgent-column">
           <div class="section-heading">
             <h3>Onaylanmayı Bekleyen Ödemeler</h3>
-            <a
-              class="section-action"
-              [routerLink]="['/admin/payments/intents']"
-              [queryParams]="pendingSettlementQueryParams"
-            >
-              See all
-            </a>
+            <div class="section-controls">
+              <p-select
+                [options]="pendingSettlementPaymentOptions"
+                [(ngModel)]="pendingSettlementPaymentFilter"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Ödeme yöntemi"
+                [showClear]="false"
+              ></p-select>
+              <a
+                class="section-action"
+                [routerLink]="['/admin/payments/intents']"
+                [queryParams]="pendingSettlementQueryParams"
+              >
+                See all
+              </a>
+            </div>
           </div>
           <table class="plain-table">
             <tbody>
-              @for (intent of pendingSettlementIntents; track intent.public_id) {
+              @for (intent of filteredPendingSettlementIntents; track intent.public_id) {
                 <tr
                   (click)="openPendingIntent(intent, $event)"
                   [class.row-loading]="isCardLoading('pending-intent', intent.public_id || intent.booking_ref || intent.reservation?.id)"
