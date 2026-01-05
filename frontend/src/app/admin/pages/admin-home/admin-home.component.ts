@@ -23,6 +23,7 @@ import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
+import { SelectModule } from 'primeng/select';
 import { of, forkJoin } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -35,7 +36,7 @@ import { ChangeRequestService } from '../../services/change-request.service';
 import { ContactUsMessageService } from '../../services/contact-us-message.service';
 import { ReviewsService } from '../../services/reviews.service';
 import { AdminReview } from '../../../account/models/review.models';
-import { PendingSettlementIntent } from '../../../payment/models/payment.models';
+import { PendingSettlementIntent, PaymentMethod } from '../../../payment/models/payment.models';
 import { PaymentAdminService } from '../../payment/services/payment-admin.service';
 import { formatMinor } from '../../../payment/utils/money.util';
 
@@ -78,6 +79,7 @@ interface ActivityItem {
     InputTextModule,
     CardModule,
     TagModule,
+    SelectModule,
   ],
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.scss'
@@ -121,6 +123,15 @@ export class AdminHomeComponent implements OnInit {
   kpis: DashboardKpi[] = [];
   showKpis = false;
   pendingSettlementIntents: PendingSettlementIntent[] = [];
+  pendingSettlementPaymentFilter: PendingSettlementPaymentFilter = 'NON_CASH';
+  readonly pendingSettlementPaymentOptions: PaymentFilterOption[] = [
+    { label: 'Nakit hariç', value: 'NON_CASH' },
+    { label: 'Tümü', value: 'ALL' },
+    { label: 'Kart', value: 'CARD' },
+    { label: 'Banka Transferi', value: 'BANK_TRANSFER' },
+    { label: 'Ruble Transfer', value: 'RUB_PHONE_TRANSFER' },
+    { label: 'Nakit', value: 'CASH' },
+  ];
   upcomingTransfers: Reservation[] = [];
   urgentChangeRequests: ReservationChangeRequest[] = [];
   urgentReviews: AdminReview[] = [];
@@ -762,10 +773,31 @@ export class AdminHomeComponent implements OnInit {
     };
   }
 
+  get filteredPendingSettlementIntents(): PendingSettlementIntent[] {
+    return this.applyPendingSettlementFilter(this.pendingSettlementIntents);
+  }
+
+  private applyPendingSettlementFilter(intents: PendingSettlementIntent[]): PendingSettlementIntent[] {
+    if (this.pendingSettlementPaymentFilter === 'ALL') {
+      return intents;
+    }
+    if (this.pendingSettlementPaymentFilter === 'NON_CASH') {
+      return intents.filter(intent => intent.method !== 'CASH');
+    }
+    return intents.filter(intent => intent.method === this.pendingSettlementPaymentFilter);
+  }
+
   formatCurrency(amountMinor: number | null | undefined, currency: string | null | undefined): string {
     if (typeof amountMinor !== 'number' || !currency) {
       return '—';
     }
     return formatMinor(amountMinor, currency);
   }
+}
+
+type PendingSettlementPaymentFilter = PaymentMethod | 'ALL' | 'NON_CASH';
+
+interface PaymentFilterOption {
+  label: string;
+  value: PendingSettlementPaymentFilter;
 }
