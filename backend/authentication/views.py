@@ -50,6 +50,7 @@ class RegisterView(APIView):
                 .order_by('-created_at')
                 .first()
             )
+            
             if reservation:
                 reservation_phone = reservation.passenger_phone
         except Exception:
