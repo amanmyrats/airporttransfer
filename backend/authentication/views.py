@@ -40,6 +40,25 @@ class RegisterView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         print('RegisterView created user:', user)
+        reservation_phone = None
+        try:
+            from transfer.models import Reservation
+            reservation = (
+                Reservation.objects.filter(passenger_email__iexact=user.email)
+                .exclude(passenger_phone__isnull=True)
+                .exclude(passenger_phone__exact='')
+                .order_by('-created_at')
+                .first()
+            )
+            if reservation:
+                reservation_phone = reservation.passenger_phone
+        except Exception:
+            reservation_phone = None
+        if reservation_phone:
+            profile = getattr(user, 'customer_profile', None)
+            if profile and not profile.phone_e164:
+                profile.phone_e164 = reservation_phone
+                profile.save(update_fields=['phone_e164', 'updated_at'])
         token = build_email_verification_token(user)
         print('RegisterView generated token:', token)
         profile = getattr(user, 'customer_profile', None)

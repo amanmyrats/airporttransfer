@@ -100,6 +100,23 @@ class RegisterSerializer(serializers.ModelSerializer):
             is_active=False,
             **validated_data,
         )
+        reservation_phone = None
+        try:
+            from transfer.models import Reservation
+            reservation = (
+                Reservation.objects.filter(passenger_email__iexact=account.email)
+                .exclude(passenger_phone__isnull=True)
+                .exclude(passenger_phone__exact='')
+                .order_by('-created_at')
+                .first()
+            )
+            if reservation:
+                reservation_phone = reservation.passenger_phone
+        except Exception:
+            reservation_phone = None
+        if reservation_phone and not account.phone:
+            account.phone = reservation_phone
+            account.save(update_fields=['phone'])
         profile = getattr(account, 'customer_profile', None)
         if profile is None:
             profile, _ = CustomerProfile.objects.get_or_create(user=account)
