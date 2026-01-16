@@ -7,6 +7,7 @@ export const environment = {
   googleClientId: '455481319488-6gcbh9g2vh7oh2ust3q4e3lrbhtgu4u2.apps.googleusercontent.com',
   appleClientId: 'YOUR_APPLE_CLIENT_ID',
   appleRedirectUri: 'http://localhost:4200/auth/social/apple/callback',
+  facebookAppId: '894173723151836',
   // Other development-specific variables (e.g., logging levels)
   buildTimestamp: new Date().toISOString(),
 

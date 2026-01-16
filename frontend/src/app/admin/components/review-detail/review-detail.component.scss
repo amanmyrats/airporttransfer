@@ -21,7 +21,7 @@
     .review-id {
       font-weight: 600;
       font-size: 1.1rem;
-      color: #0f172a;
+      color: #7280a0;
     }
 
     .rating {
@@ -82,7 +82,7 @@
   .value {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #1e293b;
+    color: #525f74;
   }
 }
 
@@ -96,7 +96,7 @@
 
   h3 {
     margin: 0;
-    color: #0f172a;
+    color: #495778;
   }
 
   p {
@@ -215,5 +215,111 @@
 
   i {
     font-size: 1.5rem;
+  }
+}
+
+:host-context(.dark),
+:host-context([data-theme="dark"]) {
+  .review-header .header-left .review-id,
+  .divider-title {
+    color: #f8fafc;
+  }
+
+  .review-meta {
+    .label {
+      color: #94a3b8;
+    }
+
+    .value {
+      color: #f8fafc;
+    }
+  }
+
+  .comment-card {
+    background: #111827;
+
+    h3 {
+      color: #f8fafc;
+    }
+
+    p {
+      color: #e2e8f0;
+    }
+  }
+
+  .reply-form form .label {
+    color: #e2e8f0;
+  }
+
+  .replies {
+    li {
+      background: #0f172a;
+      border-color: #1f2937;
+    }
+
+    .reply-meta .author {
+      color: #f8fafc;
+    }
+
+    .reply-meta .timestamp {
+      color: #94a3b8;
+    }
+
+    .reply-body {
+      color: #e2e8f0;
+    }
+  }
+}
+
+:host-context(.dark),
+:host-context([data-theme="dark"]) {
+  .review-header .header-left .review-id,
+  .divider-title {
+    color: #e2e8f0;
+  }
+
+  .review-meta {
+    .label {
+      color: #94a3b8;
+    }
+
+    .value {
+      color: #e2e8f0;
+    }
+  }
+
+  .comment-card {
+    background: #0f172a;
+
+    h3 {
+      color: #f8fafc;
+    }
+
+    p {
+      color: #cbd5f5;
+    }
+  }
+
+  .reply-form form .label {
+    color: #cbd5f5;
+  }
+
+  .replies {
+    li {
+      background: #0f172a;
+      border-color: #1f2937;
+    }
+
+    .reply-meta .author {
+      color: #f8fafc;
+    }
+
+    .reply-meta .timestamp {
+      color: #94a3b8;
+    }
+
+    .reply-body {
+      color: #cbd5f5;
+    }
   }
 }

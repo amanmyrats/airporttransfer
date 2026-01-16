@@ -91,6 +91,7 @@ export class SuperHeaderComponent implements OnInit, OnChanges {
     this.dashboardLoading = true;
     const languageCode = this.currentLanguage?.code ?? DEFAULT_LANGUAGE.code;
     const accountTarget = this.languageService?.withLangPrefix('account', languageCode) ?? '/account';
+    await this.authService?.ensureSessionInitialized?.();
     const user = this.authService?.user() ?? null;
     try {
       if (user && this.isAdminUser(user)) {
@@ -134,6 +135,8 @@ export class SuperHeaderComponent implements OnInit, OnChanges {
       user.is_staff ||
       user.is_company_user ||
       role.startsWith('company_') ||
+      role === 'blogger' ||
+      role === 'seo' ||
       role === 'admin' ||
       role === 'superuser' ||
       role === 'super_user'

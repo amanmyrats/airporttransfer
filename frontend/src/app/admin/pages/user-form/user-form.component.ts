@@ -42,6 +42,7 @@ export class UserFormComponent implements OnInit{
   user: User | null = null;
   roles: any[] = [];
   isSaving: boolean = false;
+  submitError = '';
 
   constructor(
     private fb: FormBuilder,
@@ -70,6 +71,7 @@ export class UserFormComponent implements OnInit{
   }
 
   submitForm() {
+    this.submitError = '';
     if (this.userForm.valid) {
       this.isSaving = true;
       if (this.user) {
@@ -77,10 +79,12 @@ export class UserFormComponent implements OnInit{
         this.userService.updateUser(this.user?.id!, this.userForm.value).subscribe({
           next: (user) => {
             console.log('User updated:', user);
+            this.isSaving = false;
             this.dialogRef.close(user);
           },
           error: (err: HttpErrorResponse) => {
             this.httpErrorPrinter.printHttpError(err);
+            this.submitError = this.extractErrorMessage(err);
             this.isSaving = false;
           }
         });
@@ -88,17 +92,20 @@ export class UserFormComponent implements OnInit{
         this.userService.createUser(this.userForm.value).subscribe({
           next: (user) => {
             console.log('User created:', user);
+            this.isSaving = false;
             this.dialogRef.close(user);
           },
           error: (err: HttpErrorResponse) => {
             console.log(err);
             this.httpErrorPrinter.printHttpError(err);
+            this.submitError = this.extractErrorMessage(err);
             this.isSaving = false;
           }
         });
     }
     } else {
       this.formErrorPrinter.printFormValidationErrors(this.userForm);
+      this.submitError = 'Lutfen gerekli alanlari kontrol edin.';
       this.isSaving = false;
     }
   }
@@ -115,5 +122,33 @@ export class UserFormComponent implements OnInit{
         console.log(error);
       }
     });
+  }
+
+  private extractErrorMessage(err: HttpErrorResponse): string {
+    const fallback = 'Kaydetme islemi basarisiz.';
+    const payload = err?.error;
+    if (!payload) {
+      return fallback;
+    }
+    if (typeof payload === 'string') {
+      return payload;
+    }
+    if (payload.detail) {
+      return String(payload.detail);
+    }
+    if (Array.isArray(payload)) {
+      return payload.join(' ');
+    }
+    if (typeof payload === 'object') {
+      const [firstKey] = Object.keys(payload);
+      if (firstKey) {
+        const value = payload[firstKey];
+        if (Array.isArray(value)) {
+          return `${firstKey}: ${value.join(' ')}`;
+        }
+        return `${firstKey}: ${String(value)}`;
+      }
+    }
+    return fallback;
   }
 }

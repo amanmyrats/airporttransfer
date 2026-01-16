@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.apple',
+    'allauth.socialaccount.providers.facebook',
 
     'authentication.apps.AuthenticationConfig',
     'accounts.apps.AccountsConfig', 
@@ -184,6 +185,9 @@ if not CORS_ALLOWED_ORIGINS and DEBUG:
         'http://localhost:3000',
         'http://localhost:4200',
         'http://localhost:5173',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:4200',
+        'http://127.0.0.1:5173',
     ]
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
@@ -234,6 +238,9 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
 }
+
+SOCIAL_FACEBOOK_APP_ID = os.getenv('SOCIAL_FACEBOOK_APP_ID', '')
+SOCIAL_FACEBOOK_APP_SECRET = os.getenv('SOCIAL_FACEBOOK_APP_SECRET', '')
 
 
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'info@airporttransferhub.com')

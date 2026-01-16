@@ -12,10 +12,10 @@ from rest_framework import viewsets, views, status
 from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from core.permissions import IsCompanyYonetici
+from accounts.permissions import IsStaffOrAdmin
 from accounts.utils import sendpassword_task, make_random_password
 from accounts.models import Account, UserColumn
 from accounts.filtersets import AccountFilterSet, UserColumnFilterSet
@@ -34,7 +34,7 @@ class AccountModelViewSet(viewsets.ModelViewSet):
     search_fields = ['email', 'first_name', 'last_name']
     ordering_fields = ['email', 'first_name', 'last_name']
     ordering = ['email', 'first_name', 'last_name']
-    permission_classes = [IsCompanyYonetici]
+    permission_classes = [IsStaffOrAdmin]
 
     def get_serializer_class(self):
         if self.action == 'changepassword':
@@ -45,7 +45,12 @@ class AccountModelViewSet(viewsets.ModelViewSet):
             return PasswordResetConfirmSerializer
         return AccountModelSerializer
 
-    @action(detail=False, methods=['post'], url_path='changepassword')
+    @action(
+        detail=False,
+        methods=['post'],
+        url_path='changepassword',
+        permission_classes=[IsAuthenticated],
+    )
     def changepassword(self, request):
         user = request.user
         serializer = ChangePasswordSerializer(data=request.data)
@@ -74,7 +79,12 @@ class AccountModelViewSet(viewsets.ModelViewSet):
         sendpassword_task(user.email, password)
         return Response({'status': 'Kullanıcı başarıyla aktif/deaktif edildi.'})
 
-    @action(detail=False, methods=['get'], url_path='userdetail')
+    @action(
+        detail=False,
+        methods=['get'],
+        url_path='userdetail',
+        permission_classes=[IsAuthenticated],
+    )
     def userdetail(self, request, pk=None):
         user = self.request.user
         data = AccountModelSerializer(user).data
@@ -164,6 +174,7 @@ class PublicAccountModelViewSet(viewsets.ModelViewSet):
 
 
 class ProfileAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
     def put(self, request):
         user = request.user
         serializer = ProfileSerializer(user, data=request.data)

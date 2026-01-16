@@ -303,6 +303,83 @@ export class AdminHomeComponent implements OnInit {
   }
 
   private setSuperAdminMenu() {
+    const user = this.authService.user();
+    const role = (user?.role ?? localStorage.getItem('roleName') ?? '').trim();
+    const isStaff = user?.is_staff ?? localStorage.getItem('isStaff') === 'true';
+    const isSuperuser = user?.is_superuser ?? localStorage.getItem('isSuperuser') === 'true';
+
+    const isAdminNav = isStaff || isSuperuser || role === 'company_admin' || role === 'company_yonetici';
+    const isRezOrEmployee = role === 'company_rezervasyoncu' || role === 'company_employee';
+    const isBloggerSeo = role === 'blogger' || role === 'seo';
+
+    if (isBloggerSeo) {
+      this.items = [
+        {
+          label: 'Blogs Posts',
+          icon: 'pi pi-user',
+          routerLink: '/admin/blog-posts/'
+        },
+        {
+          label: 'FAQ',
+          icon: 'pi pi-question',
+          routerLink: '/admin/faqlibraries/'
+        }
+      ];
+      return;
+    }
+
+    if (isRezOrEmployee && !isAdminNav) {
+      this.items = [
+        {
+          label: 'Dashboard',
+          icon: 'pi pi-home',
+          routerLink: '/admin/'
+        },
+        {
+          label: 'Rezervasyonlar',
+          icon: 'pi pi-star',
+          routerLink: '/admin/reservations/'
+        },
+        {
+          label: 'Yorumlar',
+          icon: 'pi pi-comments',
+          routerLink: '/admin/reviews/'
+        },
+        {
+          label: 'Ödemeler',
+          icon: 'pi pi-credit-card',
+          items: [
+            {
+              label: 'Ödeme Niyetleri',
+              icon: 'pi pi-check',
+              routerLink: '/admin/payments/intents'
+            },
+            {
+              label: 'İşlem Kayıtları',
+              icon: 'pi pi-list',
+              routerLink: '/admin/payments/transactions'
+            },
+            {
+              label: 'Manuel Tahsilat',
+              icon: 'pi pi-check-square',
+              routerLink: '/admin/payments/offline-settlement'
+            },
+            {
+              label: 'İade Oluştur',
+              icon: 'pi pi-refresh',
+              routerLink: '/admin/payments/refund-issue'
+            },
+            {
+              label: 'Banka Profilleri',
+              icon: 'pi pi-building',
+              routerLink: '/admin/payments/bank-accounts'
+            },
+          ],
+        },
+      ];
+      return;
+    }
+
     this.items = [
       {
         label: 'Dashboard',

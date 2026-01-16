@@ -12,6 +12,7 @@ from .views import (
     PasswordChangeView,
     GoogleSocialLoginView,
     AppleSocialLoginView,
+    FacebookSocialLoginView,
     MicrosoftSocialLoginPlaceholderView,
     IntegrationTokenObtainPairView,
 )
@@ -30,5 +31,6 @@ urlpatterns = [
     path('me/', MeView.as_view(), name='auth_me'),
     path('social/google/', GoogleSocialLoginView.as_view(), name='auth_social_google'),
     path('social/apple/', AppleSocialLoginView.as_view(), name='auth_social_apple'),
+    path('social/facebook/', FacebookSocialLoginView.as_view(), name='auth_social_facebook'),
     path('social/microsoft/', MicrosoftSocialLoginPlaceholderView.as_view(), name='auth_social_microsoft'),
 ]

@@ -59,10 +59,20 @@
           </div>
 
           <div class="p-col-6">
-            <button type="submit" pButton label="Kaydet" class="p-button-success"></button>
+            <button
+              type="submit"
+              pButton
+              label="Kaydet"
+              class="p-button-success"
+              [loading]="isSaving"
+              [disabled]="isSaving"
+            ></button>
           </div>
           <div class="p-col-6" style="font-size: small;">
             <span class="required-fields">Yıldızlı alanlar zorunludur.</span>
+          </div>
+          <div class="p-col-12" *ngIf="submitError">
+            <small class="p-error">{{ submitError }}</small>
           </div>
       </div>
     </form>

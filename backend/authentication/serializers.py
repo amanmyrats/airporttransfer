@@ -23,6 +23,7 @@ from .utils import (
     upsert_social_user,
     verify_google_id_token,
     verify_apple_identity_token,
+    verify_facebook_access_token,
 )
 
 
@@ -217,6 +218,34 @@ class AppleSocialLoginSerializer(serializers.Serializer):
             last_name=last_name,
             provider='apple',
             uid=payload.get('sub'),
+            extra_data=payload,
+        )
+        return user
+
+
+class FacebookSocialLoginSerializer(serializers.Serializer):
+    access_token = serializers.CharField()
+
+    def validate(self, attrs):
+        verifier = self.context.get('verify_facebook_access_token', verify_facebook_access_token)
+        try:
+            payload = verifier(attrs['access_token'])
+        except ValueError as exc:
+            raise serializers.ValidationError({'detail': str(exc)}) from exc
+        attrs['payload'] = payload
+        return attrs
+
+    def save(self, **kwargs):
+        payload = self.validated_data['payload']
+        email = payload.get('email')
+        first_name = payload.get('first_name') or payload.get('name', '').split(' ')[0]
+        last_name = payload.get('last_name') or payload.get('name', '').split(' ')[-1] if payload.get('name') else None
+        user = upsert_social_user(
+            email=email,
+            first_name=first_name or '',
+            last_name=last_name,
+            provider='facebook',
+            uid=payload.get('id'),
             extra_data=payload,
         )
         return user

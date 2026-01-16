@@ -9,6 +9,7 @@ import {
   PaymentIntentDto,
   PendingSettlementIntent,
 } from '../../../payment/models/payment.models';
+import { PaginatedResponse } from '../../../models/paginated-response.model';
 
 export interface RefundIssuePayload {
   payment_id: number;
@@ -57,15 +58,27 @@ export class PaymentAdminService {
     return this.http.get<PaymentIntentDto[]>(url);
   }
 
-  listIntents(filters?: { status?: string; method?: string; booking_ref?: string }): Observable<PaymentIntentDto[]> {
+  listIntents(filters?: {
+    status?: string;
+    method?: string;
+    booking_ref?: string;
+    page?: number;
+    page_size?: number;
+  }): Observable<PaginatedResponse<PaymentIntentDto>> {
     const params = new HttpParams({
       fromObject: {
         ...(filters?.status ? { status: filters.status } : {}),
         ...(filters?.method ? { method: filters.method } : {}),
         ...(filters?.booking_ref ? { booking_ref: filters.booking_ref } : {}),
+        ...(filters?.page ? { page: String(filters.page) } : {}),
+        ...(filters?.page_size ? { page_size: String(filters.page_size) } : {}),
       },
     });
-    return this.http.get<PaymentIntentDto[]>(`${this.baseUrl}/intents/all/`, { params });
+    return this.http.get<PaginatedResponse<PaymentIntentDto>>(`${this.baseUrl}/intents/all/`, { params });
+  }
+
+  listIntentsByBooking(bookingRef: string): Observable<PaymentIntentDto[]> {
+    return this.http.get<PaymentIntentDto[]>(`${this.baseUrl}/intents/history/${bookingRef}/`);
   }
 
   listPayments(filters?: { status?: string; method?: string; booking_ref?: string }): Observable<PaymentDto[]> {

@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 
 from .models import Account, CustomerProfile, UserColumn
-from .utils import sendpassword_task, make_random_password
+from .utils import sendpassword_task
 
 
 class AccountModelSerializer(serializers.ModelSerializer):
@@ -21,9 +21,14 @@ class AccountModelSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         try:
-            password = make_random_password()
-            # password = make_password(validated_data.get('email'))
+            email = validated_data.get('email')
+            if not email:
+                raise serializers.ValidationError({'email': 'Email is required.'})
+            password = email
             validated_data['password'] = make_password(password)
+            validated_data['is_company_user'] = True
+            validated_data['is_active'] = True
+            validated_data['is_client'] = False
             account = super().create(validated_data)
             sendpassword_task(account.email, password)
 

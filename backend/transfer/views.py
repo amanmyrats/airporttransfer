@@ -19,7 +19,7 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce
 
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
@@ -59,12 +59,14 @@ from .resources import (
 from .services import apply_change_request
 from reviews.utils import reservation_belongs_to_user
 from payment.models import PaymentIntent
+from accounts.permissions import IsOperatorOrAdmin
 
 
 logger = logging.getLogger("airporttransfer")
 
 
 class ReservationModelViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsOperatorOrAdmin]
     queryset = Reservation.objects.all()
     serializer_class = ReservationModelSerializer
     filterset_class = ReservationFilterSet
@@ -321,6 +323,7 @@ class ContactUsModelViewSet(viewsets.ModelViewSet):
     queryset = ContactUsMessage.objects.all()
     serializer_class = ContactUsMessageModelSerializer
     filterset_class = ContactUsMessageFilterSet
+    permission_classes = [IsOperatorOrAdmin]
     
 
 class SendMessageAPIView(APIView):
@@ -362,12 +365,29 @@ Message: {serializer.data.get('message')}
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+def _is_transfer_staff(user) -> bool:
+    if not user or not user.is_authenticated:
+        return False
+    if user.is_staff or user.is_superuser:
+        return True
+    return user.role in {
+        "company_admin",
+        "company_yonetici",
+        "company_rezervasyoncu",
+        "company_employee",
+    }
+
+
 def _ensure_reservation_access(reservation: Reservation, user) -> None:
+    if _is_transfer_staff(user):
+        return
     if not reservation_belongs_to_user(reservation, user):
         raise PermissionDenied("Reservation not found.")
 
 
 def _reservations_queryset_for_user(user):
+    if _is_transfer_staff(user):
+        return Reservation.objects.all().prefetch_related("passengers")
     field_names = {field.name for field in Reservation._meta.get_fields()}
     filters = Q()
 
@@ -688,7 +708,7 @@ class MyReservationChangeRequestCancelAPIView(APIView):
 
 
 class AdminReservationChangeRequestListAPIView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsOperatorOrAdmin]
 
     def get(self, request, *args, **kwargs):
         queryset = ReservationChangeRequest.objects.all().order_by("-created_at")
@@ -703,7 +723,7 @@ class AdminReservationChangeRequestListAPIView(APIView):
 
 
 class AdminReservationChangeRequestApproveAPIView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsOperatorOrAdmin]
 
     ALLOWED_STATUSES = {
         ReservationChangeRequestStatus.PENDING_REVIEW,
@@ -726,7 +746,7 @@ class AdminReservationChangeRequestApproveAPIView(APIView):
 
 
 class AdminReservationChangeRequestDeclineAPIView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsOperatorOrAdmin]
 
     DECLINABLE_STATUSES = {
         ReservationChangeRequestStatus.PENDING_REVIEW,

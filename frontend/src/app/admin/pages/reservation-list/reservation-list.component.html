@@ -247,9 +247,11 @@
             </td>
 
             <td class="action-column">
-                <app-action-buttons [obj]="reservation" [editRole]="'company_rezervasyoncu'"
-                    [deleteRole]="'company_rezervasyoncu'" [wantEdit]="reservation.status !== 'confirmed'"
+                <app-action-buttons [obj]="reservation" [editRole]="'company_employee'"
+                    [deleteRole]="'company_employee'" [wantEdit]="reservation.status !== 'confirmed'"
                     [wantDelete]="reservation.status !== 'confirmed'" [wantDownloadPdf]="false" [wantDetail]="true"
+                    [detailRole]="'company_employee'"
+                    [changeRequestRole]="'company_employee'"
                     [wantChangeRequest]="reservation.has_change_request || !!reservation.latest_change_request_status"
                     (detailEmitter)="detailObj(reservation)" (updateEmitter)="updateObj($event)"
                     (deleteEmitter)="deleteObj($event)" (downloadPdfEmitter)="downloadPdf($event)"

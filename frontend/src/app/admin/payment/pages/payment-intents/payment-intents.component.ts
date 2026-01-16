@@ -18,11 +18,16 @@ import { CommonService } from '../../../../services/common.service';
 import { isOfflineMethod } from '../../../../payment/utils/payment-utils';
 import { ReservationService } from '../../../services/reservation.service';
 import { syncReservationIsNakit } from '../../utils/reservation-payment.util';
+import { PaginatedResponse } from '../../../../models/paginated-response.model';
+import { SharedPaginatorComponent } from '../../../components/shared-paginator/shared-paginator.component';
+import { environment as env } from '../../../../../environments/environment';
 
 type PaymentIntentFilters = {
   status?: string;
   method?: PaymentMethod | null;
   booking_ref?: string;
+  page?: number;
+  page_size?: number;
 };
 
 type SettlementContext = {
@@ -47,6 +52,7 @@ type SettlementContext = {
     ToastModule,
     ConfirmDialogModule,
     FilterSearchComponent,
+    SharedPaginatorComponent,
   ],
   templateUrl: './payment-intents.component.html',
   styleUrls: ['./payment-intents.component.scss'],
@@ -74,9 +80,11 @@ export class PaymentIntentsComponent {
   readonly settlementContext = signal<SettlementContext | null>(null);
   readonly settlementContextLoading = signal(false);
   readonly settlementContextError = signal<string | null>(null);
+  readonly totalRecords = signal(0);
 
   private filters: PaymentIntentFilters = {};
-  readonly filterRows = 25;
+  first = 0;
+  rows = env.pagination.defaultPageSize;
 
   readonly statusOptions = [
     { label: 'Succeeded', value: 'succeeded' },
@@ -97,16 +105,20 @@ export class PaymentIntentsComponent {
     this.loading.set(true);
     this.error.set(null);
     try {
-      const intents = await firstValueFrom(
+      const response = await firstValueFrom(
         this.service.listIntents({
           status: this.filters.status ?? undefined,
           method: this.filters.method ?? undefined,
           booking_ref: this.filters.booking_ref ?? undefined,
+          page: this.filters.page ?? 1,
+          page_size: this.filters.page_size ?? this.rows,
         }),
       );
-      this.intents.set(intents ?? []);
-      await this.loadBookingSummaries(intents ?? []);
-      this.computeAggregateSummary(intents ?? []);
+      const intents = this.normalizePaginatedResults(response);
+      this.totalRecords.set(this.resolveTotalCount(response, intents.length));
+      this.intents.set(intents);
+      await this.loadBookingSummaries(intents);
+      this.computeAggregateSummary(intents);
     } catch (error) {
       console.error('Failed to load payment intents', error);
       this.error.set('Unable to load payment intents.');
@@ -217,7 +229,7 @@ export class PaymentIntentsComponent {
       const [reservation, payments, relatedIntents] = await Promise.all([
         firstValueFrom(this.paymentService.fetchBookingSummary(intent.booking_ref)),
         firstValueFrom(this.service.listPayments({ booking_ref: intent.booking_ref })),
-        firstValueFrom(this.service.listIntents({ booking_ref: intent.booking_ref })),
+        firstValueFrom(this.service.listIntentsByBooking(intent.booking_ref)),
       ]);
       const currency = reservation.currency_code || intent.currency;
       const reservationAmount = Number(reservation.amount);
@@ -364,6 +376,7 @@ export class PaymentIntentsComponent {
 
   onFilterSearch(queryString: string): void {
     this.filters = this.extractFilters(queryString);
+    this.syncPaginationFromFilters();
     void this.load();
   }
 
@@ -372,12 +385,64 @@ export class PaymentIntentsComponent {
     const status = typeof params['status'] === 'string' ? params['status'] : undefined;
     const method = typeof params['method'] === 'string' ? (params['method'] as PaymentMethod) : undefined;
     const bookingRef = typeof params['search'] === 'string' ? params['search'] : undefined;
+    const page = this.parseNumberParam(params['page'], 1);
+    const pageSize = this.parseNumberParam(params['page_size'], this.rows);
 
     return {
       status: status || undefined,
       method: method || undefined,
       booking_ref: bookingRef || undefined,
+      page,
+      page_size: pageSize,
     };
+  }
+
+  onPageChange(event: { first?: number; rows?: number }): void {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? this.rows;
+    if (this.filterSearch) {
+      this.filterSearch.event.first = this.first;
+      this.filterSearch.event.rows = this.rows;
+      this.filterSearch.search();
+    } else {
+      const page = Math.floor(this.first / this.rows) + 1;
+      this.filters = { ...this.filters, page, page_size: this.rows };
+      void this.load();
+    }
+  }
+
+  private parseNumberParam(value: string | string[] | undefined, fallback: number): number {
+    if (typeof value !== 'string') {
+      return fallback;
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+  }
+
+  private syncPaginationFromFilters(): void {
+    const page = this.filters.page ?? 1;
+    const pageSize = this.filters.page_size ?? this.rows;
+    this.rows = pageSize;
+    this.first = (page - 1) * pageSize;
+  }
+
+  private normalizePaginatedResults(
+    response: PaginatedResponse<PaymentIntentDto> | PaymentIntentDto[],
+  ): PaymentIntentDto[] {
+    if (Array.isArray(response)) {
+      return response;
+    }
+    return response.results ?? [];
+  }
+
+  private resolveTotalCount(
+    response: PaginatedResponse<PaymentIntentDto> | PaymentIntentDto[],
+    fallback: number,
+  ): number {
+    if (Array.isArray(response)) {
+      return response.length;
+    }
+    return response.count ?? fallback;
   }
 
   private requestConfirmation(options: {

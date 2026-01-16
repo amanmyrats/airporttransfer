@@ -11,8 +11,9 @@ from django.utils.translation import get_language
 from django.db.models import Case, When, IntegerField, F
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action, permission_classes, authentication_classes
+from accounts.permissions import IsBlogEditorOrReadOnly
 
 from django.core.cache import cache
 from .serializers_related import RelatedPostSerializer
@@ -52,7 +53,7 @@ logger = logging.getLogger("airporttransfer")
 class BlogCategoryModelViewSet(PublicReadMixin, viewsets.ModelViewSet):
     queryset = BlogCategory.objects.all().prefetch_related("translations")
     serializer_class = BlogCategoryModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["name", "slug", "translations__name", "translations__slug"]
     ordering_fields = ["name", "translations__name"]
     ordering = ["name"]
@@ -61,7 +62,7 @@ class BlogCategoryModelViewSet(PublicReadMixin, viewsets.ModelViewSet):
 class BlogTagModelViewSet(viewsets.ModelViewSet):
     queryset = BlogTag.objects.all().prefetch_related("translations")
     serializer_class = BlogTagModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["name", "slug", "translations__name", "translations__slug"]
     ordering_fields = ["name", "translations__name"]
     ordering = ["name"]
@@ -70,7 +71,7 @@ class BlogTagModelViewSet(viewsets.ModelViewSet):
 class BlogCategoryTranslationModelViewSet(viewsets.ModelViewSet):
     queryset = BlogCategoryTranslation.objects.all()
     serializer_class = BlogCategoryTranslationModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["name", "slug", "language", "category__name", "category__slug"]
     ordering_fields = ["language", "name"]
     ordering = ["language"]
@@ -79,7 +80,7 @@ class BlogCategoryTranslationModelViewSet(viewsets.ModelViewSet):
 class BlogTagTranslationModelViewSet(viewsets.ModelViewSet):
     queryset = BlogTagTranslation.objects.all()
     serializer_class = BlogTagTranslationModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["name", "slug", "language", "tag__name", "tag__slug"]
     ordering_fields = ["language", "name"]
     ordering = ["language"]
@@ -88,7 +89,7 @@ class BlogImageModelViewSet(viewsets.ModelViewSet):
     queryset = BlogImage.objects.all()
     serializer_class = BlogImageModelSerializer
     filterset_class = BlogImageFilterSet
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["alt_text", "caption"]
     ordering_fields = ["is_primary", "caption"]
     ordering = ["-is_primary"]
@@ -306,7 +307,7 @@ class BlogImageModelViewSet(viewsets.ModelViewSet):
 class BlogImageTranslationModelViewSet(viewsets.ModelViewSet):
     queryset = BlogImageTranslation.objects.all()
     serializer_class = BlogImageTranslationModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["language", "caption"]
     ordering_fields = ["language", "created_at", "updated_at"]
     ordering = ["language", "-created_at"]
@@ -316,7 +317,7 @@ class BlogSectionTranslationModelViewSet(viewsets.ModelViewSet):
     queryset = BlogSectionTranslation.objects.all()
     serializer_class = BlogSectionTranslationModelSerializer
     filterset_class = BlogSectionTranslationFilterSet
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["heading", "language"]
     ordering_fields = ["created_at", "updated_at", "language"]
     ordering = ["language", "created_at"]
@@ -330,7 +331,7 @@ class BlogSectionModelViewSet(viewsets.ModelViewSet):
     # )
     serializer_class = BlogSectionModelSerializer
     filterset_class = BlogSectionFilterSet
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     ordering_fields = ["order"]
     ordering = ["order"]
 
@@ -355,7 +356,7 @@ class BlogPostTranslationModelViewSet(viewsets.ModelViewSet):
     queryset = BlogPostTranslation.objects.all()
     serializer_class = BlogPostTranslationModelSerializer
     filterset_class = BlogPostTranslationFilterSet
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["title", "slug", "language"]
     ordering_fields = ["language", "created_at", "updated_at"]
     ordering = ["language", "-updated_at", "-created_at"]
@@ -378,7 +379,7 @@ class BlogPostModelViewSet(PublicReadMixin, viewsets.ModelViewSet):
 
     serializer_class = BlogPostModelSerializer
     filterset_class = BlogPostFilterSet
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["slug", 
                     "translations__title",
                     "translations__short_description",
@@ -558,7 +559,7 @@ class BlogPostModelViewSet(PublicReadMixin, viewsets.ModelViewSet):
 class FaqItemModelViewSet(viewsets.ModelViewSet):
     queryset = FaqItem.objects.all()
     serializer_class = FaqItemModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["anchor", "internal_note", "translations__question", "translations__answer"]
     ordering_fields = ["order", "created_at", "updated_at", "is_expanded_by_default", "anchor", "is_featured"]
     ordering = ["order", "anchor"]
@@ -670,7 +671,7 @@ class FaqItemModelViewSet(viewsets.ModelViewSet):
 class FaqItemTranslationModelViewSet(viewsets.ModelViewSet):
     queryset = FaqItemTranslation.objects.all()
     serializer_class = FaqItemTranslationModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["language", "question", "answer"]
     ordering_fields = ["language", "created_at", "updated_at"]
     ordering = ["language", "-created_at"]
@@ -680,7 +681,7 @@ class FaqItemTranslationModelViewSet(viewsets.ModelViewSet):
 class FaqLibraryItemModelViewSet(viewsets.ModelViewSet):
     queryset = FaqLibraryItem.objects.all()
     serializer_class = FaqLibraryItemModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["internal_identifier", "key", "translations__question", "translations__answer"]
     ordering_fields = ["order", "created_at", "updated_at", "key", "id", "is_featured"]
     ordering = ["order", "id"]
@@ -786,7 +787,7 @@ class FaqLibraryItemModelViewSet(viewsets.ModelViewSet):
 class FaqLibraryItemTranslationModelViewSet(viewsets.ModelViewSet):
     queryset = FaqLibraryItemTranslation.objects.all()
     serializer_class = FaqLibraryItemTranslationModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ["language", "question", "answer", "item__key", "item__internal_identifier"]
     ordering_fields = ["language", "id"]
     ordering = ["language", "id"]
@@ -799,7 +800,7 @@ class BlogPostFaqLinkModelViewSet(viewsets.ModelViewSet):
     """
     queryset = BlogPostFaqLink.objects.select_related("faq_item", "blog_post")
     serializer_class = BlogPostFaqLinkModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = [
         "faq_item__key",
         "faq_item__internal_identifier",
