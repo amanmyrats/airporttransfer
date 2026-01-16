@@ -360,7 +360,7 @@ export class LoginComponent {
     this.facebookLoading.set(true);
     try {
       await this.socialService.loadFacebook();
-      if (typeof FB === 'undefined' || !environment.facebookAppId) {
+      if (typeof FB === 'undefined' || !environment.facebookAppId || !this.socialService.facebookInitialized()) {
         this.facebookLoading.set(false);
         this.statusMessage.set({ type: 'info', text: this.copy.statusMessages.facebookUnavailable });
         return;

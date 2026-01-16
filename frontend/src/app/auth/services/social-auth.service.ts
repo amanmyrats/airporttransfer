@@ -106,25 +106,7 @@ export class SocialAuthService {
     }
     const scriptId = 'facebook-jssdk';
     this.facebookLoadPromise = new Promise<void>((resolve, reject) => {
-      const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
-      if (existing) {
-        if (typeof FB !== 'undefined') {
-          this.facebookLoaded = true;
-          resolve();
-          return;
-        }
-        existing.addEventListener('load', () => {
-          this.facebookLoaded = true;
-          resolve();
-        });
-        existing.addEventListener('error', () => reject(new Error('facebook_load_failed')));
-        return;
-      }
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.src = 'https://connect.facebook.net/en_US/sdk.js';
-      script.async = true;
-      script.onload = () => {
+      (window as any).fbAsyncInit = () => {
         if (typeof FB === 'undefined') {
           reject(new Error('facebook_unavailable'));
           return;
@@ -135,11 +117,24 @@ export class SocialAuthService {
           xfbml: false,
           version: 'v19.0',
         });
-        FB.getLoginStatus(() => {
+        this.facebookLoaded = true;
+        resolve();
+      };
+
+      const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
+      if (existing) {
+        if (typeof FB !== 'undefined' && this.facebookLoaded) {
           this.facebookLoaded = true;
           resolve();
-        });
-      };
+          return;
+        }
+        existing.addEventListener('error', () => reject(new Error('facebook_load_failed')));
+        return;
+      }
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'https://connect.facebook.net/en_US/sdk.js';
+      script.async = true;
       script.onerror = () => reject(new Error('facebook_load_failed'));
       document.head.appendChild(script);
     }).finally(() => {
