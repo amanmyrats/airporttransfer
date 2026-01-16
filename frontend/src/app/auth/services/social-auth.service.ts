@@ -13,6 +13,7 @@ export class SocialAuthService {
   private appleLoaded = false;
   private googleLoadPromise: Promise<void> | null = null;
   private facebookLoaded = false;
+  private facebookInitDone = false;
   private facebookLoadPromise: Promise<void> | null = null;
 
   loadGoogle(): Promise<void> {
@@ -113,6 +114,7 @@ export class SocialAuthService {
         }
         resolved = true;
         this.facebookLoaded = true;
+        this.facebookInitDone = true;
         resolve();
       };
       const finishInit = () => {
@@ -163,7 +165,7 @@ export class SocialAuthService {
   }
 
   facebookInitialized(): boolean {
-    return this.facebookLoaded && typeof FB !== 'undefined';
+    return this.facebookLoaded && this.facebookInitDone && typeof FB !== 'undefined';
   }
 
   private isBrowser(): boolean {
