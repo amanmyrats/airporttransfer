@@ -133,6 +133,7 @@
 }
 
 .btn-google,
+.btn-facebook,
 .btn-apple {
   width: 100%;
   border: 1px solid rgba(148, 163, 184, 0.4);
@@ -142,6 +143,7 @@
 }
 
 .btn-google:hover,
+.btn-facebook:hover,
 .btn-apple:hover {
   background: rgba(15, 23, 42, 0.04);
 }
@@ -177,6 +179,10 @@
 
 .btn-apple .btn-spinner {
   border-top-color: #000;
+}
+
+.btn-facebook .btn-spinner {
+  border-top-color: #1877f2;
 }
 
 .divider {

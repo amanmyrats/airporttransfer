@@ -67,6 +67,10 @@ export interface SocialApplePayload {
   identity_token: string;
 }
 
+export interface SocialFacebookPayload {
+  access_token: string;
+}
+
 export interface UpdateProfilePayload {
   first_name?: string;
   last_name?: string;

@@ -17,6 +17,7 @@ from .serializers import (
     PasswordChangeSerializer,
     GoogleSocialLoginSerializer,
     AppleSocialLoginSerializer,
+    FacebookSocialLoginSerializer,
     login_success_payload,
     build_password_reset_payload,
     build_email_verification_token,
@@ -207,6 +208,17 @@ class AppleSocialLoginView(APIView):
 
     def post(self, request):
         serializer = AppleSocialLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response(login_success_payload(user))
+
+
+class FacebookSocialLoginView(APIView):
+    permission_classes = [AllowAny]
+    throttle_classes = [AuthBurstRateThrottle]
+
+    def post(self, request):
+        serializer = FacebookSocialLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         return Response(login_success_payload(user))

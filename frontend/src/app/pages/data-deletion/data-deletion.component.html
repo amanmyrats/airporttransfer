@@ -1,0 +1,126 @@
+<app-super-header></app-super-header>
+<app-navbar></app-navbar>
+
+@if (currentLanguage.code == 'en') {
+  <section>
+    <header>
+      <h1>Data Deletion Instructions</h1>
+      <p>This page explains how to request deletion of your personal data from Airport Transfer Hub.</p>
+    </header>
+
+    <article>
+      <h2>1. What data we store</h2>
+      <p>We may store the following data to provide our services:</p>
+      <ul>
+        <li>Account details (name, email address, phone number)</li>
+        <li>Booking details (pickup/drop-off, dates, flight info)</li>
+        <li>Payment-related metadata (transaction references)</li>
+        <li>Support communications</li>
+      </ul>
+
+      <h2>2. How to request deletion</h2>
+      <p>Please contact us using the details below and include the email address associated with your account.</p>
+      <p><strong>Email:</strong> {{ socialIcons.email.info }}</p>
+      <p><strong>Phone:</strong> {{ socialIcons.phone.formatted }}</p>
+      <p><strong>Address:</strong> {{ socialIcons.location.address[currentLanguage.code] }}</p>
+
+      <h2>3. Response time</h2>
+      <p>We aim to complete deletion requests within 30 days.</p>
+
+      <h2>4. Facebook login users</h2>
+      <p>If you signed in with Facebook, you can use the same process above. We rely on your email address to identify your account, so please make sure you include it in your request.</p>
+    </article>
+  </section>
+} @else if (currentLanguage.code == 'de') {
+  <section>
+    <header>
+      <h1>Anleitung zur Datenlöschung</h1>
+      <p>Auf dieser Seite erfahren Sie, wie Sie die Löschung Ihrer personenbezogenen Daten bei Airport Transfer Hub anfordern können.</p>
+    </header>
+
+    <article>
+      <h2>1. Welche Daten wir speichern</h2>
+      <p>Zur Bereitstellung unserer Dienste speichern wir möglicherweise folgende Daten:</p>
+      <ul>
+        <li>Kontodaten (Name, E-Mail-Adresse, Telefonnummer)</li>
+        <li>Buchungsdaten (Abhol-/Zielort, Datum, Fluginformationen)</li>
+        <li>Zahlungsbezogene Metadaten (Transaktionsreferenzen)</li>
+        <li>Support-Kommunikation</li>
+      </ul>
+
+      <h2>2. Löschung anfordern</h2>
+      <p>Kontaktieren Sie uns bitte über die untenstehenden Angaben und nennen Sie die mit dem Konto verknüpfte E-Mail-Adresse.</p>
+      <p><strong>E-Mail:</strong> {{ socialIcons.email.info }}</p>
+      <p><strong>Telefon:</strong> {{ socialIcons.phone.formatted }}</p>
+      <p><strong>Adresse:</strong> {{ socialIcons.location.address[currentLanguage.code] }}</p>
+
+      <h2>3. Bearbeitungszeit</h2>
+      <p>Wir bemühen uns, Löschanfragen innerhalb von 30 Tagen abzuschließen.</p>
+
+      <h2>4. Facebook-Login</h2>
+      <p>Wenn Sie sich mit Facebook angemeldet haben, gilt der gleiche Prozess. Wir benötigen Ihre E-Mail-Adresse, um Ihr Konto zu identifizieren.</p>
+    </article>
+  </section>
+} @else if (currentLanguage.code == 'ru') {
+  <section>
+    <header>
+      <h1>Инструкции по удалению данных</h1>
+      <p>На этой странице объясняется, как запросить удаление персональных данных из Airport Transfer Hub.</p>
+    </header>
+
+    <article>
+      <h2>1. Какие данные мы храним</h2>
+      <p>Для предоставления услуг мы можем хранить:</p>
+      <ul>
+        <li>Данные учетной записи (имя, email, номер телефона)</li>
+        <li>Данные бронирования (маршрут, даты, информация о рейсе)</li>
+        <li>Платежные метаданные (ссылки на транзакции)</li>
+        <li>Переписку со службой поддержки</li>
+      </ul>
+
+      <h2>2. Как запросить удаление</h2>
+      <p>Свяжитесь с нами по контактам ниже и укажите email, связанный с вашей учетной записью.</p>
+      <p><strong>Email:</strong> {{ socialIcons.email.info }}</p>
+      <p><strong>Телефон:</strong> {{ socialIcons.phone.formatted }}</p>
+      <p><strong>Адрес:</strong> {{ socialIcons.location.address[currentLanguage.code] }}</p>
+
+      <h2>3. Срок ответа</h2>
+      <p>Мы стараемся завершить обработку запроса в течение 30 дней.</p>
+
+      <h2>4. Пользователи Facebook</h2>
+      <p>Если вы входили через Facebook, используйте тот же процесс. Мы идентифицируем учетную запись по email, поэтому обязательно укажите его.</p>
+    </article>
+  </section>
+} @else if (currentLanguage.code == 'tr') {
+  <section>
+    <header>
+      <h1>Veri Silme Talimatları</h1>
+      <p>Bu sayfa, Airport Transfer Hub’dan kişisel verilerinizin silinmesini nasıl talep edeceğinizi açıklar.</p>
+    </header>
+
+    <article>
+      <h2>1. Hangi verileri saklarız</h2>
+      <p>Hizmetlerimizi sunmak için şu verileri saklayabiliriz:</p>
+      <ul>
+        <li>Hesap bilgileri (ad, e-posta adresi, telefon)</li>
+        <li>Rezervasyon bilgileri (alış/varış, tarih, uçuş bilgisi)</li>
+        <li>Ödeme ile ilgili metadata (işlem referansları)</li>
+        <li>Destek yazışmaları</li>
+      </ul>
+
+      <h2>2. Silme talebi nasıl yapılır</h2>
+      <p>Aşağıdaki iletişim bilgilerinden bize ulaşın ve hesabınızla ilişkili e-posta adresini paylaşın.</p>
+      <p><strong>E-posta:</strong> {{ socialIcons.email.info }}</p>
+      <p><strong>Telefon:</strong> {{ socialIcons.phone.formatted }}</p>
+      <p><strong>Adres:</strong> {{ socialIcons.location.address[currentLanguage.code] }}</p>
+
+      <h2>3. Yanıt süresi</h2>
+      <p>Silme taleplerini 30 gün içinde tamamlamayı hedefliyoruz.</p>
+
+      <h2>4. Facebook ile giriş yapanlar</h2>
+      <p>Facebook ile giriş yaptıysanız aynı süreç geçerlidir. Hesabınızı e-posta ile doğruladığımız için e-posta adresinizi mutlaka belirtin.</p>
+    </article>
+  </section>
+}
+
+<app-footer></app-footer>

@@ -16,6 +16,7 @@ import { AUTH_FALLBACK_LANGUAGE, AuthLanguageCode, normalizeAuthLanguage } from 
 
 declare const google: any;
 declare const AppleID: any;
+declare const FB: any;
 
 const LOGIN_TRANSLATIONS = {
   title: {
@@ -35,6 +36,12 @@ const LOGIN_TRANSLATIONS = {
     de: 'Mit Google fortfahren',
     ru: 'Продолжить через Google',
     tr: 'Google ile devam et',
+  },
+  facebookButton: {
+    en: 'Continue with Facebook',
+    de: 'Mit Facebook fortfahren',
+    ru: 'Продолжить через Facebook',
+    tr: 'Facebook ile devam et',
   },
   appleButton: {
     en: 'Continue with Apple',
@@ -132,6 +139,42 @@ const LOGIN_TRANSLATIONS = {
     ru: 'Вход через Google не удался. Попробуйте другой способ.',
     tr: 'Google ile giriş başarısız. Lütfen başka bir yöntem deneyin.',
   },
+  statusFacebookUnavailable: {
+    en: 'Facebook login is not available right now. Please try another method.',
+    de: 'Facebook-Anmeldung ist derzeit nicht verfügbar. Bitte versuchen Sie eine andere Methode.',
+    ru: 'Вход через Facebook временно недоступен. Попробуйте другой способ.',
+    tr: 'Facebook ile giriş şu anda kullanılamıyor. Lütfen başka bir yöntem deneyin.',
+  },
+  statusFacebookMissingToken: {
+    en: 'Facebook login failed. Missing access token.',
+    de: 'Facebook-Anmeldung fehlgeschlagen. Zugriffstoken fehlt.',
+    ru: 'Ошибка входа через Facebook: отсутствует токен доступа.',
+    tr: 'Facebook ile giriş başarısız. Erişim belirteci eksik.',
+  },
+  statusFacebookInvalidToken: {
+    en: 'Facebook login failed. Please try again.',
+    de: 'Facebook-Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.',
+    ru: 'Вход через Facebook не удался. Попробуйте еще раз.',
+    tr: 'Facebook ile giriş başarısız. Lütfen tekrar deneyin.',
+  },
+  statusFacebookMissingEmail: {
+    en: 'Facebook did not provide an email. An email address is required to sign in.',
+    de: 'Facebook hat keine E-Mail-Adresse bereitgestellt. Eine E-Mail-Adresse ist erforderlich.',
+    ru: 'Facebook не предоставил email. Адрес электронной почты обязателен для входа.',
+    tr: 'Facebook e-posta sağlamadı. Giriş için e-posta adresi gereklidir.',
+  },
+  statusFacebookVerificationFailed: {
+    en: 'We couldn’t verify your Facebook login. Please try again.',
+    de: 'Wir konnten deine Facebook-Anmeldung nicht verifizieren. Bitte versuche es erneut.',
+    ru: 'Не удалось подтвердить вход через Facebook. Попробуйте еще раз.',
+    tr: 'Facebook girişinizi doğrulayamadık. Lütfen tekrar deneyin.',
+  },
+  statusFacebookEmailMismatch: {
+    en: 'This Facebook account’s email doesn’t match any existing account.',
+    de: 'Die E-Mail dieses Facebook-Kontos stimmt mit keinem bestehenden Konto überein.',
+    ru: 'Email этого Facebook-аккаунта не совпадает ни с одной учетной записью.',
+    tr: 'Bu Facebook hesabının e-postası mevcut bir hesapla eşleşmiyor.',
+  },
   statusAppleUnavailable: {
     en: 'Apple Sign-In is not available yet.',
     de: 'Apple-Anmeldung ist noch nicht verfügbar.',
@@ -158,6 +201,7 @@ interface LoginCopy {
   title: string;
   subtitle: string;
   googleButton: string;
+  facebookButton: string;
   appleButton: string;
   divider: string;
   emailLabel: string;
@@ -175,6 +219,12 @@ interface LoginCopy {
     googleUnavailable: string;
     googleMissingCredential: string;
     googleFailed: string;
+    facebookUnavailable: string;
+    facebookMissingToken: string;
+    facebookInvalidToken: string;
+    facebookMissingEmail: string;
+    facebookVerificationFailed: string;
+    facebookEmailMismatch: string;
     appleUnavailable: string;
     appleFailedRetry: string;
     appleFailedAnother: string;
@@ -193,6 +243,7 @@ export class LoginComponent {
   readonly form: FormGroup;
   readonly loading = signal(false);
   readonly googleLoading = signal(false);
+  readonly facebookLoading = signal(false);
   readonly appleLoading = signal(false);
   readonly statusMessage = signal<{ type: 'info' | 'success' | 'error'; text: string } | null>(null);
   readonly appleEnabled = this.isAppleConfigured();
@@ -299,6 +350,40 @@ export class LoginComponent {
     }
   }
 
+  async handleFacebookSignIn(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    if (this.facebookLoading() || this.loading()) {
+      return;
+    }
+    this.facebookLoading.set(true);
+    try {
+      await this.socialService.loadFacebook();
+      if (typeof FB === 'undefined' || !environment.facebookAppId) {
+        this.facebookLoading.set(false);
+        this.statusMessage.set({ type: 'info', text: this.copy.statusMessages.facebookUnavailable });
+        return;
+      }
+      FB.login(
+        (response: { authResponse?: { accessToken?: string } }) => {
+          const token = response?.authResponse?.accessToken;
+          if (!token) {
+            this.facebookLoading.set(false);
+            this.statusMessage.set({ type: 'error', text: this.copy.statusMessages.facebookMissingToken });
+            return;
+          }
+          this.exchangeFacebookToken(token);
+        },
+        { scope: 'email,public_profile' },
+      );
+    } catch (error) {
+      this.facebookLoading.set(false);
+      this.statusMessage.set({ type: 'error', text: this.copy.statusMessages.facebookUnavailable });
+      console.error('Facebook sign-in failed to initialize', error);
+    }
+  }
+
   handleAppleSignIn(): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
@@ -365,6 +450,27 @@ export class LoginComponent {
         this.loading.set(false);
         this.appleLoading.set(false);
         this.statusMessage.set({ type: 'error', text: this.copy.statusMessages.appleFailedAnother });
+      },
+    });
+  }
+
+  private exchangeFacebookToken(accessToken: string): void {
+    this.loading.set(true);
+    this.authApi.socialFacebook({ access_token: accessToken }).subscribe({
+      next: (res) => {
+        this.authService.setSession(res);
+        this.loading.set(false);
+        this.facebookLoading.set(false);
+        this.navigatePostLogin(res.user);
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.removeItem('auth.returnUrl');
+        }
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.facebookLoading.set(false);
+        const detail = err?.error?.detail;
+        this.statusMessage.set({ type: 'error', text: this.resolveFacebookError(detail) });
       },
     });
   }
@@ -464,6 +570,7 @@ export class LoginComponent {
       title: this.translate('title', lang),
       subtitle: this.translate('subtitle', lang),
       googleButton: this.translate('googleButton', lang),
+      facebookButton: this.translate('facebookButton', lang),
       appleButton: this.translate('appleButton', lang),
       divider: this.translate('divider', lang),
       emailLabel: this.translate('emailLabel', lang),
@@ -481,11 +588,36 @@ export class LoginComponent {
         googleUnavailable: this.translate('statusGoogleUnavailable', lang),
         googleMissingCredential: this.translate('statusGoogleMissingCredential', lang),
         googleFailed: this.translate('statusGoogleFailed', lang),
+        facebookUnavailable: this.translate('statusFacebookUnavailable', lang),
+        facebookMissingToken: this.translate('statusFacebookMissingToken', lang),
+        facebookInvalidToken: this.translate('statusFacebookInvalidToken', lang),
+        facebookMissingEmail: this.translate('statusFacebookMissingEmail', lang),
+        facebookVerificationFailed: this.translate('statusFacebookVerificationFailed', lang),
+        facebookEmailMismatch: this.translate('statusFacebookEmailMismatch', lang),
         appleUnavailable: this.translate('statusAppleUnavailable', lang),
         appleFailedRetry: this.translate('statusAppleFailedRetry', lang),
         appleFailedAnother: this.translate('statusAppleFailedAnother', lang),
       },
     };
+  }
+
+  private resolveFacebookError(detail?: string): string {
+    switch (detail) {
+      case 'facebook_unavailable':
+        return this.copy.statusMessages.facebookUnavailable;
+      case 'facebook_missing_token':
+        return this.copy.statusMessages.facebookMissingToken;
+      case 'facebook_invalid_token':
+        return this.copy.statusMessages.facebookInvalidToken;
+      case 'facebook_missing_email':
+        return this.copy.statusMessages.facebookMissingEmail;
+      case 'facebook_verification_failed':
+        return this.copy.statusMessages.facebookVerificationFailed;
+      case 'facebook_email_mismatch':
+        return this.copy.statusMessages.facebookEmailMismatch;
+      default:
+        return this.copy.statusMessages.facebookInvalidToken;
+    }
   }
 
   private translate(key: LoginTranslationKey, lang: AuthLanguageCode): string {

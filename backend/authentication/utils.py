@@ -143,6 +143,54 @@ def verify_google_id_token(id_token: str) -> dict:
     return payload
 
 
+def verify_facebook_access_token(access_token: str) -> dict:
+    app_id = getattr(settings, 'SOCIAL_FACEBOOK_APP_ID', None)
+    app_secret = getattr(settings, 'SOCIAL_FACEBOOK_APP_SECRET', None)
+    if not app_id or not app_secret:
+        raise ValueError('facebook_unavailable')
+    try:
+        debug_response = requests.get(
+            'https://graph.facebook.com/debug_token',
+            params={
+                'input_token': access_token,
+                'access_token': f'{app_id}|{app_secret}',
+            },
+            timeout=5,
+        )
+    except requests.RequestException as exc:  # pragma: no cover - network failure
+        raise ValueError('facebook_verification_failed') from exc
+    if debug_response.status_code != 200:
+        raise ValueError('facebook_verification_failed')
+    debug_data = debug_response.json().get('data', {})
+    if not debug_data.get('is_valid'):
+        raise ValueError('facebook_invalid_token')
+    if debug_data.get('app_id') and str(debug_data.get('app_id')) != str(app_id):
+        raise ValueError('facebook_invalid_token')
+    user_id = debug_data.get('user_id')
+    if not user_id:
+        raise ValueError('facebook_invalid_token')
+
+    try:
+        profile_response = requests.get(
+            'https://graph.facebook.com/me',
+            params={
+                'fields': 'id,name,first_name,last_name,email',
+                'access_token': access_token,
+            },
+            timeout=5,
+        )
+    except requests.RequestException as exc:  # pragma: no cover - network failure
+        raise ValueError('facebook_verification_failed') from exc
+    if profile_response.status_code != 200:
+        raise ValueError('facebook_verification_failed')
+    payload = profile_response.json()
+    if not payload.get('email'):
+        raise ValueError('facebook_missing_email')
+    if payload.get('id') and str(payload.get('id')) != str(user_id):
+        raise ValueError('facebook_invalid_token')
+    return payload
+
+
 def _fetch_apple_keys() -> list[dict]:
     cached = cache.get(APPLE_KEYS_CACHE_KEY)
     if cached:

@@ -30,6 +30,21 @@
         <span class="social-label">{{ googleLoading() ? copy.submitBusy : copy.googleButton }}</span>
       </button>
       <button
+        type="button"
+        class="btn btn-facebook"
+        (click)="handleFacebookSignIn()"
+        [disabled]="facebookLoading() || loading()"
+        [attr.aria-busy]="facebookLoading()"
+      >
+        <span class="btn-spinner" *ngIf="facebookLoading()" aria-hidden="true"></span>
+        <span class="social-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img">
+            <path fill="#1877F2" d="M24 12.07C24 5.404 18.627 0 12 0S0 5.403 0 12.07C0 18.1 4.388 23.1 10.125 24v-8.437H7.078v-3.493h3.047V9.41c0-3.033 1.792-4.71 4.533-4.71 1.312 0 2.686.236 2.686.236v2.978h-1.513c-1.49 0-1.953.93-1.953 1.887v2.269h3.328l-.532 3.493h-2.796V24C19.612 23.1 24 18.1 24 12.07z"/>
+          </svg>
+        </span>
+        <span class="social-label">{{ facebookLoading() ? copy.submitBusy : copy.facebookButton }}</span>
+      </button>
+      <button
         *ngIf="appleEnabled"
         type="button"
         class="btn btn-apple"

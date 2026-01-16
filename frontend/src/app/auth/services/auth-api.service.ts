@@ -10,6 +10,7 @@ import {
   RegisterPayload,
   ResetPasswordPayload,
   SocialApplePayload,
+  SocialFacebookPayload,
   SocialGooglePayload,
   UpdateProfilePayload,
   VerifyEmailPayload,
@@ -65,6 +66,10 @@ export class AuthApiService {
 
   socialApple(payload: SocialApplePayload): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.authBase}social/apple/`, payload);
+  }
+
+  socialFacebook(payload: SocialFacebookPayload): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.authBase}social/facebook/`, payload);
   }
 
   hasWindow(): boolean {

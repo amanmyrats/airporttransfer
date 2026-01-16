@@ -412,6 +412,26 @@ export const routes: Routes = [
         data: { language: 'tr' }
     }, 
     {
+        path: 'en/privacy-policy-for-24-7-private-airport-private-car-transfer-in-turkey/data-deletion',
+        loadComponent: () => import('./pages/data-deletion/data-deletion.component').then(m => m.DataDeletionComponent),
+        data: { language: 'en' }
+    },
+    {
+        path: 'de/datenschutz-bestimmungen-für-24-7-privaten-flughafen-privatwagen-transfer-in-der-türkei/data-deletion',
+        loadComponent: () => import('./pages/data-deletion/data-deletion.component').then(m => m.DataDeletionComponent),
+        data: { language: 'de' }
+    },
+    {
+        path: 'ru/политика-конфиденциальности-для-24-7-частного-трансфера-частного-автомобиля-из-аэропорта-в-турции/data-deletion',
+        loadComponent: () => import('./pages/data-deletion/data-deletion.component').then(m => m.DataDeletionComponent),
+        data: { language: 'ru' }
+    },
+    {
+        path: 'tr/türkiye-de-7-24-havalimanı-özel-araba-transferi-için-gizlilik-politikası/data-deletion',
+        loadComponent: () => import('./pages/data-deletion/data-deletion.component').then(m => m.DataDeletionComponent),
+        data: { language: 'tr' }
+    },
+    {
         path: 'en/terms-of-service-for-24-7-private-airport-private-car-transfer-in-turkey',
         // component: TermsOfServiceComponent,
         loadComponent: () => import('./pages/terms-of-service/terms-of-service.component').then(m => m.TermsOfServiceComponent),
