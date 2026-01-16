@@ -135,8 +135,10 @@ export class SocialAuthService {
           xfbml: false,
           version: 'v19.0',
         });
-        this.facebookLoaded = true;
-        resolve();
+        FB.getLoginStatus(() => {
+          this.facebookLoaded = true;
+          resolve();
+        });
       };
       script.onerror = () => reject(new Error('facebook_load_failed'));
       document.head.appendChild(script);
