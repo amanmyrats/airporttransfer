@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { TableModule } from 'primeng/table';
@@ -22,6 +22,9 @@ import { BankAccountService } from '../../services/bank-account.service';
 import { FilterSearchComponent } from '../../../components/filter-search/filter-search.component';
 import { CommonService } from '../../../../services/common.service';
 import { ActionButtonsComponent } from '../../../components/action-buttons/action-buttons.component';
+import { PaginatedResponse } from '../../../../models/paginated-response.model';
+import { SharedPaginatorComponent } from '../../../components/shared-paginator/shared-paginator.component';
+import { environment as env } from '../../../../../environments/environment';
 
 type DialogMode = 'create' | 'edit';
 
@@ -41,6 +44,7 @@ type DialogMode = 'create' | 'edit';
     ConfirmDialogModule,
     FilterSearchComponent,
     ActionButtonsComponent,
+    SharedPaginatorComponent,
   ],
   templateUrl: './bank-accounts.component.html',
   styleUrls: ['./bank-accounts.component.scss'],
@@ -48,12 +52,15 @@ type DialogMode = 'create' | 'edit';
   providers: [MessageService, ConfirmationService],
 })
 export class BankAccountsComponent implements OnInit {
+  @ViewChild(FilterSearchComponent) filterSearch?: FilterSearchComponent;
+
   private readonly service = inject(BankAccountService);
   private readonly fb = inject(FormBuilder);
   private readonly messages = inject(MessageService);
   private readonly confirmation = inject(ConfirmationService);
   private readonly commonService = inject(CommonService);
 
+  canManage = false;
   readonly accounts = signal<PaymentBankAccount[]>([]);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
@@ -61,6 +68,9 @@ export class BankAccountsComponent implements OnInit {
   readonly dialogMode = signal<DialogMode>('create');
   readonly formSubmitting = signal(false);
   readonly editingAccount = signal<PaymentBankAccount | null>(null);
+  readonly totalRecords = signal(0);
+  first = 0;
+  rows = env.pagination.defaultPageSize;
 
   readonly methodOptions = [
     { label: 'Bank Transfer', value: 'BANK_TRANSFER' as PaymentMethod },
@@ -101,6 +111,7 @@ export class BankAccountsComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.canManage = this.resolveCanManage();
     void this.loadAccounts();
   }
 
@@ -108,7 +119,16 @@ export class BankAccountsComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
     try {
-      const accounts = await firstValueFrom(this.service.list(this.filters()));
+      const filters = this.filters();
+      const response = await firstValueFrom(
+        this.service.list({
+          ...filters,
+          page: filters.page ?? 1,
+          page_size: filters.page_size ?? this.rows,
+        }),
+      );
+      const accounts = this.normalizePaginatedResults(response);
+      this.totalRecords.set(this.resolveTotalCount(response, accounts.length));
       this.accounts.set(accounts);
     } catch (error) {
       console.error('Failed to load bank accounts', error);
@@ -119,6 +139,9 @@ export class BankAccountsComponent implements OnInit {
   }
 
   openCreateDialog(): void {
+    if (!this.canManage) {
+      return;
+    }
     this.dialogMode.set('create');
     this.editingAccount.set(null);
     this.accountForm.reset({
@@ -142,6 +165,7 @@ export class BankAccountsComponent implements OnInit {
   onFilterSearch(queryString: string): void {
     const nextFilters = this.extractFilters(queryString);
     this.filters.set(nextFilters);
+    this.syncPaginationFromFilters();
     void this.loadAccounts();
   }
 
@@ -162,15 +186,36 @@ export class BankAccountsComponent implements OnInit {
     } else if (statusParam === 'false') {
       is_active = false;
     }
+    const page = this.parseNumberParam(params['page'], 1);
+    const pageSize = this.parseNumberParam(params['page_size'], this.rows);
 
     return {
       method,
       currency,
       is_active,
+      page,
+      page_size: pageSize,
     };
   }
 
+  onPageChange(event: { first?: number; rows?: number }): void {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? this.rows;
+    if (this.filterSearch) {
+      this.filterSearch.event.first = this.first;
+      this.filterSearch.event.rows = this.rows;
+      this.filterSearch.search();
+    } else {
+      const page = Math.floor(this.first / this.rows) + 1;
+      this.filters.set({ ...this.filters(), page, page_size: this.rows });
+      void this.loadAccounts();
+    }
+  }
+
   openEditDialog(account: PaymentBankAccount): void {
+    if (!this.canManage) {
+      return;
+    }
     this.dialogMode.set('edit');
     this.editingAccount.set(account);
     this.accountForm.reset({
@@ -199,6 +244,9 @@ export class BankAccountsComponent implements OnInit {
   }
 
   async submitAccount(): Promise<void> {
+    if (!this.canManage) {
+      return;
+    }
     if (this.accountForm.invalid) {
       this.accountForm.markAllAsTouched();
       return;
@@ -240,6 +288,9 @@ export class BankAccountsComponent implements OnInit {
   }
 
   confirmDeleteById(accountId: number): void {
+    if (!this.canManage) {
+      return;
+    }
     const account = this.accounts().find(item => item.id === accountId);
     if (!account) {
       return;
@@ -248,6 +299,9 @@ export class BankAccountsComponent implements OnInit {
   }
 
   confirmDelete(account: PaymentBankAccount): void {
+    if (!this.canManage) {
+      return;
+    }
     this.confirmation.confirm({
       message: `Delete bank profile "${account.label}"?`,
       header: 'Confirm deletion',
@@ -259,6 +313,9 @@ export class BankAccountsComponent implements OnInit {
   }
 
   private async deleteAccount(account: PaymentBankAccount): Promise<void> {
+    if (!this.canManage) {
+      return;
+    }
     try {
       await firstValueFrom(this.service.delete(account.id));
       this.messages.add({
@@ -299,5 +356,52 @@ export class BankAccountsComponent implements OnInit {
       priority: Number(value.priority) || 0,
       is_active: !!value.is_active,
     };
+  }
+
+  private resolveCanManage(): boolean {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+    const role = (localStorage.getItem('roleName') ?? '').trim();
+    const isStaff = localStorage.getItem('isStaff') === 'true';
+    const isSuperuser = localStorage.getItem('isSuperuser') === 'true';
+    if (isStaff || isSuperuser) {
+      return true;
+    }
+    return role === 'company_admin' || role === 'company_yonetici' || role === 'company_operasyoncu';
+  }
+
+  private parseNumberParam(value: string | string[] | undefined, fallback: number): number {
+    if (typeof value !== 'string') {
+      return fallback;
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+  }
+
+  private syncPaginationFromFilters(): void {
+    const page = this.filters().page ?? 1;
+    const pageSize = this.filters().page_size ?? this.rows;
+    this.rows = pageSize;
+    this.first = (page - 1) * pageSize;
+  }
+
+  private normalizePaginatedResults(
+    response: PaginatedResponse<PaymentBankAccount> | PaymentBankAccount[],
+  ): PaymentBankAccount[] {
+    if (Array.isArray(response)) {
+      return response;
+    }
+    return response.results ?? [];
+  }
+
+  private resolveTotalCount(
+    response: PaginatedResponse<PaymentBankAccount> | PaymentBankAccount[],
+    fallback: number,
+  ): number {
+    if (Array.isArray(response)) {
+      return response.length;
+    }
+    return response.count ?? fallback;
   }
 }

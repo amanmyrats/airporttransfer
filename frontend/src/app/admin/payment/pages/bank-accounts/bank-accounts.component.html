@@ -12,11 +12,14 @@
     label="Add Profile"
     icon="pi pi-plus"
     (click)="openCreateDialog()"
+    *ngIf="canManage"
   ></button>
 </section>
 
 <section class="filters-card">
   <app-filter-search
+    [first]="first"
+    [rows]="rows"
     [wantSearchFilter]="false"
     [wantPaymentMethodFilter]="true"
     [wantCurrencyFilter]="true"
@@ -51,7 +54,7 @@
       <th>Phone</th>
       <th>Priority</th>
       <th>Status</th>
-      <th class="actions-column">Actions</th>
+      <th class="actions-column" *ngIf="canManage">Actions</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-account>
@@ -87,7 +90,7 @@
           {{ account.is_active ? 'Active' : 'Inactive' }}
         </span>
       </td>
-      <td class="actions-column">
+      <td class="actions-column" *ngIf="canManage">
         <app-action-buttons
           [wantEdit]="true"
           [wantDelete]="true"
@@ -111,6 +114,13 @@
     </tr>
   </ng-template>
 </p-table>
+
+<app-shared-paginator
+  [first]="first"
+  [rows]="rows"
+  [totalRecords]="totalRecords()"
+  (onPageChangeEmitter)="onPageChange($event)"
+></app-shared-paginator>
 
 <p-dialog
   [visible]="dialogVisible()"

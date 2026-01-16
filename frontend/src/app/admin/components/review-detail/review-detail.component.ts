@@ -158,6 +158,7 @@ export class ReviewDetailComponent implements OnInit {
       return;
     }
     this.savingReply = true;
+    this.replyForm.disable();
     this.reviewsService
       .createReviewReply({
         review: this.reviewId,
@@ -169,6 +170,7 @@ export class ReviewDetailComponent implements OnInit {
           this.replies = [reply, ...this.replies];
           this.replyForm.reset({ body: '' });
           this.savingReply = false;
+          this.replyForm.enable();
           this.messageService.add({
             severity: 'success',
             summary: 'Reply posted',
@@ -178,6 +180,7 @@ export class ReviewDetailComponent implements OnInit {
         error: error => {
           console.error('Failed to create reply', error);
           this.savingReply = false;
+          this.replyForm.enable();
           this.messageService.add({
             severity: 'error',
             summary: 'Unable to post reply',

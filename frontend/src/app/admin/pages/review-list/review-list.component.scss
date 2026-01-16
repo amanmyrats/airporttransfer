@@ -166,10 +166,20 @@
 
 .paginator-wrapper {
   display: flex;
-  justify-content: center;
+  justify-content: stretch;
   margin-top: 0.5rem;
   width: 100%;
   align-self: stretch;
+}
+
+.paginator-wrapper app-shared-paginator {
+  display: block;
+  width: 100%;
+}
+
+:host ::ng-deep .paginator-wrapper .p-paginator {
+  width: 100%;
+  justify-content: center;
 }
 
 .text-success {
@@ -232,5 +242,240 @@
 
   .filters-actions button[pbutton] {
     width: 100%;
+  }
+}
+
+::ng-deep .review-detail-dialog {
+  .p-dialog-content {
+    background: #f8fafc;
+    color: #0f172a;
+  }
+
+  .review-detail {
+    color: #0f172a;
+  }
+
+  .review-detail .review-header .header-left .review-id,
+  .review-detail .divider-title {
+    color: #0f172a;
+  }
+
+  .review-detail .review-meta .label {
+    color: #64748b;
+  }
+
+  .review-detail .review-meta .value {
+    color: #0f172a;
+  }
+
+  .review-detail .comment-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+  }
+
+  .review-detail .comment-card h3 {
+    color: #0f172a;
+  }
+
+  .review-detail .comment-card p {
+    color: #475569;
+  }
+
+  .review-detail .reply-form .label {
+    color: #475569;
+  }
+
+  .review-detail .replies li {
+    background: #ffffff;
+    border-color: #e2e8f0;
+  }
+
+  .review-detail .replies .reply-meta .author {
+    color: #0f172a;
+  }
+
+  .review-detail .replies .reply-meta .timestamp {
+    color: #94a3b8;
+  }
+
+  .review-detail .replies .reply-body {
+    color: #475569;
+  }
+}
+
+:host-context(.dark),
+:host-context([data-theme="dark"]) {
+  ::ng-deep .review-detail-dialog {
+    .p-dialog-content {
+      background: #0b0f16;
+      color: #e2e8f0;
+    }
+
+    .review-detail {
+      color: #e2e8f0;
+    }
+
+    .review-detail .review-header .review-id,
+    .review-detail .divider-title {
+      color: #e2e8f0;
+    }
+
+    .review-detail .review-meta .label {
+      color: #94a3b8;
+    }
+
+    .review-detail .review-meta .value {
+      color: #e2e8f0;
+    }
+
+    .review-detail .comment-card {
+      background: #0f172a;
+    }
+
+    .review-detail .comment-card h3 {
+      color: #f8fafc;
+    }
+
+    .review-detail .comment-card p {
+      color: #cbd5f5;
+    }
+
+    .review-detail .reply-form .label {
+      color: #cbd5f5;
+    }
+
+    .review-detail .replies li {
+      background: #0f172a;
+      border-color: #1f2937;
+    }
+
+    .review-detail .replies .reply-meta .author {
+      color: #f8fafc;
+    }
+
+    .review-detail .replies .reply-meta .timestamp {
+      color: #94a3b8;
+    }
+
+    .review-detail .replies .reply-body {
+      color: #cbd5f5;
+    }
+  }
+}
+
+::ng-deep body.dark .review-detail-dialog,
+::ng-deep body[data-theme="dark"] .review-detail-dialog,
+::ng-deep .dark .review-detail-dialog,
+::ng-deep [data-theme="dark"] .review-detail-dialog {
+  .p-dialog-content {
+    background: #0b0f16;
+    color: #e2e8f0;
+  }
+
+  .review-detail {
+    color: #e2e8f0;
+  }
+
+  .review-detail .review-header .review-id,
+  .review-detail .divider-title {
+    color: #e2e8f0;
+  }
+
+  .review-detail .review-meta .label {
+    color: #94a3b8;
+  }
+
+  .review-detail .review-meta .value {
+    color: #e2e8f0;
+  }
+
+  .review-detail .comment-card {
+    background: #0f172a;
+  }
+
+  .review-detail .comment-card h3 {
+    color: #f8fafc;
+  }
+
+  .review-detail .comment-card p {
+    color: #cbd5f5;
+  }
+
+  .review-detail .reply-form .label {
+    color: #cbd5f5;
+  }
+
+  .review-detail .replies li {
+    background: #0f172a;
+    border-color: #1f2937;
+  }
+
+  .review-detail .replies .reply-meta .author {
+    color: #f8fafc;
+  }
+
+  .review-detail .replies .reply-meta .timestamp {
+    color: #94a3b8;
+  }
+
+  .review-detail .replies .reply-body {
+    color: #cbd5f5;
+  }
+}
+
+::ng-deep .review-detail-dialog {
+  .p-dialog-content {
+    background: #0b0f16;
+    color: #e2e8f0;
+  }
+
+  .review-detail {
+    color: #e2e8f0;
+  }
+
+  .review-detail .review-header .review-id,
+  .review-detail .divider-title {
+    color: #e2e8f0;
+  }
+
+  .review-detail .review-meta .label {
+    color: #94a3b8;
+  }
+
+  .review-detail .review-meta .value {
+    color: #e2e8f0;
+  }
+
+  .review-detail .comment-card {
+    background: #0f172a;
+  }
+
+  .review-detail .comment-card h3 {
+    color: #f8fafc;
+  }
+
+  .review-detail .comment-card p {
+    color: #cbd5f5;
+  }
+
+  .review-detail .reply-form .label {
+    color: #cbd5f5;
+  }
+
+  .review-detail .replies li {
+    background: #0f172a;
+    border-color: #1f2937;
+  }
+
+  .review-detail .replies .reply-meta .author {
+    color: #f8fafc;
+  }
+
+  .review-detail .replies .reply-meta .timestamp {
+    color: #94a3b8;
+  }
+
+  .review-detail .replies .reply-body {
+    color: #cbd5f5;
   }
 }

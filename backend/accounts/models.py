@@ -32,6 +32,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
         ('company_yonetici', 'Yönetici'),
         ('company_rezervasyoncu', 'Rezervasyoncu'),
         ('company_employee', 'Çalışan'),
+        ('blogger', 'Blogger'),
+        ('seo', 'SEO'),
     )
     email = models.EmailField(unique=True)
     # username = models.CharField(max_length=150, unique=True)

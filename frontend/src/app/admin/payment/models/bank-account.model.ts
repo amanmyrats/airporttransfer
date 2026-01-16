@@ -23,4 +23,6 @@ export interface PaymentBankAccountFilters {
   method?: PaymentMethod | null;
   currency?: string | null;
   is_active?: boolean | null;
+  page?: number;
+  page_size?: number;
 }

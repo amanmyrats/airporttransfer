@@ -181,6 +181,14 @@ export class ReviewListComponent implements OnInit {
     this.currentPage = page;
     this.pageSize = pageSize;
     this.filterForm.patchValue(nextFormValue, { emitEvent: false });
+    if (!params.has('page') || !params.has('page_size')) {
+      const extras: Record<string, string | number> = {};
+      if (this.pendingDialogReviewId !== null) {
+        extras['review_id'] = this.pendingDialogReviewId;
+      }
+      this.updateQueryParams(Object.keys(extras).length ? extras : undefined);
+      return;
+    }
     this.fetchReviews();
   }
 
@@ -321,8 +329,11 @@ export class ReviewListComponent implements OnInit {
     return query;
   }
 
-  private updateQueryParams(): void {
-    const queryParams = this.buildQueryParams();
+  private updateQueryParams(extra?: Record<string, string | number>): void {
+    const queryParams = {
+      ...this.buildQueryParams(),
+      ...(extra ?? {}),
+    };
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams,
@@ -362,6 +373,7 @@ export class ReviewListComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response: PaginatedResponse<AdminReview>) => {
+          console.log('Fetched reviews', response);
           this.reviews = response.results ?? [];
           this.totalRecords = response.count ?? this.reviews.length;
           this.loading = false;

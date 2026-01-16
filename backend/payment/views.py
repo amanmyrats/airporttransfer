@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from .enums import IntentStatus
 from .models import BankTransferInstruction, Payment, PaymentBankAccount, PaymentIntent
-from .permissions import IsAuthenticatedPaymentUser, IsPaymentStaff
+from .permissions import IsAuthenticatedPaymentUser, IsPaymentStaff, IsPaymentBankAccountDetailAccess
 from .selectors import list_available_methods, list_offline_pending
 from .serializers import (
     OfflineDeclineSerializer,
@@ -246,8 +246,7 @@ class BankTransferInstructionDetailView(generics.RetrieveUpdateDestroyAPIView):
 class PaymentBankAccountListCreateView(generics.ListCreateAPIView):
     queryset = PaymentBankAccount.objects.all()
     serializer_class = PaymentBankAccountSerializer
-    permission_classes = [IsPaymentStaff]
-    pagination_class = None
+    permission_classes = [IsPaymentBankAccountDetailAccess]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -269,14 +268,13 @@ class PaymentBankAccountListCreateView(generics.ListCreateAPIView):
 class PaymentBankAccountDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PaymentBankAccount.objects.all()
     serializer_class = PaymentBankAccountSerializer
-    permission_classes = [IsPaymentStaff]
+    permission_classes = [IsPaymentBankAccountDetailAccess]
 
 
 class PaymentIntentListView(generics.ListAPIView):
     queryset = PaymentIntent.objects.prefetch_related("payments", "offline_receipts", "ledger_entries")
     serializer_class = PaymentIntentDetailSerializer
     permission_classes = [IsPaymentStaff]
-    pagination_class = None
 
     def get_queryset(self):
         queryset = super().get_queryset()

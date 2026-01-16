@@ -7,10 +7,11 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed, PermissionDenied, ValidationError
-from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from blog.mixins import PublicReadMixin
+from accounts.permissions import IsReviewManagerOrReadOnly
 from .models import Review, ReviewReply, ReviewStatus
 from .serializers import (
     MyReviewSerializer,
@@ -122,7 +123,7 @@ class PublicReviewsViewSet(PublicReadMixin, viewsets.ReadOnlyModelViewSet):
 
 class ReviewAdminViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewModelSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAuthenticated, IsReviewManagerOrReadOnly]
     queryset = Review.objects.select_related("reservation", "user", "route").all()
     filterset_fields = ("status", "is_public", "is_flagged", "rating", "route")
     search_fields = ("title", "comment", "reservation__number", "user__email")
@@ -179,16 +180,36 @@ class ReviewAdminViewSet(viewsets.ModelViewSet):
 
 class ReviewReplyViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewReplySerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAuthenticated, IsReviewManagerOrReadOnly]
     queryset = ReviewReply.objects.select_related("review", "author").all()
     ordering = ("created_at",)
 
     def perform_create(self, serializer: ReviewReplySerializer) -> None:
-        if not self.request.user.is_staff:
-            raise PermissionDenied(_("Only staff can reply to reviews."))
+        user = self.request.user
+        if not (
+            user.is_staff
+            or user.is_superuser
+            or user.role in {
+                "company_admin",
+                "company_yonetici",
+                "company_rezervasyoncu",
+                "company_employee",
+            }
+        ):
+            raise PermissionDenied(_("Only authorized staff can reply to reviews."))
         serializer.save(author=self.request.user)
 
     def perform_update(self, serializer: ReviewReplySerializer) -> None:
-        if not self.request.user.is_staff:
-            raise PermissionDenied(_("Only staff can update replies."))
+        user = self.request.user
+        if not (
+            user.is_staff
+            or user.is_superuser
+            or user.role in {
+                "company_admin",
+                "company_yonetici",
+                "company_rezervasyoncu",
+                "company_employee",
+            }
+        ):
+            raise PermissionDenied(_("Only authorized staff can update replies."))
         serializer.save()

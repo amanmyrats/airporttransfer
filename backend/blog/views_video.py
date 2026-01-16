@@ -3,7 +3,7 @@
 from django.utils.translation import get_language
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 
@@ -13,6 +13,7 @@ from .serializers_video import (
     BlogVideoCaptionModelSerializer,
     PublicBlogVideoSerializer
 )
+from accounts.permissions import IsBlogEditorOrReadOnly
 
 
 class BlogVideoModelViewSet(viewsets.ModelViewSet):
@@ -28,7 +29,7 @@ class BlogVideoModelViewSet(viewsets.ModelViewSet):
         .prefetch_related('translations', 'caption_tracks')
     )
     serializer_class = BlogVideoModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = [
         'provider', 'provider_video_id', 'source_url',
         'translations__title', 'translations__caption', 'translations__description'
@@ -79,7 +80,7 @@ class BlogVideoTranslationModelViewSet(viewsets.ModelViewSet):
         .select_related('video', 'video__section', 'video__section__post')
     )
     serializer_class = BlogVideoTranslationModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ['language', 'title', 'caption', 'description', 'seo_title', 'seo_description']
     filterset_fields = ['video', 'language']
     ordering_fields = ['language', 'created_at', 'updated_at', 'id']
@@ -91,7 +92,7 @@ class BlogVideoCaptionModelViewSet(viewsets.ModelViewSet):
         .select_related('video', 'video__section', 'video__section__post')
     )
     serializer_class = BlogVideoCaptionModelSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBlogEditorOrReadOnly]
     search_fields = ['language', 'label', 'mime_type', 'kind']
     filterset_fields = ['video', 'language', 'kind', 'is_default']
     ordering_fields = ['language', 'id']
