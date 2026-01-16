@@ -7,7 +7,7 @@ export const environment = {
   googleClientId: '455481319488-6gcbh9g2vh7oh2ust3q4e3lrbhtgu4u2.apps.googleusercontent.com',
   appleClientId: 'YOUR_APPLE_CLIENT_ID',
   appleRedirectUri: 'https://airporttransferhub.com/auth/social/apple/callback',
-  facebookAppId: 'YOUR_FACEBOOK_APP_ID',
+  facebookAppId: '894173723151836',
   buildTimestamp: new Date().toISOString(),
   pagination: {
     defaultPageSize: 10,
