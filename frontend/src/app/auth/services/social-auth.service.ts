@@ -106,6 +106,15 @@ export class SocialAuthService {
     }
     const scriptId = 'facebook-jssdk';
     this.facebookLoadPromise = new Promise<void>((resolve, reject) => {
+      let resolved = false;
+      const finalize = () => {
+        if (resolved) {
+          return;
+        }
+        resolved = true;
+        this.facebookLoaded = true;
+        resolve();
+      };
       const finishInit = () => {
         if (typeof FB === 'undefined') {
           reject(new Error('facebook_unavailable'));
@@ -117,8 +126,7 @@ export class SocialAuthService {
           xfbml: false,
           version: 'v19.0',
         });
-        this.facebookLoaded = true;
-        resolve();
+        FB.getLoginStatus(() => finalize());
       };
       (window as any).fbAsyncInit = () => finishInit();
 
@@ -128,6 +136,7 @@ export class SocialAuthService {
           finishInit();
           return;
         }
+        existing.addEventListener('load', () => finishInit());
         existing.addEventListener('error', () => reject(new Error('facebook_load_failed')));
         return;
       }
