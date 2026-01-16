@@ -357,30 +357,40 @@ export class LoginComponent {
     if (this.facebookLoading() || this.loading()) {
       return;
     }
+    console.log('[FB] handleFacebookSignIn: start');
     this.facebookLoading.set(true);
     try {
       await this.socialService.loadFacebook();
+      console.log('[FB] handleFacebookSignIn: loadFacebook resolved');
       if (typeof FB === 'undefined' || !environment.facebookAppId || !this.socialService.facebookInitialized()) {
+        console.warn('[FB] handleFacebookSignIn: SDK not ready', {
+          hasFB: typeof FB !== 'undefined',
+          appId: environment.facebookAppId,
+          initialized: this.socialService.facebookInitialized(),
+        });
         this.facebookLoading.set(false);
         this.statusMessage.set({ type: 'info', text: this.copy.statusMessages.facebookUnavailable });
         return;
       }
+      console.log('[FB] handleFacebookSignIn: calling FB.login');
       FB.login(
         (response: { authResponse?: { accessToken?: string } }) => {
+          console.log('[FB] FB.login callback', response);
           const token = response?.authResponse?.accessToken;
           if (!token) {
             this.facebookLoading.set(false);
             this.statusMessage.set({ type: 'error', text: this.copy.statusMessages.facebookMissingToken });
             return;
           }
+          console.log('[FB] handleFacebookSignIn: exchanging token');
           this.exchangeFacebookToken(token);
         },
         { scope: 'email,public_profile' },
       );
     } catch (error) {
+      console.error('[FB] handleFacebookSignIn: init failed', error);
       this.facebookLoading.set(false);
       this.statusMessage.set({ type: 'error', text: this.copy.statusMessages.facebookUnavailable });
-      console.error('Facebook sign-in failed to initialize', error);
     }
   }
 
