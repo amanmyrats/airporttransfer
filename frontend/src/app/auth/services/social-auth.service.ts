@@ -13,7 +13,6 @@ export class SocialAuthService {
   private appleLoaded = false;
   private googleLoadPromise: Promise<void> | null = null;
   private facebookLoaded = false;
-  private facebookInitDone = false;
   private facebookLoadPromise: Promise<void> | null = null;
 
   loadGoogle(): Promise<void> {
@@ -95,9 +94,6 @@ export class SocialAuthService {
     if (!this.isBrowser()) {
       return Promise.resolve();
     }
-    if (this.facebookLoaded && typeof FB !== 'undefined') {
-      return Promise.resolve();
-    }
     if (this.facebookLoadPromise) {
       return this.facebookLoadPromise;
     }
@@ -106,46 +102,61 @@ export class SocialAuthService {
       return Promise.reject(new Error('facebook_unavailable'));
     }
     const scriptId = 'facebook-jssdk';
-    this.facebookLoadPromise = new Promise<void>((resolve, reject) => {
-      let resolved = false;
-      const finalize = () => {
-        if (resolved) {
-          return;
+    const ensureInit = (): Promise<void> => {
+      const w = window as any;
+      if (!w.FB) {
+        return Promise.reject(new Error('facebook_unavailable'));
+      }
+      if (w.__fbInitialized) {
+        return Promise.resolve();
+      }
+      return new Promise<void>((resolve, reject) => {
+        try {
+          w.FB.init({
+            appId,
+            cookie: true,
+            xfbml: false,
+            version: 'v24.0',
+          });
+          w.FB.getLoginStatus(() => {
+            w.__fbInitialized = true;
+            this.facebookLoaded = true;
+            resolve();
+          });
+        } catch (error) {
+          reject(error);
         }
-        resolved = true;
-        this.facebookLoaded = true;
-        this.facebookInitDone = true;
-        resolve();
-      };
-      const finishInit = () => {
-        if (typeof FB === 'undefined') {
-          reject(new Error('facebook_unavailable'));
-          return;
-        }
-        FB.init({
-          appId,
-          cookie: true,
-          xfbml: false,
-          version: 'v24.0',
-        });
-        FB.getLoginStatus(() => finalize());
-      };
-      (window as any).fbAsyncInit = () => finishInit();
+      });
+    };
 
+    this.facebookLoadPromise = new Promise<void>((resolve, reject) => {
       const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
+      const afterScriptReady = () => {
+        ensureInit()
+          .then(resolve)
+          .catch(() => reject(new Error('facebook_init_failed')));
+      };
+
+      if ((window as any).FB) {
+        afterScriptReady();
+        return;
+      }
+
       if (existing) {
-        if (typeof FB !== 'undefined') {
-          finishInit();
-          return;
-        }
-        existing.addEventListener('load', () => finishInit());
+        existing.addEventListener('load', afterScriptReady);
         existing.addEventListener('error', () => reject(new Error('facebook_load_failed')));
         return;
       }
+
+      (window as any).fbAsyncInit = () => {
+        afterScriptReady();
+      };
+
       const script = document.createElement('script');
       script.id = scriptId;
       script.src = 'https://connect.facebook.net/en_US/sdk.js';
       script.async = true;
+      script.defer = true;
       script.onerror = () => reject(new Error('facebook_load_failed'));
       document.head.appendChild(script);
     }).finally(() => {
@@ -165,7 +176,7 @@ export class SocialAuthService {
   }
 
   facebookInitialized(): boolean {
-    return this.facebookLoaded && this.facebookInitDone && typeof FB !== 'undefined';
+    return this.facebookLoaded && typeof FB !== 'undefined' && Boolean((window as any).__fbInitialized);
   }
 
   private isBrowser(): boolean {
