@@ -124,7 +124,7 @@ export class SocialAuthService {
           appId,
           cookie: true,
           xfbml: false,
-          version: 'v19.0',
+          version: 'v24.0',
         });
         FB.getLoginStatus(() => finalize());
       };
